@@ -82,6 +82,8 @@ def check_tool(name: str) -> tuple[bool, Optional[str]]:
 
     tool = REQUIRED_TOOLS[name]
     try:
+        # SAFE: tool["cmd"] comes from the REQUIRED_TOOLS constant (hardcoded
+        # static argv lists like ["node", "--version"]). shell=False (default).
         result = subprocess.run(
             tool["cmd"],
             capture_output=True,
@@ -145,6 +147,8 @@ def ensure_tooling(interactive: bool = True) -> dict[str, bool]:
                 answer = input(f"  Installer {name} ? [O/n] ").strip().lower()
                 if answer in ("", "o", "oui", "y", "yes"):
                     console.print(f"  Installation de {name}...")
+                    # SAFE: `name` is a key of REQUIRED_TOOLS (a hardcoded
+                    # constant), never user-supplied. argv list + shell=False.
                     subprocess.run(
                         ["npm", "i", "-g", name],
                         timeout=120,

@@ -169,6 +169,7 @@ def _fix_cookie_consent(site_dir: Path, report: FixReport):
 def _fix_npm_audit(site_dir: Path, report: FixReport):
     """Exécute npm audit fix pour corriger les vulnérabilités."""
     try:
+        # SAFE: static argv list, cwd is Path. shell=False (default).
         result = subprocess.run(
             ["npm", "audit", "fix"],
             cwd=site_dir,

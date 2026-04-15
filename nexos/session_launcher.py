@@ -119,6 +119,7 @@ def _which(binary: str) -> bool:
 def _read_parent_command() -> str:
     """Best-effort parent process detection for host auto-selection."""
     try:
+        # SAFE: static argv list, os.getppid() is an int. shell=False (default).
         result = subprocess.run(
             ["ps", "-o", "command=", "-p", str(os.getppid())],
             capture_output=True,
@@ -420,5 +421,8 @@ def launch_session(
 
     print_session_banner(host, nexos_root)
     cmd = build_launcher_command(host, nexos_root, prompt)
+    # SAFE: cmd is an argv list built by build_launcher_command from a
+    # whitelisted host binary + static CLI flags + internal prompt template.
+    # shell=False (default). No user string is shell-interpolated.
     result = subprocess.run(cmd, cwd=str(nexos_root), check=False)
     return result.returncode

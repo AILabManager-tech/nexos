@@ -1564,11 +1564,18 @@ def _print_banner():
     _con.print()
 
 
-if __name__ == "__main__":
+def main(argv: list[str] | None = None) -> int:
+    """NEXOS orchestrator entry point.
+
+    Accepts an optional argv list (defaults to sys.argv[1:]) and returns the
+    process exit code. Extracted from the legacy `if __name__ == "__main__":`
+    block so that `nexos_cli.py` can import and call it without exec().
+    """
     _print_banner()
     import argparse
 
     parser = argparse.ArgumentParser(
+        prog="nexos",
         description="NEXOS v4.0 Orchestrator",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""modes:
@@ -1664,19 +1671,19 @@ if __name__ == "__main__":
     sp_report = subparsers.add_parser("report", help="Rapport agrégé d'un client")
     sp_report.add_argument("client_dir", type=Path, help="Dossier client à analyser")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if not args.mode:
         from nexos.session_launcher import launch_session
-        sys.exit(launch_session(NEXOS_ROOT))
+        return int(launch_session(NEXOS_ROOT) or 0)
 
     if args.mode == "session":
         from nexos.session_launcher import launch_session
-        sys.exit(launch_session(
+        return int(launch_session(
             NEXOS_ROOT,
             explicit_host=args.host,
             print_prompt_only=args.print_prompt,
-        ))
+        ) or 0)
 
     # NEXOS v4.0 — commandes standalone
     if args.mode == "doctor":
@@ -1685,21 +1692,21 @@ if __name__ == "__main__":
             run_doctor()
         else:
             console.print("[red]nexos doctor requiert les modules v4.0 (nexos/)[/]")
-        sys.exit(0)
+        return 0
     elif args.mode == "fix":
         if _NEXOS_V4:
             from nexos.cli_commands import run_fix
             run_fix(args.client_dir, dry_run=args.dry_run)
         else:
             console.print("[red]nexos fix requiert les modules v4.0 (nexos/)[/]")
-        sys.exit(0)
+        return 0
     elif args.mode == "report":
         if _NEXOS_V4:
             from nexos.cli_commands import run_report
             run_report(args.client_dir)
         else:
             console.print("[red]nexos report requiert les modules v4.0 (nexos/)[/]")
-        sys.exit(0)
+        return 0
 
     if args.mode == "knowledge":
         run_knowledge_agent(
@@ -1737,11 +1744,11 @@ if __name__ == "__main__":
                 client_dir = generate_brief_from_wizard(args.mode, brief_data)
             else:
                 console.print("[red]Erreur: --client-dir, --brief ou --name requis (non-TTY)[/]")
-                sys.exit(1)
+                return 1
         else:
             console.print("[red]Erreur: --client-dir ou --brief requis[/]")
             console.print("[dim]Astuce : lancez nexos create en terminal pour le wizard interactif[/]")
-            sys.exit(1)
+            return 1
 
         # Resolve SOIC profile: --profile > --stack > brief > default
         cli_profile = _resolve_profile(
@@ -1766,8 +1773,14 @@ if __name__ == "__main__":
                 console.print(f"[cyan]🎨 Palette couleurs : {_color_overrides}[/]")
             except ValueError as e:
                 console.print(f"[red]Erreur --colors : {e}[/]")
-                sys.exit(1)
+                return 1
 
         run_pipeline(args.mode, client_dir, url=getattr(args, "url", None), profile=cli_profile,
                      target_sections=getattr(args, "section", None),
                      color_overrides=_color_overrides)
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

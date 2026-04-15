@@ -59,6 +59,8 @@ def _check_npm_install(site_dir: Path) -> bool:
     if (site_dir / "node_modules").exists():
         return True
     try:
+        # SAFE: static argv list, cwd is a Path object chosen by the pipeline.
+        # shell=False (default). No user string in args.
         result = subprocess.run(
             ["npm", "install"],
             cwd=site_dir,
@@ -74,6 +76,7 @@ def _check_npm_install(site_dir: Path) -> bool:
 def _check_tsc(site_dir: Path) -> tuple[bool, list[str]]:
     """Exécute npx tsc --noEmit. Retourne (ok, erreurs)."""
     try:
+        # SAFE: static argv list, cwd is Path. shell=False (default).
         result = subprocess.run(
             ["npx", "tsc", "--noEmit"],
             cwd=site_dir,
@@ -95,6 +98,7 @@ def _check_tsc(site_dir: Path) -> tuple[bool, list[str]]:
 def _check_build(site_dir: Path) -> tuple[bool, str]:
     """Exécute npm run build. Retourne (ok, stderr si échec)."""
     try:
+        # SAFE: static argv list, cwd is Path. shell=False (default).
         result = subprocess.run(
             ["npm", "run", "build"],
             cwd=site_dir,
@@ -116,6 +120,7 @@ def _check_build(site_dir: Path) -> tuple[bool, str]:
 def _check_audit(site_dir: Path) -> tuple[int, int]:
     """Exécute npm audit --json. Retourne (highs, criticals)."""
     try:
+        # SAFE: static argv list, cwd is Path. shell=False (default).
         result = subprocess.run(
             ["npm", "audit", "--json"],
             cwd=site_dir,
