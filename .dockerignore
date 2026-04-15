@@ -1,0 +1,48 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+*.egg-info/
+dist/
+build/
+
+# Node (dans clients/*/site/)
+**/node_modules/
+**/.next/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Clients (données volumineuses, montées en volume)
+clients/
+output/
+
+# Archives et legacy
+archive/
+
+# Docs (build image sans docs = + léger)
+docs/
+*.md
+!README.md
+!pyproject.toml
+
+# CI / autres
+.github/
+.gitlab-ci.yml
