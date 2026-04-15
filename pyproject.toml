@@ -46,6 +46,53 @@ packages = ["nexos", "soic"]
 [tool.setuptools.package-data]
 "*" = ["*.md", "*.json", "*.yaml", "*.yml"]
 
+# ----------------------------------------------------------------------------
+# pytest + coverage — chantier2-I (filet de sécurité avant refactor O/P)
+# ----------------------------------------------------------------------------
+# Coverage scopée à `nexos/` :
+#   * `soic/` est un symlink vers ../soic_v3 (paquet externe avec sa propre
+#     suite à `tests/test_soic/`). L'inclure dans `source` déstabiliserait le
+#     calcul (30+ modules infra non consommés par l'orchestrateur).
+#   * `orchestrator.py` est exclu : god-object 1700 L planifié pour refactor
+#     phases O et P. Les tests E2E (test_e2e_orchestrator.py) couvrent son
+#     contrat externe ; la couverture ligne-à-ligne arrivera après refactor.
+# Seuil 70 % calé sur le diagnostic chantier2 : passe en l'état.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = [
+  "-v",
+  "--strict-markers",
+  "--strict-config",
+  "--tb=short",
+]
+filterwarnings = [
+  "ignore::DeprecationWarning:pkg_resources.*",
+]
+markers = [
+  "e2e: end-to-end test (plus lent, scénario CLI complet)",
+  "integration: test d'intégration (plusieurs modules)",
+]
+
+[tool.coverage.run]
+source = ["nexos"]
+omit = [
+  "*/tests/*",
+  "*/__pycache__/*",
+  "*/archive/*",
+  "*/soic_v3/*",
+]
+
+[tool.coverage.report]
+fail_under = 70
+show_missing = true
+skip_covered = false
+exclude_lines = [
+  "pragma: no cover",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
 [tool.ruff]
 target-version = "py310"
 line-length = 100
