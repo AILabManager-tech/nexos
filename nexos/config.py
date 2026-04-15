@@ -28,12 +28,12 @@ API externes (vides par défaut, optionnelles) :
     WHOIS_API_KEY
     GSC_SERVICE_ACCOUNT_JSON
 """
+
 from __future__ import annotations
 
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 
 def _auto_repo_root() -> Path:
@@ -66,8 +66,8 @@ class Settings:
     output_dir: Path
 
     # Paths périphériques
-    audit_toolkit_path: Optional[Path] = None
-    osiris_path: Optional[Path] = None
+    audit_toolkit_path: Path | None = None
+    osiris_path: Path | None = None
 
     # Logging
     log_level: str = "INFO"

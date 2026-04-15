@@ -10,7 +10,7 @@ it as a fallback for backward compatibility.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -18,10 +18,21 @@ from typing import Any
 
 _HEX_RE = re.compile(r"^#(?:[0-9a-fA-F]{3}){1,2}$")
 
-VALID_COLOR_ROLES = frozenset({
-    "primary", "secondary", "accent", "background", "surface",
-    "text", "error", "success", "warning", "info", "border",
-})
+VALID_COLOR_ROLES = frozenset(
+    {
+        "primary",
+        "secondary",
+        "accent",
+        "background",
+        "surface",
+        "text",
+        "error",
+        "success",
+        "warning",
+        "info",
+        "border",
+    }
+)
 
 
 def parse_color_args(raw: list[str]) -> dict[str, str]:
@@ -43,17 +54,22 @@ def parse_color_args(raw: list[str]) -> dict[str, str]:
         colors[role] = hex_val.upper()
     return colors
 
+
 # ── Default phase sequences (kept as fallbacks) ─────────────────────────────
 
 PHASES_CREATE = [
-    "ph0-discovery", "ph1-strategy", "ph2-design",
-    "ph3-content", "ph4-build", "ph5-qa",
+    "ph0-discovery",
+    "ph1-strategy",
+    "ph2-design",
+    "ph3-content",
+    "ph4-build",
+    "ph5-qa",
 ]
 
 _MODE_PHASES: dict[str, list[str]] = {
-    "create":  PHASES_CREATE,
-    "audit":   ["ph5-qa"],
-    "modify":  ["site-update"],
+    "create": PHASES_CREATE,
+    "audit": ["ph5-qa"],
+    "modify": ["site-update"],
     "content": ["ph3-content"],
     "analyze": ["ph0-discovery"],
 }

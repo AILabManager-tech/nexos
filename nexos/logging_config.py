@@ -15,13 +15,13 @@ Usage:
     with bind_context(logger, client="clinique-aura", phase="ph2") as scoped:
         scoped.info("Running design agent")
 """
+
 from __future__ import annotations
 
 import logging
 import sys
+from collections.abc import Iterator
 from contextlib import contextmanager
-from typing import Iterator
-
 
 _CONFIGURED = False
 
@@ -65,6 +65,7 @@ def get_logger(name: str) -> logging.Logger:
     if not _CONFIGURED:
         try:
             from nexos.config import settings
+
             configure_logging(settings.log_level)
         except Exception:
             configure_logging("INFO")
@@ -93,4 +94,4 @@ def bind_context(logger: logging.Logger, **context) -> Iterator[logging.LoggerAd
     yield adapter
 
 
-__all__ = ["configure_logging", "get_logger", "bind_context"]
+__all__ = ["bind_context", "configure_logging", "get_logger"]

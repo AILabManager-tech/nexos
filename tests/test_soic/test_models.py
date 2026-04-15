@@ -5,14 +5,20 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from soic.models import GateStatus, GateResult, PhaseGateReport
+from soic.models import GateResult, GateStatus, PhaseGateReport
 
 
 def _gate(gate_id: str, dim: str, status: GateStatus, score: float) -> GateResult:
     """Helper to create a GateResult quickly."""
     return GateResult(
-        gate_id=gate_id, name=f"test-{gate_id}", dimension=dim,
-        status=status, score=score, evidence="test", duration_ms=0, command="",
+        gate_id=gate_id,
+        name=f"test-{gate_id}",
+        dimension=dim,
+        status=status,
+        score=score,
+        evidence="test",
+        duration_ms=0,
+        command="",
     )
 
 
@@ -51,7 +57,12 @@ class TestPhaseGateReport:
         report = PhaseGateReport(phase="ph5-qa")
         report.gates = [
             _gate("W-01", "D1", GateStatus.PASS, 10.0),
-            _gate("W-08", "D5", GateStatus.NOT_EXECUTED, 0.0, ),
+            _gate(
+                "W-08",
+                "D5",
+                GateStatus.NOT_EXECUTED,
+                0.0,
+            ),
         ]
         score = report.compute_score()
         assert score.not_executed == 1
@@ -66,7 +77,7 @@ class TestPhaseGateReport:
             _gate("W-08", "D5", GateStatus.NOT_EXECUTED, 0.0),
             _gate("W-10", "D6", GateStatus.NOT_EXECUTED, 0.0),
         ]
-        score = report.compute_score()
+        report.compute_score()
         # 1 executed out of 3 (NOT_EXECUTED ≠ SKIP)
         assert report.coverage < 0.7
         assert abs(report.coverage - 1 / 3) < 0.01

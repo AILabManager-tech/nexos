@@ -23,7 +23,8 @@ from nexos.logging_config import get_logger
 logger = get_logger(__name__)
 
 try:
-    from nexos.changelog import log_event, EventType
+    from nexos.changelog import EventType, log_event
+
     _HAS_CHANGELOG = True
 except ImportError:
     _HAS_CHANGELOG = False
@@ -78,6 +79,7 @@ class FixReport:
 
 
 # ── Fix functions ─────────────────────────────────────────────────────
+
 
 def _fix_cookie_consent(site_dir: Path, report: FixReport):
     """
@@ -220,10 +222,7 @@ def _fix_vercel_headers(site_dir: Path, report: FixReport):
         headers_list.insert(0, global_block)
 
     # Vérifier chaque header requis
-    existing_keys = {
-        h.get("key", "").lower()
-        for h in global_block.get("headers", [])
-    }
+    existing_keys = {h.get("key", "").lower() for h in global_block.get("headers", [])}
 
     added = False
     for key, value in REQUIRED_HEADERS.items():
@@ -303,20 +302,39 @@ def _fix_privacy_page(site_dir: Path, brief: dict, report: FixReport):
     template = template_path.read_text()
     legal = brief.get("legal", {})
     replacements = {
-        "{{COMPANY_NAME}}": _template_value(brief.get("company_name", legal.get("company_name")), "[Nom entreprise]"),
+        "{{COMPANY_NAME}}": _template_value(
+            brief.get("company_name", legal.get("company_name")), "[Nom entreprise]"
+        ),
         "{{RPP_NAME}}": _template_value(legal.get("rpp_name"), "[Nom du RPP]"),
         "{{RPP_TITLE}}": _template_value(legal.get("rpp_title"), "[Titre du RPP]"),
         "{{RPP_EMAIL}}": _template_value(legal.get("rpp_email"), "[courriel@example.com]"),
         "{{DATE}}": datetime.now().strftime("%Y-%m-%d"),
-        "{{DATA_TYPES}}": _template_value(legal.get("data_types"), "- Nom, prenom, courriel\n- Adresse IP\n- Donnees de navigation"),
-        "{{PURPOSES}}": _template_value(legal.get("purposes"), "- Fournir nos services\n- Ameliorer l'experience utilisateur\n- Communications marketing (avec consentement)"),
-        "{{RETENTION_PERIOD}}": _template_value(legal.get("retention"), "24 mois apres la derniere interaction"),
+        "{{DATA_TYPES}}": _template_value(
+            legal.get("data_types"),
+            "- Nom, prenom, courriel\n- Adresse IP\n- Donnees de navigation",
+        ),
+        "{{PURPOSES}}": _template_value(
+            legal.get("purposes"),
+            "- Fournir nos services\n- Ameliorer l'experience utilisateur\n- Communications marketing (avec consentement)",
+        ),
+        "{{RETENTION_PERIOD}}": _template_value(
+            legal.get("retention"), "24 mois apres la derniere interaction"
+        ),
         "{{ADDRESS}}": _template_value(legal.get("address"), "[Adresse]"),
-        "{{THIRD_PARTIES}}": _template_value(legal.get("third_parties"), "- Google Analytics (analytique)\n- Vercel (hebergement)"),
-        "{{TRANSFER_SECTION}}": _template_value(legal.get("transfer"), "Certaines donnees peuvent etre traitees par des services heberges hors du Quebec (ex : Vercel, Google). Nous nous assurons que ces transferts respectent les exigences de la Loi 25."),
-        "{{INCIDENT_EMAIL}}": _template_value(legal.get("incident_email") or legal.get("rpp_email"), "[courriel@example.com]"),
+        "{{THIRD_PARTIES}}": _template_value(
+            legal.get("third_parties"), "- Google Analytics (analytique)\n- Vercel (hebergement)"
+        ),
+        "{{TRANSFER_SECTION}}": _template_value(
+            legal.get("transfer"),
+            "Certaines donnees peuvent etre traitees par des services heberges hors du Quebec (ex : Vercel, Google). Nous nous assurons que ces transferts respectent les exigences de la Loi 25.",
+        ),
+        "{{INCIDENT_EMAIL}}": _template_value(
+            legal.get("incident_email") or legal.get("rpp_email"), "[courriel@example.com]"
+        ),
         "{{PHONE}}": _template_value(legal.get("phone"), "[Telephone]"),
-        "{{EMAIL}}": _template_value(legal.get("email") or legal.get("rpp_email"), "[courriel@example.com]"),
+        "{{EMAIL}}": _template_value(
+            legal.get("email") or legal.get("rpp_email"), "[courriel@example.com]"
+        ),
     }
 
     for placeholder, value in replacements.items():
@@ -355,13 +373,17 @@ def _fix_legal_page(site_dir: Path, brief: dict, report: FixReport):
     template = template_path.read_text()
     legal = brief.get("legal", {})
     replacements = {
-        "{{COMPANY_NAME}}": _template_value(brief.get("company_name", legal.get("company_name")), "[Nom entreprise]"),
+        "{{COMPANY_NAME}}": _template_value(
+            brief.get("company_name", legal.get("company_name")), "[Nom entreprise]"
+        ),
         "{{NEQ}}": _template_value(legal.get("neq"), "[NEQ]"),
         "{{ADDRESS}}": _template_value(legal.get("address"), "[Adresse]"),
         "{{PHONE}}": _template_value(legal.get("phone"), "[Telephone]"),
         "{{EMAIL}}": _template_value(legal.get("email"), "[courriel@example.com]"),
         "{{HOSTING_PROVIDER}}": _template_value(legal.get("hosting_provider"), "Vercel Inc."),
-        "{{HOSTING_ADDRESS}}": _template_value(legal.get("hosting_address"), "340 S Lemon Ave #4133, Walnut, CA 91789, USA"),
+        "{{HOSTING_ADDRESS}}": _template_value(
+            legal.get("hosting_address"), "340 S Lemon Ave #4133, Walnut, CA 91789, USA"
+        ),
         "{{RPP_NAME}}": _template_value(legal.get("rpp_name"), "[Nom du RPP]"),
         "{{RPP_TITLE}}": _template_value(legal.get("rpp_title"), "[Titre du RPP]"),
         "{{RPP_EMAIL}}": _template_value(legal.get("rpp_email"), "[courriel@example.com]"),
@@ -383,7 +405,7 @@ def _generate_legal_page_tsx(markdown_content: str, title: str) -> str:
     # Échapper les backticks et ${} pour le template literal
     html = html.replace("\\", "\\\\").replace("`", "\\`").replace("${", "\\${")
 
-    return f'''import type {{ Metadata }} from "next";
+    return f"""import type {{ Metadata }} from "next";
 
 export const metadata: Metadata = {{
   title: "{title}",
@@ -401,7 +423,7 @@ export default function Page() {{
     </main>
   );
 }}
-'''
+"""
 
 
 def _markdown_to_html(md: str) -> str:
@@ -458,6 +480,7 @@ def _inline_md(text: str) -> str:
 
 
 # ── Fonction principale ───────────────────────────────────────────────
+
 
 def auto_fix(site_dir: Path, client_dir: Path, brief: dict | None = None) -> FixReport:
     """

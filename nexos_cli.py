@@ -7,6 +7,7 @@ with a proper import (chantier2 phase B).
 
 Usage: nexos [command] [args...]
 """
+
 from __future__ import annotations
 
 import os
@@ -34,6 +35,7 @@ def main(argv: list[str] | None = None) -> int:
     """
     from nexos.config import settings
     from nexos.logging_config import configure_logging, get_logger
+
     configure_logging(settings.log_level)
 
     log = get_logger("nexos.cli")
@@ -51,7 +53,7 @@ def main(argv: list[str] | None = None) -> int:
 
     orchestrator_path = REPO_ROOT / "orchestrator.py"
     old_argv = sys.argv[:]
-    sys.argv = ["orchestrator"] + list(argv)
+    sys.argv = ["orchestrator", *argv]
     try:
         runpy.run_path(str(orchestrator_path), run_name="__main__")
     finally:

@@ -3,13 +3,13 @@
 Ce test protège contre une régression du symlink qui a bloqué tout le pipeline
 en v4.0 jusqu'à la phase A du chantier mise_a_niveau (v4.2.0).
 """
+
 from __future__ import annotations
 
 import importlib
 import pathlib
 
 import pytest
-
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
 SOIC_SYMLINK = REPO_ROOT / "soic"

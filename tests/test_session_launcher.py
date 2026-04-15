@@ -9,7 +9,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from nexos.session_launcher import (
     HostCLI,
     _confirm_selection,
-    MenuBack,
     build_launcher_command,
     build_mode_session_prompt,
     build_session_prompt,
@@ -52,8 +51,10 @@ def test_build_launcher_command_prefixes(tmp_path, host, expected):
 
 
 def test_detect_host_cli_prefers_parent_process():
-    with patch("nexos.session_launcher._which", return_value=True), \
-         patch("nexos.session_launcher._read_parent_command", return_value="codex --cd /tmp"):
+    with (
+        patch("nexos.session_launcher._which", return_value=True),
+        patch("nexos.session_launcher._read_parent_command", return_value="codex --cd /tmp"),
+    ):
         host = detect_host_cli()
     assert host.name == "codex"
 
@@ -65,18 +66,26 @@ def test_detect_host_cli_respects_explicit_host():
 
 
 def test_select_mode_and_host_interactive():
-    with patch("nexos.session_launcher._available_hosts", return_value=[HostCLI("codex", "codex"), HostCLI("claude", "claude")]), \
-         patch("builtins.input", side_effect=["1", "2", "1"]):
+    with (
+        patch(
+            "nexos.session_launcher._available_hosts",
+            return_value=[HostCLI("codex", "codex"), HostCLI("claude", "claude")],
+        ),
+        patch("builtins.input", side_effect=["1", "2", "1"]),
+    ):
         mode, host = select_mode_and_host()
     assert mode == "create"
     assert host.name == "claude"
 
 
 def test_select_mode_and_host_uses_defaults_on_enter():
-    with patch(
-        "nexos.session_launcher._available_hosts",
-        return_value=[HostCLI("codex", "codex"), HostCLI("claude", "claude")],
-    ), patch("builtins.input", side_effect=["", "", ""]):
+    with (
+        patch(
+            "nexos.session_launcher._available_hosts",
+            return_value=[HostCLI("codex", "codex"), HostCLI("claude", "claude")],
+        ),
+        patch("builtins.input", side_effect=["", "", ""]),
+    ):
         mode, host = select_mode_and_host()
     assert mode == "create"
     assert host.name == "codex"
@@ -95,47 +104,66 @@ def test_confirm_selection_b_means_back_to_host():
 
 
 def test_select_mode_and_host_can_go_back_to_mode():
-    with patch(
-        "nexos.session_launcher._available_hosts",
-        return_value=[HostCLI("codex", "codex"), HostCLI("claude", "claude")],
-    ), patch("builtins.input", side_effect=["1", "1", "3", "4", "2", "1"]):
+    with (
+        patch(
+            "nexos.session_launcher._available_hosts",
+            return_value=[HostCLI("codex", "codex"), HostCLI("claude", "claude")],
+        ),
+        patch("builtins.input", side_effect=["1", "1", "3", "4", "2", "1"]),
+    ):
         mode, host = select_mode_and_host()
     assert mode == "content"
     assert host.name == "claude"
 
 
 def test_select_mode_and_host_b_goes_back_from_host_menu():
-    with patch(
-        "nexos.session_launcher._available_hosts",
-        return_value=[HostCLI("codex", "codex"), HostCLI("claude", "claude")],
-    ), patch("builtins.input", side_effect=["1", "b", "4", "2", "1"]):
+    with (
+        patch(
+            "nexos.session_launcher._available_hosts",
+            return_value=[HostCLI("codex", "codex"), HostCLI("claude", "claude")],
+        ),
+        patch("builtins.input", side_effect=["1", "b", "4", "2", "1"]),
+    ):
         mode, host = select_mode_and_host()
     assert mode == "content"
     assert host.name == "claude"
 
 
 def test_select_mode_and_host_q_quits():
-    with patch(
-        "nexos.session_launcher._available_hosts",
-        return_value=[HostCLI("codex", "codex")],
-    ), patch("builtins.input", side_effect=["q"]):
-        with pytest.raises(SystemExit) as exc:
-            select_mode_and_host()
+    with (
+        patch(
+            "nexos.session_launcher._available_hosts",
+            return_value=[HostCLI("codex", "codex")],
+        ),
+        patch("builtins.input", side_effect=["q"]),
+        pytest.raises(SystemExit) as exc,
+    ):
+        select_mode_and_host()
     assert exc.value.code == 0
 
 
 def test_launch_session_print_prompt_only(tmp_path):
-    with patch("nexos.session_launcher.select_mode_and_host", return_value=("create", HostCLI("codex", "codex"))), \
-         patch("nexos.session_launcher.console") as mock_console:
+    with (
+        patch(
+            "nexos.session_launcher.select_mode_and_host",
+            return_value=("create", HostCLI("codex", "codex")),
+        ),
+        patch("nexos.session_launcher.console") as mock_console,
+    ):
         code = launch_session(tmp_path, print_prompt_only=True)
     assert code == 0
     mock_console.print.assert_called()
 
 
 def test_launch_session_executes_host_command(tmp_path):
-    with patch("nexos.session_launcher.select_mode_and_host", return_value=("analyze", HostCLI("gemini", "gemini"))), \
-         patch("nexos.session_launcher.print_session_banner"), \
-         patch("nexos.session_launcher.subprocess.run") as mock_run:
+    with (
+        patch(
+            "nexos.session_launcher.select_mode_and_host",
+            return_value=("analyze", HostCLI("gemini", "gemini")),
+        ),
+        patch("nexos.session_launcher.print_session_banner"),
+        patch("nexos.session_launcher.subprocess.run") as mock_run,
+    ):
         mock_run.return_value.returncode = 0
         code = launch_session(tmp_path)
     assert code == 0

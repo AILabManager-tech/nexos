@@ -6,14 +6,14 @@ Trace automatiquement les événements pipeline, phases, SOIC, auto-fix, tooling
 """
 
 import json
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional
-
+from typing import Any
 
 # ── Event types ──────────────────────────────────────────────────────
+
 
 class EventType(str, Enum):
     """17 types d'événements traçables."""
@@ -56,14 +56,15 @@ class EventType(str, Enum):
 
 # ── Entry dataclass ──────────────────────────────────────────────────
 
+
 @dataclass
 class ChangelogEntry:
     """Une entrée du changelog."""
 
     event: str
     timestamp: str = ""
-    phase: Optional[str] = None
-    agent: Optional[str] = None
+    phase: str | None = None
+    agent: str | None = None
     details: dict = field(default_factory=dict)
 
     def __post_init__(self):
@@ -87,12 +88,13 @@ CHANGELOG_FILENAME = "nexos-changelog.json"
 
 # ── Core functions ───────────────────────────────────────────────────
 
+
 def log_event(
     client_dir: Path,
     event: EventType,
-    phase: Optional[str] = None,
-    agent: Optional[str] = None,
-    details: Optional[dict] = None,
+    phase: str | None = None,
+    agent: str | None = None,
+    details: dict | None = None,
 ) -> ChangelogEntry:
     """
     Append un événement au changelog du client.

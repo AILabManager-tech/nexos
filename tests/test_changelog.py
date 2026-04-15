@@ -2,19 +2,18 @@
 
 import json
 from datetime import datetime
-from pathlib import Path
 
 from nexos.changelog import (
+    CHANGELOG_FILENAME,
     ChangelogEntry,
     EventType,
-    CHANGELOG_FILENAME,
     get_changelog,
     get_changelog_summary,
     log_event,
 )
 
-
 # ── TestLogEvent ─────────────────────────────────────────────────────
+
 
 class TestLogEvent:
     """Tests pour log_event() — append au fichier JSON."""
@@ -63,6 +62,7 @@ class TestLogEvent:
 
 # ── TestGetChangelog ─────────────────────────────────────────────────
 
+
 class TestGetChangelog:
     """Tests pour get_changelog() — lecture."""
 
@@ -87,6 +87,7 @@ class TestGetChangelog:
 
 
 # ── TestGetChangelogSummary ──────────────────────────────────────────
+
 
 class TestGetChangelogSummary:
     """Tests pour get_changelog_summary() — agrégation."""
@@ -121,6 +122,7 @@ class TestGetChangelogSummary:
 
 # ── TestChangelogEntry ───────────────────────────────────────────────
 
+
 class TestChangelogEntry:
     """Tests pour ChangelogEntry dataclass."""
 
@@ -147,6 +149,7 @@ class TestChangelogEntry:
 
 
 # ── TestEventType ────────────────────────────────────────────────────
+
 
 class TestEventType:
     """Tests pour l'enum EventType."""

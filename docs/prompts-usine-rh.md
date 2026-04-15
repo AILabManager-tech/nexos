@@ -17,13 +17,13 @@ AUTEUR    : Gear-code × Claude Opus 4.6
 # BRIEF CLIENT — L'USINE RH
 
 ## IDENTITÉ
-- **Nom légal** : L'Usine RH / HR Factory  
-- **Fondatrice** : Émilie Poirier, CRHA  
-- **Email professionnel** : e.poirier@usinerh.ca  
-- **Téléphone** : 514-582-1490  
-- **LinkedIn** : https://www.linkedin.com/in/emilie-poirier-crha-1b408a48/  
-- **Localisation** : Région de Montréal, QC, Canada  
-- **Domaines** : usinerh.ca (principal), hrfactory.ca (redirect), usinerh.com (redirect)  
+- **Nom légal** : L'Usine RH / HR Factory
+- **Fondatrice** : Émilie Poirier, CRHA
+- **Email professionnel** : e.poirier@usinerh.ca
+- **Téléphone** : 514-582-1490
+- **LinkedIn** : https://www.linkedin.com/in/emilie-poirier-crha-1b408a48/
+- **Localisation** : Région de Montréal, QC, Canada
+- **Domaines** : usinerh.ca (principal), hrfactory.ca (redirect), usinerh.com (redirect)
 - **Hébergement** : Vercel (compte existant du développeur)
 
 ## NICHE & POSITIONNEMENT
@@ -190,7 +190,7 @@ Professional industrial logotype for "L'USINE RH" text, heavy metal typography s
 Design:
 - Text "L'USINE RH" in bold industrial stencil font with steel plate texture
 - Letters appear CUT from brushed steel with visible scratches and patina
-- "L'USINE" in deep blue steel (#1B3A5C), "RH" in warm amber/orange steel (#D4760A)  
+- "L'USINE" in deep blue steel (#1B3A5C), "RH" in warm amber/orange steel (#D4760A)
 - Rivets (2-3) flanking the text on each side, realistic metallic finish with specular highlights
 - Subtle red-rust brick wall texture visible behind/around the text
 - A single small gear icon integrated into the apostrophe of "L'USINE" or replacing the dot-like element

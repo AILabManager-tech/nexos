@@ -43,6 +43,7 @@ class TestGateEngineInit:
     def test_engine_unknown_phase_raises(self):
         """Unknown phase should raise ValueError."""
         import pytest
+
         with pytest.raises(ValueError, match="Unknown phase"):
             get_phase_gates("unknown-phase")
 

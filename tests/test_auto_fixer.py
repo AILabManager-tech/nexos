@@ -1,21 +1,20 @@
 """Tests pour nexos.auto_fixer."""
 
 import json
-from pathlib import Path
 from unittest.mock import patch
 
 from nexos.auto_fixer import (
-    auto_fix,
-    FixReport,
-    _fix_vercel_headers,
-    _fix_next_config,
-    _fix_cookie_consent,
-    _fix_privacy_page,
-    _fix_legal_page,
-    _markdown_to_html,
-    _inline_md,
     REQUIRED_HEADERS,
     TEMPLATES_DIR,
+    FixReport,
+    _fix_cookie_consent,
+    _fix_legal_page,
+    _fix_next_config,
+    _fix_privacy_page,
+    _fix_vercel_headers,
+    _inline_md,
+    _markdown_to_html,
+    auto_fix,
 )
 
 
@@ -47,11 +46,18 @@ class TestFixVercelHeaders:
 
     def test_adds_missing_headers(self, tmp_path):
         vercel_path = tmp_path / "vercel.json"
-        vercel_path.write_text(json.dumps({
-            "headers": [{"source": "/(.*)", "headers": [
-                {"key": "X-Frame-Options", "value": "DENY"}
-            ]}]
-        }))
+        vercel_path.write_text(
+            json.dumps(
+                {
+                    "headers": [
+                        {
+                            "source": "/(.*)",
+                            "headers": [{"key": "X-Frame-Options", "value": "DENY"}],
+                        }
+                    ]
+                }
+            )
+        )
 
         report = FixReport()
         _fix_vercel_headers(tmp_path, report)
@@ -64,11 +70,20 @@ class TestFixVercelHeaders:
 
     def test_no_change_if_complete(self, tmp_path):
         vercel_path = tmp_path / "vercel.json"
-        vercel_path.write_text(json.dumps({
-            "headers": [{"source": "/(.*)", "headers": [
-                {"key": k, "value": v} for k, v in REQUIRED_HEADERS.items()
-            ]}]
-        }))
+        vercel_path.write_text(
+            json.dumps(
+                {
+                    "headers": [
+                        {
+                            "source": "/(.*)",
+                            "headers": [
+                                {"key": k, "value": v} for k, v in REQUIRED_HEADERS.items()
+                            ],
+                        }
+                    ]
+                }
+            )
+        )
 
         report = FixReport()
         _fix_vercel_headers(tmp_path, report)
@@ -78,7 +93,7 @@ class TestFixVercelHeaders:
 class TestFixNextConfig:
     def test_adds_powered_by_header(self, tmp_path):
         config = tmp_path / "next.config.mjs"
-        config.write_text('const nextConfig = {\n  images: {},\n};\n')
+        config.write_text("const nextConfig = {\n  images: {},\n};\n")
 
         report = FixReport()
         _fix_next_config(tmp_path, report)
@@ -88,7 +103,7 @@ class TestFixNextConfig:
 
     def test_fixes_true_to_false(self, tmp_path):
         config = tmp_path / "next.config.mjs"
-        config.write_text('const nextConfig = {\n  poweredByHeader: true,\n};\n')
+        config.write_text("const nextConfig = {\n  poweredByHeader: true,\n};\n")
 
         report = FixReport()
         _fix_next_config(tmp_path, report)
@@ -99,7 +114,7 @@ class TestFixNextConfig:
 
     def test_no_change_if_already_false(self, tmp_path):
         config = tmp_path / "next.config.mjs"
-        config.write_text('const nextConfig = {\n  poweredByHeader: false,\n};\n')
+        config.write_text("const nextConfig = {\n  poweredByHeader: false,\n};\n")
 
         report = FixReport()
         _fix_next_config(tmp_path, report)
@@ -142,7 +157,7 @@ class TestFixCookieConsent:
             # Vérifier l'injection dans layout
             content = layout.read_text()
             assert "<CookieConsent" in content
-            assert 'import { CookieConsent }' in content
+            assert "import { CookieConsent }" in content
             assert report.cookie_consent_added is True
 
     def test_skips_if_already_present(self, tmp_path):

@@ -121,21 +121,39 @@ def normalize_brief(raw_brief: dict[str, Any], mode: str | None = None) -> dict[
             "email": rpp_email,
             "title": rpp_title,
         },
-        "data_collected": _normalize_data_types(legal.get("data_collected") or legal.get("data_types")),
+        "data_collected": _normalize_data_types(
+            legal.get("data_collected") or legal.get("data_types")
+        ),
         "data_types": _normalize_data_types(legal.get("data_types") or legal.get("data_collected")),
         "purposes": _normalize_purposes(legal.get("purposes")),
         "retention": _clean_str(legal.get("retention")),
         "transfer_outside_qc": bool(legal.get("transfer_outside_qc", False)),
         "transfer_countries": _clean_list(legal.get("transfer_countries")),
-        "third_parties": _clean_list(legal.get("third_parties") or legal.get("third_party_services")),
-        "third_party_services": _clean_list(legal.get("third_party_services") or legal.get("third_parties")),
-        "cookie_consent": _normalize_consent_mode(legal.get("cookie_consent") or legal.get("consent_mode")),
-        "consent_mode": _normalize_consent_mode(legal.get("consent_mode") or legal.get("cookie_consent")),
-        "incident_process": bool(legal.get("incident_process", incident.get("process_in_place", False))),
-        "incident_email": _clean_str(legal.get("incident_email")) or _clean_str(incident.get("notification_email")) or rpp_email,
+        "third_parties": _clean_list(
+            legal.get("third_parties") or legal.get("third_party_services")
+        ),
+        "third_party_services": _clean_list(
+            legal.get("third_party_services") or legal.get("third_parties")
+        ),
+        "cookie_consent": _normalize_consent_mode(
+            legal.get("cookie_consent") or legal.get("consent_mode")
+        ),
+        "consent_mode": _normalize_consent_mode(
+            legal.get("consent_mode") or legal.get("cookie_consent")
+        ),
+        "incident_process": bool(
+            legal.get("incident_process", incident.get("process_in_place", False))
+        ),
+        "incident_email": _clean_str(legal.get("incident_email"))
+        or _clean_str(incident.get("notification_email"))
+        or rpp_email,
         "incident": {
-            "process_in_place": bool(legal.get("incident_process", incident.get("process_in_place", False))),
-            "notification_email": _clean_str(legal.get("incident_email")) or _clean_str(incident.get("notification_email")) or rpp_email,
+            "process_in_place": bool(
+                legal.get("incident_process", incident.get("process_in_place", False))
+            ),
+            "notification_email": _clean_str(legal.get("incident_email"))
+            or _clean_str(incident.get("notification_email"))
+            or rpp_email,
         },
     }
 
@@ -203,7 +221,16 @@ def validate_brief(brief: dict[str, Any]) -> list[str]:
         errors.append("client.name requis")
     if not _clean_str(client.get("slug")):
         errors.append("client.slug requis")
-    for field in ("company_name", "address", "phone", "email", "rpp_name", "rpp_email", "rpp_title", "retention"):
+    for field in (
+        "company_name",
+        "address",
+        "phone",
+        "email",
+        "rpp_name",
+        "rpp_email",
+        "rpp_title",
+        "retention",
+    ):
         if not _clean_str(legal.get(field)):
             errors.append(f"legal.{field} requis")
     if "transfer_outside_qc" not in legal:
@@ -217,4 +244,3 @@ def validate_brief(brief: dict[str, Any]) -> list[str]:
     if not _clean_list(site.get("languages")):
         errors.append("site.languages requis")
     return errors
-

@@ -1,0 +1,40 @@
+# Pre-commit hooks NEXOS — installer avec :
+#   pre-commit install
+# Phase G du chantier mise_a_niveau (v4.2.0).
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: detect-private-key
+      # `no-commit-to-branch` retiré : le workflow actuel commit directement
+      # sur main (chantier mise_a_niveau). Réactiver le jour où l'équipe
+      # passe à des branches feature + PR.
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.10
+    hooks:
+      - id: ruff-check
+        args: ["--fix", "--exit-non-zero-on-fix"]
+      - id: ruff-format
+
+  # Local hooks custom
+  - repo: local
+    hooks:
+      - id: forbid-usinerh
+        name: Refuse any mention of UsineRH in newly added code
+        # Scope: lignes AJOUTEES (prefixe "+ ") dans fichiers code
+        # (py/ts/tsx/js/jsx/html/css/json). Exclut docs/ et archives
+        # legacy pour eviter les faux positifs sur prompts historiques.
+        entry: |
+          bash -c 'added=$(git diff --cached --no-color -U0 -- "*.py" "*.ts" "*.tsx" "*.js" "*.jsx" "*.html" "*.css" "nexos/**" "tests/**" | grep -E "^\+[^+]" | grep -iE "(usinerh|usine_rh)" || true); if [ -n "$added" ]; then echo "ERREUR - UsineRH detecte dans code ajoute:"; echo "$added"; exit 1; fi'
+        language: system
+        pass_filenames: false

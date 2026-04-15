@@ -35,19 +35,19 @@ priority: 0
 
 class TestAgentMeta:
     def test_dimensions(self):
-        a = AgentMeta(id="test", phase="ph5-qa", path=Path("."), tags=["security", "D4", "headers"])
+        a = AgentMeta(id="test", phase="ph5-qa", path=Path(), tags=["security", "D4", "headers"])
         assert a.dimensions == ["D4"]
 
     def test_is_blocking_d4(self):
-        a = AgentMeta(id="test", phase="ph5-qa", path=Path("."), tags=["D4"])
+        a = AgentMeta(id="test", phase="ph5-qa", path=Path(), tags=["D4"])
         assert a.is_blocking is True
 
     def test_is_blocking_d8(self):
-        a = AgentMeta(id="test", phase="ph5-qa", path=Path("."), tags=["D8"])
+        a = AgentMeta(id="test", phase="ph5-qa", path=Path(), tags=["D8"])
         assert a.is_blocking is True
 
     def test_not_blocking(self):
-        a = AgentMeta(id="test", phase="ph5-qa", path=Path("."), tags=["D5", "D6"])
+        a = AgentMeta(id="test", phase="ph5-qa", path=Path(), tags=["D5", "D6"])
         assert a.is_blocking is False
 
 
@@ -67,7 +67,14 @@ class TestAgentRegistryDiscovery:
             return
         r = AgentRegistry(agents_dir)
         phases = r.get_all_phases()
-        for expected in ["ph0-discovery", "ph1-strategy", "ph2-design", "ph3-content", "ph4-build", "ph5-qa"]:
+        for expected in [
+            "ph0-discovery",
+            "ph1-strategy",
+            "ph2-design",
+            "ph3-content",
+            "ph4-build",
+            "ph5-qa",
+        ]:
             assert expected in phases, f"Missing phase: {expected}"
 
     def test_blocking_agents_exist(self):

@@ -1,9 +1,9 @@
 """Tests pour nexos.tooling_manager."""
 
-from unittest.mock import patch, MagicMock
 import subprocess
+from unittest.mock import MagicMock, patch
 
-from nexos.tooling_manager import check_tool, _parse_version, doctor_report, ensure_tooling
+from nexos.tooling_manager import _parse_version, check_tool, doctor_report, ensure_tooling
 
 
 class TestParseVersion:
@@ -23,9 +23,7 @@ class TestParseVersion:
 class TestCheckTool:
     @patch("nexos.tooling_manager.subprocess.run")
     def test_tool_found(self, mock_run):
-        mock_run.return_value = MagicMock(
-            stdout="v22.20.0\n", stderr="", returncode=0
-        )
+        mock_run.return_value = MagicMock(stdout="v22.20.0\n", stderr="", returncode=0)
         available, version = check_tool("node")
         assert available is True
         assert "22.20.0" in version
@@ -40,14 +38,12 @@ class TestCheckTool:
     @patch("nexos.tooling_manager.subprocess.run")
     def test_tool_timeout(self, mock_run):
         mock_run.side_effect = subprocess.TimeoutExpired(cmd="node", timeout=10)
-        available, version = check_tool("node")
+        available, _version = check_tool("node")
         assert available is False
 
     @patch("nexos.tooling_manager.subprocess.run")
     def test_version_too_low(self, mock_run):
-        mock_run.return_value = MagicMock(
-            stdout="v18.0.0\n", stderr="", returncode=0
-        )
+        mock_run.return_value = MagicMock(stdout="v18.0.0\n", stderr="", returncode=0)
         available, version = check_tool("node")  # min_version = 20.0.0
         assert available is False
         assert "18.0.0" in version
@@ -75,7 +71,7 @@ class TestEnsureTooling:
         mock_check.side_effect = side_effect
         try:
             ensure_tooling(interactive=False)
-            assert False, "Should have raised RuntimeError"
+            raise AssertionError("Should have raised RuntimeError")
         except RuntimeError as e:
             assert "node" in str(e)
 

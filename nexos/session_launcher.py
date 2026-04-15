@@ -12,7 +12,6 @@ import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 from rich.console import Console
 from rich.panel import Panel
@@ -38,11 +37,11 @@ class HostCLI:
     binary: str
 
 
-class MenuBack(Exception):
+class MenuBack(Exception):  # noqa: N818 — control-flow signal, not an error (mirrors StopIteration)
     """Raised when the user requests to go back in the interactive menu."""
 
 
-class MenuQuit(Exception):
+class MenuQuit(Exception):  # noqa: N818 — control-flow signal, not an error (mirrors StopIteration)
     """Raised when the user requests to quit the interactive menu."""
 
 
@@ -81,16 +80,34 @@ HOST_PROFILES: dict[str, dict[str, str]] = {
 }
 
 MODE_RECOMMENDATIONS: dict[str, tuple[str, str]] = {
-    "create": ("codex", "Meilleur choix pour enchainer scaffold, edition, build et corrections dans le repo."),
-    "audit": ("codex", "Le mode audit NEXOS repose sur des outils locaux, des scans et des artefacts de projet."),
+    "create": (
+        "codex",
+        "Meilleur choix pour enchainer scaffold, edition, build et corrections dans le repo.",
+    ),
+    "audit": (
+        "codex",
+        "Le mode audit NEXOS repose sur des outils locaux, des scans et des artefacts de projet.",
+    ),
     "modify": ("codex", "Le travail est cible sur le code existant, avec edition et verification."),
-    "content": ("claude", "Plus adapte si la priorite est la qualite de redaction, de ton et de structure."),
+    "content": (
+        "claude",
+        "Plus adapte si la priorite est la qualite de redaction, de ton et de structure.",
+    ),
     "analyze": ("gemini", "Utile si tu veux surtout explorer, comparer et cadrer avant d'agir."),
-    "converge": ("codex", "Le mode convergence profite d'un agent oriente execution et reruns SOIC."),
+    "converge": (
+        "codex",
+        "Le mode convergence profite d'un agent oriente execution et reruns SOIC.",
+    ),
     "knowledge": ("claude", "Bon equilibre pour synthese, abstraction et restitution lisible."),
-    "doctor": ("codex", "Le diagnostic touche directement l'environnement local et les commandes du repo."),
+    "doctor": (
+        "codex",
+        "Le diagnostic touche directement l'environnement local et les commandes du repo.",
+    ),
     "fix": ("codex", "Le mode fix est un flux d'edition et de validation locale."),
-    "report": ("claude", "Pertinent si tu veux une lecture plus narrative et interpretee des artefacts NEXOS."),
+    "report": (
+        "claude",
+        "Pertinent si tu veux une lecture plus narrative et interpretee des artefacts NEXOS.",
+    ),
 }
 
 
@@ -114,7 +131,7 @@ def _read_parent_command() -> str:
     return result.stdout.strip().lower()
 
 
-def detect_host_cli(explicit_host: Optional[str] = None) -> HostCLI:
+def detect_host_cli(explicit_host: str | None = None) -> HostCLI:
     """Resolve the host CLI from explicit input, env, parent process, or availability."""
     if explicit_host:
         normalized = explicit_host.lower().strip()
@@ -245,7 +262,7 @@ def _available_hosts() -> list[HostCLI]:
 
 def _prompt_choice(
     max_index: int,
-    default_index: Optional[int] = None,
+    default_index: int | None = None,
     allow_back: bool = False,
 ) -> int:
     prompt_suffix = f" [{default_index}]" if default_index is not None else ""
@@ -263,9 +280,7 @@ def _prompt_choice(
             if 1 <= value <= max_index:
                 return value
         hint = " `b` = retour," if allow_back else ""
-        say(
-            f"[yellow]Choix invalide. Entre un nombre de 1 a {max_index},{hint} `q` = quitter.[/]"
-        )
+        say(f"[yellow]Choix invalide. Entre un nombre de 1 a {max_index},{hint} `q` = quitter.[/]")
 
 
 def _render_main_menu() -> str:
@@ -358,7 +373,7 @@ def _confirm_selection(selected_mode: str, host: HostCLI) -> str:
     return {1: "launch", 2: "host", 3: "mode"}[choice]
 
 
-def select_mode_and_host(explicit_host: Optional[str] = None) -> tuple[str, HostCLI]:
+def select_mode_and_host(explicit_host: str | None = None) -> tuple[str, HostCLI]:
     """Interactive front door: ask what to do, then which host CLI to use."""
     hosts = _available_hosts()
     if not hosts:
@@ -385,12 +400,12 @@ def select_mode_and_host(explicit_host: Optional[str] = None) -> tuple[str, Host
                     say("[yellow]CLI hote fixe via --host. Retour au menu principal.[/]")
                     break
     except MenuQuit:
-        raise SystemExit(0)
+        raise SystemExit(0) from None
 
 
 def launch_session(
     nexos_root: Path,
-    explicit_host: Optional[str] = None,
+    explicit_host: str | None = None,
     print_prompt_only: bool = False,
 ) -> int:
     """Launch an interactive host CLI already primed with the NEXOS bootstrap."""

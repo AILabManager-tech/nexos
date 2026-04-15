@@ -5,14 +5,22 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from soic.models import GateStatus, GateResult, PhaseGateReport
-from soic.feedback_router import FeedbackRouter, MAX_FEEDBACK_ITEMS, _DIM_PRIORITY
+from soic.feedback_router import MAX_FEEDBACK_ITEMS, FeedbackRouter
+from soic.models import GateResult, GateStatus, PhaseGateReport
 
 
-def _gate(gate_id: str, dim: str, status: GateStatus, score: float, evidence: str = "test") -> GateResult:
+def _gate(
+    gate_id: str, dim: str, status: GateStatus, score: float, evidence: str = "test"
+) -> GateResult:
     return GateResult(
-        gate_id=gate_id, name=f"test-{gate_id}", dimension=dim,
-        status=status, score=score, evidence=evidence, duration_ms=0, command="",
+        gate_id=gate_id,
+        name=f"test-{gate_id}",
+        dimension=dim,
+        status=status,
+        score=score,
+        evidence=evidence,
+        duration_ms=0,
+        command="",
     )
 
 
@@ -30,7 +38,7 @@ class TestFeedbackMaxItems:
         dims = ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9"]
         for i in range(16):
             dim = dims[i % len(dims)]
-            gates.append(_gate(f"W-{i+1:02d}", dim, GateStatus.FAIL, float(i), f"issue {i}"))
+            gates.append(_gate(f"W-{i + 1:02d}", dim, GateStatus.FAIL, float(i), f"issue {i}"))
 
         report = _make_report(gates)
         router = FeedbackRouter()
@@ -43,8 +51,7 @@ class TestFeedbackMaxItems:
     def test_deferred_count_shown(self):
         """When more than 5 failures, deferred count should be mentioned."""
         gates = [
-            _gate(f"W-{i+1:02d}", f"D{(i%9)+1}", GateStatus.FAIL, float(i))
-            for i in range(10)
+            _gate(f"W-{i + 1:02d}", f"D{(i % 9) + 1}", GateStatus.FAIL, float(i)) for i in range(10)
         ]
         report = _make_report(gates)
         router = FeedbackRouter()
@@ -119,8 +126,7 @@ class TestFeedbackFormat:
     def test_generate_full_includes_all(self):
         """generate_full() should include ALL failed gates, not just top 5."""
         gates = [
-            _gate(f"W-{i+1:02d}", f"D{(i%9)+1}", GateStatus.FAIL, float(i))
-            for i in range(10)
+            _gate(f"W-{i + 1:02d}", f"D{(i % 9) + 1}", GateStatus.FAIL, float(i)) for i in range(10)
         ]
         report = _make_report(gates)
         router = FeedbackRouter()
@@ -128,4 +134,4 @@ class TestFeedbackFormat:
 
         # All 10 gates should appear
         for i in range(10):
-            assert f"W-{i+1:02d}" in full
+            assert f"W-{i + 1:02d}" in full

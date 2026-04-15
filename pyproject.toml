@@ -26,6 +26,7 @@ dev = [
   "ruff>=0.5",
   "mypy>=1.10",
   "jsonschema>=4.0",
+  "pre-commit>=3.7",
 ]
 all = [
   "nexos[wizard,api,dev]",
@@ -44,3 +45,58 @@ packages = ["nexos", "soic"]
 
 [tool.setuptools.package-data]
 "*" = ["*.md", "*.json", "*.yaml", "*.yml"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+extend-exclude = [
+  ".venv",
+  "node_modules",
+  "__pycache__",
+  "archive",
+  "soic",
+  "clients",
+  "output",
+]
+
+[tool.ruff.lint]
+select = [
+  "E",
+  "W",
+  "F",
+  "I",
+  "N",
+  "UP",
+  "B",
+  "C4",
+  "SIM",
+  "PTH",
+  "RUF",
+]
+ignore = [
+  "E501",
+  "B008",
+  "N806",
+  "SIM108",
+]
+fixable = ["ALL"]
+unfixable = [
+  "B",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["N802"]
+# orchestrator.py:
+#   C901 — complexité (refonte planifiée phase O)
+#   RUF001 — caractères Unicode intentionnels dans rendu UI rich (× pour poids
+#            SOIC, ℹ pour info). Remplacer par ASCII dégraderait l'affichage.
+"orchestrator.py" = ["C901", "RUF001"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["nexos", "soic", "orchestrator"]
+combine-as-imports = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"

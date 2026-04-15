@@ -58,8 +58,11 @@ Dépendances Python (venv isolé recommandé) :
 Extras disponibles :
   wizard  — intake interactif (questionary)
   api     — gateway HTTP (fastapi + uvicorn + pydantic)
-  dev     — tests + lint + type-check (pytest, ruff, mypy)
+  dev     — tests + lint + type-check (pytest, ruff, mypy, pre-commit)
   all     — tous les extras ci-dessus
+
+Après installation des deps dev, activer les hooks pré-commit :
+  pre-commit install
 
 Refactor complet de ce script : phase L.
 ───────────────────────────────────────────────────────────────

@@ -3,13 +3,13 @@
 Protège contre la régression du pattern `exec(open(...).read())` qui était
 dangereux et compliquait la compréhension du flux d'exécution.
 """
+
 from __future__ import annotations
 
 import ast
 import subprocess
 import sys
 from pathlib import Path
-
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CLI = REPO_ROOT / "nexos_cli.py"

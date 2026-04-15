@@ -50,6 +50,7 @@ class BuildResult:
 
 # ── Fonctions internes ────────────────────────────────────────────────
 
+
 def _check_npm_install(site_dir: Path) -> bool:
     """Exécute npm install si node_modules absent."""
     if (site_dir / "node_modules").exists():
@@ -82,10 +83,7 @@ def _check_tsc(site_dir: Path) -> tuple[bool, list[str]]:
         )
         if result.returncode == 0:
             return True, []
-        errors = [
-            line for line in result.stdout.splitlines()
-            if "error TS" in line
-        ]
+        errors = [line for line in result.stdout.splitlines() if "error TS" in line]
         return False, errors[:20]  # Limiter à 20 erreurs
     except (subprocess.TimeoutExpired, OSError):
         return False, ["tsc timeout ou erreur OS"]
@@ -169,6 +167,7 @@ def _check_vercel_headers(site_dir: Path) -> bool:
 
 # ── Fonction principale ───────────────────────────────────────────────
 
+
 def validate_build(site_dir: Path) -> BuildResult:
     """Exécute toutes les validations build sur le site généré."""
     result = BuildResult()
@@ -214,7 +213,10 @@ def validate_build(site_dir: Path) -> BuildResult:
 
 def format_build_report(result: BuildResult) -> str:
     """Formatte le résultat pour la console."""
-    icon = lambda ok: "+" if ok else "-"
+
+    def icon(ok: bool) -> str:
+        return "+" if ok else "-"
+
     lines = [
         "NEXOS v4.0 — Build Validation Report",
         "=" * 45,

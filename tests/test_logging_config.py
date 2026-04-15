@@ -1,4 +1,5 @@
 """Tests pour nexos.logging_config (chantier2 phase F)."""
+
 from __future__ import annotations
 
 import logging
@@ -25,15 +26,14 @@ def test_bind_context_injects_prefix(caplog):
     from nexos.logging_config import bind_context, get_logger
 
     log = get_logger("test.ctx")
-    with caplog.at_level(logging.INFO, logger="test.ctx"):
-        with bind_context(log, client="clinique-aura", phase="ph2") as scoped:
-            scoped.info("hello")
+    with (
+        caplog.at_level(logging.INFO, logger="test.ctx"),
+        bind_context(log, client="clinique-aura", phase="ph2") as scoped,
+    ):
+        scoped.info("hello")
 
     messages = [r.getMessage() for r in caplog.records]
-    assert any(
-        "client=clinique-aura" in m and "phase=ph2" in m and "hello" in m
-        for m in messages
-    )
+    assert any("client=clinique-aura" in m and "phase=ph2" in m and "hello" in m for m in messages)
 
 
 def test_no_remaining_print_in_nexos_package():
@@ -47,8 +47,8 @@ def test_no_remaining_print_in_nexos_package():
 
     def count_prints(path: pathlib.Path) -> int:
         text = path.read_text(errors="replace")
-        lines = [l for l in text.splitlines() if not l.lstrip().startswith("#")]
-        return sum(1 for l in lines if re.search(r"\bprint\s*\(", l))
+        lines = [line for line in text.splitlines() if not line.lstrip().startswith("#")]
+        return sum(1 for line in lines if re.search(r"\bprint\s*\(", line))
 
     prints_nexos = sum(count_prints(p) for p in nexos_pkg.glob("*.py"))
     prints_orch = count_prints(orchestrator)

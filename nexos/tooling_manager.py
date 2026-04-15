@@ -7,7 +7,6 @@ Dégradation gracieuse pour les outils optionnels (lighthouse, pa11y).
 
 import re
 import subprocess
-from typing import Optional
 
 from nexos.logging_config import get_logger
 
@@ -70,7 +69,7 @@ def _parse_version(version_str: str) -> tuple[int, ...]:
     return tuple(int(x) for x in match.group(1).split("."))
 
 
-def check_tool(name: str) -> tuple[bool, Optional[str]]:
+def check_tool(name: str) -> tuple[bool, str | None]:
     """Vérifie si un outil est installé. Retourne (disponible, version)."""
     if name not in REQUIRED_TOOLS:
         return False, None
@@ -117,7 +116,7 @@ def ensure_tooling(interactive: bool = True) -> dict[str, bool]:
     missing_optional: list[str] = []
 
     for name, tool in REQUIRED_TOOLS.items():
-        available, version = check_tool(name)
+        available, _version = check_tool(name)
         results[name] = available
 
         if not available:
@@ -160,6 +159,7 @@ def ensure_tooling(interactive: bool = True) -> dict[str, bool]:
 def _check_templates() -> list[tuple[str, bool]]:
     """Vérifie la présence des templates critiques."""
     from pathlib import Path
+
     templates_dir = Path(__file__).parent.parent / "templates"
     critical_templates = [
         "vercel-headers.template.json",
@@ -176,15 +176,15 @@ def _check_templates() -> list[tuple[str, bool]]:
 def _check_soic_engine() -> tuple[bool, str]:
     """Vérifie que le moteur SOIC est accessible."""
     from pathlib import Path
+
     soic_dir = Path(__file__).parent.parent / "soic"
     if not soic_dir.exists():
         return False, "symlink soic/ absent"
     try:
         # Vérifier qu'on peut importer le module
         import importlib.util
-        spec = importlib.util.spec_from_file_location(
-            "soic", soic_dir / "__init__.py"
-        )
+
+        spec = importlib.util.spec_from_file_location("soic", soic_dir / "__init__.py")
         if spec is None:
             return False, "soic/__init__.py introuvable"
         return True, str(soic_dir.resolve())
@@ -195,15 +195,16 @@ def _check_soic_engine() -> tuple[bool, str]:
 def _count_clients() -> tuple[int, list[str]]:
     """Compte les clients et identifie ceux avec un site/."""
     from pathlib import Path
+
     clients_dir = Path(__file__).parent.parent / "clients"
     if not clients_dir.exists():
         return 0, []
     all_clients = [
-        d.name for d in clients_dir.iterdir()
-        if d.is_dir() and not d.name.startswith(".")
+        d.name for d in clients_dir.iterdir() if d.is_dir() and not d.name.startswith(".")
     ]
     with_site = [
-        name for name in all_clients
+        name
+        for name in all_clients
         if (clients_dir / name / "site" / "package.json").exists()
         or (clients_dir / name / "package.json").exists()
     ]

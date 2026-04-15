@@ -5,22 +5,23 @@ Génère un brief-client.json complet via Q/A en terminal.
 
 import re
 import sys
+import unicodedata
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 try:
     import questionary
     from questionary import Style
 except ImportError:
     raise ImportError(
-        "questionary est requis pour le wizard interactif.\n"
-        "  pip install questionary"
-    )
+        "questionary est requis pour le wizard interactif.\n  pip install questionary"
+    ) from None
 
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
+from nexos.brief_contract import normalize_brief
 from nexos.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -32,34 +33,50 @@ def say(*args, **kwargs):
     # and avoids the `print(` lexical pattern at callsites.
     console.print(*args, **kwargs)
 
+
 # ── Style questionary ────────────────────────────────────────────────────────
-WIZARD_STYLE = Style([
-    ("qmark", "fg:yellow bold"),
-    ("question", "fg:white bold"),
-    ("answer", "fg:cyan bold"),
-    ("pointer", "fg:yellow bold"),
-    ("highlighted", "fg:yellow bold"),
-    ("selected", "fg:cyan"),
-])
+WIZARD_STYLE = Style(
+    [
+        ("qmark", "fg:yellow bold"),
+        ("question", "fg:white bold"),
+        ("answer", "fg:cyan bold"),
+        ("pointer", "fg:yellow bold"),
+        ("highlighted", "fg:yellow bold"),
+        ("selected", "fg:cyan"),
+    ]
+)
 
 # ── Constantes ───────────────────────────────────────────────────────────────
 SITE_TYPES = ["vitrine", "ecommerce", "portfolio", "blog", "application"]
 
 PAGE_PRESETS = {
-    "vitrine":     ["accueil", "services", "a-propos", "equipe", "contact"],
-    "ecommerce":   ["accueil", "boutique", "produit", "panier", "a-propos",
-                    "contact", "livraison-retours", "blogue"],
-    "portfolio":   ["accueil", "projets", "a-propos", "services", "contact"],
-    "blog":        ["accueil", "articles", "categories", "a-propos", "contact"],
-    "application": ["landing", "login", "dashboard", "profil", "a-propos",
-                    "contact"],
+    "vitrine": ["accueil", "services", "a-propos", "equipe", "contact"],
+    "ecommerce": [
+        "accueil",
+        "boutique",
+        "produit",
+        "panier",
+        "a-propos",
+        "contact",
+        "livraison-retours",
+        "blogue",
+    ],
+    "portfolio": ["accueil", "projets", "a-propos", "services", "contact"],
+    "blog": ["accueil", "articles", "categories", "a-propos", "contact"],
+    "application": ["landing", "login", "dashboard", "profil", "a-propos", "contact"],
 }
 
 LEGAL_PAGES = ["politique-confidentialite", "mentions-legales"]
 
 FEATURES_LIST = [
-    "formulaire-contact", "carte-google", "chatbot", "infolettre",
-    "e-commerce", "analytics", "calendrier", "autre",
+    "formulaire-contact",
+    "carte-google",
+    "chatbot",
+    "infolettre",
+    "e-commerce",
+    "analytics",
+    "calendrier",
+    "autre",
 ]
 
 LANGUAGES = [
@@ -73,13 +90,23 @@ LANGUAGES = [
 HOSTING_OPTIONS = ["Vercel", "IONOS", "Autre"]
 
 DATA_TYPES = [
-    "nom", "courriel", "téléphone", "adresse",
-    "paiement", "navigation", "localisation", "sensible",
+    "nom",
+    "courriel",
+    "téléphone",
+    "adresse",
+    "paiement",
+    "navigation",
+    "localisation",
+    "sensible",
 ]
 
 PURPOSE_OPTIONS = [
-    "communication", "marketing", "commandes",
-    "analytics", "amélioration-service", "obligation-légale",
+    "communication",
+    "marketing",
+    "commandes",
+    "analytics",
+    "amélioration-service",
+    "obligation-légale",
 ]
 
 CONSENT_OPTIONS = [
@@ -98,10 +125,6 @@ def _safe_ask(question: questionary.Question) -> Any:
     return result
 
 
-import unicodedata
-
-from nexos.brief_contract import normalize_brief
-
 # ── Slugify ──────────────────────────────────────────────────────────────────
 def _slugify(name: str) -> str:
     """Génère un slug URL-friendly à partir d'un nom."""
@@ -118,7 +141,6 @@ def generate_minimal_brief(name: str, mode: str = "create") -> dict:
     Utile quand stdin n'est pas un TTY ou pour des tests rapides.
     """
     slug = _slugify(name)
-    timestamp = datetime.now().isoformat()
 
     # Valeurs par défaut sécurisées et conformes
     company = {
@@ -132,8 +154,14 @@ def generate_minimal_brief(name: str, mode: str = "create") -> dict:
     site = {
         "type": "vitrine",
         "stack": "nextjs",
-        "pages": ["accueil", "services", "a-propos", "contact",
-                  "politique-confidentialite", "mentions-legales"],
+        "pages": [
+            "accueil",
+            "services",
+            "a-propos",
+            "contact",
+            "politique-confidentialite",
+            "mentions-legales",
+        ],
         "features": ["formulaire-contact", "analytics"],
         "languages": ["fr", "en"],
         "hosting": "Vercel",
@@ -180,46 +208,61 @@ def _ask_company_info() -> dict:
     """Collecte les informations de l'entreprise."""
     say(Panel("📋 Informations de l'entreprise", style="bold cyan"))
 
-    name = _safe_ask(questionary.text(
-        "Nom de l'entreprise :",
-        validate=lambda t: len(t) >= 2 or "Minimum 2 caractères",
-        style=WIZARD_STYLE,
-    ))
+    name = _safe_ask(
+        questionary.text(
+            "Nom de l'entreprise :",
+            validate=lambda t: len(t) >= 2 or "Minimum 2 caractères",
+            style=WIZARD_STYLE,
+        )
+    )
 
     default_slug = _slugify(name)
-    slug = _safe_ask(questionary.text(
-        "Slug (URL-friendly) :",
-        default=default_slug,
-        validate=lambda t: bool(re.match(r"^[a-z0-9][a-z0-9-]*[a-z0-9]$", t))
-        or len(t) == 1 and t.isalnum()
-        or "Slug invalide (lettres minuscules, chiffres, tirets)",
-        style=WIZARD_STYLE,
-    ))
+    slug = _safe_ask(
+        questionary.text(
+            "Slug (URL-friendly) :",
+            default=default_slug,
+            validate=lambda t: (
+                bool(re.match(r"^[a-z0-9][a-z0-9-]*[a-z0-9]$", t))
+                or (len(t) == 1 and t.isalnum())
+                or "Slug invalide (lettres minuscules, chiffres, tirets)"
+            ),
+            style=WIZARD_STYLE,
+        )
+    )
 
-    neq = _safe_ask(questionary.text(
-        "NEQ (optionnel, 10 chiffres) :",
-        validate=lambda t: t == "" or bool(re.match(r"^\d{10}$", t))
-        or "Format: 10 chiffres ou laisser vide",
-        style=WIZARD_STYLE,
-    ))
+    neq = _safe_ask(
+        questionary.text(
+            "NEQ (optionnel, 10 chiffres) :",
+            validate=lambda t: (
+                t == "" or bool(re.match(r"^\d{10}$", t)) or "Format: 10 chiffres ou laisser vide"
+            ),
+            style=WIZARD_STYLE,
+        )
+    )
 
-    address = _safe_ask(questionary.text(
-        "Adresse du siège :",
-        validate=lambda t: len(t) >= 5 or "Minimum 5 caractères",
-        style=WIZARD_STYLE,
-    ))
+    address = _safe_ask(
+        questionary.text(
+            "Adresse du siège :",
+            validate=lambda t: len(t) >= 5 or "Minimum 5 caractères",
+            style=WIZARD_STYLE,
+        )
+    )
 
-    phone = _safe_ask(questionary.text(
-        "Téléphone :",
-        validate=lambda t: len(t) > 0 or "Champ requis",
-        style=WIZARD_STYLE,
-    ))
+    phone = _safe_ask(
+        questionary.text(
+            "Téléphone :",
+            validate=lambda t: len(t) > 0 or "Champ requis",
+            style=WIZARD_STYLE,
+        )
+    )
 
-    email = _safe_ask(questionary.text(
-        "Courriel principal :",
-        validate=lambda t: "@" in t or "Doit contenir un @",
-        style=WIZARD_STYLE,
-    ))
+    email = _safe_ask(
+        questionary.text(
+            "Courriel principal :",
+            validate=lambda t: "@" in t or "Doit contenir un @",
+            style=WIZARD_STYLE,
+        )
+    )
 
     return {
         "name": name,
@@ -236,72 +279,93 @@ def _ask_site_config() -> dict:
     """Collecte la configuration du site."""
     say(Panel("🌐 Configuration du site", style="bold cyan"))
 
-    site_type = _safe_ask(questionary.select(
-        "Type de site :",
-        choices=SITE_TYPES,
-        style=WIZARD_STYLE,
-    ))
+    site_type = _safe_ask(
+        questionary.select(
+            "Type de site :",
+            choices=SITE_TYPES,
+            style=WIZARD_STYLE,
+        )
+    )
 
     preset = PAGE_PRESETS[site_type]
     page_choices = [
         questionary.Choice(p, checked=(p in preset))
-        for p in sorted(set(preset + ["accueil", "contact", "a-propos",
-                                       "services", "equipe", "blogue",
-                                       "projets", "faq"]))
+        for p in sorted(
+            {
+                *preset,
+                "accueil",
+                "contact",
+                "a-propos",
+                "services",
+                "equipe",
+                "blogue",
+                "projets",
+                "faq",
+            }
+        )
     ]
-    pages = _safe_ask(questionary.checkbox(
-        "Pages souhaitées :",
-        choices=page_choices,
-        style=WIZARD_STYLE,
-        validate=lambda r: len(r) > 0 or "Sélectionnez au moins une page",
-    ))
+    pages = _safe_ask(
+        questionary.checkbox(
+            "Pages souhaitées :",
+            choices=page_choices,
+            style=WIZARD_STYLE,
+            validate=lambda r: len(r) > 0 or "Sélectionnez au moins une page",
+        )
+    )
     # Ajouter les pages légales obligatoires (Loi 25)
     for lp in LEGAL_PAGES:
         if lp not in pages:
             pages.append(lp)
 
-    features = _safe_ask(questionary.checkbox(
-        "Fonctionnalités :",
-        choices=FEATURES_LIST,
-        style=WIZARD_STYLE,
-    ))
+    features = _safe_ask(
+        questionary.checkbox(
+            "Fonctionnalités :",
+            choices=FEATURES_LIST,
+            style=WIZARD_STYLE,
+        )
+    )
 
     lang_choices = [
-        questionary.Choice(l["name"], value=l["value"],
-                           checked=l.get("checked", False))
-        for l in LANGUAGES
+        questionary.Choice(lang["name"], value=lang["value"], checked=lang.get("checked", False))
+        for lang in LANGUAGES
     ]
-    languages = _safe_ask(questionary.checkbox(
-        "Langues du site :",
-        choices=lang_choices,
-        style=WIZARD_STYLE,
-        validate=lambda r: len(r) > 0 or "Au moins une langue requise",
-    ))
+    languages = _safe_ask(
+        questionary.checkbox(
+            "Langues du site :",
+            choices=lang_choices,
+            style=WIZARD_STYLE,
+            validate=lambda r: len(r) > 0 or "Au moins une langue requise",
+        )
+    )
 
-    hosting = _safe_ask(questionary.select(
-        "Hébergement :",
-        choices=HOSTING_OPTIONS,
-        default="Vercel",
-        style=WIZARD_STYLE,
-    ))
+    hosting = _safe_ask(
+        questionary.select(
+            "Hébergement :",
+            choices=HOSTING_OPTIONS,
+            default="Vercel",
+            style=WIZARD_STYLE,
+        )
+    )
 
     # Stack technique (R3 — multi-stack support)
     from nexos.pipeline_config import STACK_OPTIONS
-    stack_choices = [
-        questionary.Choice(s["label"], value=s["value"])
-        for s in STACK_OPTIONS
-    ]
-    stack = _safe_ask(questionary.select(
-        "Stack technique :",
-        choices=stack_choices,
-        default="nextjs",
-        style=WIZARD_STYLE,
-    ))
 
-    domain = _safe_ask(questionary.text(
-        "Domaine cible (optionnel) :",
-        style=WIZARD_STYLE,
-    ))
+    stack_choices = [questionary.Choice(s["label"], value=s["value"]) for s in STACK_OPTIONS]
+    stack = _safe_ask(
+        questionary.select(
+            "Stack technique :",
+            choices=stack_choices,
+            default="nextjs",
+            style=WIZARD_STYLE,
+        )
+    )
+
+    domain = _safe_ask(
+        questionary.text(
+            "Domaine cible (optionnel) :",
+            style=WIZARD_STYLE,
+        )
+    )
 
     return {
         "type": site_type,
@@ -322,106 +386,138 @@ def _ask_adaptive(site_type: str, features: list) -> dict:
     if site_type == "ecommerce":
         say(Panel("🛒 Configuration e-commerce", style="bold yellow"))
 
-        adaptive["payment_provider"] = _safe_ask(questionary.select(
-            "Fournisseur de paiement :",
-            choices=["Stripe", "Square", "PayPal", "Autre"],
-            style=WIZARD_STYLE,
-        ))
-        adaptive["product_count"] = _safe_ask(questionary.text(
-            "Nombre approximatif de produits :",
-            default="10-50",
-            style=WIZARD_STYLE,
-        ))
-        adaptive["shipping"] = _safe_ask(questionary.confirm(
-            "Livraison physique requise ?",
-            default=True,
-            style=WIZARD_STYLE,
-        ))
-        if adaptive["shipping"]:
-            adaptive["shipping_zones"] = _safe_ask(questionary.text(
-                "Zones de livraison :",
-                default="Québec, Canada",
+        adaptive["payment_provider"] = _safe_ask(
+            questionary.select(
+                "Fournisseur de paiement :",
+                choices=["Stripe", "Square", "PayPal", "Autre"],
                 style=WIZARD_STYLE,
-            ))
-        adaptive["inventory"] = _safe_ask(questionary.confirm(
-            "Gestion d'inventaire requise ?",
-            default=True,
-            style=WIZARD_STYLE,
-        ))
+            )
+        )
+        adaptive["product_count"] = _safe_ask(
+            questionary.text(
+                "Nombre approximatif de produits :",
+                default="10-50",
+                style=WIZARD_STYLE,
+            )
+        )
+        adaptive["shipping"] = _safe_ask(
+            questionary.confirm(
+                "Livraison physique requise ?",
+                default=True,
+                style=WIZARD_STYLE,
+            )
+        )
+        if adaptive["shipping"]:
+            adaptive["shipping_zones"] = _safe_ask(
+                questionary.text(
+                    "Zones de livraison :",
+                    default="Québec, Canada",
+                    style=WIZARD_STYLE,
+                )
+            )
+        adaptive["inventory"] = _safe_ask(
+            questionary.confirm(
+                "Gestion d'inventaire requise ?",
+                default=True,
+                style=WIZARD_STYLE,
+            )
+        )
 
     elif site_type == "portfolio":
         say(Panel("🎨 Configuration portfolio", style="bold yellow"))
 
-        adaptive["display_mode"] = _safe_ask(questionary.select(
-            "Affichage des projets :",
-            choices=["grille", "liste", "études de cas", "slider"],
-            style=WIZARD_STYLE,
-        ))
-        adaptive["case_studies"] = _safe_ask(questionary.confirm(
-            "Études de cas détaillées ?",
-            default=True,
-            style=WIZARD_STYLE,
-        ))
+        adaptive["display_mode"] = _safe_ask(
+            questionary.select(
+                "Affichage des projets :",
+                choices=["grille", "liste", "études de cas", "slider"],
+                style=WIZARD_STYLE,
+            )
+        )
+        adaptive["case_studies"] = _safe_ask(
+            questionary.confirm(
+                "Études de cas détaillées ?",
+                default=True,
+                style=WIZARD_STYLE,
+            )
+        )
 
     elif site_type == "blog":
         say(Panel("📝 Configuration blog", style="bold yellow"))
 
-        adaptive["publish_frequency"] = _safe_ask(questionary.select(
-            "Fréquence de publication :",
-            choices=["quotidien", "hebdomadaire", "bimensuel", "mensuel", "occasionnel"],
-            style=WIZARD_STYLE,
-        ))
-        adaptive["comments"] = _safe_ask(questionary.confirm(
-            "Activer les commentaires ?",
-            default=False,
-            style=WIZARD_STYLE,
-        ))
-        adaptive["categories_tags"] = _safe_ask(questionary.confirm(
-            "Catégories et tags ?",
-            default=True,
-            style=WIZARD_STYLE,
-        ))
+        adaptive["publish_frequency"] = _safe_ask(
+            questionary.select(
+                "Fréquence de publication :",
+                choices=["quotidien", "hebdomadaire", "bimensuel", "mensuel", "occasionnel"],
+                style=WIZARD_STYLE,
+            )
+        )
+        adaptive["comments"] = _safe_ask(
+            questionary.confirm(
+                "Activer les commentaires ?",
+                default=False,
+                style=WIZARD_STYLE,
+            )
+        )
+        adaptive["categories_tags"] = _safe_ask(
+            questionary.confirm(
+                "Catégories et tags ?",
+                default=True,
+                style=WIZARD_STYLE,
+            )
+        )
 
     elif site_type == "application":
         say(Panel("⚙️  Configuration application", style="bold yellow"))
 
-        adaptive["auth_required"] = _safe_ask(questionary.confirm(
-            "Authentification requise ?",
-            default=True,
-            style=WIZARD_STYLE,
-        ))
+        adaptive["auth_required"] = _safe_ask(
+            questionary.confirm(
+                "Authentification requise ?",
+                default=True,
+                style=WIZARD_STYLE,
+            )
+        )
         if adaptive["auth_required"]:
-            adaptive["auth_methods"] = _safe_ask(questionary.checkbox(
-                "Méthodes d'authentification :",
-                choices=["email/password", "Google", "GitHub", "Magic Link"],
+            adaptive["auth_methods"] = _safe_ask(
+                questionary.checkbox(
+                    "Méthodes d'authentification :",
+                    choices=["email/password", "Google", "GitHub", "Magic Link"],
+                    style=WIZARD_STYLE,
+                    validate=lambda r: len(r) > 0 or "Au moins une méthode requise",
+                )
+            )
+            adaptive["user_types"] = _safe_ask(
+                questionary.text(
+                    "Types d'utilisateurs (séparés par virgule) :",
+                    default="admin, utilisateur",
+                    style=WIZARD_STYLE,
+                )
+            )
+        adaptive["realtime"] = _safe_ask(
+            questionary.confirm(
+                "Fonctionnalités temps réel ?",
+                default=False,
                 style=WIZARD_STYLE,
-                validate=lambda r: len(r) > 0 or "Au moins une méthode requise",
-            ))
-            adaptive["user_types"] = _safe_ask(questionary.text(
-                "Types d'utilisateurs (séparés par virgule) :",
-                default="admin, utilisateur",
-                style=WIZARD_STYLE,
-            ))
-        adaptive["realtime"] = _safe_ask(questionary.confirm(
-            "Fonctionnalités temps réel ?",
-            default=False,
-            style=WIZARD_STYLE,
-        ))
+            )
+        )
 
     # Features transversales
     if "infolettre" in features:
-        adaptive["newsletter_provider"] = _safe_ask(questionary.select(
-            "Fournisseur infolettre :",
-            choices=["Resend", "Mailchimp", "ConvertKit", "Brevo"],
-            style=WIZARD_STYLE,
-        ))
+        adaptive["newsletter_provider"] = _safe_ask(
+            questionary.select(
+                "Fournisseur infolettre :",
+                choices=["Resend", "Mailchimp", "ConvertKit", "Brevo"],
+                style=WIZARD_STYLE,
+            )
+        )
 
     if "analytics" in features:
-        adaptive["analytics_provider"] = _safe_ask(questionary.select(
-            "Fournisseur analytics :",
-            choices=["GA4", "Plausible", "Umami", "Aucun"],
-            style=WIZARD_STYLE,
-        ))
+        adaptive["analytics_provider"] = _safe_ask(
+            questionary.select(
+                "Fournisseur analytics :",
+                choices=["GA4", "Plausible", "Umami", "Aucun"],
+                style=WIZARD_STYLE,
+            )
+        )
 
     return adaptive
 
@@ -429,28 +525,36 @@ def _ask_adaptive(site_type: str, features: list) -> dict:
 # ── Phase 4 : Loi 25 ─────────────────────────────────────────────────────────
 def _ask_legal_loi25(site_type: str, features: list, adaptive: dict) -> dict:
     """Questions obligatoires pour la conformité Loi 25 du Québec."""
-    say(Panel(
-        "⚖️  Conformité Loi 25 du Québec — OBLIGATOIRE",
-        style="bold red",
-    ))
+    say(
+        Panel(
+            "⚖️  Conformité Loi 25 du Québec — OBLIGATOIRE",
+            style="bold red",
+        )
+    )
 
     # RPP (Responsable de la Protection des renseignements Personnels)
     say("[bold]Responsable de la protection des renseignements personnels (RPP)[/]")
-    rpp_name = _safe_ask(questionary.text(
-        "Nom du RPP :",
-        validate=lambda t: len(t) >= 2 or "Champ requis",
-        style=WIZARD_STYLE,
-    ))
-    rpp_email = _safe_ask(questionary.text(
-        "Courriel du RPP :",
-        validate=lambda t: "@" in t or "Doit contenir un @",
-        style=WIZARD_STYLE,
-    ))
-    rpp_title = _safe_ask(questionary.text(
-        "Titre/fonction du RPP :",
-        default="Responsable de la protection des renseignements personnels",
-        style=WIZARD_STYLE,
-    ))
+    rpp_name = _safe_ask(
+        questionary.text(
+            "Nom du RPP :",
+            validate=lambda t: len(t) >= 2 or "Champ requis",
+            style=WIZARD_STYLE,
+        )
+    )
+    rpp_email = _safe_ask(
+        questionary.text(
+            "Courriel du RPP :",
+            validate=lambda t: "@" in t or "Doit contenir un @",
+            style=WIZARD_STYLE,
+        )
+    )
+    rpp_title = _safe_ask(
+        questionary.text(
+            "Titre/fonction du RPP :",
+            default="Responsable de la protection des renseignements personnels",
+            style=WIZARD_STYLE,
+        )
+    )
 
     # Données collectées — pré-cochées selon le type
     default_data = ["nom", "courriel"]
@@ -461,27 +565,28 @@ def _ask_legal_loi25(site_type: str, features: list, adaptive: dict) -> dict:
     if "analytics" in features:
         default_data += ["navigation"]
 
-    data_choices = [
-        questionary.Choice(d, checked=(d in default_data))
-        for d in DATA_TYPES
-    ]
-    data_collected = _safe_ask(questionary.checkbox(
-        "Types de données collectées :",
-        choices=data_choices,
-        style=WIZARD_STYLE,
-        validate=lambda r: len(r) > 0 or "Au moins un type requis",
-    ))
+    data_choices = [questionary.Choice(d, checked=(d in default_data)) for d in DATA_TYPES]
+    data_collected = _safe_ask(
+        questionary.checkbox(
+            "Types de données collectées :",
+            choices=data_choices,
+            style=WIZARD_STYLE,
+            validate=lambda r: len(r) > 0 or "Au moins un type requis",
+        )
+    )
 
     # Alerte données sensibles
     if "sensible" in data_collected:
-        say(Panel(
-            "[bold red]⚠ ATTENTION — Données sensibles[/]\n"
-            "La Loi 25 impose des obligations renforcées pour les données sensibles :\n"
-            "• Évaluation des facteurs relatifs à la vie privée (EFVP) obligatoire\n"
-            "• Consentement explicite et distinct requis\n"
-            "• Mesures de sécurité renforcées",
-            style="red",
-        ))
+        say(
+            Panel(
+                "[bold red]⚠ ATTENTION — Données sensibles[/]\n"
+                "La Loi 25 impose des obligations renforcées pour les données sensibles :\n"
+                "• Évaluation des facteurs relatifs à la vie privée (EFVP) obligatoire\n"
+                "• Consentement explicite et distinct requis\n"
+                "• Mesures de sécurité renforcées",
+                style="red",
+            )
+        )
 
     # Finalités — pré-cochées selon features
     default_purposes = ["communication"]
@@ -493,32 +598,37 @@ def _ask_legal_loi25(site_type: str, features: list, adaptive: dict) -> dict:
         default_purposes.append("analytics")
 
     purpose_choices = [
-        questionary.Choice(p, checked=(p in default_purposes))
-        for p in PURPOSE_OPTIONS
+        questionary.Choice(p, checked=(p in default_purposes)) for p in PURPOSE_OPTIONS
     ]
-    purposes = _safe_ask(questionary.checkbox(
-        "Finalités du traitement des données :",
-        choices=purpose_choices,
-        style=WIZARD_STYLE,
-        validate=lambda r: len(r) > 0 or "Au moins une finalité requise",
-    ))
+    purposes = _safe_ask(
+        questionary.checkbox(
+            "Finalités du traitement des données :",
+            choices=purpose_choices,
+            style=WIZARD_STYLE,
+            validate=lambda r: len(r) > 0 or "Au moins une finalité requise",
+        )
+    )
 
     # Rétention
     default_retention = "5 ans (obligation fiscale)" if "paiement" in data_collected else "24 mois"
-    retention = _safe_ask(questionary.text(
-        "Durée de rétention des données :",
-        default=default_retention,
-        style=WIZARD_STYLE,
-    ))
+    retention = _safe_ask(
+        questionary.text(
+            "Durée de rétention des données :",
+            default=default_retention,
+            style=WIZARD_STYLE,
+        )
+    )
 
     # Transfert hors Québec
     hosting = adaptive.get("_hosting", "Vercel")
     default_transfer = hosting in ("Vercel", "Autre")
-    transfer_outside_qc = _safe_ask(questionary.confirm(
-        "Transfert de données hors Québec ?",
-        default=default_transfer,
-        style=WIZARD_STYLE,
-    ))
+    transfer_outside_qc = _safe_ask(
+        questionary.confirm(
+            "Transfert de données hors Québec ?",
+            default=default_transfer,
+            style=WIZARD_STYLE,
+        )
+    )
 
     transfer_countries = []
     if transfer_outside_qc:
@@ -526,14 +636,15 @@ def _ask_legal_loi25(site_type: str, features: list, adaptive: dict) -> dict:
         preselected = []
         if hosting == "Vercel":
             preselected.append("États-Unis")
-        transfer_countries = _safe_ask(questionary.checkbox(
-            "Pays/régions de transfert :",
-            choices=[
-                questionary.Choice(c, checked=(c in preselected))
-                for c in country_choices
-            ],
-            style=WIZARD_STYLE,
-        ))
+        transfer_countries = _safe_ask(
+            questionary.checkbox(
+                "Pays/régions de transfert :",
+                choices=[
+                    questionary.Choice(c, checked=(c in preselected)) for c in country_choices
+                ],
+                style=WIZARD_STYLE,
+            )
+        )
 
     # Services tiers — auto-compilés
     third_party = []
@@ -552,23 +663,29 @@ def _ask_legal_loi25(site_type: str, features: list, adaptive: dict) -> dict:
     say(f"  Services tiers détectés : {', '.join(third_party) or 'aucun'}")
 
     # Consentement cookies
-    consent_mode = _safe_ask(questionary.select(
-        "Mode de consentement cookies :",
-        choices=CONSENT_OPTIONS,
-        style=WIZARD_STYLE,
-    ))
+    consent_mode = _safe_ask(
+        questionary.select(
+            "Mode de consentement cookies :",
+            choices=CONSENT_OPTIONS,
+            style=WIZARD_STYLE,
+        )
+    )
 
     # Incident
-    incident_process = _safe_ask(questionary.confirm(
-        "Processus d'incident de confidentialité en place ?",
-        default=False,
-        style=WIZARD_STYLE,
-    ))
-    incident_email = _safe_ask(questionary.text(
-        "Courriel de notification d'incident :",
-        default=rpp_email,
-        style=WIZARD_STYLE,
-    ))
+    incident_process = _safe_ask(
+        questionary.confirm(
+            "Processus d'incident de confidentialité en place ?",
+            default=False,
+            style=WIZARD_STYLE,
+        )
+    )
+    incident_email = _safe_ask(
+        questionary.text(
+            "Courriel de notification d'incident :",
+            default=rpp_email,
+            style=WIZARD_STYLE,
+        )
+    )
 
     return {
         "rpp": {
@@ -595,32 +712,42 @@ def _ask_design() -> dict:
     """Collecte les préférences visuelles."""
     say(Panel("🎨 Design & Identité visuelle", style="bold cyan"))
 
-    palette = _safe_ask(questionary.text(
-        "Palette de couleurs (optionnel, ex: #1a1a2e, #16213e) :",
-        style=WIZARD_STYLE,
-    ))
+    palette = _safe_ask(
+        questionary.text(
+            "Palette de couleurs (optionnel, ex: #1a1a2e, #16213e) :",
+            style=WIZARD_STYLE,
+        )
+    )
 
-    typography = _safe_ask(questionary.text(
-        "Typographies préférées (optionnel, ex: Inter, Playfair Display) :",
-        style=WIZARD_STYLE,
-    ))
+    typography = _safe_ask(
+        questionary.text(
+            "Typographies préférées (optionnel, ex: Inter, Playfair Display) :",
+            style=WIZARD_STYLE,
+        )
+    )
 
-    visual_style = _safe_ask(questionary.select(
-        "Style visuel :",
-        choices=["minimaliste", "coloré", "corporatif", "créatif"],
-        style=WIZARD_STYLE,
-    ))
+    visual_style = _safe_ask(
+        questionary.select(
+            "Style visuel :",
+            choices=["minimaliste", "coloré", "corporatif", "créatif"],
+            style=WIZARD_STYLE,
+        )
+    )
 
-    logo_provided = _safe_ask(questionary.confirm(
-        "Logo fourni ?",
-        default=False,
-        style=WIZARD_STYLE,
-    ))
+    logo_provided = _safe_ask(
+        questionary.confirm(
+            "Logo fourni ?",
+            default=False,
+            style=WIZARD_STYLE,
+        )
+    )
 
-    references = _safe_ask(questionary.text(
-        "URLs de référence (optionnel, séparées par virgule) :",
-        style=WIZARD_STYLE,
-    ))
+    references = _safe_ask(
+        questionary.text(
+            "URLs de référence (optionnel, séparées par virgule) :",
+            style=WIZARD_STYLE,
+        )
+    )
 
     return {
         "palette": palette or None,
@@ -636,23 +763,31 @@ def _ask_context_seo() -> dict:
     """Collecte le contexte concurrentiel et SEO."""
     say(Panel("🔍 Contexte & SEO", style="bold cyan"))
 
-    competitors = _safe_ask(questionary.text(
-        "URLs concurrents (séparées par virgule, optionnel) :",
-        style=WIZARD_STYLE,
-    ))
+    competitors = _safe_ask(
+        questionary.text(
+            "URLs concurrents (séparées par virgule, optionnel) :",
+            style=WIZARD_STYLE,
+        )
+    )
 
-    keywords = _safe_ask(questionary.text(
-        "Mots-clés SEO prioritaires (séparés par virgule, optionnel) :",
-        style=WIZARD_STYLE,
-    ))
+    keywords = _safe_ask(
+        questionary.text(
+            "Mots-clés SEO prioritaires (séparés par virgule, optionnel) :",
+            style=WIZARD_STYLE,
+        )
+    )
 
-    free_text = _safe_ask(questionary.text(
-        "Contexte libre / notes supplémentaires :",
-        style=WIZARD_STYLE,
-    ))
+    free_text = _safe_ask(
+        questionary.text(
+            "Contexte libre / notes supplémentaires :",
+            style=WIZARD_STYLE,
+        )
+    )
 
     return {
-        "competitors": [c.strip() for c in competitors.split(",") if c.strip()] if competitors else [],
+        "competitors": [c.strip() for c in competitors.split(",") if c.strip()]
+        if competitors
+        else [],
         "keywords_seo": [k.strip() for k in keywords.split(",") if k.strip()] if keywords else [],
         "free_text": free_text or None,
     }
@@ -664,121 +799,168 @@ def _ask_mode_intake(mode: str) -> dict:
 
     if mode == "create":
         return {
-            "business_goal": _safe_ask(questionary.text(
-                "Objectif business principal :",
-                default="Generer plus de demandes qualifiees",
-                style=WIZARD_STYLE,
-            )),
-            "primary_cta": _safe_ask(questionary.text(
-                "CTA principal attendu :",
-                default="Prendre contact",
-                style=WIZARD_STYLE,
-            )),
-            "success_metric": _safe_ask(questionary.text(
-                "Indicateur de succes prioritaire :",
-                default="Leads qualifies / mois",
-                style=WIZARD_STYLE,
-            )),
-            "content_readiness": _safe_ask(questionary.select(
-                "Etat des contenus fournis par le client :",
-                choices=["aucun", "partiel", "complet"],
-                style=WIZARD_STYLE,
-            )),
-            "delivery_window": _safe_ask(questionary.text(
-                "Delai cible :",
-                default="2-4 semaines",
-                style=WIZARD_STYLE,
-            )),
+            "business_goal": _safe_ask(
+                questionary.text(
+                    "Objectif business principal :",
+                    default="Generer plus de demandes qualifiees",
+                    style=WIZARD_STYLE,
+                )
+            ),
+            "primary_cta": _safe_ask(
+                questionary.text(
+                    "CTA principal attendu :",
+                    default="Prendre contact",
+                    style=WIZARD_STYLE,
+                )
+            ),
+            "success_metric": _safe_ask(
+                questionary.text(
+                    "Indicateur de succes prioritaire :",
+                    default="Leads qualifies / mois",
+                    style=WIZARD_STYLE,
+                )
+            ),
+            "content_readiness": _safe_ask(
+                questionary.select(
+                    "Etat des contenus fournis par le client :",
+                    choices=["aucun", "partiel", "complet"],
+                    style=WIZARD_STYLE,
+                )
+            ),
+            "delivery_window": _safe_ask(
+                questionary.text(
+                    "Delai cible :",
+                    default="2-4 semaines",
+                    style=WIZARD_STYLE,
+                )
+            ),
         }
 
     if mode == "audit":
         return {
-            "existing_url": _safe_ask(questionary.text(
-                "URL du site a auditer :",
-                validate=lambda t: t.startswith("http") or "URL requise (http/https)",
-                style=WIZARD_STYLE,
-            )),
-            "audit_scope": _safe_ask(questionary.checkbox(
-                "Perimetre de l'audit :",
-                choices=["ux", "seo", "performance", "contenu", "accessibilite", "legal"],
-                style=WIZARD_STYLE,
-                validate=lambda r: len(r) > 0 or "Selectionnez au moins un axe",
-            )),
-            "audit_goal": _safe_ask(questionary.text(
-                "Question principale a laquelle l'audit doit repondre :",
-                default="Pourquoi le site convertit-il mal ?",
-                style=WIZARD_STYLE,
-            )),
+            "existing_url": _safe_ask(
+                questionary.text(
+                    "URL du site a auditer :",
+                    validate=lambda t: t.startswith("http") or "URL requise (http/https)",
+                    style=WIZARD_STYLE,
+                )
+            ),
+            "audit_scope": _safe_ask(
+                questionary.checkbox(
+                    "Perimetre de l'audit :",
+                    choices=["ux", "seo", "performance", "contenu", "accessibilite", "legal"],
+                    style=WIZARD_STYLE,
+                    validate=lambda r: len(r) > 0 or "Selectionnez au moins un axe",
+                )
+            ),
+            "audit_goal": _safe_ask(
+                questionary.text(
+                    "Question principale a laquelle l'audit doit repondre :",
+                    default="Pourquoi le site convertit-il mal ?",
+                    style=WIZARD_STYLE,
+                )
+            ),
         }
 
     if mode == "modify":
         return {
-            "existing_url": _safe_ask(questionary.text(
-                "URL du site ou environnement actuel (optionnel) :",
-                style=WIZARD_STYLE,
-            )) or None,
-            "requested_changes": _safe_ask(questionary.text(
-                "Changements demandes :",
-                validate=lambda t: len(t) >= 8 or "Decris les changements attendus",
-                style=WIZARD_STYLE,
-            )),
-            "sections_in_scope": _safe_ask(questionary.text(
-                "Sections/pages concernees (separees par virgule) :",
-                default="accueil, contact",
-                style=WIZARD_STYLE,
-            )),
-            "must_preserve": _safe_ask(questionary.text(
-                "Elements a ne pas casser ou modifier :",
-                default="SEO existant, branding, formulaire principal",
-                style=WIZARD_STYLE,
-            )),
+            "existing_url": _safe_ask(
+                questionary.text(
+                    "URL du site ou environnement actuel (optionnel) :",
+                    style=WIZARD_STYLE,
+                )
+            )
+            or None,
+            "requested_changes": _safe_ask(
+                questionary.text(
+                    "Changements demandes :",
+                    validate=lambda t: len(t) >= 8 or "Decris les changements attendus",
+                    style=WIZARD_STYLE,
+                )
+            ),
+            "sections_in_scope": _safe_ask(
+                questionary.text(
+                    "Sections/pages concernees (separees par virgule) :",
+                    default="accueil, contact",
+                    style=WIZARD_STYLE,
+                )
+            ),
+            "must_preserve": _safe_ask(
+                questionary.text(
+                    "Elements a ne pas casser ou modifier :",
+                    default="SEO existant, branding, formulaire principal",
+                    style=WIZARD_STYLE,
+                )
+            ),
         }
 
     if mode == "content":
         return {
-            "target_pages": _safe_ask(questionary.text(
-                "Pages ou gabarits a rediger (separes par virgule) :",
-                default="accueil, services, contact",
-                style=WIZARD_STYLE,
-            )),
-            "content_goal": _safe_ask(questionary.text(
-                "Objectif editorial principal :",
-                default="Clarifier l'offre et augmenter les conversions",
-                style=WIZARD_STYLE,
-            )),
-            "tone": _safe_ask(questionary.text(
-                "Ton souhaite :",
-                default="Clair, credible, direct",
-                style=WIZARD_STYLE,
-            )),
-            "source_materials": _safe_ask(questionary.select(
-                "Matiere source disponible :",
-                choices=["aucune", "notes internes", "site existant", "documents complets"],
-                style=WIZARD_STYLE,
-            )),
+            "target_pages": _safe_ask(
+                questionary.text(
+                    "Pages ou gabarits a rediger (separes par virgule) :",
+                    default="accueil, services, contact",
+                    style=WIZARD_STYLE,
+                )
+            ),
+            "content_goal": _safe_ask(
+                questionary.text(
+                    "Objectif editorial principal :",
+                    default="Clarifier l'offre et augmenter les conversions",
+                    style=WIZARD_STYLE,
+                )
+            ),
+            "tone": _safe_ask(
+                questionary.text(
+                    "Ton souhaite :",
+                    default="Clair, credible, direct",
+                    style=WIZARD_STYLE,
+                )
+            ),
+            "source_materials": _safe_ask(
+                questionary.select(
+                    "Matiere source disponible :",
+                    choices=["aucune", "notes internes", "site existant", "documents complets"],
+                    style=WIZARD_STYLE,
+                )
+            ),
         }
 
     if mode == "analyze":
         return {
-            "existing_url": _safe_ask(questionary.text(
-                "URL de reference (optionnel) :",
-                style=WIZARD_STYLE,
-            )) or None,
-            "analysis_questions": _safe_ask(questionary.text(
-                "Questions de recherche principales :",
-                default="Marche, concurrents, opportunites, risques",
-                style=WIZARD_STYLE,
-            )),
-            "geography": _safe_ask(questionary.text(
-                "Zone geographique cible :",
-                default="Quebec",
-                style=WIZARD_STYLE,
-            )),
-            "expected_output": _safe_ask(questionary.select(
-                "Sortie attendue :",
-                choices=["synthese executive", "analyse detaillee", "angles SEO", "positionnement"],
-                style=WIZARD_STYLE,
-            )),
+            "existing_url": _safe_ask(
+                questionary.text(
+                    "URL de reference (optionnel) :",
+                    style=WIZARD_STYLE,
+                )
+            )
+            or None,
+            "analysis_questions": _safe_ask(
+                questionary.text(
+                    "Questions de recherche principales :",
+                    default="Marche, concurrents, opportunites, risques",
+                    style=WIZARD_STYLE,
+                )
+            ),
+            "geography": _safe_ask(
+                questionary.text(
+                    "Zone geographique cible :",
+                    default="Quebec",
+                    style=WIZARD_STYLE,
+                )
+            ),
+            "expected_output": _safe_ask(
+                questionary.select(
+                    "Sortie attendue :",
+                    choices=[
+                        "synthese executive",
+                        "analyse detaillee",
+                        "angles SEO",
+                        "positionnement",
+                    ],
+                    style=WIZARD_STYLE,
+                )
+            ),
         }
 
     return {}
@@ -794,6 +976,7 @@ SECTION_NAMES = {
     "context": "Contexte & SEO",
     "mode_intake": "Cadrage du mode",
 }
+
 
 def _review_brief(brief: dict) -> bool:
     """Affiche un récapitulatif du brief et demande confirmation."""
@@ -833,8 +1016,7 @@ def _review_brief(brief: dict) -> bool:
     # Adaptatif (résumé)
     if brief.get("adaptive"):
         adaptive_summary = ", ".join(
-            f"{k}: {v}" for k, v in brief["adaptive"].items()
-            if not str(k).startswith("_")
+            f"{k}: {v}" for k, v in brief["adaptive"].items() if not str(k).startswith("_")
         )
         if adaptive_summary:
             table.add_row("Config. spécifique", adaptive_summary[:80])
@@ -846,8 +1028,7 @@ def _review_brief(brief: dict) -> bool:
     table.add_row("Données", ", ".join(legal["data_collected"]))
     table.add_row("Finalités", ", ".join(legal["purposes"]))
     table.add_row("Rétention", legal["retention"])
-    table.add_row("Transfert hors QC",
-                  "[yellow]Oui[/]" if legal["transfer_outside_qc"] else "Non")
+    table.add_row("Transfert hors QC", "[yellow]Oui[/]" if legal["transfer_outside_qc"] else "Non")
     table.add_row("Consentement", legal["consent_mode"])
 
     table.add_section()
@@ -867,13 +1048,15 @@ def _review_brief(brief: dict) -> bool:
     intake = mission.get("intake", {})
     if intake:
         summary = " | ".join(
-            value for value in [
+            value
+            for value in [
                 intake.get("business_goal"),
                 intake.get("audit_goal"),
                 intake.get("requested_changes"),
                 intake.get("content_goal"),
                 intake.get("analysis_questions"),
-            ] if value
+            ]
+            if value
         )
         if summary:
             table.add_row("Cadrage", summary[:120])
@@ -881,17 +1064,26 @@ def _review_brief(brief: dict) -> bool:
     say(table)
     say()
 
-    return _safe_ask(questionary.confirm(
-        "Ce brief est-il correct ?",
-        default=True,
-        style=WIZARD_STYLE,
-    ))
+    return _safe_ask(
+        questionary.confirm(
+            "Ce brief est-il correct ?",
+            default=True,
+            style=WIZARD_STYLE,
+        )
+    )
 
 
 # ── Assemblage ────────────────────────────────────────────────────────────────
-def _assemble_brief(mode: str, company: dict, site: dict, adaptive: dict,
-                    legal: dict, design: dict, context: dict,
-                    mode_intake: dict | None = None) -> dict:
+def _assemble_brief(
+    mode: str,
+    company: dict,
+    site: dict,
+    adaptive: dict,
+    legal: dict,
+    design: dict,
+    context: dict,
+    mode_intake: dict | None = None,
+) -> dict:
     """Assemble le brief final conforme au schema."""
     mode_intake = mode_intake or {}
     mission = {"mode": mode, "intake": mode_intake}
@@ -901,9 +1093,16 @@ def _assemble_brief(mode: str, company: dict, site: dict, adaptive: dict,
     merged_context = dict(context)
     extra_context = []
     for key in (
-        "business_goal", "primary_cta", "success_metric", "audit_goal",
-        "requested_changes", "must_preserve", "content_goal", "tone",
-        "analysis_questions", "expected_output",
+        "business_goal",
+        "primary_cta",
+        "success_metric",
+        "audit_goal",
+        "requested_changes",
+        "must_preserve",
+        "content_goal",
+        "tone",
+        "analysis_questions",
+        "expected_output",
     ):
         if mode_intake.get(key):
             extra_context.append(f"{key}: {mode_intake[key]}")
@@ -911,39 +1110,42 @@ def _assemble_brief(mode: str, company: dict, site: dict, adaptive: dict,
         base = merged_context.get("free_text")
         merged_context["free_text"] = "\n".join(([base] if base else []) + extra_context)
 
-    return normalize_brief({
-        "_meta": {
-            "generator": "nexos-v4.0-wizard",
-            "created_at": datetime.now().isoformat(),
-            "mode": mode,
+    return normalize_brief(
+        {
+            "_meta": {
+                "generator": "nexos-v4.0-wizard",
+                "created_at": datetime.now().isoformat(),
+                "mode": mode,
+            },
+            "client": {
+                "name": company["name"],
+                "slug": company["slug"],
+            },
+            "company_name": company["name"],
+            "company": {
+                "neq": company.get("neq"),
+                "address": company["address"],
+                "phone": company["phone"],
+                "email": company["email"],
+            },
+            "legal": legal,
+            "site": {
+                "stack": site.get("stack"),
+                "type": site["type"],
+                "pages": site["pages"],
+                "languages": site["languages"],
+                "features": site["features"],
+                "hosting": site["hosting"],
+                "domain": site.get("domain"),
+                "existing_url": site.get("existing_url"),
+            },
+            "context": merged_context,
+            "design": design,
+            "adaptive": adaptive,
+            "mission": mission,
         },
-        "client": {
-            "name": company["name"],
-            "slug": company["slug"],
-        },
-        "company_name": company["name"],
-        "company": {
-            "neq": company.get("neq"),
-            "address": company["address"],
-            "phone": company["phone"],
-            "email": company["email"],
-        },
-        "legal": legal,
-        "site": {
-            "stack": site.get("stack"),
-            "type": site["type"],
-            "pages": site["pages"],
-            "languages": site["languages"],
-            "features": site["features"],
-            "hosting": site["hosting"],
-            "domain": site.get("domain"),
-            "existing_url": site.get("existing_url"),
-        },
-        "context": merged_context,
-        "design": design,
-        "adaptive": adaptive,
-        "mission": mission,
-    }, mode=mode)
+        mode=mode,
+    )
 
 
 # ── Point d'entrée ───────────────────────────────────────────────────────────
@@ -962,12 +1164,14 @@ def interactive_brief(mode: str = "create") -> dict:
             "Utilisez --brief path.json pour le mode non-interactif."
         )
 
-    say(Panel(
-        "[bold cyan]NEXOS v4.0 — Brief Wizard Interactif[/]\n"
-        f"Mode : [bold yellow]{mode}[/]\n"
-        "Ctrl+C pour annuler à tout moment",
-        style="cyan",
-    ))
+    say(
+        Panel(
+            "[bold cyan]NEXOS v4.0 — Brief Wizard Interactif[/]\n"
+            f"Mode : [bold yellow]{mode}[/]\n"
+            "Ctrl+C pour annuler à tout moment",
+            style="cyan",
+        )
+    )
     say()
 
     try:
@@ -997,17 +1201,18 @@ def interactive_brief(mode: str = "create") -> dict:
         mode_intake = _ask_mode_intake(mode)
 
         # Assemblage
-        brief = _assemble_brief(mode, company, site, adaptive,
-                                legal, design, context, mode_intake)
+        brief = _assemble_brief(mode, company, site, adaptive, legal, design, context, mode_intake)
 
         # Phase 7 — Récap
         confirmed = _review_brief(brief)
         while not confirmed:
-            section = _safe_ask(questionary.select(
-                "Quelle section modifier ?",
-                choices=list(SECTION_NAMES.values()),
-                style=WIZARD_STYLE,
-            ))
+            section = _safe_ask(
+                questionary.select(
+                    "Quelle section modifier ?",
+                    choices=list(SECTION_NAMES.values()),
+                    style=WIZARD_STYLE,
+                )
+            )
 
             # Relancer la section choisie
             if section == "Entreprise":
@@ -1029,8 +1234,9 @@ def interactive_brief(mode: str = "create") -> dict:
             elif section == "Cadrage du mode":
                 mode_intake = _ask_mode_intake(mode)
 
-            brief = _assemble_brief(mode, company, site, adaptive,
-                                    legal, design, context, mode_intake)
+            brief = _assemble_brief(
+                mode, company, site, adaptive, legal, design, context, mode_intake
+            )
             confirmed = _review_brief(brief)
 
         say("[bold green]✓ Brief confirmé ![/]")

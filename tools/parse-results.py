@@ -8,6 +8,7 @@ import json
 import sys
 from pathlib import Path
 
+
 def parse_tooling(tooling_dir: Path) -> dict:
     """Parse tous les JSON de tooling et produit un résumé."""
     summary = {"tools_run": [], "scores": {}, "findings": []}
@@ -19,8 +20,7 @@ def parse_tooling(tooling_dir: Path) -> dict:
             lh = json.loads(lh_path.read_text())
             cats = lh.get("categories", {})
             summary["scores"]["lighthouse"] = {
-                cat: round(info.get("score", 0) * 100)
-                for cat, info in cats.items()
+                cat: round(info.get("score", 0) * 100) for cat, info in cats.items()
             }
             summary["tools_run"].append("lighthouse")
         except Exception:
@@ -32,9 +32,12 @@ def parse_tooling(tooling_dir: Path) -> dict:
         try:
             headers = json.loads(headers_path.read_text())
             required = [
-                "x-content-type-options", "x-frame-options",
-                "referrer-policy", "permissions-policy",
-                "strict-transport-security", "content-security-policy",
+                "x-content-type-options",
+                "x-frame-options",
+                "referrer-policy",
+                "permissions-policy",
+                "strict-transport-security",
+                "content-security-policy",
             ]
             present = [h for h in required if h in {k.lower() for k in headers}]
             missing = [h for h in required if h not in {k.lower() for k in headers}]
@@ -77,6 +80,6 @@ def parse_tooling(tooling_dir: Path) -> dict:
 
 
 if __name__ == "__main__":
-    tooling_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(".")
+    tooling_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else Path()
     result = parse_tooling(tooling_dir)
     print(json.dumps(result, indent=2, ensure_ascii=False))

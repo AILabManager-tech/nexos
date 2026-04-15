@@ -4,15 +4,22 @@ NEXOS v4.0 — Commandes CLI additionnelles
 Implémente les commandes `nexos fix`, `nexos report`, `nexos doctor`.
 """
 
+import contextlib
 import json
 from pathlib import Path
 
-from nexos.build_validator import validate_build, format_build_report, _check_critical_files, _check_vercel_headers
-from nexos.auto_fixer import auto_fix, REQUIRED_HEADERS
+from nexos.auto_fixer import REQUIRED_HEADERS, auto_fix
 from nexos.brief_contract import normalize_brief
+from nexos.build_validator import (
+    _check_critical_files,
+    _check_vercel_headers,
+    format_build_report,
+    validate_build,
+)
 
 try:
-    from nexos.changelog import log_event, EventType, get_changelog_summary
+    from nexos.changelog import EventType, get_changelog_summary, log_event
+
     _HAS_CHANGELOG = True
 except ImportError:
     _HAS_CHANGELOG = False
@@ -36,6 +43,7 @@ def say(*args, **kwargs):
 def run_doctor():
     """Exécute le diagnostic complet du système."""
     from nexos.tooling_manager import doctor_report
+
     say(Panel(doctor_report(), title="[bold cyan]nexos doctor[/]", border_style="cyan"))
 
 
@@ -55,13 +63,15 @@ def run_fix(client_dir: Path, dry_run: bool = False):
             say(f"[red]Erreur: pas de package.json dans {client_dir}/site/ ni {client_dir}/[/]")
             return
 
-    say(Panel(
-        f"[bold]Client:[/] {client_dir.name}\n"
-        f"[bold]Site:[/] {site_dir}\n"
-        f"[bold]Mode:[/] {'DRY RUN (analyse seule)' if dry_run else 'FIX (corrections appliquées)'}",
-        title="[bold cyan]nexos fix[/]",
-        border_style="cyan",
-    ))
+    say(
+        Panel(
+            f"[bold]Client:[/] {client_dir.name}\n"
+            f"[bold]Site:[/] {site_dir}\n"
+            f"[bold]Mode:[/] {'DRY RUN (analyse seule)' if dry_run else 'FIX (corrections appliquées)'}",
+            title="[bold cyan]nexos fix[/]",
+            border_style="cyan",
+        )
+    )
 
     # Validation avant fix
     say("\n[bold]Validation AVANT fix :[/]")
@@ -71,9 +81,7 @@ def run_fix(client_dir: Path, dry_run: bool = False):
     # Même si overall_pass, on applique les fixes pour les problèmes non-bloquants
     # (fichiers manquants, vulns npm HIGH, erreurs TSC dans les tests)
     has_issues = (
-        result_before.missing_files
-        or result_before.audit_highs > 0
-        or not result_before.tsc_ok
+        result_before.missing_files or result_before.audit_highs > 0 or not result_before.tsc_ok
     )
     if result_before.overall_pass and not has_issues and not dry_run:
         say("\n[green]Le build passe et aucun problème détecté — rien à corriger.[/]")
@@ -90,10 +98,8 @@ def run_fix(client_dir: Path, dry_run: bool = False):
     brief_path = client_dir / "brief-client.json"
     brief = None
     if brief_path.exists():
-        try:
+        with contextlib.suppress(json.JSONDecodeError):
             brief = normalize_brief(json.loads(brief_path.read_text()))
-        except json.JSONDecodeError:
-            pass
 
     fix_report = auto_fix(site_dir, client_dir, brief)
 
@@ -103,7 +109,7 @@ def run_fix(client_dir: Path, dry_run: bool = False):
     say(format_build_report(result_after))
 
     # Résumé
-    say(f"\n[bold]Résumé :[/]")
+    say("\n[bold]Résumé :[/]")
     say(f"  Corrections appliquées : {fix_report.total_fixes}")
     if fix_report.cookie_consent_added:
         say("    + Cookie consent injecté")
@@ -119,8 +125,12 @@ def run_fix(client_dir: Path, dry_run: bool = False):
         say("    + Page mentions-legales générée")
 
     if _HAS_CHANGELOG:
-        log_event(client_dir, EventType.CLI_FIX, agent="cli",
-                  details={"fixes": fix_report.total_fixes, "build_pass": result_after.overall_pass})
+        log_event(
+            client_dir,
+            EventType.CLI_FIX,
+            agent="cli",
+            details={"fixes": fix_report.total_fixes, "build_pass": result_after.overall_pass},
+        )
 
     if result_after.overall_pass:
         say("\n[green bold]BUILD PASS après corrections[/]")
@@ -196,11 +206,13 @@ def _dry_run_analysis(site_dir: Path, client_dir: Path):
 
 def run_report(client_dir: Path):
     """Affiche un rapport agrégé pour un client."""
-    say(Panel(
-        f"[bold]Client:[/] {client_dir.name}",
-        title="[bold cyan]nexos report[/]",
-        border_style="cyan",
-    ))
+    say(
+        Panel(
+            f"[bold]Client:[/] {client_dir.name}",
+            title="[bold cyan]nexos report[/]",
+            border_style="cyan",
+        )
+    )
 
     # 1. Phases complétées
     phase_reports = {
@@ -241,10 +253,7 @@ def run_report(client_dir: Path):
                 decision = gate.get("decision", gate.get("final_decision", "?"))
                 iters = gate.get("iterations", gate.get("total_iterations", 1))
                 icon = "green" if decision in ("ACCEPT", "PASS") else "red"
-                say(
-                    f"  [{icon}]{phase:20s}[/] μ={mu:.2f} "
-                    f"({iters} iter) → {decision}"
-                )
+                say(f"  [{icon}]{phase:20s}[/] μ={mu:.2f} ({iters} iter) → {decision}")
         except json.JSONDecodeError:
             say("\n[yellow]soic-gates.json corrompu[/]")
     else:
@@ -273,7 +282,7 @@ def run_report(client_dir: Path):
         else:
             say("  [green]+[/] Tous les fichiers critiques présents")
         icon = "green" if headers_ok else "yellow"
-        say(f"  [{icon}]{'+'if headers_ok else '-'}[/] Headers sécurité vercel.json")
+        say(f"  [{icon}]{'+' if headers_ok else '-'}[/] Headers sécurité vercel.json")
     elif (client_dir / "package.json").exists():
         say(f"\n[bold]Site :[/] {client_dir} (structure plate)")
 

@@ -171,17 +171,11 @@ class AgentRegistry:
 
     def get_required_agents(self, phase: str) -> list[AgentMeta]:
         """Return all required agents for a given phase (regardless of stack/type)."""
-        return [
-            a for a in self._agents
-            if a.phase == phase and a.required
-        ]
+        return [a for a in self._agents if a.phase == phase and a.required]
 
     def get_blocking_agents(self, phase: str) -> list[AgentMeta]:
         """Return agents that cover blocking dimensions (D4, D8)."""
-        return [
-            a for a in self._agents
-            if a.phase == phase and a.is_blocking
-        ]
+        return [a for a in self._agents if a.phase == phase and a.is_blocking]
 
     def get_all_phases(self) -> list[str]:
         """Return unique phase names in discovery order."""

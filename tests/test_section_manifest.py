@@ -17,8 +17,13 @@ def _make_manifest(sections: list[dict]) -> dict:
     }
 
 
-def _section(sid: str, page: str = "home", name: str = "Hero",
-             status: str = "planned", component: str = "HeroSection") -> dict:
+def _section(
+    sid: str,
+    page: str = "home",
+    name: str = "Hero",
+    status: str = "planned",
+    component: str = "HeroSection",
+) -> dict:
     """Helper — build a single section entry."""
     return {
         "id": sid,

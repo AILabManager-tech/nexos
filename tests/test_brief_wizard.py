@@ -1,26 +1,23 @@
 """Tests pour nexos.brief_wizard — wizard interactif de génération de brief."""
 
 import json
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 import pytest
 
 from nexos.brief_wizard import (
-    PAGE_PRESETS,
     LEGAL_PAGES,
+    PAGE_PRESETS,
     SITE_TYPES,
-    FEATURES_LIST,
-    DATA_TYPES,
-    PURPOSE_OPTIONS,
-    _slugify,
-    _assemble_brief,
     _ask_adaptive,
     _ask_mode_intake,
+    _assemble_brief,
+    _slugify,
     interactive_brief,
 )
 
-
 # ── Constantes ────────────────────────────────────────────────────────────────
+
 
 class TestConstants:
     def test_page_presets_cover_all_types(self):
@@ -33,8 +30,9 @@ class TestConstants:
         for t, pages in PAGE_PRESETS.items():
             assert "contact" in pages, f"'contact' manquant dans preset '{t}'"
             # accueil ou landing pour application
-            assert any(p in pages for p in ("accueil", "landing")), \
+            assert any(p in pages for p in ("accueil", "landing")), (
                 f"Page d'accueil manquante dans preset '{t}'"
+            )
 
     def test_legal_pages(self):
         assert "politique-confidentialite" in LEGAL_PAGES
@@ -45,6 +43,7 @@ class TestConstants:
 
 
 # ── Slugify ───────────────────────────────────────────────────────────────────
+
 
 class TestSlugify:
     def test_basic_name(self):
@@ -62,6 +61,7 @@ class TestSlugify:
 
 # ── Assemblage du brief ──────────────────────────────────────────────────────
 
+
 class TestAssembleBrief:
     @pytest.fixture
     def sample_inputs(self):
@@ -77,8 +77,13 @@ class TestAssembleBrief:
             "site": {
                 "stack": "nextjs",
                 "type": "vitrine",
-                "pages": ["accueil", "services", "contact",
-                          "politique-confidentialite", "mentions-legales"],
+                "pages": [
+                    "accueil",
+                    "services",
+                    "contact",
+                    "politique-confidentialite",
+                    "mentions-legales",
+                ],
                 "features": ["formulaire-contact", "analytics"],
                 "languages": ["fr", "en"],
                 "hosting": "Vercel",
@@ -86,8 +91,7 @@ class TestAssembleBrief:
             },
             "adaptive": {},
             "legal": {
-                "rpp": {"name": "Jean Test", "email": "rpp@test.com",
-                        "title": "RPP"},
+                "rpp": {"name": "Jean Test", "email": "rpp@test.com", "title": "RPP"},
                 "data_collected": ["nom", "courriel"],
                 "purposes": ["communication"],
                 "retention": "24 mois",
@@ -95,8 +99,7 @@ class TestAssembleBrief:
                 "transfer_countries": ["États-Unis"],
                 "third_party_services": ["Vercel (hébergement)"],
                 "consent_mode": "opt-in (recommandé Loi 25)",
-                "incident": {"process_in_place": False,
-                             "notification_email": "rpp@test.com"},
+                "incident": {"process_in_place": False, "notification_email": "rpp@test.com"},
             },
             "design": {
                 "palette": "#1a1a2e",
@@ -202,16 +205,17 @@ class TestAssembleBrief:
 
 # ── Logique adaptative ────────────────────────────────────────────────────────
 
+
 class TestAdaptiveLogic:
     @patch("nexos.brief_wizard._safe_ask")
     def test_ecommerce_asks_payment(self, mock_ask):
         """Le type ecommerce doit demander le fournisseur de paiement."""
         mock_ask.side_effect = [
-            "Stripe",       # payment_provider
-            "20",           # product_count
-            True,           # shipping
-            "Québec",       # shipping_zones
-            True,           # inventory
+            "Stripe",  # payment_provider
+            "20",  # product_count
+            True,  # shipping
+            "Québec",  # shipping_zones
+            True,  # inventory
         ]
         result = _ask_adaptive("ecommerce", [])
         assert result["payment_provider"] == "Stripe"
@@ -222,10 +226,10 @@ class TestAdaptiveLogic:
     def test_ecommerce_no_shipping(self, mock_ask):
         """Si pas de livraison, pas de question zones."""
         mock_ask.side_effect = [
-            "PayPal",       # payment_provider
-            "5",            # product_count
-            False,          # shipping = No
-            False,          # inventory
+            "PayPal",  # payment_provider
+            "5",  # product_count
+            False,  # shipping = No
+            False,  # inventory
         ]
         result = _ask_adaptive("ecommerce", [])
         assert result["shipping"] is False
@@ -246,10 +250,10 @@ class TestAdaptiveLogic:
     @patch("nexos.brief_wizard._safe_ask")
     def test_application_with_auth(self, mock_ask):
         mock_ask.side_effect = [
-            True,                       # auth_required
+            True,  # auth_required
             ["email/password", "Google"],  # auth_methods
-            "admin, user",              # user_types
-            False,                      # realtime
+            "admin, user",  # user_types
+            False,  # realtime
         ]
         result = _ask_adaptive("application", [])
         assert result["auth_required"] is True
@@ -287,6 +291,7 @@ class TestModeIntake:
 
 
 # ── Wizard interactif (flux complet mocké) ────────────────────────────────────
+
 
 class TestInteractiveBrief:
     @patch("nexos.brief_wizard.sys")

@@ -2,8 +2,8 @@
 
 ### Offre de services
 
-**Version condensée, structurée et évolutive**  
-**Devise : CAD**  
+**Version condensée, structurée et évolutive**
+**Devise : CAD**
 **Principe : tous les prix sont “à partir de”, sauf mention contraire**
 
 ---

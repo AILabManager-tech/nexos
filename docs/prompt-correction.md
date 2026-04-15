@@ -40,7 +40,7 @@ Correction :
 3. Dans soic/report.py > generate_report_v2() : afficher le taux de couverture et marquer les gates NOT_EXECUTED avec ⊘ au lieu de ✗
 4. Dans soic/converger.py > decide() : si coverage < 0.7 → retourner Decision.ABORT avec raison "Couverture insuffisante — exécuter le preflight d'abord"
 
-Validation : 
+Validation :
 ```python
 # Gate non exécutée = 0.0, pas 5.0
 from soic.models import GateResult, GateStatus, PhaseGateReport
@@ -129,7 +129,7 @@ Format cible du feedback :
 → 3 vulnérabilités high dans express@4.17.1
 → Action : npm audit fix --force, vérifier que le build passe
 
-[D8/W-14] legal-compliance — CRITIQUE  
+[D8/W-14] legal-compliance — CRITIQUE
 → Politique de confidentialité : durée de conservation manquante
 → Action : Ajouter section "Durée de conservation" avec les durées par catégorie de RP
 
@@ -152,7 +152,7 @@ Correction dans soic/domain_grids/web.py > gate W-14 :
    - CHECK 2 : Lien vers la politique dans le footer de chaque page
    - CHECK 3 : Mots-clés obligatoires présents dans la politique :
      * "responsable de la protection" ou "RPRP"
-     * "renseignements personnels" ou "données personnelles"  
+     * "renseignements personnels" ou "données personnelles"
      * "finalité" ou "fins de"
      * "durée de conservation" ou "période de conservation"
      * "droit d'accès" ET "rectification" ET "suppression"
@@ -216,7 +216,7 @@ Correction dans orchestrator.py :
        client_dir: str
        build_dir: str
        timestamp: str
-       
+
        def rerun(self, feedback: str) -> PhaseGateReport:
            """Relance Claude CLI avec le feedback, puis réexécute les gates."""
            # ... logique actuellement dans la closure
@@ -284,7 +284,7 @@ ORDRE D'EXÉCUTION
 
 1. CORRECTION 1 (faux 5.0) — fondation, tout le reste en dépend
 2. CORRECTION 3 (plateau) — simple, isolé
-3. CORRECTION 7 (closure) — simple, isolé  
+3. CORRECTION 7 (closure) — simple, isolé
 4. CORRECTION 8 (timeout) — simple, isolé
 5. CORRECTION 4 (feedback priorisé) — dépend des modèles corrigés
 6. CORRECTION 5 (W-14 détail) — dépend du feedback

@@ -5,14 +5,22 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from soic.models import GateStatus, GateResult, PhaseGateReport
+from soic.models import GateResult, GateStatus, PhaseGateReport
 from soic.report import generate_report_v2
 
 
-def _gate(gate_id: str, dim: str, status: GateStatus, score: float, evidence: str = "test") -> GateResult:
+def _gate(
+    gate_id: str, dim: str, status: GateStatus, score: float, evidence: str = "test"
+) -> GateResult:
     return GateResult(
-        gate_id=gate_id, name=f"test-{gate_id}", dimension=dim,
-        status=status, score=score, evidence=evidence, duration_ms=0, command="",
+        gate_id=gate_id,
+        name=f"test-{gate_id}",
+        dimension=dim,
+        status=status,
+        score=score,
+        evidence=evidence,
+        duration_ms=0,
+        command="",
     )
 
 

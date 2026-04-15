@@ -1,10 +1,9 @@
 """Tests pour nexos.cli_commands (doctor, fix, report)."""
 
 import json
-from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
-from nexos.cli_commands import run_doctor, run_fix, run_report, _dry_run_analysis
+from nexos.cli_commands import _dry_run_analysis, run_doctor, run_fix, run_report
 
 
 class TestRunDoctor:
@@ -37,12 +36,17 @@ class TestRunFix:
         site_dir.mkdir()
         (site_dir / "package.json").write_text("{}")
 
-        with patch("nexos.cli_commands.validate_build") as mock_validate, \
-             patch("nexos.cli_commands.auto_fix"):
+        with (
+            patch("nexos.cli_commands.validate_build") as mock_validate,
+            patch("nexos.cli_commands.auto_fix"),
+        ):
             # No issues at all → should exit early
             mock_validate.return_value = BuildResult(
-                npm_install_ok=True, tsc_ok=True, build_ok=True,
-                headers_ok=True, overall_pass=True,
+                npm_install_ok=True,
+                tsc_ok=True,
+                build_ok=True,
+                headers_ok=True,
+                overall_pass=True,
             )
             run_fix(client_dir)
             mock_validate.assert_called_once()
@@ -50,8 +54,8 @@ class TestRunFix:
     @patch("nexos.cli_commands.console")
     def test_fix_with_issues_runs_twice(self, mock_console, tmp_path):
         """Build passes but has issues → applies fix, validates twice."""
-        from nexos.build_validator import BuildResult
         from nexos.auto_fixer import FixReport
+        from nexos.build_validator import BuildResult
 
         client_dir = tmp_path / "client"
         client_dir.mkdir()
@@ -59,11 +63,17 @@ class TestRunFix:
         site_dir.mkdir()
         (site_dir / "package.json").write_text("{}")
 
-        with patch("nexos.cli_commands.validate_build") as mock_validate, \
-             patch("nexos.cli_commands.auto_fix") as mock_fix:
+        with (
+            patch("nexos.cli_commands.validate_build") as mock_validate,
+            patch("nexos.cli_commands.auto_fix") as mock_fix,
+        ):
             mock_validate.return_value = BuildResult(
-                npm_install_ok=True, tsc_ok=False, build_ok=True,
-                headers_ok=True, overall_pass=True, audit_highs=2,
+                npm_install_ok=True,
+                tsc_ok=False,
+                build_ok=True,
+                headers_ok=True,
+                overall_pass=True,
+                audit_highs=2,
             )
             mock_fix.return_value = FixReport()
             run_fix(client_dir)
@@ -124,10 +134,14 @@ class TestRunReport:
     def test_with_brief(self, mock_console, tmp_path):
         client_dir = tmp_path / "client"
         client_dir.mkdir()
-        (client_dir / "brief-client.json").write_text(json.dumps({
-            "company_name": "TestCorp",
-            "legal": {"rpp_name": "Jean Test"},
-        }))
+        (client_dir / "brief-client.json").write_text(
+            json.dumps(
+                {
+                    "company_name": "TestCorp",
+                    "legal": {"rpp_name": "Jean Test"},
+                }
+            )
+        )
 
         run_report(client_dir)
         calls = [str(c) for c in mock_console.print.call_args_list]
