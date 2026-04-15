@@ -20,9 +20,12 @@ import subprocess
 import sys
 import time
 import unicodedata
-from dataclasses import dataclass
+from collections.abc import Callable
+from dataclasses import dataclass, field
 from datetime import datetime
+from enum import Enum
 from pathlib import Path
+from typing import Any, ClassVar
 
 # NEXOS v4.0 augmentation modules
 try:
@@ -883,6 +886,332 @@ OUTPUT_MAP = {
     "ph5-qa": "ph5-qa-report.md",
     "site-update": "site-update-report.md",
 }
+
+
+# ── Refactor P1 (chantier2-O) : classes d'orchestration ──────────────────────
+# Extraction OOP du pipeline. Ces classes exposent un contrat testable tout en
+# déléguant l'exécution lourde à run_pipeline() — qui reste le point d'entrée
+# observé par les tests E2E (iso-comportement). La séparation complète en
+# modules est planifiée pour la phase P.
+
+
+class PhaseStatus(str, Enum):
+    PENDING = "pending"
+    RUNNING = "running"
+    PASSED = "passed"
+    FAILED = "failed"
+    SKIPPED = "skipped"
+
+
+@dataclass(frozen=True)
+class GateResult:
+    """Résultat d'évaluation d'une gate SOIC entre 2 phases."""
+
+    phase: str
+    passed: bool
+    mu: float
+    threshold: float
+    dimensions: dict[str, float] = field(default_factory=dict)
+    reason: str = ""
+
+
+@dataclass
+class PhaseRun:
+    """État d'une phase pendant un run de pipeline."""
+
+    phase_id: str
+    status: PhaseStatus = PhaseStatus.PENDING
+    gate_result: GateResult | None = None
+    retries: int = 0
+    error: str | None = None
+
+
+@dataclass
+class PipelineContext:
+    """Contexte partagé entre les classes pendant un run."""
+
+    mode: str
+    client_dir: Path
+    profile_name: str = "default"
+    max_retries: int = 1
+    dry_run: bool = False
+    runs: list[PhaseRun] = field(default_factory=list)
+
+    def record(self, phase_id: str, status: PhaseStatus, **kwargs: Any) -> None:
+        """Ajoute ou met à jour une entrée phase."""
+        existing = next((r for r in self.runs if r.phase_id == phase_id), None)
+        if existing is not None:
+            existing.status = status
+            for k, v in kwargs.items():
+                setattr(existing, k, v)
+        else:
+            self.runs.append(PhaseRun(phase_id=phase_id, status=status, **kwargs))
+
+
+class GateEngine:
+    """Évalue les quality gates SOIC entre phases.
+
+    Responsabilités:
+    - Exposer les seuils par transition (CLAUDE.md §QUALITY GATES)
+    - Appeler soic.gate.evaluate_gate sur le répertoire client
+    - Retourner un GateResult structuré
+
+    Note : le nom `GateEngine` ne collide pas avec `soic.GateEngine` — ce
+    dernier est importé de manière function-locale dans `run_converge()`.
+    """
+
+    # Seuils par transition (CLAUDE.md §QUALITY GATES SOIC)
+    THRESHOLDS: ClassVar[dict[str, float | None]] = {
+        "ph0→ph1": 7.0,
+        "ph1→ph2": 8.0,
+        "ph2→ph3": 8.0,
+        "ph3→ph4": 8.0,
+        "ph4→tooling": None,  # BUILD PASS, pas μ
+        "ph5→deploy": 8.5,
+    }
+
+    def __init__(self, profile: str = "default") -> None:
+        self.profile = profile
+        self._log = get_logger("nexos.gate_engine")
+
+    def evaluate(self, transition: str, client_dir: Path) -> GateResult:
+        """Évalue une gate SOIC pour une transition donnée."""
+        threshold = self.THRESHOLDS.get(transition)
+        if threshold is None:
+            return self._evaluate_build(client_dir, transition)
+
+        try:
+            from soic.gate import evaluate_gate
+        except ImportError as e:
+            self._log.error("soic.gate indisponible: %s", e)
+            return GateResult(
+                phase=transition,
+                passed=False,
+                mu=0.0,
+                threshold=threshold,
+                reason=f"soic import failed: {e}",
+            )
+
+        # La transition "phX→phY" est évaluée sur la phase source (phX).
+        source_phase = transition.split("→")[0]
+        try:
+            mu = float(evaluate_gate(source_phase, client_dir))
+        except Exception as e:
+            self._log.exception("evaluate_gate a levé pour %s", transition)
+            return GateResult(
+                phase=transition,
+                passed=False,
+                mu=0.0,
+                threshold=threshold,
+                reason=f"evaluate_gate error: {e}",
+            )
+
+        passed = mu >= threshold
+        self._log.info(
+            "Gate %s : μ=%.2f (threshold=%.2f) → %s",
+            transition,
+            mu,
+            threshold,
+            "PASS" if passed else "FAIL",
+        )
+        return GateResult(
+            phase=transition,
+            passed=passed,
+            mu=mu,
+            threshold=threshold,
+        )
+
+    def _evaluate_build(self, client_dir: Path, transition: str) -> GateResult:
+        """Gate ph4 : BUILD PASS binaire, pas de score μ."""
+        site_dir = client_dir / "site"
+        if not (site_dir / "package.json").exists():
+            # Fallback v3.0 : inspection textuelle du build log
+            build_log = client_dir / "ph4-build-log.md"
+            if build_log.exists():
+                content = build_log.read_text(encoding="utf-8", errors="replace")
+                ok = "BUILD PASS" in content or "build réussi" in content.lower()
+            else:
+                ok = True  # Pas de log → on assume pass (legacy)
+            return GateResult(
+                phase=transition,
+                passed=ok,
+                mu=10.0 if ok else 0.0,
+                threshold=0.0,  # N/A
+                reason="" if ok else "BUILD FAIL (log-based fallback)",
+            )
+
+        try:
+            from nexos.build_validator import validate_build
+        except ImportError as e:
+            self._log.error("nexos.build_validator indisponible: %s", e)
+            return GateResult(
+                phase=transition,
+                passed=False,
+                mu=0.0,
+                threshold=0.0,
+                reason=f"build_validator import failed: {e}",
+            )
+
+        result = validate_build(site_dir)
+        ok = bool(result.overall_pass)
+        return GateResult(
+            phase=transition,
+            passed=ok,
+            mu=10.0 if ok else 0.0,
+            threshold=0.0,
+            reason="" if ok else "BUILD FAIL",
+        )
+
+
+class ConvergeLoop:
+    """Boucle de convergence : relance une phase avec retry + auto_fix.
+
+    Pattern: run → validate → auto_fix → re-validate (max 1 retry par défaut).
+    """
+
+    def __init__(self, gate_engine: GateEngine, max_retries: int = 1) -> None:
+        self.gate_engine = gate_engine
+        self.max_retries = max_retries
+        self._log = get_logger("nexos.converge")
+
+    def converge(
+        self,
+        transition: str,
+        client_dir: Path,
+        run_phase_fn: Callable[[Path], Any],
+    ) -> GateResult:
+        """Lance la phase, évalue la gate, relance avec auto_fix si échec.
+
+        Args:
+            transition: ex "ph1→ph2"
+            client_dir: dossier client
+            run_phase_fn: callable qui lance la phase (peut être rappelée)
+
+        Returns:
+            Le GateResult final (succès ou échec définitif).
+        """
+        run_phase_fn(client_dir)
+        gate = self.gate_engine.evaluate(transition, client_dir)
+
+        attempt = 0
+        while not gate.passed and attempt < self.max_retries:
+            attempt += 1
+            self._log.warning(
+                "Gate %s échoue (μ=%.2f), attempt %d/%d → auto_fix",
+                transition,
+                gate.mu,
+                attempt,
+                self.max_retries,
+            )
+            try:
+                from nexos.auto_fixer import auto_fix
+
+                site_dir = client_dir / "site"
+                brief_path = client_dir / "brief-client.json"
+                brief_data = None
+                if brief_path.exists():
+                    with contextlib.suppress(Exception):
+                        brief_data = load_runtime_brief(brief_path)
+                if site_dir.exists():
+                    auto_fix(site_dir, client_dir, brief_data)
+            except Exception as e:
+                self._log.error("auto_fix a levé: %s", e)
+                break
+
+            run_phase_fn(client_dir)
+            gate = self.gate_engine.evaluate(transition, client_dir)
+
+        return gate
+
+
+class PipelineOrchestrator:
+    """Orchestration haut niveau du pipeline NEXOS.
+
+    Façade OOP testable. Délègue l'exécution lourde à `run_pipeline()` qui
+    reste la frontière mockée par les tests E2E (iso-comportement phase O).
+    L'éclatement complet en sous-classes par phase est planifié en phase P.
+    """
+
+    PHASES_BY_MODE: ClassVar[dict[str, list[str]]] = {
+        "create": [
+            "ph0-discovery",
+            "ph1-strategy",
+            "ph2-design",
+            "ph3-content",
+            "ph4-build",
+            "ph5-qa",
+        ],
+        "audit": ["ph5-qa"],
+        "modify": ["site-update"],
+        "content": ["ph3-content"],
+        "analyze": ["ph0-discovery"],
+    }
+
+    def __init__(
+        self,
+        profile: str = "default",
+        max_retries: int = 1,
+        dry_run: bool = False,
+    ) -> None:
+        self.profile = profile
+        self.max_retries = max_retries
+        self.dry_run = dry_run
+        self.gate_engine = GateEngine(profile=profile)
+        self.converge_loop = ConvergeLoop(self.gate_engine, max_retries=max_retries)
+        self._log = get_logger("nexos.pipeline")
+
+    def run(
+        self,
+        mode: str,
+        client_dir: Path,
+        url: str | None = None,
+        target_sections: list[str] | None = None,
+        color_overrides: dict[str, str] | None = None,
+    ) -> PipelineContext:
+        """Point d'entrée principal. Retourne le contexte final (runs + statuts)."""
+        phases = self.PHASES_BY_MODE.get(mode)
+        if phases is None:
+            raise ValueError(f"Mode inconnu: {mode}")
+
+        ctx = PipelineContext(
+            mode=mode,
+            client_dir=client_dir,
+            profile_name=self.profile,
+            max_retries=self.max_retries,
+            dry_run=self.dry_run,
+        )
+        self._log.info(
+            "Pipeline %s start: client_dir=%s profile=%s",
+            mode,
+            client_dir,
+            self.profile,
+        )
+
+        if self.dry_run:
+            # En dry-run, on ne déclenche pas le pipeline réel : on reflète
+            # simplement les phases attendues dans le contexte.
+            for phase_id in phases:
+                ctx.record(phase_id, PhaseStatus.SKIPPED)
+            self._log.info("Pipeline %s end (dry-run)", mode)
+            return ctx
+
+        try:
+            run_pipeline(
+                mode,
+                client_dir,
+                url=url,
+                target_sections=target_sections,
+                color_overrides=color_overrides,
+            )
+            for phase_id in phases:
+                ctx.record(phase_id, PhaseStatus.PASSED)
+        except Exception as e:
+            self._log.exception("Pipeline %s: exception", mode)
+            last = phases[-1] if phases else mode
+            ctx.record(last, PhaseStatus.FAILED, error=str(e))
+
+        self._log.info("Pipeline %s end", mode)
+        return ctx
 
 
 _ERROR_PATTERNS = re.compile(
