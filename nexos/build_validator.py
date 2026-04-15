@@ -10,13 +10,9 @@ import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 
-try:
-    from rich.console import Console
-    console = Console()
-except ImportError:
-    class Console:
-        def print(self, *a, **kw): print(*a)
-    console = Console()
+from nexos.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 # ── Constantes ────────────────────────────────────────────────────────
@@ -178,7 +174,7 @@ def validate_build(site_dir: Path) -> BuildResult:
     result = BuildResult()
 
     # 1. npm install
-    console.print("[dim]  Validation: npm install...[/]")
+    logger.info("Build validation: npm install")
     result.npm_install_ok = _check_npm_install(site_dir)
 
     if not result.npm_install_ok:
@@ -186,15 +182,15 @@ def validate_build(site_dir: Path) -> BuildResult:
         return result
 
     # 2. TypeScript check
-    console.print("[dim]  Validation: tsc --noEmit...[/]")
+    logger.info("Build validation: tsc --noEmit")
     result.tsc_ok, result.tsc_errors = _check_tsc(site_dir)
 
     # 3. Build
-    console.print("[dim]  Validation: npm run build...[/]")
+    logger.info("Build validation: npm run build")
     result.build_ok, result.build_errors = _check_build(site_dir)
 
     # 4. npm audit
-    console.print("[dim]  Validation: npm audit...[/]")
+    logger.info("Build validation: npm audit")
     result.audit_highs, result.audit_criticals = _check_audit(site_dir)
 
     # 5. Fichiers critiques

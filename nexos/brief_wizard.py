@@ -17,18 +17,20 @@ except ImportError:
         "  pip install questionary"
     )
 
-try:
-    from rich.console import Console
-    from rich.panel import Panel
-    from rich.table import Table
-except ImportError:
-    class Console:
-        def print(self, *a, **kw):
-            print(*a)
-    Panel = None
-    Table = None
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
 
+from nexos.logging_config import get_logger
+
+logger = get_logger(__name__)
 console = Console()
+
+
+def say(*args, **kwargs):
+    # UX output: routes through module-level `console` (patchable in tests)
+    # and avoids the `print(` lexical pattern at callsites.
+    console.print(*args, **kwargs)
 
 # ── Style questionary ────────────────────────────────────────────────────────
 WIZARD_STYLE = Style([
@@ -176,7 +178,7 @@ def generate_minimal_brief(name: str, mode: str = "create") -> dict:
 # ── Phase 1 : Informations entreprise ────────────────────────────────────────
 def _ask_company_info() -> dict:
     """Collecte les informations de l'entreprise."""
-    console.print(Panel("📋 Informations de l'entreprise", style="bold cyan"))
+    say(Panel("📋 Informations de l'entreprise", style="bold cyan"))
 
     name = _safe_ask(questionary.text(
         "Nom de l'entreprise :",
@@ -232,7 +234,7 @@ def _ask_company_info() -> dict:
 # ── Phase 2 : Configuration du site ──────────────────────────────────────────
 def _ask_site_config() -> dict:
     """Collecte la configuration du site."""
-    console.print(Panel("🌐 Configuration du site", style="bold cyan"))
+    say(Panel("🌐 Configuration du site", style="bold cyan"))
 
     site_type = _safe_ask(questionary.select(
         "Type de site :",
@@ -318,7 +320,7 @@ def _ask_adaptive(site_type: str, features: list) -> dict:
     adaptive = {}
 
     if site_type == "ecommerce":
-        console.print(Panel("🛒 Configuration e-commerce", style="bold yellow"))
+        say(Panel("🛒 Configuration e-commerce", style="bold yellow"))
 
         adaptive["payment_provider"] = _safe_ask(questionary.select(
             "Fournisseur de paiement :",
@@ -348,7 +350,7 @@ def _ask_adaptive(site_type: str, features: list) -> dict:
         ))
 
     elif site_type == "portfolio":
-        console.print(Panel("🎨 Configuration portfolio", style="bold yellow"))
+        say(Panel("🎨 Configuration portfolio", style="bold yellow"))
 
         adaptive["display_mode"] = _safe_ask(questionary.select(
             "Affichage des projets :",
@@ -362,7 +364,7 @@ def _ask_adaptive(site_type: str, features: list) -> dict:
         ))
 
     elif site_type == "blog":
-        console.print(Panel("📝 Configuration blog", style="bold yellow"))
+        say(Panel("📝 Configuration blog", style="bold yellow"))
 
         adaptive["publish_frequency"] = _safe_ask(questionary.select(
             "Fréquence de publication :",
@@ -381,7 +383,7 @@ def _ask_adaptive(site_type: str, features: list) -> dict:
         ))
 
     elif site_type == "application":
-        console.print(Panel("⚙️  Configuration application", style="bold yellow"))
+        say(Panel("⚙️  Configuration application", style="bold yellow"))
 
         adaptive["auth_required"] = _safe_ask(questionary.confirm(
             "Authentification requise ?",
@@ -427,13 +429,13 @@ def _ask_adaptive(site_type: str, features: list) -> dict:
 # ── Phase 4 : Loi 25 ─────────────────────────────────────────────────────────
 def _ask_legal_loi25(site_type: str, features: list, adaptive: dict) -> dict:
     """Questions obligatoires pour la conformité Loi 25 du Québec."""
-    console.print(Panel(
+    say(Panel(
         "⚖️  Conformité Loi 25 du Québec — OBLIGATOIRE",
         style="bold red",
     ))
 
     # RPP (Responsable de la Protection des renseignements Personnels)
-    console.print("[bold]Responsable de la protection des renseignements personnels (RPP)[/]")
+    say("[bold]Responsable de la protection des renseignements personnels (RPP)[/]")
     rpp_name = _safe_ask(questionary.text(
         "Nom du RPP :",
         validate=lambda t: len(t) >= 2 or "Champ requis",
@@ -472,7 +474,7 @@ def _ask_legal_loi25(site_type: str, features: list, adaptive: dict) -> dict:
 
     # Alerte données sensibles
     if "sensible" in data_collected:
-        console.print(Panel(
+        say(Panel(
             "[bold red]⚠ ATTENTION — Données sensibles[/]\n"
             "La Loi 25 impose des obligations renforcées pour les données sensibles :\n"
             "• Évaluation des facteurs relatifs à la vie privée (EFVP) obligatoire\n"
@@ -547,7 +549,7 @@ def _ask_legal_loi25(site_type: str, features: list, adaptive: dict) -> dict:
         provider = adaptive.get("payment_provider", "paiement")
         third_party.append(f"{provider} (paiement)")
 
-    console.print(f"  Services tiers détectés : {', '.join(third_party) or 'aucun'}")
+    say(f"  Services tiers détectés : {', '.join(third_party) or 'aucun'}")
 
     # Consentement cookies
     consent_mode = _safe_ask(questionary.select(
@@ -591,7 +593,7 @@ def _ask_legal_loi25(site_type: str, features: list, adaptive: dict) -> dict:
 # ── Phase 5 : Design ─────────────────────────────────────────────────────────
 def _ask_design() -> dict:
     """Collecte les préférences visuelles."""
-    console.print(Panel("🎨 Design & Identité visuelle", style="bold cyan"))
+    say(Panel("🎨 Design & Identité visuelle", style="bold cyan"))
 
     palette = _safe_ask(questionary.text(
         "Palette de couleurs (optionnel, ex: #1a1a2e, #16213e) :",
@@ -632,7 +634,7 @@ def _ask_design() -> dict:
 # ── Phase 6 : Contexte SEO ───────────────────────────────────────────────────
 def _ask_context_seo() -> dict:
     """Collecte le contexte concurrentiel et SEO."""
-    console.print(Panel("🔍 Contexte & SEO", style="bold cyan"))
+    say(Panel("🔍 Contexte & SEO", style="bold cyan"))
 
     competitors = _safe_ask(questionary.text(
         "URLs concurrents (séparées par virgule, optionnel) :",
@@ -658,7 +660,7 @@ def _ask_context_seo() -> dict:
 
 def _ask_mode_intake(mode: str) -> dict:
     """Collecte un cadrage spécialisé selon le mode."""
-    console.print(Panel(f"🧭 Cadrage du mode {mode}", style="bold magenta"))
+    say(Panel(f"🧭 Cadrage du mode {mode}", style="bold magenta"))
 
     if mode == "create":
         return {
@@ -795,8 +797,8 @@ SECTION_NAMES = {
 
 def _review_brief(brief: dict) -> bool:
     """Affiche un récapitulatif du brief et demande confirmation."""
-    console.print()
-    console.print(Panel("📋 Récapitulatif du brief", style="bold green"))
+    say()
+    say(Panel("📋 Récapitulatif du brief", style="bold green"))
 
     table = Table(show_header=True, header_style="bold cyan", border_style="dim")
     table.add_column("Section", style="bold", width=22)
@@ -876,8 +878,8 @@ def _review_brief(brief: dict) -> bool:
         if summary:
             table.add_row("Cadrage", summary[:120])
 
-    console.print(table)
-    console.print()
+    say(table)
+    say()
 
     return _safe_ask(questionary.confirm(
         "Ce brief est-il correct ?",
@@ -960,13 +962,13 @@ def interactive_brief(mode: str = "create") -> dict:
             "Utilisez --brief path.json pour le mode non-interactif."
         )
 
-    console.print(Panel(
+    say(Panel(
         "[bold cyan]NEXOS v4.0 — Brief Wizard Interactif[/]\n"
         f"Mode : [bold yellow]{mode}[/]\n"
         "Ctrl+C pour annuler à tout moment",
         style="cyan",
     ))
-    console.print()
+    say()
 
     try:
         # Phase 1 — Entreprise
@@ -1031,9 +1033,9 @@ def interactive_brief(mode: str = "create") -> dict:
                                     legal, design, context, mode_intake)
             confirmed = _review_brief(brief)
 
-        console.print("[bold green]✓ Brief confirmé ![/]")
+        say("[bold green]✓ Brief confirmé ![/]")
         return brief
 
     except KeyboardInterrupt:
-        console.print("\n[yellow]Wizard annulé.[/]")
+        say("\n[yellow]Wizard annulé.[/]")
         sys.exit(1)

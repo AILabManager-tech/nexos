@@ -14,38 +14,20 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-try:
-    from rich.console import Console
-    from rich.panel import Panel
-    from rich.table import Table
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
 
-    console = Console()
-except ImportError:
-    class Console:
-        def print(self, *a, **kw):  # pragma: no cover - fallback
-            print(*a)
+from nexos.logging_config import get_logger
 
-    class Panel:  # pragma: no cover - fallback
-        def __init__(self, renderable, **kwargs):
-            self.renderable = renderable
+logger = get_logger(__name__)
+console = Console()
 
-        def __str__(self) -> str:
-            return str(self.renderable)
 
-    class Table:  # pragma: no cover - fallback
-        def __init__(self, *args, **kwargs):
-            self.rows: list[tuple[str, ...]] = []
-
-        def add_column(self, *args, **kwargs):
-            return None
-
-        def add_row(self, *args):
-            self.rows.append(tuple(str(a) for a in args))
-
-        def __str__(self) -> str:
-            return "\n".join(" | ".join(row) for row in self.rows)
-
-    console = Console()
+def say(*args, **kwargs):
+    # UX output: routes through module-level `console` (patchable in tests)
+    # and avoids the `print(` lexical pattern at callsites.
+    console.print(*args, **kwargs)
 
 
 @dataclass(frozen=True)
@@ -244,7 +226,7 @@ def build_launcher_command(host: HostCLI, nexos_root: Path, prompt: str) -> list
 
 def print_session_banner(host: HostCLI, nexos_root: Path) -> None:
     """Render a local bootstrap banner before handing control to the host CLI."""
-    console.print(
+    say(
         Panel(
             "[bold cyan]NEXOS v4.0[/]\n"
             f"Host CLI: [bold]{host.name}[/]\n"
@@ -281,7 +263,7 @@ def _prompt_choice(
             if 1 <= value <= max_index:
                 return value
         hint = " `b` = retour," if allow_back else ""
-        console.print(
+        say(
             f"[yellow]Choix invalide. Entre un nombre de 1 a {max_index},{hint} `q` = quitter.[/]"
         )
 
@@ -294,7 +276,7 @@ def _render_main_menu() -> str:
     for index, (mode, description) in enumerate(MODE_CHOICES, start=1):
         table.add_row(str(index), mode, description)
 
-    console.print(
+    say(
         Panel(
             table,
             title="[bold cyan]Menu principal NEXOS[/]",
@@ -310,8 +292,8 @@ def _render_host_menu(selected_mode: str, hosts: list[HostCLI]) -> HostCLI:
         selected_mode,
         ("codex", "Bon choix par defaut pour travailler dans le repo."),
     )
-    console.print("")
-    console.print(
+    say("")
+    say(
         Panel(
             f"[bold]Mode choisi:[/] {selected_mode}\n"
             f"[bold]Recommendation NEXOS:[/] {recommended_name}\n"
@@ -337,7 +319,7 @@ def _render_host_menu(selected_mode: str, hosts: list[HostCLI]) -> HostCLI:
             profile["faiblesses"],
         )
 
-    console.print(table)
+    say(table)
     recommended_index = next(
         (i for i, host in enumerate(hosts, start=1) if host.name == recommended_name),
         1,
@@ -352,8 +334,8 @@ def _confirm_selection(selected_mode: str, host: HostCLI) -> str:
         ("codex", "Bon choix par defaut pour travailler dans le repo."),
     )
     profile = HOST_PROFILES[host.name]
-    console.print("")
-    console.print(
+    say("")
+    say(
         Panel(
             f"[bold]Mode:[/] {selected_mode}\n"
             f"[bold]CLI hote:[/] {host.name}\n"
@@ -366,9 +348,9 @@ def _confirm_selection(selected_mode: str, host: HostCLI) -> str:
             border_style="cyan",
         )
     )
-    console.print("1. Lancer la session")
-    console.print("2. Revenir au choix du CLI")
-    console.print("3. Revenir au menu principal")
+    say("1. Lancer la session")
+    say("2. Revenir au choix du CLI")
+    say("3. Revenir au menu principal")
     try:
         choice = _prompt_choice(3, default_index=1, allow_back=True)
     except MenuBack:
@@ -400,7 +382,7 @@ def select_mode_and_host(explicit_host: Optional[str] = None) -> tuple[str, Host
                 if action == "mode":
                     break
                 if explicit_host:
-                    console.print("[yellow]CLI hote fixe via --host. Retour au menu principal.[/]")
+                    say("[yellow]CLI hote fixe via --host. Retour au menu principal.[/]")
                     break
     except MenuQuit:
         raise SystemExit(0)
@@ -416,7 +398,7 @@ def launch_session(
     prompt = build_mode_session_prompt(nexos_root, host.name, selected_mode)
 
     if print_prompt_only:
-        console.print(prompt, markup=False)
+        say(prompt, markup=False)
         return 0
 
     print_session_banner(host, nexos_root)

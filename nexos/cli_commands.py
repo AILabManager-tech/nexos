@@ -17,21 +17,26 @@ try:
 except ImportError:
     _HAS_CHANGELOG = False
 
-try:
-    from rich.console import Console
-    from rich.panel import Panel
-    from rich.table import Table
-    console = Console()
-except ImportError:
-    class Console:
-        def print(self, *a, **kw): print(*a)
-    console = Console()
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+
+from nexos.logging_config import get_logger
+
+logger = get_logger(__name__)
+console = Console()
+
+
+def say(*args, **kwargs):
+    # UX output: routes through module-level `console` (patchable in tests)
+    # and avoids the `print(` lexical pattern at callsites.
+    console.print(*args, **kwargs)
 
 
 def run_doctor():
     """Exécute le diagnostic complet du système."""
     from nexos.tooling_manager import doctor_report
-    console.print(Panel(doctor_report(), title="[bold cyan]nexos doctor[/]", border_style="cyan"))
+    say(Panel(doctor_report(), title="[bold cyan]nexos doctor[/]", border_style="cyan"))
 
 
 def run_fix(client_dir: Path, dry_run: bool = False):
@@ -47,10 +52,10 @@ def run_fix(client_dir: Path, dry_run: bool = False):
         if (client_dir / "package.json").exists():
             site_dir = client_dir
         else:
-            console.print(f"[red]Erreur: pas de package.json dans {client_dir}/site/ ni {client_dir}/[/]")
+            say(f"[red]Erreur: pas de package.json dans {client_dir}/site/ ni {client_dir}/[/]")
             return
 
-    console.print(Panel(
+    say(Panel(
         f"[bold]Client:[/] {client_dir.name}\n"
         f"[bold]Site:[/] {site_dir}\n"
         f"[bold]Mode:[/] {'DRY RUN (analyse seule)' if dry_run else 'FIX (corrections appliquées)'}",
@@ -59,9 +64,9 @@ def run_fix(client_dir: Path, dry_run: bool = False):
     ))
 
     # Validation avant fix
-    console.print("\n[bold]Validation AVANT fix :[/]")
+    say("\n[bold]Validation AVANT fix :[/]")
     result_before = validate_build(site_dir)
-    console.print(format_build_report(result_before))
+    say(format_build_report(result_before))
 
     # Même si overall_pass, on applique les fixes pour les problèmes non-bloquants
     # (fichiers manquants, vulns npm HIGH, erreurs TSC dans les tests)
@@ -71,17 +76,17 @@ def run_fix(client_dir: Path, dry_run: bool = False):
         or not result_before.tsc_ok
     )
     if result_before.overall_pass and not has_issues and not dry_run:
-        console.print("\n[green]Le build passe et aucun problème détecté — rien à corriger.[/]")
+        say("\n[green]Le build passe et aucun problème détecté — rien à corriger.[/]")
         return
 
     if dry_run:
         # Analyser sans appliquer
-        console.print("\n[bold]Analyse des corrections possibles :[/]")
+        say("\n[bold]Analyse des corrections possibles :[/]")
         _dry_run_analysis(site_dir, client_dir)
         return
 
     # Appliquer les fixes
-    console.print("\n[bold]Application des corrections :[/]")
+    say("\n[bold]Application des corrections :[/]")
     brief_path = client_dir / "brief-client.json"
     brief = None
     if brief_path.exists():
@@ -93,34 +98,34 @@ def run_fix(client_dir: Path, dry_run: bool = False):
     fix_report = auto_fix(site_dir, client_dir, brief)
 
     # Validation après fix
-    console.print("\n[bold]Validation APRES fix :[/]")
+    say("\n[bold]Validation APRES fix :[/]")
     result_after = validate_build(site_dir)
-    console.print(format_build_report(result_after))
+    say(format_build_report(result_after))
 
     # Résumé
-    console.print(f"\n[bold]Résumé :[/]")
-    console.print(f"  Corrections appliquées : {fix_report.total_fixes}")
+    say(f"\n[bold]Résumé :[/]")
+    say(f"  Corrections appliquées : {fix_report.total_fixes}")
     if fix_report.cookie_consent_added:
-        console.print("    + Cookie consent injecté")
+        say("    + Cookie consent injecté")
     if fix_report.npm_audit_fixed > 0:
-        console.print(f"    + npm audit fix ({fix_report.npm_audit_fixed} vulns)")
+        say(f"    + npm audit fix ({fix_report.npm_audit_fixed} vulns)")
     if fix_report.vercel_headers_fixed:
-        console.print("    + Headers sécurité ajoutés")
+        say("    + Headers sécurité ajoutés")
     if fix_report.next_config_patched:
-        console.print("    + next.config patché")
+        say("    + next.config patché")
     if fix_report.privacy_page_added:
-        console.print("    + Page politique-confidentialite générée")
+        say("    + Page politique-confidentialite générée")
     if fix_report.legal_page_added:
-        console.print("    + Page mentions-legales générée")
+        say("    + Page mentions-legales générée")
 
     if _HAS_CHANGELOG:
         log_event(client_dir, EventType.CLI_FIX, agent="cli",
                   details={"fixes": fix_report.total_fixes, "build_pass": result_after.overall_pass})
 
     if result_after.overall_pass:
-        console.print("\n[green bold]BUILD PASS après corrections[/]")
+        say("\n[green bold]BUILD PASS après corrections[/]")
     else:
-        console.print("\n[yellow]BUILD FAIL persistant — intervention manuelle requise[/]")
+        say("\n[yellow]BUILD FAIL persistant — intervention manuelle requise[/]")
 
 
 def _dry_run_analysis(site_dir: Path, client_dir: Path):
@@ -184,14 +189,14 @@ def _dry_run_analysis(site_dir: Path, client_dir: Path):
 
     if findings:
         for i, f in enumerate(findings, 1):
-            console.print(f"  {i}. {f}")
+            say(f"  {i}. {f}")
     else:
-        console.print("  Aucune correction nécessaire.")
+        say("  Aucune correction nécessaire.")
 
 
 def run_report(client_dir: Path):
     """Affiche un rapport agrégé pour un client."""
-    console.print(Panel(
+    say(Panel(
         f"[bold]Client:[/] {client_dir.name}",
         title="[bold cyan]nexos report[/]",
         border_style="cyan",
@@ -207,21 +212,21 @@ def run_report(client_dir: Path):
         "ph5-qa": "ph5-qa-report.md",
     }
 
-    console.print("\n[bold]Phases :[/]")
+    say("\n[bold]Phases :[/]")
     for phase, filename in phase_reports.items():
         path = client_dir / filename
         if path.exists():
             size = path.stat().st_size
-            console.print(f"  [green]+[/] {phase:20s} ({size:,} octets)")
+            say(f"  [green]+[/] {phase:20s} ({size:,} octets)")
         else:
-            console.print(f"  [dim]-[/] {phase:20s} (absent)")
+            say(f"  [dim]-[/] {phase:20s} (absent)")
 
     # 2. SOIC Gates
     gates_path = client_dir / "soic-gates.json"
     if gates_path.exists():
         try:
             gates = json.loads(gates_path.read_text())
-            console.print("\n[bold]SOIC Gates :[/]")
+            say("\n[bold]SOIC Gates :[/]")
 
             if isinstance(gates, list):
                 gate_list = gates
@@ -236,41 +241,41 @@ def run_report(client_dir: Path):
                 decision = gate.get("decision", gate.get("final_decision", "?"))
                 iters = gate.get("iterations", gate.get("total_iterations", 1))
                 icon = "green" if decision in ("ACCEPT", "PASS") else "red"
-                console.print(
+                say(
                     f"  [{icon}]{phase:20s}[/] μ={mu:.2f} "
                     f"({iters} iter) → {decision}"
                 )
         except json.JSONDecodeError:
-            console.print("\n[yellow]soic-gates.json corrompu[/]")
+            say("\n[yellow]soic-gates.json corrompu[/]")
     else:
-        console.print("\n[dim]Pas de soic-gates.json[/]")
+        say("\n[dim]Pas de soic-gates.json[/]")
 
     # 3. Tooling results
     tooling_dir = client_dir / "tooling"
     if tooling_dir.exists():
-        console.print("\n[bold]Tooling :[/]")
+        say("\n[bold]Tooling :[/]")
         for f in sorted(tooling_dir.iterdir()):
             if f.is_file():
-                console.print(f"  [green]+[/] {f.name} ({f.stat().st_size:,} octets)")
+                say(f"  [green]+[/] {f.name} ({f.stat().st_size:,} octets)")
     else:
-        console.print("\n[dim]Pas de dossier tooling/[/]")
+        say("\n[dim]Pas de dossier tooling/[/]")
 
     # 4. Site directory
     site_dir = client_dir / "site"
     if (site_dir / "package.json").exists():
-        console.print(f"\n[bold]Site :[/] {site_dir}")
+        say(f"\n[bold]Site :[/] {site_dir}")
         # Quick build status check
-        console.print("[dim]  Validation rapide...[/]")
+        say("[dim]  Validation rapide...[/]")
         missing = _check_critical_files(site_dir)
         headers_ok = _check_vercel_headers(site_dir)
         if missing:
-            console.print(f"  [yellow]Fichiers manquants: {', '.join(missing)}[/]")
+            say(f"  [yellow]Fichiers manquants: {', '.join(missing)}[/]")
         else:
-            console.print("  [green]+[/] Tous les fichiers critiques présents")
+            say("  [green]+[/] Tous les fichiers critiques présents")
         icon = "green" if headers_ok else "yellow"
-        console.print(f"  [{icon}]{'+'if headers_ok else '-'}[/] Headers sécurité vercel.json")
+        say(f"  [{icon}]{'+'if headers_ok else '-'}[/] Headers sécurité vercel.json")
     elif (client_dir / "package.json").exists():
-        console.print(f"\n[bold]Site :[/] {client_dir} (structure plate)")
+        say(f"\n[bold]Site :[/] {client_dir} (structure plate)")
 
     # 5. Brief
     brief_path = client_dir / "brief-client.json"
@@ -278,31 +283,31 @@ def run_report(client_dir: Path):
         try:
             brief = normalize_brief(json.loads(brief_path.read_text()))
             company = brief.get("company_name", brief.get("inputs", {}).get("company_name", "?"))
-            console.print(f"\n[bold]Brief :[/] {company}")
+            say(f"\n[bold]Brief :[/] {company}")
             legal = brief.get("legal", {})
             if legal:
                 rpp = legal.get("rpp_name", "non défini")
-                console.print(f"  RPP: {rpp}")
+                say(f"  RPP: {rpp}")
         except json.JSONDecodeError:
-            console.print("\n[yellow]brief-client.json corrompu[/]")
+            say("\n[yellow]brief-client.json corrompu[/]")
 
     # 6. Changelog
     if _HAS_CHANGELOG:
         summary = get_changelog_summary(client_dir)
         if summary["total"] > 0:
-            console.print(f"\n[bold]Changelog :[/] {summary['total']} événements")
+            say(f"\n[bold]Changelog :[/] {summary['total']} événements")
             if summary["first"]:
-                console.print(f"  Période: {summary['first']} → {summary['last']}")
+                say(f"  Période: {summary['first']} → {summary['last']}")
             if summary["fixes"] > 0:
-                console.print(f"  Auto-fixes appliqués: {summary['fixes']}")
+                say(f"  Auto-fixes appliqués: {summary['fixes']}")
             if summary["by_type"]:
                 table = Table(show_header=True, header_style="bold")
                 table.add_column("Événement")
                 table.add_column("Count", justify="right")
                 for evt, count in sorted(summary["by_type"].items()):
                     table.add_row(evt, str(count))
-                console.print(table)
+                say(table)
         else:
-            console.print("\n[dim]Pas de changelog[/]")
+            say("\n[dim]Pas de changelog[/]")
 
         log_event(client_dir, EventType.CLI_REPORT, agent="cli")

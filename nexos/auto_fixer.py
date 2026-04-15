@@ -18,15 +18,9 @@ from datetime import datetime
 from pathlib import Path
 
 from nexos.brief_contract import normalize_brief
+from nexos.logging_config import get_logger
 
-try:
-    from rich.console import Console
-    console = Console()
-except ImportError:
-    class Console:
-        def print(self, *a, **kw): print(*a)
-    console = Console()
-
+logger = get_logger(__name__)
 
 try:
     from nexos.changelog import log_event, EventType
@@ -113,7 +107,7 @@ def _fix_cookie_consent(site_dir: Path, report: FixReport):
         components_dir.mkdir(parents=True, exist_ok=True)
         consent_file = components_dir / "cookie-consent.tsx"
         shutil.copy2(template_src, consent_file)
-        console.print("[dim]    cookie-consent.tsx copié dans src/components/[/]")
+        logger.info("cookie-consent.tsx copied to src/components/")
 
     # 3. Trouver le layout.tsx principal
     layout_candidates = [
@@ -163,7 +157,7 @@ def _fix_cookie_consent(site_dir: Path, report: FixReport):
         )
         layout_path.write_text(layout_content)
         report.cookie_consent_added = True
-        console.print("[dim]    CookieConsent injecté dans layout.tsx[/]")
+        logger.info("CookieConsent injected into layout.tsx")
 
 
 def _fix_npm_audit(site_dir: Path, report: FixReport):
@@ -200,7 +194,7 @@ def _fix_vercel_headers(site_dir: Path, report: FixReport):
         if template_path.exists():
             shutil.copy2(template_path, vercel_path)
             report.vercel_headers_fixed = True
-            console.print("[dim]    vercel.json créé depuis template[/]")
+            logger.info("vercel.json created from template")
         return
 
     # Charger le JSON existant
@@ -240,7 +234,7 @@ def _fix_vercel_headers(site_dir: Path, report: FixReport):
     if added:
         vercel_path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
         report.vercel_headers_fixed = True
-        console.print("[dim]    Headers sécurité ajoutés à vercel.json[/]")
+        logger.info("Security headers added to vercel.json")
 
 
 def _fix_next_config(site_dir: Path, report: FixReport):
@@ -265,7 +259,7 @@ def _fix_next_config(site_dir: Path, report: FixReport):
             )
             config_path.write_text(content)
             report.next_config_patched = True
-            console.print("[dim]    poweredByHeader changé à false[/]")
+            logger.info("poweredByHeader switched to false")
         return
 
     # Ajouter poweredByHeader: false après le premier { du nextConfig
@@ -277,7 +271,7 @@ def _fix_next_config(site_dir: Path, report: FixReport):
         content = content[:insert_pos] + "\n  poweredByHeader: false," + content[insert_pos:]
         config_path.write_text(content)
         report.next_config_patched = True
-        console.print("[dim]    poweredByHeader: false ajouté à next.config[/]")
+        logger.info("poweredByHeader: false added to next.config")
 
 
 def _fix_privacy_page(site_dir: Path, brief: dict, report: FixReport):
@@ -332,7 +326,7 @@ def _fix_privacy_page(site_dir: Path, brief: dict, report: FixReport):
     page_tsx = _generate_legal_page_tsx(template, "Politique de confidentialite")
     (target_dir / "page.tsx").write_text(page_tsx)
     report.privacy_page_added = True
-    console.print("[dim]    Page politique-confidentialite generee[/]")
+    logger.info("Privacy policy page generated")
 
 
 def _fix_legal_page(site_dir: Path, brief: dict, report: FixReport):
@@ -379,7 +373,7 @@ def _fix_legal_page(site_dir: Path, brief: dict, report: FixReport):
     page_tsx = _generate_legal_page_tsx(template, "Mentions legales")
     (target_dir / "page.tsx").write_text(page_tsx)
     report.legal_page_added = True
-    console.print("[dim]    Page mentions-legales generee[/]")
+    logger.info("Legal mentions page generated")
 
 
 def _generate_legal_page_tsx(markdown_content: str, title: str) -> str:
@@ -489,7 +483,7 @@ def auto_fix(site_dir: Path, client_dir: Path, brief: dict | None = None) -> Fix
     else:
         brief = normalize_brief(brief)
 
-    console.print("[cyan]  Auto-fix D4/D8 en cours...[/]")
+    logger.info("Auto-fix D4/D8 starting")
 
     if _HAS_CHANGELOG:
         log_event(client_dir, EventType.AUTOFIX_START, agent="auto_fixer")
@@ -504,7 +498,7 @@ def auto_fix(site_dir: Path, client_dir: Path, brief: dict | None = None) -> Fix
     if _HAS_CHANGELOG:
         _log_applied_fixes(client_dir, report)
 
-    console.print(f"[cyan]  Auto-fix terminé: {report.total_fixes} correction(s)[/]")
+    logger.info("Auto-fix complete: %d fix(es)", report.total_fixes)
     return report
 
 

@@ -32,9 +32,15 @@ def main(argv: list[str] | None = None) -> int:
     safer than exec(open().read()) since runpy compiles, sets __name__
     correctly, and does not pollute the caller namespace).
     """
-    import orchestrator
+    from nexos.config import settings
+    from nexos.logging_config import configure_logging, get_logger
+    configure_logging(settings.log_level)
 
+    log = get_logger("nexos.cli")
     argv = argv if argv is not None else sys.argv[1:]
+    log.debug("nexos cli start argv=%s log_level=%s", argv, settings.log_level)
+
+    import orchestrator
 
     runner = getattr(orchestrator, "main", None)
     if callable(runner):

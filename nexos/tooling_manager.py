@@ -9,14 +9,9 @@ import re
 import subprocess
 from typing import Optional
 
-try:
-    from rich.console import Console
-    from rich.table import Table
-    console = Console()
-except ImportError:
-    class Console:
-        def print(self, *a, **kw): print(*a)
-    console = Console()
+from nexos.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 # ── Outils requis ────────────────────────────────────────────────────
@@ -128,10 +123,10 @@ def ensure_tooling(interactive: bool = True) -> dict[str, bool]:
         if not available:
             if tool["critical"]:
                 missing_critical.append(name)
-                console.print(f"[red]  ERREUR: {name} non trouvé — {tool['install']}[/]")
+                logger.error("Critical tool missing: %s — install: %s", name, tool["install"])
             else:
                 missing_optional.append(name)
-                console.print(f"[yellow]  WARNING: {name} non trouvé — {tool['install']}[/]")
+                logger.warning("Optional tool missing: %s — install: %s", name, tool["install"])
 
     if missing_critical:
         raise RuntimeError(
@@ -140,13 +135,13 @@ def ensure_tooling(interactive: bool = True) -> dict[str, bool]:
         )
 
     if missing_optional and interactive:
-        console.print("\n[cyan]Outils optionnels manquants. Installer ? (npm i -g ...)[/]")
+        logger.info("Optional tools missing — interactive install prompt")
         for name in missing_optional:
             tool = REQUIRED_TOOLS[name]
             try:
                 answer = input(f"  Installer {name} ? [O/n] ").strip().lower()
                 if answer in ("", "o", "oui", "y", "yes"):
-                    console.print(f"  Installation de {name}...")
+                    logger.info("Installing %s via npm -g", name)
                     # SAFE: `name` is a key of REQUIRED_TOOLS (a hardcoded
                     # constant), never user-supplied. argv list + shell=False.
                     subprocess.run(
@@ -155,9 +150,9 @@ def ensure_tooling(interactive: bool = True) -> dict[str, bool]:
                         check=True,
                     )
                     results[name] = True
-                    console.print(f"[green]  {name} installé.[/]")
+                    logger.info("%s installed", name)
             except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
-                console.print(f"[yellow]  Échec installation {name}: {e}[/]")
+                logger.warning("Install failed for %s: %s", name, e)
 
     return results
 

@@ -6,8 +6,8 @@ machine) disséminés dans le code par une config portable.
 
 Usage:
     from nexos.config import settings
-    print(settings.repo_root)
-    print(settings.workspace_root)
+    >>> settings.repo_root
+    >>> settings.workspace_root
 
 Variables lues depuis l'environnement (ou .env si python-dotenv est installé) :
     NEXOS_REPO_ROOT        : racine du repo (défaut: auto-détectée)

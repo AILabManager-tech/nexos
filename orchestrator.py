@@ -40,17 +40,21 @@ try:
 except ImportError:
     _HAS_AUDIT_TOOLKIT = False
 
-try:
-    from rich.console import Console
-    from rich.panel import Panel
-    from rich.table import Table
-    from rich.progress import Progress, SpinnerColumn, TextColumn
-    console = Console()
-except ImportError:
-    # Fallback si rich n'est pas installé
-    class Console:
-        def print(self, *a, **kw): print(*a)
-    console = Console()
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+from rich.progress import Progress, SpinnerColumn, TextColumn
+
+from nexos.logging_config import get_logger
+
+logger = get_logger(__name__)
+console = Console()
+
+
+def say(*args, **kwargs):
+    # UX output: routes through module-level `console` (patchable in tests)
+    # and avoids the `print(` lexical pattern at callsites.
+    console.print(*args, **kwargs)
 
 NEXOS_ROOT = Path(__file__).parent.resolve()
 CLIENTS_DIR = NEXOS_ROOT / "clients"
@@ -135,7 +139,7 @@ def generate_brief(mode: str, answers: dict, free_text: str = "") -> Path:
     brief_path = client_dir / "brief-client.json"
     brief_path.write_text(json.dumps(brief, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    console.print(f"[green]✓[/] Brief généré : {brief_path}")
+    say(f"[green]✓[/] Brief généré : {brief_path}")
 
     if _HAS_CHANGELOG:
         log_event(client_dir, EventType.BRIEF_CREATED, agent="orchestrator",
@@ -167,7 +171,7 @@ def generate_brief_from_wizard(mode: str, brief_data: dict) -> Path:
         json.dumps(brief_data, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
-    console.print(f"[green]✓[/] Brief wizard généré : {brief_path}")
+    say(f"[green]✓[/] Brief wizard généré : {brief_path}")
     return client_dir
 
 
@@ -510,11 +514,11 @@ def build_phase_prompt(phase: str, client_dir: Path, stack: str = "nextjs", site
 
 def run_preflight_tooling(client_dir: Path, url: str) -> bool:
     """Exécute les outils CLI de mesure AVANT les agents LLM."""
-    console.print("\n[bold cyan]⚡ TOOLING PREFLIGHT[/]")
+    say("\n[bold cyan]⚡ TOOLING PREFLIGHT[/]")
 
     preflight_script = TOOLS_DIR / "preflight.sh"
     if not preflight_script.exists():
-        console.print("[yellow]⚠ tools/preflight.sh non trouvé — skip tooling[/]")
+        say("[yellow]⚠ tools/preflight.sh non trouvé — skip tooling[/]")
         return True
 
     try:
@@ -526,17 +530,17 @@ def run_preflight_tooling(client_dir: Path, url: str) -> bool:
             text=True,
         )
         if result.returncode == 0:
-            console.print("[green]✓[/] Tooling preflight terminé")
+            say("[green]✓[/] Tooling preflight terminé")
         else:
-            console.print(f"[yellow]⚠[/] Tooling preflight partiel (code {result.returncode})")
+            say(f"[yellow]⚠[/] Tooling preflight partiel (code {result.returncode})")
             if result.stderr:
-                console.print(f"[dim]{result.stderr[:500]}[/]")
+                say(f"[dim]{result.stderr[:500]}[/]")
         return True
     except subprocess.TimeoutExpired:
-        console.print("[yellow]⚠ Tooling timeout (120s) — skip[/]")
+        say("[yellow]⚠ Tooling timeout (120s) — skip[/]")
         return True
     except Exception as e:
-        console.print(f"[red]✗ Tooling error: {e}[/]")
+        say(f"[red]✗ Tooling error: {e}[/]")
         return True  # Non-bloquant
 
 
@@ -560,7 +564,7 @@ def run_soic_gate(phase: str, client_dir: Path, profile=None) -> tuple[bool, flo
         passed = mu >= threshold
         return passed, mu
     except Exception as e:
-        console.print(f"[yellow]⚠ SOIC gate error: {e} — FAIL (score inconnu)[/]")
+        say(f"[yellow]⚠ SOIC gate error: {e} — FAIL (score inconnu)[/]")
         return False, 0.0
 
 
@@ -608,7 +612,7 @@ def run_codex_cli(prompt: str, cwd: str, log_path: Path) -> int:
                 log.write(line)
                 # Check timeout between lines
                 if time.monotonic() > deadline:
-                    console.print(
+                    say(
                         f"\n[red]⚠ Codex CLI timeout ({_CODEX_CLI_TIMEOUT // 60}min) — interruption[/]"
                     )
                     process.terminate()
@@ -622,18 +626,18 @@ def run_codex_cli(prompt: str, cwd: str, log_path: Path) -> int:
         return process.returncode
 
     except FileNotFoundError:
-        console.print(
+        say(
             "[red bold]Codex CLI non trouvé.[/]\n"
             "Installe-le avec: [cyan]npm install -g @openai/codex[/]"
         )
         return 1
     except KeyboardInterrupt:
-        console.print("\n[yellow]⚠ Interrompu par l'utilisateur[/]")
+        say("\n[yellow]⚠ Interrompu par l'utilisateur[/]")
         if process:
             process.terminate()
         return 130
     except subprocess.TimeoutExpired:
-        console.print("\n[red]⚠ Codex CLI process.wait() timeout — kill[/]")
+        say("\n[red]⚠ Codex CLI process.wait() timeout — kill[/]")
         if process:
             process.kill()
         return 124
@@ -676,26 +680,26 @@ def run_preflight(site_dir: Path, client_dir: Path) -> dict[str, Path]:
 
     # 1. Verify build dir
     if not (site_dir / "package.json").exists():
-        console.print(f"[yellow]⚠ Pas de package.json dans {site_dir} — skip preflight[/]")
+        say(f"[yellow]⚠ Pas de package.json dans {site_dir} — skip preflight[/]")
         return results
 
     # 2. Build if needed
     next_dir = site_dir / ".next"
     if not next_dir.exists():
-        console.print("[cyan]  Building site (npm run build)...[/]")
+        say("[cyan]  Building site (npm run build)...[/]")
         try:
             subprocess.run(
                 ["npm", "run", "build"], cwd=str(site_dir),
                 timeout=180, capture_output=True, text=True,
             )
         except (subprocess.TimeoutExpired, FileNotFoundError) as e:
-            console.print(f"[yellow]⚠ Build failed: {e} — skip preflight[/]")
+            say(f"[yellow]⚠ Build failed: {e} — skip preflight[/]")
             return results
 
     # 3. Start local Next.js server
     port = _find_free_port()
     local_url = f"http://localhost:{port}"
-    console.print(f"[cyan]  Starting Next.js on port {port}...[/]")
+    say(f"[cyan]  Starting Next.js on port {port}...[/]")
     server_proc = None
     try:
         server_proc = subprocess.Popen(
@@ -713,22 +717,22 @@ def run_preflight(site_dir: Path, client_dir: Path) -> dict[str, Path]:
             except OSError:
                 continue
         else:
-            console.print("[yellow]⚠ Server did not start in 30s — skip preflight[/]")
+            say("[yellow]⚠ Server did not start in 30s — skip preflight[/]")
             return results
 
-        console.print(f"[green]  ✓ Server ready at {local_url}[/]")
+        say(f"[green]  ✓ Server ready at {local_url}[/]")
 
         # 4. Run scan scripts
         preflight_start = time.monotonic()
         for script_name, output_file, timeout in _SCAN_SCRIPTS:
             elapsed = time.monotonic() - preflight_start
             if elapsed >= _PREFLIGHT_TOTAL_TIMEOUT:
-                console.print("[yellow]⚠ Preflight total timeout (5min) — stopping scans[/]")
+                say("[yellow]⚠ Preflight total timeout (5min) — stopping scans[/]")
                 break
 
             script_path = TOOLS_DIR / script_name
             if not script_path.exists():
-                console.print(f"[dim]  ⊘ {script_name} not found — skip[/]")
+                say(f"[dim]  ⊘ {script_name} not found — skip[/]")
                 continue
 
             output_path = tooling_dir / output_file
@@ -743,13 +747,13 @@ def run_preflight(site_dir: Path, client_dir: Path) -> dict[str, Path]:
                     output_path.write_text(proc.stdout, encoding="utf-8")
                 if output_path.exists() and output_path.stat().st_size > 0:
                     results[script_name] = output_path
-                    console.print(f"[green]  ✓ {script_name} → {output_file}[/]")
+                    say(f"[green]  ✓ {script_name} → {output_file}[/]")
                 else:
-                    console.print(f"[yellow]  ⚠ {script_name} ran but no output[/]")
+                    say(f"[yellow]  ⚠ {script_name} ran but no output[/]")
             except subprocess.TimeoutExpired:
-                console.print(f"[yellow]  ⚠ {script_name} timeout ({timeout}s)[/]")
+                say(f"[yellow]  ⚠ {script_name} timeout ({timeout}s)[/]")
             except Exception as e:
-                console.print(f"[yellow]  ⚠ {script_name} error: {e}[/]")
+                say(f"[yellow]  ⚠ {script_name} error: {e}[/]")
 
         # 5. Deps scan (doesn't need running server)
         deps_script = TOOLS_DIR / "deps-scan.sh"
@@ -763,9 +767,9 @@ def run_preflight(site_dir: Path, client_dir: Path) -> dict[str, Path]:
                 deps_out = tooling_dir / "deps.json"
                 if deps_out.exists():
                     results["deps-scan.sh"] = deps_out
-                    console.print(f"[green]  ✓ deps-scan.sh → deps.json[/]")
+                    say(f"[green]  ✓ deps-scan.sh → deps.json[/]")
             except Exception as e:
-                console.print(f"[yellow]  ⚠ deps-scan.sh error: {e}[/]")
+                say(f"[yellow]  ⚠ deps-scan.sh error: {e}[/]")
 
     finally:
         # 6. Kill server
@@ -778,9 +782,9 @@ def run_preflight(site_dir: Path, client_dir: Path) -> dict[str, Path]:
                     os.killpg(os.getpgid(server_proc.pid), signal.SIGKILL)
                 except ProcessLookupError:
                     pass
-            console.print("[dim]  Server stopped[/]")
+            say("[dim]  Server stopped[/]")
 
-    console.print(f"[cyan]  Preflight: {len(results)}/{len(_SCAN_SCRIPTS)+1} scans completed[/]")
+    say(f"[cyan]  Preflight: {len(results)}/{len(_SCAN_SCRIPTS)+1} scans completed[/]")
     return results
 
 
@@ -848,26 +852,26 @@ def verify_phase_output(phase: str, client_dir: Path) -> bool:
     - Le contenu ne contient pas de patterns d'erreur critiques
     """
     if phase not in OUTPUT_MAP:
-        console.print(f"[yellow]⚠ Phase {phase} non reconnue dans OUTPUT_MAP — skip validation[/]")
+        say(f"[yellow]⚠ Phase {phase} non reconnue dans OUTPUT_MAP — skip validation[/]")
         return True
 
     output_file = client_dir / OUTPUT_MAP[phase]
     if not output_file.exists():
-        console.print(f"[red]✗ Phase {phase} n'a pas produit de rapport ({output_file.name})[/]")
+        say(f"[red]✗ Phase {phase} n'a pas produit de rapport ({output_file.name})[/]")
         return False
 
     content = output_file.read_text(encoding="utf-8", errors="replace")
     size = len(content.encode("utf-8"))
 
     if size < 500:
-        console.print(f"[red]✗ Phase {phase} rapport trop court ({size} octets < 500)[/]")
+        say(f"[red]✗ Phase {phase} rapport trop court ({size} octets < 500)[/]")
         return False
 
     # Check for error patterns in the first 2000 chars
     head = content[:2000]
     match = _ERROR_PATTERNS.search(head)
     if match:
-        console.print(
+        say(
             f"[red]✗ Phase {phase} rapport contient une erreur : {match.group()!r}[/]"
         )
         return False
@@ -881,12 +885,12 @@ def verify_phase_output(phase: str, client_dir: Path) -> bool:
             brief = None
     intake_issues = _validate_phase_against_intake(phase, content, brief)
     if intake_issues:
-        console.print(
+        say(
             f"[red]✗ Phase {phase} rapport hors cadrage mission.intake : {intake_issues[0]}[/]"
         )
         return False
 
-    console.print(f"[green]✓ Phase {phase} rapport valide ({size} octets)[/]")
+    say(f"[green]✓ Phase {phase} rapport valide ({size} octets)[/]")
     return True
 
 
@@ -944,7 +948,7 @@ def run_pipeline(mode: str, client_dir: Path, url: Optional[str] = None, profile
     if _NEXOS_V4:
         ensure_tooling(interactive=False)
 
-    console.print(Panel(
+    say(Panel(
         f"[bold]Mode:[/] {mode}\n"
         f"[bold]Client:[/] {client_dir.name}\n"
         f"[bold]Phases:[/] {' → '.join(phases)}",
@@ -957,9 +961,9 @@ def run_pipeline(mode: str, client_dir: Path, url: Optional[str] = None, profile
                   details={"mode": mode, "phases": phases})
 
     for i, phase in enumerate(phases):
-        console.print(f"\n[bold]{'━'*60}[/]")
-        console.print(f"[bold cyan]PHASE {i}: {phase.upper()}[/]")
-        console.print(f"[bold]{'━'*60}[/]\n")
+        say(f"\n[bold]{'━'*60}[/]")
+        say(f"[bold cyan]PHASE {i}: {phase.upper()}[/]")
+        say(f"[bold]{'━'*60}[/]\n")
 
         if _HAS_CHANGELOG:
             log_event(client_dir, EventType.PHASE_START, phase=phase, agent="orchestrator")
@@ -975,21 +979,21 @@ def run_pipeline(mode: str, client_dir: Path, url: Optional[str] = None, profile
             brief = load_runtime_brief(brief_path, mode=mode) if brief_path.exists() else None
             fix_report = auto_fix(site_dir, client_dir, brief)
             if fix_report.total_fixes > 0:
-                console.print(f"[cyan]  Auto-fix: {fix_report.total_fixes} corrections appliquées[/]")
+                say(f"[cyan]  Auto-fix: {fix_report.total_fixes} corrections appliquées[/]")
 
         # Preflight tooling avant ph5
         if phase == "ph5-qa":
-            console.print("[bold cyan]⚡ PREFLIGHT TOOLING[/]")
+            say("[bold cyan]⚡ PREFLIGHT TOOLING[/]")
             if site_dir is not None:
                 run_preflight(site_dir, client_dir)
             elif url:
                 run_preflight_tooling(client_dir, url)
             else:
-                console.print("[yellow]⚠ Pas de site_dir ni URL — preflight skip[/]")
+                say("[yellow]⚠ Pas de site_dir ni URL — preflight skip[/]")
 
         # NEXOS v4.0 — Audit Toolkit source-code scan (post-preflight)
         if phase == "ph5-qa" and _HAS_AUDIT_TOOLKIT and site_dir:
-            console.print("[bold cyan]🔍 AUDIT TOOLKIT — Source Code Scan[/]")
+            say("[bold cyan]🔍 AUDIT TOOLKIT — Source Code Scan[/]")
             try:
                 toolkit_config = _ToolkitConfig(
                     target_url=url or "",
@@ -1005,7 +1009,7 @@ def run_pipeline(mode: str, client_dir: Path, url: Optional[str] = None, profile
                     json.dumps(generate_json(audit_report), indent=2, ensure_ascii=False),
                     encoding="utf-8",
                 )
-                console.print(
+                say(
                     f"  μ={audit_report.composite_score}/10 | "
                     f"{audit_report.total_issues} issues | "
                     f"CRITICAL/HIGH: {len(audit_report.critical_issues)}"
@@ -1013,7 +1017,7 @@ def run_pipeline(mode: str, client_dir: Path, url: Optional[str] = None, profile
                 dims = audit_report.to_dimension_scores()
                 if dims:
                     dim_str = " ".join(f"{k}={v}" for k, v in sorted(dims.items()))
-                    console.print(f"  Dimensions: {dim_str}")
+                    say(f"  Dimensions: {dim_str}")
                 if _HAS_CHANGELOG:
                     log_event(client_dir, EventType.TOOLING_COMPLETE,
                               phase=phase, agent="audit_toolkit",
@@ -1021,7 +1025,7 @@ def run_pipeline(mode: str, client_dir: Path, url: Optional[str] = None, profile
                                        "total_issues": audit_report.total_issues,
                                        "dimensions": dims})
             except Exception as e:
-                console.print(f"[yellow]⚠ Audit Toolkit error: {e}[/]")
+                say(f"[yellow]⚠ Audit Toolkit error: {e}[/]")
                 if _HAS_CHANGELOG:
                     log_event(client_dir, EventType.TOOLING_ERROR,
                               phase=phase, agent="audit_toolkit",
@@ -1041,7 +1045,7 @@ def run_pipeline(mode: str, client_dir: Path, url: Optional[str] = None, profile
         returncode = run_codex_cli(prompt, str(NEXOS_ROOT), log_path)
 
         if returncode != 0:
-            console.print(f"[red]✗ Phase {phase} échouée (code {returncode})[/]")
+            say(f"[red]✗ Phase {phase} échouée (code {returncode})[/]")
             if _HAS_CHANGELOG:
                 log_event(client_dir, EventType.PHASE_FAIL, phase=phase, agent="orchestrator",
                           details={"returncode": returncode})
@@ -1050,7 +1054,7 @@ def run_pipeline(mode: str, client_dir: Path, url: Optional[str] = None, profile
         # Vérifier que l'output existe et est valide
         if phase in OUTPUT_MAP:
             if not verify_phase_output(phase, client_dir):
-                console.print(f"[red]✗ Phase {phase} n'a pas produit de rapport valide — ARRÊT[/]")
+                say(f"[red]✗ Phase {phase} n'a pas produit de rapport valide — ARRÊT[/]")
                 if _HAS_CHANGELOG:
                     log_event(client_dir, EventType.PHASE_FAIL, phase=phase, agent="orchestrator",
                               details={"reason": "missing_output"})
@@ -1070,17 +1074,17 @@ def run_pipeline(mode: str, client_dir: Path, url: Optional[str] = None, profile
                     build_ok = build_result.overall_pass
                     if not build_ok:
                         # Tenter auto-fix puis re-valider
-                        console.print("[cyan]  Build FAIL — tentative auto-fix...[/]")
+                        say("[cyan]  Build FAIL — tentative auto-fix...[/]")
                         brief_path = client_dir / "brief-client.json"
                         brief = load_runtime_brief(brief_path, mode=mode) if brief_path.exists() else None
                         fix_report = auto_fix(site_dir, client_dir, brief)
-                        console.print(f"[cyan]  Auto-fix: {fix_report.total_fixes} corrections[/]")
+                        say(f"[cyan]  Auto-fix: {fix_report.total_fixes} corrections[/]")
                         if _HAS_CHANGELOG:
                             log_event(client_dir, EventType.AUTOFIX_END, phase=phase,
                                       agent="auto_fixer", details=_fix_report_to_dict(fix_report))
                         build_result = validate_build(site_dir)
                         build_ok = build_result.overall_pass
-                    console.print(format_build_report(build_result))
+                    say(format_build_report(build_result))
                     if _HAS_CHANGELOG:
                         evt = EventType.BUILD_PASS if build_ok else EventType.BUILD_FAIL
                         log_event(client_dir, evt, phase=phase, agent="build_validator")
@@ -1099,9 +1103,9 @@ def run_pipeline(mode: str, client_dir: Path, url: Optional[str] = None, profile
                     "timestamp": datetime.now().isoformat(),
                 })
                 if not build_ok:
-                    console.print(f"[red]✗ BUILD FAIL — ARRÊT[/]")
+                    say(f"[red]✗ BUILD FAIL — ARRÊT[/]")
                     break
-                console.print(f"[green]✓ BUILD PASS[/]")
+                say(f"[green]✓ BUILD PASS[/]")
                 continue
 
             # Convergence loop via PhaseIterator
@@ -1130,12 +1134,12 @@ def run_pipeline(mode: str, client_dir: Path, url: Optional[str] = None, profile
                 decision = result.decision.value
                 mu = result.report.mu
                 cov = result.report.coverage
-                console.print(
+                say(
                     f"  [bold]Iteration {iteration}:[/] μ={mu:.2f} "
                     f"(coverage={cov:.0%}) → {decision}"
                 )
 
-            console.print(f"\n[bold cyan]🔄 SOIC Convergence Loop ({phase})[/]")
+            say(f"\n[bold cyan]🔄 SOIC Convergence Loop ({phase})[/]")
             loop = iterator.run(rerun_phase=ctx.rerun, on_iteration=_on_iteration)
 
             gate_history.append({
@@ -1156,17 +1160,17 @@ def run_pipeline(mode: str, client_dir: Path, url: Optional[str] = None, profile
                                    "iterations": loop.total_iterations})
 
             if loop.converged:
-                console.print(
+                say(
                     f"[green]✓ SOIC GATE: μ={loop.final_mu:.2f} ≥ {threshold} "
                     f"— ACCEPT ({loop.total_iterations} iter)[/]"
                 )
             else:
-                console.print(
+                say(
                     f"[red]✗ SOIC GATE: μ={loop.final_mu:.2f} < {threshold} "
                     f"— {loop.final_decision.value} ({loop.total_iterations} iter)[/]"
                 )
                 if loop.abort_reason:
-                    console.print(f"[red]  Raison: {loop.abort_reason}[/]")
+                    say(f"[red]  Raison: {loop.abort_reason}[/]")
                 break
 
     # Sauvegarder l'historique des gates (enrichi avec convergence)
@@ -1177,7 +1181,7 @@ def run_pipeline(mode: str, client_dir: Path, url: Optional[str] = None, profile
         log_event(client_dir, EventType.PIPELINE_END, agent="orchestrator",
                   details={"gates": len(gate_history), "mode": mode})
 
-    console.print(Panel(
+    say(Panel(
         f"[green]Pipeline terminé[/]\n"
         f"[dim]Client: {client_dir}[/]\n"
         f"[dim]Gates: {len(gate_history)} évaluées[/]",
@@ -1226,7 +1230,7 @@ def run_converge(
     elif not (client_dir / "package.json").exists():
         site_dir = None
 
-    console.print(Panel(
+    say(Panel(
         f"[bold]Mode:[/] converge\n"
         f"[bold]Client:[/] {client_dir.name}\n"
         f"[bold]Target:[/] μ ≥ {target}\n"
@@ -1239,14 +1243,14 @@ def run_converge(
 
     if dry_run:
         # ── Single evaluation mode ──────────────────────────────────────────
-        console.print(f"\n[bold cyan]⚡ Evaluation SOIC — {phase}[/]\n")
+        say(f"\n[bold cyan]⚡ Evaluation SOIC — {phase}[/]\n")
 
         # Preflight if site available
         if site_dir is not None and (site_dir / "package.json").exists():
-            console.print("[bold cyan]⚡ PREFLIGHT TOOLING[/]")
+            say("[bold cyan]⚡ PREFLIGHT TOOLING[/]")
             run_preflight(site_dir, client_dir)
         elif url:
-            console.print("[bold cyan]⚡ PREFLIGHT TOOLING (URL)[/]")
+            say("[bold cyan]⚡ PREFLIGHT TOOLING (URL)[/]")
             run_preflight_tooling(client_dir, url)
 
         engine = GateEngine(
@@ -1259,7 +1263,7 @@ def run_converge(
 
         # Report
         report_txt = generate_report_v2(report, config=converge_profile.config)
-        console.print(report_txt)
+        say(report_txt)
 
         # Save report
         report_path = client_dir / "soic-converge-report.txt"
@@ -1269,39 +1273,39 @@ def run_converge(
         router = FeedbackRouter(config=converge_profile.config)
         if report.fail_count > 0:
             feedback = router.generate(report)
-            console.print(f"\n[bold yellow]{'━'*60}[/]")
-            console.print("[bold yellow]PLAN DE CONVERGENCE[/]")
-            console.print(f"[bold yellow]{'━'*60}[/]\n")
-            console.print(feedback)
+            say(f"\n[bold yellow]{'━'*60}[/]")
+            say("[bold yellow]PLAN DE CONVERGENCE[/]")
+            say(f"[bold yellow]{'━'*60}[/]\n")
+            say(feedback)
 
             full_feedback = router.generate_full(report)
             feedback_path = client_dir / "soic-converge-feedback.md"
             feedback_path.write_text(full_feedback, encoding="utf-8")
-            console.print(f"\n[dim]Feedback complet sauvegardé: {feedback_path}[/]")
+            say(f"\n[dim]Feedback complet sauvegardé: {feedback_path}[/]")
 
         # Convergence assessment
         converger = Converger(phase=phase, max_iter=max_iter, config=converge_profile.config)
         decision = converger.decide(report, iteration=1)
         summary = converger.get_summary(decision, iteration=1)
 
-        console.print(f"\n[bold]{'━'*60}[/]")
+        say(f"\n[bold]{'━'*60}[/]")
         if decision.value == "ACCEPT":
-            console.print(
+            say(
                 f"[bold green]✓ CONVERGED — μ={report.mu:.2f} ≥ {target}[/]\n"
                 f"[green]{summary}[/]"
             )
         else:
             delta = target - report.mu
-            console.print(
+            say(
                 f"[bold red]✗ NOT CONVERGED — μ={report.mu:.2f} < {target} (Δ={delta:.2f})[/]\n"
                 f"[red]{summary}[/]"
             )
-            console.print(
+            say(
                 f"\n[dim]Pour lancer la correction automatique :[/]\n"
                 f"[cyan]  nexos converge {client_dir} --target {target} "
                 f"--max-iter {max_iter} --timeout {timeout_minutes}[/]"
             )
-        console.print(f"[bold]{'━'*60}[/]")
+        say(f"[bold]{'━'*60}[/]")
 
         # Save to persistence
         store = RunStore(client_dir)
@@ -1333,16 +1337,16 @@ def run_converge(
             cov = result.report.coverage
             dec = result.decision.value
             dur = result.duration_s
-            console.print(
+            say(
                 f"  [bold]Iteration {iteration}:[/] μ={mu:.2f} "
                 f"(coverage={cov:.0%}, {dur:.0f}s) → {dec}"
             )
             if result.feedback and dec == "ITERATE":
                 for line in result.feedback.split("\n")[:5]:
                     if line.strip():
-                        console.print(f"    [dim]{line}[/]")
+                        say(f"    [dim]{line}[/]")
 
-        console.print(f"\n[bold cyan]🔄 Convergence Loop — target μ ≥ {target}[/]\n")
+        say(f"\n[bold cyan]🔄 Convergence Loop — target μ ≥ {target}[/]\n")
         loop = iterator.run(rerun_phase=ctx.rerun, on_iteration=_on_iteration)
 
         # Final report
@@ -1352,19 +1356,19 @@ def run_converge(
             report_path = client_dir / "soic-converge-report.txt"
             report_path.write_text(report_txt, encoding="utf-8")
 
-        console.print(f"\n[bold]{'━'*60}[/]")
+        say(f"\n[bold]{'━'*60}[/]")
         if loop.converged:
-            console.print(
+            say(
                 f"[bold green]✓ CONVERGED — μ={loop.final_mu:.2f} ≥ {target} "
                 f"in {loop.total_iterations} iteration(s)[/]"
             )
         else:
-            console.print(
+            say(
                 f"[bold red]✗ NOT CONVERGED — μ={loop.final_mu:.2f} < {target} "
                 f"after {loop.total_iterations} iteration(s)[/]\n"
                 f"[red]  Reason: {loop.abort_reason or loop.final_decision.value}[/]"
             )
-        console.print(f"[bold]{'━'*60}[/]")
+        say(f"[bold]{'━'*60}[/]")
 
     # No threshold restore needed — converge_profile is an immutable copy
 
@@ -1387,13 +1391,13 @@ def run_knowledge_agent(
     """Execute a knowledge agent (HexaBrief, etc.)."""
 
     if agent_id != "hexabrief":
-        console.print(f"[red]Agent knowledge inconnu: {agent_id}[/]")
-        console.print("[dim]Agents disponibles: hexabrief[/]")
+        say(f"[red]Agent knowledge inconnu: {agent_id}[/]")
+        say("[dim]Agents disponibles: hexabrief[/]")
         return
 
     # ── Score-only mode: évaluer un résumé existant ──
     if score_only is not None:
-        console.print(f"\n[bold cyan]📊 HexaBrief SCORING — {score_only.name}[/]\n")
+        say(f"\n[bold cyan]📊 HexaBrief SCORING — {score_only.name}[/]\n")
         try:
             from soic.knowledge_scoring import evaluate_hexabrief
             result = evaluate_hexabrief(score_only)
@@ -1410,11 +1414,11 @@ def run_knowledge_agent(
             table.add_row("", "", "")
             verdict_style = "green" if result.mu >= 7.5 else ("yellow" if result.mu >= 6.0 else "red")
             table.add_row("[bold]μ pondéré[/]", "", f"[bold {verdict_style}]{result.mu:.2f}/10 — {result.verdict}[/]")
-            console.print(table)
+            say(table)
         except FileNotFoundError as e:
-            console.print(f"[red]✗ {e}[/]")
+            say(f"[red]✗ {e}[/]")
         except Exception as e:
-            console.print(f"[red]✗ Erreur scoring: {e}[/]")
+            say(f"[red]✗ Erreur scoring: {e}[/]")
         return
 
     # ── Generation mode: produire un résumé via Codex CLI ──
@@ -1426,7 +1430,7 @@ def run_knowledge_agent(
     # Lire le template de l'agent
     agent_path = AGENTS_DIR / "knowledge" / "hexabrief.md"
     if not agent_path.exists():
-        console.print(f"[red]✗ Agent introuvable: {agent_path}[/]")
+        say(f"[red]✗ Agent introuvable: {agent_path}[/]")
         return
 
     # Construire le prompt
@@ -1447,7 +1451,7 @@ def run_knowledge_agent(
     ]
     prompt = "\n".join(prompt_parts)
 
-    console.print(Panel(
+    say(Panel(
         f"[bold]Agent:[/] HexaBrief Book Summarizer\n"
         f"[bold]Source:[/] {source}\n"
         f"[bold]Type:[/] {content_type} | [bold]Objectif:[/] {objectif} | [bold]Niveau:[/] {niveau}\n"
@@ -1461,18 +1465,18 @@ def run_knowledge_agent(
     returncode = run_codex_cli(prompt, str(NEXOS_ROOT), log_path)
 
     if returncode != 0:
-        console.print(f"[red]✗ HexaBrief échoué (code {returncode})[/]")
+        say(f"[red]✗ HexaBrief échoué (code {returncode})[/]")
         return
 
     # Vérifier l'output
     if not output_path.exists() or output_path.stat().st_size < 200:
-        console.print(f"[red]✗ Résumé non généré ou trop court[/]")
+        say(f"[red]✗ Résumé non généré ou trop court[/]")
         return
 
-    console.print(f"[green]✓ Résumé généré: {output_path}[/]")
+    say(f"[green]✓ Résumé généré: {output_path}[/]")
 
     # Auto-scoring
-    console.print(f"\n[bold cyan]📊 Auto-scoring HexaBrief...[/]\n")
+    say(f"\n[bold cyan]📊 Auto-scoring HexaBrief...[/]\n")
     try:
         from soic.knowledge_scoring import evaluate_hexabrief
         result = evaluate_hexabrief(output_path)
@@ -1489,16 +1493,16 @@ def run_knowledge_agent(
         table.add_row("", "", "")
         verdict_style = "green" if result.mu >= 7.5 else ("yellow" if result.mu >= 6.0 else "red")
         table.add_row("[bold]μ pondéré[/]", "", f"[bold {verdict_style}]{result.mu:.2f}/10 — {result.verdict}[/]")
-        console.print(table)
+        say(table)
 
         if result.verdict == "REJECT":
-            console.print("[red]⚠ Le résumé ne passe pas le seuil minimum. Relancer avec un niveau plus élevé.[/]")
+            say("[red]⚠ Le résumé ne passe pas le seuil minimum. Relancer avec un niveau plus élevé.[/]")
         elif result.verdict == "REVISE":
-            console.print("[yellow]⚠ Le résumé nécessite des corrections. Vérifier les sections faibles.[/]")
+            say("[yellow]⚠ Le résumé nécessite des corrections. Vérifier les sections faibles.[/]")
     except ImportError:
-        console.print("[yellow]⚠ Module scoring non disponible — skip auto-scoring[/]")
+        say("[yellow]⚠ Module scoring non disponible — skip auto-scoring[/]")
     except Exception as e:
-        console.print(f"[yellow]⚠ Scoring error: {e}[/]")
+        say(f"[yellow]⚠ Scoring error: {e}[/]")
 
 
 # ── Entry point ──────────────────────────────────────────────────────────────
@@ -1691,21 +1695,21 @@ def main(argv: list[str] | None = None) -> int:
             from nexos.cli_commands import run_doctor
             run_doctor()
         else:
-            console.print("[red]nexos doctor requiert les modules v4.0 (nexos/)[/]")
+            say("[red]nexos doctor requiert les modules v4.0 (nexos/)[/]")
         return 0
     elif args.mode == "fix":
         if _NEXOS_V4:
             from nexos.cli_commands import run_fix
             run_fix(args.client_dir, dry_run=args.dry_run)
         else:
-            console.print("[red]nexos fix requiert les modules v4.0 (nexos/)[/]")
+            say("[red]nexos fix requiert les modules v4.0 (nexos/)[/]")
         return 0
     elif args.mode == "report":
         if _NEXOS_V4:
             from nexos.cli_commands import run_report
             run_report(args.client_dir)
         else:
-            console.print("[red]nexos report requiert les modules v4.0 (nexos/)[/]")
+            say("[red]nexos report requiert les modules v4.0 (nexos/)[/]")
         return 0
 
     if args.mode == "knowledge":
@@ -1736,18 +1740,18 @@ def main(argv: list[str] | None = None) -> int:
         elif _NEXOS_V4:
             from nexos.brief_wizard import generate_minimal_brief
             if getattr(args, "name", None):
-                console.print(f"[cyan]ℹ Génération rapide du brief pour : {args.name}[/]")
+                say(f"[cyan]ℹ Génération rapide du brief pour : {args.name}[/]")
                 brief_data = generate_minimal_brief(args.name, args.mode)
                 client_dir = generate_brief_from_wizard(args.mode, brief_data)
             elif getattr(args, "interactive", False) or sys.stdin.isatty():
                 brief_data = interactive_brief(args.mode)
                 client_dir = generate_brief_from_wizard(args.mode, brief_data)
             else:
-                console.print("[red]Erreur: --client-dir, --brief ou --name requis (non-TTY)[/]")
+                say("[red]Erreur: --client-dir, --brief ou --name requis (non-TTY)[/]")
                 return 1
         else:
-            console.print("[red]Erreur: --client-dir ou --brief requis[/]")
-            console.print("[dim]Astuce : lancez nexos create en terminal pour le wizard interactif[/]")
+            say("[red]Erreur: --client-dir ou --brief requis[/]")
+            say("[dim]Astuce : lancez nexos create en terminal pour le wizard interactif[/]")
             return 1
 
         # Resolve SOIC profile: --profile > --stack > brief > default
@@ -1770,9 +1774,9 @@ def main(argv: list[str] | None = None) -> int:
             from nexos.pipeline_config import parse_color_args
             try:
                 _color_overrides = parse_color_args(_raw_colors)
-                console.print(f"[cyan]🎨 Palette couleurs : {_color_overrides}[/]")
+                say(f"[cyan]🎨 Palette couleurs : {_color_overrides}[/]")
             except ValueError as e:
-                console.print(f"[red]Erreur --colors : {e}[/]")
+                say(f"[red]Erreur --colors : {e}[/]")
                 return 1
 
         run_pipeline(args.mode, client_dir, url=getattr(args, "url", None), profile=cli_profile,
