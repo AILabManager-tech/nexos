@@ -40,8 +40,8 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-py-modules = ["nexos_cli", "orchestrator", "nexos_gateway"]
-packages = ["nexos", "soic"]
+py-modules = ["nexos_cli", "nexos_gateway"]
+packages = ["nexos", "soic", "orchestrator"]
 
 [tool.setuptools.package-data]
 "*" = ["*.md", "*.json", "*.yaml", "*.yml"]
@@ -133,11 +133,11 @@ unfixable = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["N802"]
-# orchestrator.py:
+# orchestrator/ (package post-refactor chantier2-P) :
 #   C901 — complexité (refonte planifiée phase O)
 #   RUF001 — caractères Unicode intentionnels dans rendu UI rich (× pour poids
 #            SOIC, ℹ pour info). Remplacer par ASCII dégraderait l'affichage.
-"orchestrator.py" = ["C901", "RUF001"]
+"orchestrator/*.py" = ["C901", "RUF001"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["nexos", "soic", "orchestrator"]
@@ -200,6 +200,13 @@ ignore_missing_imports = true
 module = "soic.*"
 ignore_missing_imports = true
 follow_imports = "skip"
+
+# orchestrator/ (post-refactor chantier2-P) : typage progressif, mêmes règles
+# que l'ancien orchestrator.py (# mypy: ignore-errors). Le contrat externe
+# est verrouillé par tests/test_e2e_orchestrator.py et les tests de classes.
+[[tool.mypy.overrides]]
+module = "orchestrator.*"
+ignore_errors = true
 
 # Tests : soft (priorité à la lisibilité).
 [[tool.mypy.overrides]]

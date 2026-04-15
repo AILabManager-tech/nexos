@@ -43,7 +43,7 @@ def test_no_remaining_print_in_nexos_package():
 
     repo = pathlib.Path(__file__).resolve().parents[1]
     nexos_pkg = repo / "nexos"
-    orchestrator = repo / "orchestrator.py"
+    orchestrator_pkg = repo / "orchestrator"
 
     def count_prints(path: pathlib.Path) -> int:
         text = path.read_text(errors="replace")
@@ -51,7 +51,7 @@ def test_no_remaining_print_in_nexos_package():
         return sum(1 for line in lines if re.search(r"\bprint\s*\(", line))
 
     prints_nexos = sum(count_prints(p) for p in nexos_pkg.glob("*.py"))
-    prints_orch = count_prints(orchestrator)
+    prints_orch = sum(count_prints(p) for p in orchestrator_pkg.glob("*.py"))
 
     assert prints_nexos <= 15, f"Trop de print() dans nexos/ ({prints_nexos} > 15)"
-    assert prints_orch <= 5, f"Trop de print() dans orchestrator.py ({prints_orch} > 5)"
+    assert prints_orch <= 5, f"Trop de print() dans orchestrator/ ({prints_orch} > 5)"
