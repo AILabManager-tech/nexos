@@ -1,5 +1,11 @@
 # NEXOS v4.0 — Pipeline Web Autonome
 
+[![Tests](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/test.yml/badge.svg)](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/test.yml)
+[![Lint](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/lint.yml/badge.svg)](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/lint.yml)
+[![Security](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/security.yml/badge.svg)](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/security.yml)
+[![codecov](https://codecov.io/gh/AILabManager-tech/nexos-v3/branch/main/graph/badge.svg)](https://codecov.io/gh/AILabManager-tech/nexos-v3)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
+
 NEXOS est un systeme de creation et d'audit de sites web professionnels pilote par IA.
 Il orchestre 56 agents specialises a travers 6 phases sequentielles avec quality gates SOIC (9 dimensions).
 

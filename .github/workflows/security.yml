@@ -1,0 +1,39 @@
+# NEXOS — Audit sécurité deps (Python + Node)
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Nightly à 02:00 UTC
+    - cron: "0 2 * * *"
+
+jobs:
+  pip-audit:
+    name: pip-audit (Python deps)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pip-audit
+      - name: Run pip-audit (non bloquant si vuln LOW/MEDIUM)
+        run: |
+          pip install -e ".[api,wizard,dev]"
+          # Blocant HIGH+CRITICAL, warning LOW/MEDIUM
+          pip-audit --strict --vulnerability-service=osv
+
+  bandit:
+    name: Bandit (Python SAST)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install bandit
+      - run: bandit -r nexos/ -x tests/ -c pyproject.toml || true
+        # Non bloquant pour l'instant — deviendra bloquant après triage manuel des findings

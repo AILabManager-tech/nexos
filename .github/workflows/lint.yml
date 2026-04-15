@@ -1,0 +1,51 @@
+# NEXOS — Lint + type-check
+name: Lint
+
+on:
+  push:
+    branches: [main, "feature/**", "fix/**", "chore/**", "refactor/**"]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ruff:
+    name: ruff check + format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install "ruff>=0.5"
+      - run: ruff check .
+      - run: ruff format --check .
+
+  mypy:
+    name: mypy type-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install
+        run: pip install -e ".[api,wizard,dev]"
+      - name: Run mypy
+        run: mypy nexos/ nexos_cli.py
+
+  precommit:
+    name: pre-commit all-files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - uses: pre-commit/action@v3.0.1

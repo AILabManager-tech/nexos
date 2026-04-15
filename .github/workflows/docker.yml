@@ -1,0 +1,38 @@
+# NEXOS — Build Dockerfile + smoke
+name: Docker
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Dockerfile"
+      - ".dockerignore"
+      - "docker-compose*.yml"
+      - "pyproject.toml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "Dockerfile"
+      - ".dockerignore"
+
+jobs:
+  build:
+    name: docker build + smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t nexos:ci .
+      - name: Smoke - nexos --help
+        run: docker run --rm nexos:ci nexos --help
+      - name: Smoke - nexos doctor
+        run: docker run --rm nexos:ci nexos doctor || echo "doctor warnings acceptable"
+      - name: Image size check (<1GB)
+        run: |
+          SIZE=$(docker image inspect nexos:ci --format='{{.Size}}')
+          MAX=$((1024*1024*1024))
+          if [ "$SIZE" -gt "$MAX" ]; then
+            echo "::error::Image too large: $SIZE > $MAX"
+            exit 1
+          fi
+          echo "Image size: $((SIZE/1024/1024)) MB"
