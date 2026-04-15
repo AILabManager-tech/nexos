@@ -2,6 +2,14 @@
 NEXOS v3.0 Orchestrator — Multi-phase avec quality gates SOIC
 """
 
+# mypy: ignore-errors
+#
+# TODO(chantier2-O/P): ce fichier (1700+ L, god-object) sera décomposé en
+# modules et classes aux phases O et P du chantier mise_a_niveau. Le typage
+# complet sera appliqué à ce moment, après la séparation des responsabilités.
+# Phase H typage progressif: orchestrator volontairement exclu pour ne pas
+# bloquer l'adoption des type hints sur le reste du paquet.
+
 import contextlib
 import json
 import os

@@ -76,7 +76,7 @@ _MODE_PHASES: dict[str, list[str]] = {
 
 # ── Stack options (for brief_wizard integration) ─────────────────────────────
 
-STACK_OPTIONS = [
+STACK_OPTIONS: list[dict[str, Any]] = [
     {"value": "nextjs", "label": "Next.js 15+ (App Router)", "default": True},
     {"value": "nuxt", "label": "Nuxt 3 (Vue)", "default": False},
     {"value": "astro", "label": "Astro", "default": False},

@@ -100,3 +100,62 @@ combine-as-imports = true
 quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
+
+# ----------------------------------------------------------------------------
+# mypy — chantier2-H (adoption progressive du type-checking)
+# ----------------------------------------------------------------------------
+# Stratégie : strict global "raisonnable" + soft `disallow_untyped_defs` par
+# défaut, puis overrides "strict 100 %" sur les modules bas-niveau déjà
+# typés. orchestrator.py est exclu (TODO refactor phase O/P).
+[tool.mypy]
+python_version = "3.10"
+files = ["nexos", "nexos_cli.py"]
+
+strict_equality = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+strict_optional = true
+
+# Adoption progressive : on n'exige pas que toutes les defs soient typées.
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+# Modules bas-niveau : typage 100 % attendu.
+[[tool.mypy.overrides]]
+module = [
+  "nexos.config",
+  "nexos.changelog",
+  "nexos.brief_contract",
+  "nexos.pipeline_config",
+  "nexos.agent_registry",
+  "nexos.logging_config",
+]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+# Libs externes sans stubs publiés.
+[[tool.mypy.overrides]]
+module = [
+  "rich.*",
+  "questionary.*",
+  "jsonschema.*",
+  "audit_toolkit.*",
+]
+ignore_missing_imports = true
+
+# soic est un paquet externe (symlink) avec son propre cycle de typage —
+# on n'analyse pas ses sources via les imports.
+[[tool.mypy.overrides]]
+module = "soic.*"
+ignore_missing_imports = true
+follow_imports = "skip"
+
+# Tests : soft (priorité à la lisibilité).
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+check_untyped_defs = false

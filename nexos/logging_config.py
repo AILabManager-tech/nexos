@@ -20,8 +20,9 @@ from __future__ import annotations
 
 import logging
 import sys
-from collections.abc import Iterator
+from collections.abc import Iterator, MutableMapping
 from contextlib import contextmanager
+from typing import Any
 
 _CONFIGURED = False
 
@@ -72,10 +73,12 @@ def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(name)
 
 
-class _ContextualAdapter(logging.LoggerAdapter):
+class _ContextualAdapter(logging.LoggerAdapter[logging.Logger]):
     """Injecte du contexte (client, phase, ...) dans chaque log."""
 
-    def process(self, msg, kwargs):
+    def process(
+        self, msg: Any, kwargs: MutableMapping[str, Any]
+    ) -> tuple[Any, MutableMapping[str, Any]]:
         if self.extra:
             extras = " ".join(f"{k}={v}" for k, v in self.extra.items())
             msg = f"[{extras}] {msg}"
@@ -83,7 +86,9 @@ class _ContextualAdapter(logging.LoggerAdapter):
 
 
 @contextmanager
-def bind_context(logger: logging.Logger, **context) -> Iterator[logging.LoggerAdapter]:
+def bind_context(
+    logger: logging.Logger, **context: Any
+) -> Iterator[logging.LoggerAdapter[logging.Logger]]:
     """Ajoute temporairement du contexte (client, phase...) aux logs.
 
     Example:

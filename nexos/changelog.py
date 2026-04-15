@@ -5,6 +5,8 @@ Journal structuré append-only par client (nexos-changelog.json).
 Trace automatiquement les événements pipeline, phases, SOIC, auto-fix, tooling, CLI.
 """
 
+from __future__ import annotations
+
 import json
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -65,13 +67,13 @@ class ChangelogEntry:
     timestamp: str = ""
     phase: str | None = None
     agent: str | None = None
-    details: dict = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not self.timestamp:
             self.timestamp = datetime.now().isoformat(timespec="seconds")
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convertit en dict, omet les champs None."""
         d: dict[str, Any] = {"event": self.event, "timestamp": self.timestamp}
         if self.phase is not None:
@@ -94,7 +96,7 @@ def log_event(
     event: EventType,
     phase: str | None = None,
     agent: str | None = None,
-    details: dict | None = None,
+    details: dict[str, Any] | None = None,
 ) -> ChangelogEntry:
     """
     Append un événement au changelog du client.
@@ -109,7 +111,7 @@ def log_event(
     )
 
     changelog_path = client_dir / CHANGELOG_FILENAME
-    entries: list[dict] = []
+    entries: list[dict[str, Any]] = []
 
     if changelog_path.exists():
         try:
@@ -129,7 +131,7 @@ def log_event(
     return entry
 
 
-def get_changelog(client_dir: Path) -> list[dict]:
+def get_changelog(client_dir: Path) -> list[dict[str, Any]]:
     """
     Lit le changelog complet d'un client.
 
@@ -150,7 +152,7 @@ def get_changelog(client_dir: Path) -> list[dict]:
     return []
 
 
-def get_changelog_summary(client_dir: Path) -> dict:
+def get_changelog_summary(client_dir: Path) -> dict[str, Any]:
     """
     Retourne un résumé du changelog : total, par type, fixes, phases, timestamps.
     """

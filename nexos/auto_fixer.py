@@ -9,6 +9,8 @@ Corrige automatiquement les problèmes D4 (Sécurité) et D8 (Loi 25) récurrent
 - Pages légales (politique confidentialité, mentions légales)
 """
 
+from __future__ import annotations
+
 import json
 import re
 import shutil
@@ -16,6 +18,7 @@ import subprocess
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from nexos.brief_contract import normalize_brief
 from nexos.logging_config import get_logger
@@ -41,7 +44,7 @@ REQUIRED_HEADERS = {
 }
 
 
-def _template_value(value, fallback: str) -> str:
+def _template_value(value: Any, fallback: str) -> str:
     """Garantit une valeur chaîne sûre pour les templates."""
     if value is None:
         return fallback
@@ -81,7 +84,7 @@ class FixReport:
 # ── Fix functions ─────────────────────────────────────────────────────
 
 
-def _fix_cookie_consent(site_dir: Path, report: FixReport):
+def _fix_cookie_consent(site_dir: Path, report: FixReport) -> None:
     """
     Copie cookie-consent-component.tsx si absent, injecte dans layout.tsx.
 
@@ -162,7 +165,7 @@ def _fix_cookie_consent(site_dir: Path, report: FixReport):
         logger.info("CookieConsent injected into layout.tsx")
 
 
-def _fix_npm_audit(site_dir: Path, report: FixReport):
+def _fix_npm_audit(site_dir: Path, report: FixReport) -> None:
     """Exécute npm audit fix pour corriger les vulnérabilités."""
     try:
         # SAFE: static argv list, cwd is Path. shell=False (default).
@@ -186,7 +189,7 @@ def _fix_npm_audit(site_dir: Path, report: FixReport):
         pass
 
 
-def _fix_vercel_headers(site_dir: Path, report: FixReport):
+def _fix_vercel_headers(site_dir: Path, report: FixReport) -> None:
     """Assure que vercel.json existe avec les 6 headers sécurité."""
     vercel_path = site_dir / "vercel.json"
     template_path = TEMPLATES_DIR / "vercel-headers.template.json"
@@ -236,7 +239,7 @@ def _fix_vercel_headers(site_dir: Path, report: FixReport):
         logger.info("Security headers added to vercel.json")
 
 
-def _fix_next_config(site_dir: Path, report: FixReport):
+def _fix_next_config(site_dir: Path, report: FixReport) -> None:
     """Assure poweredByHeader: false dans next.config.mjs."""
     config_path = site_dir / "next.config.mjs"
     if not config_path.exists():
@@ -273,7 +276,7 @@ def _fix_next_config(site_dir: Path, report: FixReport):
         logger.info("poweredByHeader: false added to next.config")
 
 
-def _fix_privacy_page(site_dir: Path, brief: dict, report: FixReport):
+def _fix_privacy_page(site_dir: Path, brief: dict[str, Any], report: FixReport) -> None:
     """Génère la page politique-confidentialite si absente."""
     # Chercher dans les variantes de chemins
     target_dirs = [
@@ -347,7 +350,7 @@ def _fix_privacy_page(site_dir: Path, brief: dict, report: FixReport):
     logger.info("Privacy policy page generated")
 
 
-def _fix_legal_page(site_dir: Path, brief: dict, report: FixReport):
+def _fix_legal_page(site_dir: Path, brief: dict[str, Any], report: FixReport) -> None:
     """Génère la page mentions-legales si absente."""
     target_dirs = [
         site_dir / "src" / "app" / "[locale]" / "mentions-legales",
@@ -527,7 +530,7 @@ def auto_fix(site_dir: Path, client_dir: Path, brief: dict | None = None) -> Fix
 
 def _log_applied_fixes(client_dir: Path, report: FixReport) -> None:
     """Log chaque fix appliqué individuellement dans le changelog."""
-    fixes = []
+    fixes: list[dict[str, Any]] = []
     if report.cookie_consent_added:
         fixes.append({"fix": "cookie_consent", "target": "layout.tsx"})
     if report.npm_audit_fixed > 0:

@@ -3,6 +3,8 @@ NEXOS v4.0 — Brief Wizard Interactif
 Génère un brief-client.json complet via Q/A en terminal.
 """
 
+from __future__ import annotations
+
 import re
 import sys
 import unicodedata
@@ -28,7 +30,7 @@ logger = get_logger(__name__)
 console = Console()
 
 
-def say(*args, **kwargs):
+def say(*args: Any, **kwargs: Any) -> None:
     # UX output: routes through module-level `console` (patchable in tests)
     # and avoids the `print(` lexical pattern at callsites.
     console.print(*args, **kwargs)
@@ -79,7 +81,7 @@ FEATURES_LIST = [
     "autre",
 ]
 
-LANGUAGES = [
+LANGUAGES: list[dict[str, Any]] = [
     {"name": "Français", "value": "fr", "checked": True},
     {"name": "English", "value": "en", "checked": True},
     {"name": "Español", "value": "es"},
@@ -1064,13 +1066,16 @@ def _review_brief(brief: dict) -> bool:
     say(table)
     say()
 
-    return _safe_ask(
-        questionary.confirm(
-            "Ce brief est-il correct ?",
-            default=True,
-            style=WIZARD_STYLE,
+    answer: bool = bool(
+        _safe_ask(
+            questionary.confirm(
+                "Ce brief est-il correct ?",
+                default=True,
+                style=WIZARD_STYLE,
+            )
         )
     )
+    return answer
 
 
 # ── Assemblage ────────────────────────────────────────────────────────────────

@@ -4,9 +4,12 @@ NEXOS v4.0 — Commandes CLI additionnelles
 Implémente les commandes `nexos fix`, `nexos report`, `nexos doctor`.
 """
 
+from __future__ import annotations
+
 import contextlib
 import json
 from pathlib import Path
+from typing import Any
 
 from nexos.auto_fixer import REQUIRED_HEADERS, auto_fix
 from nexos.brief_contract import normalize_brief
@@ -34,20 +37,20 @@ logger = get_logger(__name__)
 console = Console()
 
 
-def say(*args, **kwargs):
+def say(*args: Any, **kwargs: Any) -> None:
     # UX output: routes through module-level `console` (patchable in tests)
     # and avoids the `print(` lexical pattern at callsites.
     console.print(*args, **kwargs)
 
 
-def run_doctor():
+def run_doctor() -> None:
     """Exécute le diagnostic complet du système."""
     from nexos.tooling_manager import doctor_report
 
     say(Panel(doctor_report(), title="[bold cyan]nexos doctor[/]", border_style="cyan"))
 
 
-def run_fix(client_dir: Path, dry_run: bool = False):
+def run_fix(client_dir: Path, dry_run: bool = False) -> None:
     """
     Applique les auto-fixes D4/D8 sur un client sans lancer le pipeline.
 
@@ -138,7 +141,7 @@ def run_fix(client_dir: Path, dry_run: bool = False):
         say("\n[yellow]BUILD FAIL persistant — intervention manuelle requise[/]")
 
 
-def _dry_run_analysis(site_dir: Path, client_dir: Path):
+def _dry_run_analysis(site_dir: Path, client_dir: Path) -> None:
     """Analyse ce qui serait corrigé sans appliquer."""
     findings: list[str] = []
 
@@ -198,13 +201,13 @@ def _dry_run_analysis(site_dir: Path, client_dir: Path):
     findings.append("npm audit fix → exécuterait pour corriger les vulnérabilités connues")
 
     if findings:
-        for i, f in enumerate(findings, 1):
-            say(f"  {i}. {f}")
+        for i, finding in enumerate(findings, 1):
+            say(f"  {i}. {finding}")
     else:
         say("  Aucune correction nécessaire.")
 
 
-def run_report(client_dir: Path):
+def run_report(client_dir: Path) -> None:
     """Affiche un rapport agrégé pour un client."""
     say(
         Panel(
@@ -240,12 +243,11 @@ def run_report(client_dir: Path):
             gates = json.loads(gates_path.read_text())
             say("\n[bold]SOIC Gates :[/]")
 
+            gate_list: list[Any] = []
             if isinstance(gates, list):
                 gate_list = gates
             elif isinstance(gates, dict):
-                gate_list = gates.get("gates", gates.get("history", []))
-            else:
-                gate_list = []
+                gate_list = gates.get("gates") or gates.get("history") or []
 
             for gate in gate_list:
                 phase = gate.get("phase", "?")

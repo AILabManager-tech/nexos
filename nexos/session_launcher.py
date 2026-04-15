@@ -12,6 +12,7 @@ import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from rich.console import Console
 from rich.panel import Panel
@@ -23,7 +24,7 @@ logger = get_logger(__name__)
 console = Console()
 
 
-def say(*args, **kwargs):
+def say(*args: Any, **kwargs: Any) -> None:
     # UX output: routes through module-level `console` (patchable in tests)
     # and avoids the `print(` lexical pattern at callsites.
     console.print(*args, **kwargs)
