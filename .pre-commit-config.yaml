@@ -38,3 +38,14 @@ repos:
           bash -c 'added=$(git diff --cached --no-color -U0 -- "*.py" "*.ts" "*.tsx" "*.js" "*.jsx" "*.html" "*.css" "nexos/**" "tests/**" | grep -E "^\+[^+]" | grep -iE "(usinerh|usine_rh)" || true); if [ -n "$added" ]; then echo "ERREUR - UsineRH detecte dans code ajoute:"; echo "$added"; exit 1; fi'
         language: system
         pass_filenames: false
+
+      # Phase I (chantier2) — suite rapide en pre-push uniquement.
+      # Exclut les tests `e2e` qui dispatchent sur orchestrator.main et
+      # restent rapides en pratique (~0.2 s) mais qu'on garde marqués
+      # pour pouvoir les isoler en CI dédiée si besoin.
+      - id: pytest-fast
+        name: Run fast pytest suite (excludes e2e marker)
+        entry: .venv/bin/pytest -m "not e2e" --no-header -q
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
