@@ -50,6 +50,11 @@ class BriefPayload(BaseModel):
     legal: dict[str, Any]
 
 
+@app.get("/health")
+async def health():
+    return {"status": "ok", "service": "nexos-gateway", "version": app.version}
+
+
 @app.post("/ingest-brief", status_code=status.HTTP_201_CREATED)
 async def ingest_brief(payload: BriefPayload):
     """

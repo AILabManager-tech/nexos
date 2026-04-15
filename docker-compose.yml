@@ -1,0 +1,90 @@
+# NEXOS — docker-compose
+# Phase K du chantier mise_a_niveau (v4.2.0).
+#
+# Base: docker compose up gateway
+# Dev:  docker compose --profile dev up
+# Run CLI one-shot: docker compose run --rm nexos nexos doctor
+
+# Note: docker-compose.override.yml est automatiquement mergé en dev local.
+
+services:
+  # -------------------------------------------------
+  # CLI NEXOS (one-shot / interactive)
+  # -------------------------------------------------
+  nexos:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: nexos:${NEXOS_VERSION:-dev}
+    container_name: nexos-cli
+    profiles: ["cli", "default"]
+    environment:
+      NEXOS_LOG_LEVEL: ${NEXOS_LOG_LEVEL:-INFO}
+      NEXOS_CLIENTS_DIR: /app/clients
+      NEXOS_OUTPUT_DIR: /app/output
+    volumes:
+      - ./clients:/app/clients
+      - ./output:/app/output
+    # Pas de démon : par défaut, run one-shot.
+    # docker compose run --rm nexos nexos doctor
+    command: ["nexos", "--help"]
+    stdin_open: true
+    tty: true
+
+  # -------------------------------------------------
+  # Gateway API FastAPI
+  # -------------------------------------------------
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: nexos:${NEXOS_VERSION:-dev}
+    container_name: nexos-gateway
+    profiles: ["api", "default"]
+    environment:
+      NEXOS_LOG_LEVEL: ${NEXOS_LOG_LEVEL:-INFO}
+      NEXOS_CLIENTS_DIR: /app/clients
+      NEXOS_OUTPUT_DIR: /app/output
+    volumes:
+      - ./clients:/app/clients
+      - ./output:/app/output
+    command:
+      - uvicorn
+      - nexos_gateway:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+    ports:
+      - "${NEXOS_GATEWAY_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  # -------------------------------------------------
+  # SOIC evaluator (lanceur one-shot ou daemon selon besoin)
+  # Optionnel, activé via --profile soic
+  # -------------------------------------------------
+  soic-eval:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: nexos:${NEXOS_VERSION:-dev}
+    container_name: nexos-soic
+    profiles: ["soic"]
+    environment:
+      NEXOS_LOG_LEVEL: ${NEXOS_LOG_LEVEL:-INFO}
+    volumes:
+      - ./clients:/app/clients:ro
+    command:
+      - python
+      - -c
+      - "from soic import evaluate; print('soic module loaded successfully')"
+    # Mode one-shot: test sanity.

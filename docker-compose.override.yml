@@ -1,0 +1,32 @@
+# Override automatique en dev local (gitignoré si besoin personnalisé).
+# Pour prod : docker compose -f docker-compose.yml up (sans l'override).
+
+services:
+  gateway:
+    # Bind-mount du code source pour hot reload
+    volumes:
+      - .:/app
+      - /app/.venv              # préserve le venv de l'image (pas de clash)
+      - /app/node_modules       # idem
+      - ./clients:/app/clients
+      - ./output:/app/output
+    command:
+      - uvicorn
+      - nexos_gateway:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --reload                # hot reload en dev
+    environment:
+      NEXOS_LOG_LEVEL: DEBUG
+    profiles: ["dev", "api", "default"]
+
+  nexos:
+    volumes:
+      - .:/app
+      - /app/.venv
+      - ./clients:/app/clients
+      - ./output:/app/output
+    environment:
+      NEXOS_LOG_LEVEL: DEBUG
