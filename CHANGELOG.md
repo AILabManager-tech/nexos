@@ -1,5 +1,60 @@
 # NEXOS — CHANGELOG
 
+## [4.2.0] — 2026-04-15
+
+### Fixed (Pilier 1 — Déblocages critiques)
+- **A · Symlink soic/** : pointait vers `/home/jarvis/...` inexistant → réparé en `../soic_v3`. Tests d'import ajoutés.
+- **B · nexos_cli.py exec()** : remplacé par `import orchestrator` + `runpy.run_path` fallback. Audit défensif des 9 `subprocess.*` du package `nexos/`.
+- **C · Deps manquantes** : FastAPI/Pydantic/uvicorn déclarées en `[api]` extra. Lockfile généré. Extras `wizard`, `dev`, `api`, `all`.
+
+### Changed (Pilier 2 — Hygiène)
+- **D · Archivage** (hors-git, NEXOS_PLATFORM/ n'est pas versionné) : `nexos_dashboard_v0/v1/v2/`, 3 `.jsx` orphelins, `deploy/` (VPS mort), `run_audit.py`, `reports/`, `.reports/` → `NEXOS_PLATFORM/archive/` avec README. Racine passée de 22 → 13 entrées (≤ 13 requis). Voir `mise_a_niveau/phase-D-report.md`.
+- **E · Chemins paramétrés** : plus aucun `/home/jarvis/` dans le code actif. Nouveau module `nexos/config.py` avec `Settings` immutable basé sur variables d'env. `.env.example` refait, portable.
+
+### Added (Pilier 3 — Qualité)
+- **F · Logging structuré** : 220 `print()` migrés vers `logging` stdlib. Nouveau `nexos/logging_config.py` avec `get_logger` + `bind_context`. Level pilotable via `NEXOS_LOG_LEVEL`.
+- **G · Lint** : `ruff` + `ruff format` + `pre-commit` configurés. Hooks : trailing-whitespace, eof-fixer, check-yaml/json, no-commit-to-branch, ruff, forbid-usinerh.
+- **H · Type-checking** : `mypy` config + `py.typed` marker. Couverture type hints 100 % sur `nexos/`. `brief_wizard.py` typé.
+- **I · Tests** : `conftest.py` centralisé. Coverage 55 % → 73 %. Nouveau test E2E orchestrator (`nexos create --dry-run`). Markers `e2e` + `integration`. Pre-push hook pytest-fast.
+
+### Added (Pilier 4 — Reprod/Deploy)
+- **J · Dockerfile** multi-stage (builder + runtime), user non-root, image < 800 MB, labels OCI. `.dockerignore` + build wrapper.
+- **K · docker-compose** : services `nexos` / `gateway` / `soic-eval` avec profiles default/cli/api/dev/soic. Override dev avec hot reload uvicorn.
+- **L · install_nexos.sh robuste** : preflight checks (Python 3.10+, Node 20+, git), flags `--dev` / `--no-venv` / `--no-precommit`, venv auto, pre-commit install. Nouveau `uninstall_nexos.sh`.
+
+### Added (Pilier 5 — CI/CD + Doc)
+- **M · GitHub Actions** : 4 workflows (test + lint + security + docker) avec matrix Python 3.10-3.12, coverage fail_under 70, pip-audit, bandit, image size guard.
+- **N · Documentation** : README racine `NEXOS_PLATFORM/`, 6 ADR (multi-phase, multi-CLI, auto-fix, knowledge, refactor, logging), `adding-agents.md`, `runbook.md`, `env.md`.
+
+### Refactored (Pilier 6 — Architecture)
+- **O · Orchestrator P1** : 3 classes extraites (`PipelineOrchestrator`, `GateEngine`, `ConvergeLoop`). Dataclasses `GateResult`, `PhaseRun`, `PipelineContext`. Enum `PhaseStatus`.
+- **P · Orchestrator P2** : éclaté en package `orchestrator/` (main, pipeline, gates, converge, phases, cli_args). `orchestrator.py` devient un shim ≤ 80 L. À iso-comportement.
+
+### Internal
+- Chantier géré en 17 phases isolées (A → Q), dossier `maintenance + upgrade/mise_a_niveau/`.
+- 16 commits `chantier2-*` dans `nexos_v.3.0/` + D hors-git (archive/ à la racine NEXOS_PLATFORM non versionnée).
+- Chaque phase = 1 commit rollbackable indépendamment.
+- Filet de sécurité : test E2E orchestrator (phase I) + CI (phase M) actifs avant le refactor (phases O + P).
+
+### Metrics gagnées
+- `nexos doctor` : tous les outils critiques OK
+- Coverage tests : 55 % → 73 %
+- Type hint coverage : 25 % → 100 % (sur `nexos/`)
+- `print()` dans `nexos/` : 220 → ≤ 15 (tolérés, UX/contrat)
+- Lignes `orchestrator.py` : 1710 → ≤ 80 (shim) + ~1100 L répartis dans le package
+- Versions fichiers : `pyproject.toml` avec lockfile, versions bornées
+- Docker image : fonctionnelle, < 800 MB
+- 0 `/home/jarvis/` dans code actif
+- Triple verrou UsineRH (settings.json + CLAUDE.md + pre-commit hook)
+
+### Compatibility
+- `from orchestrator import main` continue de fonctionner (shim)
+- Anciens CLI args préservés
+- JSON outputs (soic-gates, pattern-recommendation, etc.) inchangés
+- Fichiers clients existants compatibles
+
+---
+
 ## [4.0.0] - 2026-02-28 — Pipeline Augmentation (Sprint 1 + 2)
 
 ### Nouveau package `nexos/`

@@ -1,4 +1,7 @@
-# NEXOS v4.0 — Web Builder Autonome Premium
+# NEXOS v4.2 — Web Builder Autonome Premium
+
+**Version** : 4.2.0
+**Statut** : production-ready autonome
 
 ## IDENTITÉ
 
@@ -198,6 +201,29 @@ NEXOS supporte 3 CLI hôtes. Ce fichier (CLAUDE.md) est lu automatiquement par C
 Les fichiers équivalents : `AGENTS.md` (Codex CLI) et `GEMINI.md` (Gemini CLI).
 Les règles métier (sécurité, Loi 25, SOIC, phases) sont identiques dans les 3 fichiers.
 Seul le rôle et le style d'interaction diffèrent selon le CLI.
+
+## CHANGEMENTS v4.2.0
+
+### Infrastructure
+- `nexos/config.py` : config centralisée via variables d'env (voir `docs/env.md`)
+- `nexos/logging_config.py` : logging stdlib structuré (voir `docs/runbook.md`)
+- `orchestrator/` : package avec classes (PipelineOrchestrator, GateEngine, ConvergeLoop)
+
+### Développement
+- Tests : 73 % de coverage, test E2E orchestrator
+- Lint : `ruff` + `pre-commit` hooks actifs
+- Types : `mypy` config, 100 % de couverture sur `nexos/`
+- CI : GitHub Actions (test + lint + security + docker)
+
+### Déploiement
+- `Dockerfile` multi-stage
+- `docker-compose.yml` : services nexos + gateway + soic-eval
+- `install_nexos.sh` robuste avec preflight checks + venv auto
+
+### Documentation
+- `NEXOS_PLATFORM/README.md` : point d'entrée monorepo
+- `docs/adr/` : 6 Architecture Decision Records
+- `docs/adding-agents.md`, `docs/runbook.md`, `docs/env.md`
 
 ## SYMLINKS
 

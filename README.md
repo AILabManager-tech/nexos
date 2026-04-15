@@ -1,4 +1,7 @@
-# NEXOS v4.0 — Pipeline Web Autonome
+# NEXOS v4.2 — Pipeline Web Autonome
+
+> Pipeline web autonome avec quality gates SOIC — conforme Loi 25 Québec.
+> Version **4.2.0** — voir [`CHANGELOG.md`](./CHANGELOG.md).
 
 [![Tests](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/test.yml/badge.svg)](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/test.yml)
 [![Lint](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/lint.yml/badge.svg)](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/lint.yml)
@@ -14,8 +17,8 @@ Objectif : **qualite premium des la premiere generation** (score SOIC >= 8.5/10)
 ## Quick Start
 
 ```bash
-# 1. Installer la commande CLI
-bash install_nexos.sh
+# 1. Installer la commande CLI (venv + extras + pre-commit hooks)
+bash install_nexos.sh --dev
 
 # 2. Lancer l'accueil NEXOS interactif
 nexos
@@ -34,11 +37,20 @@ nexos fix clients/mon-client
 nexos fix clients/mon-client --dry-run   # apercu sans appliquer
 ```
 
+Alternative Docker (voir `docs/docker.md`) :
+
+```bash
+docker compose up gateway                        # API :8000
+docker compose run --rm nexos nexos doctor       # CLI one-shot
+docker compose --profile dev up                  # hot-reload dev
+```
+
 `nexos` sans argument ouvre un accueil interactif :
 1. Menu principal (`create`, `audit`, `modify`, etc.)
 2. Selection du CLI hote (Claude Code, Codex, Gemini)
 3. Recommandation + forces/faiblesses de chaque CLI selon le type de travail
 4. Ecran de resume final avec confirmation ou retour arriere
+5. Lancement du CLI choisi avec bootstrap NEXOS
 
 Astuce : `Entree` accepte le choix recommande, `b` revient en arriere, `q` quitte.
 

@@ -1,4 +1,7 @@
-# NEXOS v4.0 — Web Builder Autonome Premium
+# NEXOS v4.2 — Web Builder Autonome Premium
+
+**Version** : 4.2.0
+**Statut** : production-ready autonome
 
 ## IDENTITE
 
@@ -204,6 +207,29 @@ Tout nouveau projet utilise les templates dans `templates/` :
 - `robots.template.txt` — Robots.txt avec crawlers IA autorises
 - `og-image.template.svg` — Image OG 1200x630 personnalisable
 - `ad-unit-component.tsx` — Composant AdSense reutilisable
+
+## CHANGEMENTS v4.2.0
+
+### Infrastructure
+- `nexos/config.py` : config centralisee via variables d'env (voir `docs/env.md`)
+- `nexos/logging_config.py` : logging stdlib structure (voir `docs/runbook.md`)
+- `orchestrator/` : package avec classes (PipelineOrchestrator, GateEngine, ConvergeLoop)
+
+### Developpement
+- Tests : 73 % de coverage, test E2E orchestrator
+- Lint : `ruff` + `pre-commit` hooks actifs
+- Types : `mypy` config, 100 % de couverture sur `nexos/`
+- CI : GitHub Actions (test + lint + security + docker)
+
+### Deploiement
+- `Dockerfile` multi-stage
+- `docker-compose.yml` : services nexos + gateway + soic-eval
+- `install_nexos.sh` robuste avec preflight checks + venv auto
+
+### Documentation
+- `NEXOS_PLATFORM/README.md` : point d'entree monorepo
+- `docs/adr/` : 6 Architecture Decision Records
+- `docs/adding-agents.md`, `docs/runbook.md`, `docs/env.md`
 
 ## SYMLINKS
 
