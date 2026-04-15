@@ -44,3 +44,23 @@ echo "  → menu principal → recommandation Codex / Claude / Gemini → bootst
 echo ""
 echo "  nexos converge clients/USINE_RH_industrielle --target 9.5 --max-iter 5"
 echo "  → audit → fix → re-audit → fix → ... → μ ≥ 9.5 ou plateau"
+
+cat <<EOF
+
+───────────────────────────────────────────────────────────────
+Dépendances Python (venv isolé recommandé) :
+
+  cd "$NEXOS_ROOT"
+  python3 -m venv .venv
+  source .venv/bin/activate
+  pip install -e ".[api,dev,wizard]"
+
+Extras disponibles :
+  wizard  — intake interactif (questionary)
+  api     — gateway HTTP (fastapi + uvicorn + pydantic)
+  dev     — tests + lint + type-check (pytest, ruff, mypy)
+  all     — tous les extras ci-dessus
+
+Refactor complet de ce script : phase L.
+───────────────────────────────────────────────────────────────
+EOF
