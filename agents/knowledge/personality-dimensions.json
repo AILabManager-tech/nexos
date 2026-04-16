@@ -1,0 +1,162 @@
+{
+  "$schema": "nexos-knowledge/personality-dimensions/v1",
+  "version": "1.0.0",
+  "source": "agents/knowledge/web-patterns-reference.md",
+  "rule_of_thumb": "Deux sites configurés avec valeurs opposées sur ≥ 4 des 6 dimensions de personnalité doivent sembler venir de deux agences différentes.",
+  "dimensions": [
+    {
+      "id": "D1_density",
+      "display_name": "Densité visuelle",
+      "type": "ordinal",
+      "scale": { "min": 1, "max": 5, "step": 1 },
+      "semantics": {
+        "1": "très aéré, whitespace massif (luxe, spa, beauté)",
+        "2": "aéré (restaurant, studio créatif)",
+        "3": "équilibré (agence, conseil)",
+        "4": "dense (juridique, institutionnel)",
+        "5": "très dense, information riche (industrie, B2B technique)"
+      },
+      "opposites": [[1, 5], [2, 4]],
+      "examples": [
+        { "client_slug": "clinique-aura", "value": 1 },
+        { "client_slug": "table-de-marguerite", "value": 2 },
+        { "client_slug": "collectif-nova", "value": 3 },
+        { "client_slug": "beaumont-avocats", "value": 4 },
+        { "client_slug": "electro-maitre-industriel", "value": 5 }
+      ]
+    },
+    {
+      "id": "D2_register",
+      "display_name": "Registre émotionnel",
+      "type": "categorical",
+      "values": ["emotional", "technical", "technical-warm", "emotional-cold"],
+      "semantics": {
+        "emotional": "chaleur humaine, organique, textures",
+        "technical": "précision, data, interfaces, froid",
+        "technical-warm": "technicité + palette chaude (construction, artisanat)",
+        "emotional-cold": "connexion humaine teintée de distance professionnelle (santé corporate)"
+      },
+      "opposites": [
+        ["emotional", "technical"],
+        ["emotional", "technical-warm"],
+        ["emotional-cold", "technical-warm"]
+      ],
+      "examples": [
+        { "client_slug": "clinique-aura", "value": "emotional" },
+        { "client_slug": "beaumont-avocats", "value": "technical" },
+        { "client_slug": "electro-maitre-industriel", "value": "technical-warm" }
+      ]
+    },
+    {
+      "id": "D3_typo_weight",
+      "display_name": "Poids typographique",
+      "type": "categorical",
+      "values": ["light", "medium", "heavy", "contrasted"],
+      "semantics": {
+        "light": "fins et espacés (300, tracking large)",
+        "medium": "neutre lisible (500)",
+        "heavy": "condensé gras (700–900)",
+        "contrasted": "mélange extrêmes (200 + 700 en alternance)"
+      },
+      "opposites": [
+        ["light", "heavy"]
+      ],
+      "examples": [
+        { "client_slug": "beaumont-avocats", "value": "light" },
+        { "client_slug": "electro-maitre-industriel", "value": "heavy" },
+        { "client_slug": "collectif-nova", "value": "contrasted" }
+      ]
+    },
+    {
+      "id": "D4_palette",
+      "display_name": "Température de palette",
+      "type": "categorical",
+      "values": ["warm", "cold", "industrial", "variable"],
+      "semantics": {
+        "warm": "ivoire, crème, brun, ambre, terracotta",
+        "cold": "bleu marine, quasi-noir, cyan, indigo",
+        "industrial": "noir pur + un accent saturé (jaune, orange)",
+        "variable": "custom properties CSS, palette contextuelle"
+      },
+      "opposites": [
+        ["warm", "cold"],
+        ["warm", "industrial"]
+      ],
+      "examples": [
+        { "client_slug": "clinique-aura", "value": "warm" },
+        { "client_slug": "beaumont-avocats", "value": "cold" },
+        { "client_slug": "electro-maitre-industriel", "value": "industrial" },
+        { "client_slug": "collectif-nova", "value": "variable" }
+      ]
+    },
+    {
+      "id": "D5_velocity",
+      "display_name": "Vélocité du mouvement",
+      "type": "categorical",
+      "values": ["still", "slow-organic", "fast-purposeful", "mechanical"],
+      "semantics": {
+        "still": "presque aucune animation (juridique, institutionnel)",
+        "slow-organic": "transitions longues, spring physics (beauté, gastronomie)",
+        "fast-purposeful": "vif et précis (SaaS, tech)",
+        "mechanical": "rapide et sans fioritures (construction, industrie)"
+      },
+      "opposites": [
+        ["still", "fast-purposeful"],
+        ["still", "mechanical"],
+        ["slow-organic", "mechanical"]
+      ],
+      "examples": [
+        { "client_slug": "beaumont-avocats", "value": "still" },
+        { "client_slug": "clinique-aura", "value": "slow-organic" },
+        { "client_slug": "mark-systems", "value": "fast-purposeful" },
+        { "client_slug": "electro-maitre-industriel", "value": "mechanical" }
+      ]
+    },
+    {
+      "id": "D6_structure",
+      "display_name": "Structure spatiale",
+      "type": "categorical",
+      "values": ["symmetric", "asymmetric-soft", "asymmetric-strong", "editorial"],
+      "semantics": {
+        "symmetric": "centré, grilles régulières",
+        "asymmetric-soft": "un élément légèrement hors case",
+        "asymmetric-strong": "chevauchements intentionnels, débordements",
+        "editorial": "layout libre, position absolue, cascade"
+      },
+      "opposites": [
+        ["symmetric", "asymmetric-strong"],
+        ["symmetric", "editorial"]
+      ],
+      "examples": [
+        { "client_slug": "beaumont-avocats", "value": "symmetric" },
+        { "client_slug": "clinique-aura", "value": "asymmetric-soft" },
+        { "client_slug": "electro-maitre-industriel", "value": "asymmetric-strong" },
+        { "client_slug": "collectif-nova", "value": "editorial" }
+      ]
+    }
+  ],
+  "matrix_template": {
+    "D1_density": null,
+    "D2_register": null,
+    "D3_typo_weight": null,
+    "D4_palette": null,
+    "D5_velocity": null,
+    "D6_structure": null
+  },
+  "opposition_test": {
+    "rule": "Pour 2 clients A et B, compter le nombre de dimensions où A.value et B.value figurent dans un tuple d'opposites[].",
+    "threshold": 4,
+    "interpretation": "≥ 4 dimensions opposées → sites perçus comme provenant d'agences différentes"
+  },
+  "canonical_examples": {
+    "clinique-aura_vs_electro-maitre-industriel": {
+      "D1_density": { "A": 1, "B": 5, "opposed": true },
+      "D2_register": { "A": "emotional", "B": "technical-warm", "opposed": true },
+      "D3_typo_weight": { "A": "light", "B": "heavy", "opposed": true },
+      "D4_palette": { "A": "warm", "B": "industrial", "opposed": true },
+      "D5_velocity": { "A": "slow-organic", "B": "mechanical", "opposed": true },
+      "D6_structure": { "A": "asymmetric-soft", "B": "asymmetric-strong", "opposed": false },
+      "score": "5/6 opposées — test passé"
+    }
+  }
+}

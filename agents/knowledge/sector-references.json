@@ -1,0 +1,561 @@
+{
+  "$schema": "nexos-knowledge/sector-references/v1",
+  "version": "1.0.0",
+  "source": "agents/knowledge/web-patterns-reference.md",
+  "sectors": [
+    {
+      "id": "SEC-01",
+      "name": "Santé / Physiothérapie",
+      "nexos_clients": ["clinique-aura"],
+      "sites": [
+        {
+          "id": "S01",
+          "name": "Twin Boro Physical Therapy",
+          "url": "https://twinboro.com",
+          "style": "Multi-location healthcare, gold standard UX",
+          "primary_patterns": ["P01", "P02", "P11"],
+          "personality_6d": {
+            "D1_density": 3,
+            "D2_register": "emotional-cold",
+            "D3_typo_weight": "medium",
+            "D4_palette": "cold",
+            "D5_velocity": "still",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": null,
+          "nexos_note": "Référence absolue santé multi-cliniques. Pages enfant SEO-optimisées par ville, profils thérapeutes détaillés, carousel Google Reviews."
+        },
+        {
+          "id": "S02",
+          "name": "Ivy Rehab Network",
+          "url": "https://ivyrehab.com",
+          "style": "Network animation-light, SEO massive",
+          "primary_patterns": ["P17", "P11"],
+          "personality_6d": {
+            "D1_density": 3,
+            "D2_register": "emotional-cold",
+            "D3_typo_weight": "medium",
+            "D4_palette": "cold",
+            "D5_velocity": "slow-organic",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": null,
+          "nexos_note": "Animations performantes sans sacrifice de vitesse. Benchmark pour sites à grand volume de pages (500+) qui restent rapides."
+        },
+        {
+          "id": "S03",
+          "name": "Athletix Rehab",
+          "url": "https://athletixrehab.com",
+          "style": "Clinique sportive spécialisée, branding intense",
+          "primary_patterns": ["P04", "P01", "P12"],
+          "personality_6d": {
+            "D1_density": 3,
+            "D2_register": "emotional",
+            "D3_typo_weight": "heavy",
+            "D4_palette": "industrial",
+            "D5_velocity": "fast-purposeful",
+            "D6_structure": "asymmetric-strong"
+          },
+          "measured_metric": null,
+          "nexos_note": "Vidéo hero filtre la clientèle cible (athlètes). Pattern réplicable pour tout business de niche voulant qualifier ses visiteurs dès le hero."
+        },
+        {
+          "id": "S04",
+          "name": "Stride Sports Physiotherapy",
+          "url": "https://stridesportsphysio.ca",
+          "style": "Mobile-first rigoureux, croissance organique",
+          "primary_patterns": ["P05", "P11"],
+          "personality_6d": {
+            "D1_density": 3,
+            "D2_register": "emotional-cold",
+            "D3_typo_weight": "medium",
+            "D4_palette": "cold",
+            "D5_velocity": "still",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": "Croissance organique 0 → #1 local SEO → 4 cliniques",
+          "nexos_note": "Cas d'école de croissance organique. Pattern pour PME santé qui démarrent de zéro."
+        },
+        {
+          "id": "S05",
+          "name": "Bloor Jane Physiotherapy",
+          "url": "https://bloorjanephysio.com",
+          "style": "Clinique urbaine Toronto, proximity conversion",
+          "primary_patterns": ["P02"],
+          "personality_6d": {
+            "D1_density": 2,
+            "D2_register": "emotional",
+            "D3_typo_weight": "medium",
+            "D4_palette": "warm",
+            "D5_velocity": "slow-organic",
+            "D6_structure": "asymmetric-soft"
+          },
+          "measured_metric": "45 → 101 leads/mois (+2×) après mise en place du pattern social proof adjacente",
+          "nexos_note": "Pattern 'social proof adjacente au CTA'. Placement proximity double les conversions."
+        }
+      ]
+    },
+    {
+      "id": "SEC-02",
+      "name": "Agence créative",
+      "nexos_clients": ["collectif-nova"],
+      "sites": [
+        {
+          "id": "S06",
+          "name": "Cappen Studio",
+          "url": "https://cappen.com",
+          "style": "Scroll immersif, ambient experience (Miami / São Paulo)",
+          "primary_patterns": ["P18", "P17"],
+          "personality_6d": {
+            "D1_density": 2,
+            "D2_register": "technical-warm",
+            "D3_typo_weight": "contrasted",
+            "D4_palette": "variable",
+            "D5_velocity": "slow-organic",
+            "D6_structure": "editorial"
+          },
+          "measured_metric": null,
+          "nexos_note": "Architecture modulaire où chaque case study est un micro-univers. Pattern pour agences montrant la diversité sans perdre la cohérence globale."
+        },
+        {
+          "id": "S07",
+          "name": "Bruno Simon Portfolio",
+          "url": "https://bruno-simon.com",
+          "style": "Portfolio WebGL 3D, navigation voiture",
+          "primary_patterns": ["P15"],
+          "personality_6d": {
+            "D1_density": 1,
+            "D2_register": "emotional",
+            "D3_typo_weight": "light",
+            "D4_palette": "variable",
+            "D5_velocity": "fast-purposeful",
+            "D6_structure": "editorial"
+          },
+          "measured_metric": "Awwwards SOTM Janvier 2026",
+          "nexos_note": "Extrême du spectre 'interactif'. Pas réplicable tel quel, mais le concept 'navigation = expérience' est un pattern puissant. Référence plafond interactivité."
+        },
+        {
+          "id": "S08",
+          "name": "Space Cowboys",
+          "url": "https://spacewcowboys.com",
+          "style": "Gamified case studies, VR-like showroom (NYC)",
+          "primary_patterns": ["P15", "P18"],
+          "personality_6d": {
+            "D1_density": 1,
+            "D2_register": "technical-warm",
+            "D3_typo_weight": "heavy",
+            "D4_palette": "industrial",
+            "D5_velocity": "fast-purposeful",
+            "D6_structure": "editorial"
+          },
+          "measured_metric": null,
+          "nexos_note": "L'utilisateur contrôle physiquement l'exploration des projets. Navigation clavier (flèches). Applicable à tout portfolio qui veut être mémorable."
+        },
+        {
+          "id": "S09",
+          "name": "RyuCreative",
+          "url": "https://ryucreative.com",
+          "style": "Images dispersées hero + portfolio catégorisé 4 templates (LA)",
+          "primary_patterns": ["P07"],
+          "personality_6d": {
+            "D1_density": 2,
+            "D2_register": "emotional",
+            "D3_typo_weight": "contrasted",
+            "D4_palette": "variable",
+            "D5_velocity": "slow-organic",
+            "D6_structure": "asymmetric-strong"
+          },
+          "measured_metric": null,
+          "nexos_note": "Chaque catégorie de service a son propre design, montrant la polyvalence. Réplicable pour toute agence multi-service. Branding féminin assumé."
+        },
+        {
+          "id": "S10",
+          "name": "Pixelflakes",
+          "url": "https://pixelflakes.com",
+          "style": "Vidéo rires/sourires + kinetic typography + gradient design",
+          "primary_patterns": ["P04", "P17"],
+          "personality_6d": {
+            "D1_density": 2,
+            "D2_register": "emotional",
+            "D3_typo_weight": "contrasted",
+            "D4_palette": "variable",
+            "D5_velocity": "fast-purposeful",
+            "D6_structure": "asymmetric-soft"
+          },
+          "measured_metric": null,
+          "nexos_note": "Humanisation par la vidéo. Le visiteur ressent ce que serait de travailler avec l'équipe. Pattern puissant pour PME de services."
+        }
+      ]
+    },
+    {
+      "id": "SEC-03",
+      "name": "Restauration",
+      "nexos_clients": ["table-de-marguerite"],
+      "sites": [
+        {
+          "id": "S11",
+          "name": "Noma",
+          "url": "https://noma.dk",
+          "style": "Minimalisme absolu, images saisonnières (Copenhague)",
+          "primary_patterns": ["P08", "P13"],
+          "personality_6d": {
+            "D1_density": 1,
+            "D2_register": "emotional",
+            "D3_typo_weight": "light",
+            "D4_palette": "warm",
+            "D5_velocity": "still",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": null,
+          "nexos_note": "Le minimalisme comme luxe. Zéro bruit visuel. L'image saisonnière est un pattern programmatique réplicable. Restaurant Michelin fermé mais référence éternelle."
+        },
+        {
+          "id": "S12",
+          "name": "Gazzo",
+          "url": "https://gazzo.dk",
+          "style": "Raw, playful, anti-polish (Copenhague)",
+          "primary_patterns": ["P13"],
+          "personality_6d": {
+            "D1_density": 3,
+            "D2_register": "emotional",
+            "D3_typo_weight": "contrasted",
+            "D4_palette": "warm",
+            "D5_velocity": "slow-organic",
+            "D6_structure": "asymmetric-soft"
+          },
+          "measured_metric": null,
+          "nexos_note": "Site volontairement brut pour communiquer l'authenticité artisanale. Contre-pattern puissant vs sites 'trop léchés' dans le food."
+        },
+        {
+          "id": "S13",
+          "name": "Ma'ono",
+          "url": "https://maono.com",
+          "style": "Jaune bold + photo hero surdimensionnée (Seattle Hawaiian)",
+          "primary_patterns": ["P09", "P12"],
+          "personality_6d": {
+            "D1_density": 2,
+            "D2_register": "emotional",
+            "D3_typo_weight": "heavy",
+            "D4_palette": "industrial",
+            "D5_velocity": "fast-purposeful",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": null,
+          "nexos_note": "3-word brand messaging ('Crispy, Juicy, Aloha'). Le produit parle en 3 mots. Couleur signature bold = reconnaissance instantanée."
+        },
+        {
+          "id": "S14",
+          "name": "La Semilla",
+          "url": "https://lasemillanyc.com",
+          "style": "Plant-based latin, menu galerie images (NYC)",
+          "primary_patterns": ["P20", "P14"],
+          "personality_6d": {
+            "D1_density": 2,
+            "D2_register": "emotional",
+            "D3_typo_weight": "contrasted",
+            "D4_palette": "warm",
+            "D5_velocity": "slow-organic",
+            "D6_structure": "editorial"
+          },
+          "measured_metric": null,
+          "nexos_note": "Menu en format galerie d'images. La typo quirky comme branding primaire — la police EST l'identité."
+        },
+        {
+          "id": "S15",
+          "name": "Fiola (Fabio Trabocchi)",
+          "url": "https://fioladc.com",
+          "style": "Fine dining italien, story-first, lottery booking (Washington DC)",
+          "primary_patterns": ["P08"],
+          "personality_6d": {
+            "D1_density": 1,
+            "D2_register": "emotional",
+            "D3_typo_weight": "light",
+            "D4_palette": "warm",
+            "D5_velocity": "slow-organic",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": null,
+          "nexos_note": "Story-first restaurant. Pour les restaurants destination, l'histoire EST le produit. Long-form copy célèbre le journey."
+        }
+      ]
+    },
+    {
+      "id": "SEC-04",
+      "name": "Gestion de projet / SaaS",
+      "nexos_clients": ["vertex-pmo"],
+      "sites": [
+        {
+          "id": "S16",
+          "name": "Monograph",
+          "url": "https://monograph.com",
+          "style": "SaaS niche verticale pour architectes/ingénieurs",
+          "primary_patterns": ["P19"],
+          "personality_6d": {
+            "D1_density": 3,
+            "D2_register": "technical",
+            "D3_typo_weight": "medium",
+            "D4_palette": "cold",
+            "D5_velocity": "fast-purposeful",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": null,
+          "nexos_note": "Tout le messaging est pour UNE audience. Pas 'project management' générique mais 'for A&E firms'. Pattern puissant pour tout SaaS B2B niche."
+        },
+        {
+          "id": "S17",
+          "name": "Monday.com",
+          "url": "https://monday.com",
+          "style": "SaaS grand public, démo interactive",
+          "primary_patterns": ["P10", "P02"],
+          "personality_6d": {
+            "D1_density": 3,
+            "D2_register": "emotional",
+            "D3_typo_weight": "medium",
+            "D4_palette": "variable",
+            "D5_velocity": "fast-purposeful",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": null,
+          "nexos_note": "Démo interactive dans le hero — produit en action, pas screenshot. Conversion supérieure à toute image statique. CTA 'Get Started' répété 10+ fois."
+        },
+        {
+          "id": "S18",
+          "name": "Productive.io",
+          "url": "https://productive.io",
+          "style": "SaaS all-in-one, angle profitabilité",
+          "primary_patterns": ["P19"],
+          "personality_6d": {
+            "D1_density": 4,
+            "D2_register": "technical",
+            "D3_typo_weight": "medium",
+            "D4_palette": "cold",
+            "D5_velocity": "fast-purposeful",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": null,
+          "nexos_note": "Au lieu de vendre la gestion de projet, vendre la profitabilité. Le reframing du bénéfice change tout le messaging."
+        },
+        {
+          "id": "S19",
+          "name": "Bop Design",
+          "url": "https://bopdesign.com",
+          "style": "Agence B2B conversion-first",
+          "primary_patterns": ["P19", "P02"],
+          "personality_6d": {
+            "D1_density": 3,
+            "D2_register": "technical",
+            "D3_typo_weight": "heavy",
+            "D4_palette": "cold",
+            "D5_velocity": "fast-purposeful",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": "420% augmentation de trafic (case study Bop Design)",
+          "nexos_note": "StoryBrand framework universel. Structure : problème → guide → plan → action → résultat. Case studies avec métriques concrètes."
+        },
+        {
+          "id": "S20",
+          "name": "Clay",
+          "url": "https://clay.global",
+          "style": "Agence design premium (SF)",
+          "primary_patterns": ["P08", "P17"],
+          "personality_6d": {
+            "D1_density": 1,
+            "D2_register": "emotional-cold",
+            "D3_typo_weight": "light",
+            "D4_palette": "cold",
+            "D5_velocity": "slow-organic",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": null,
+          "nexos_note": "Quality signals implicites — l'exécution du site EST l'argument. Pas de badges, pas de '10 raisons'. Whitespace comme élément de luxe."
+        }
+      ]
+    },
+    {
+      "id": "SEC-05",
+      "name": "Juridique",
+      "nexos_clients": ["beaumont-avocats"],
+      "sites": [
+        {
+          "id": "S21",
+          "name": "Bick Law LLP",
+          "url": "https://bicklawllp.com",
+          "style": "Cabinet droit environnemental, animations mono→couleur",
+          "primary_patterns": ["P14", "P17"],
+          "personality_6d": {
+            "D1_density": 3,
+            "D2_register": "emotional",
+            "D3_typo_weight": "light",
+            "D4_palette": "warm",
+            "D5_velocity": "slow-organic",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": "Nominé Webby Award",
+          "nexos_note": "Design = message. La spécialisation environnementale est communiquée par les visuels (nature) plutôt que par le texte."
+        },
+        {
+          "id": "S22",
+          "name": "Quinn Emanuel",
+          "url": "https://quinnemanuel.com",
+          "style": "Méga-cabinet (1200+ avocats, 34 bureaux)",
+          "primary_patterns": ["P16", "P02"],
+          "personality_6d": {
+            "D1_density": 5,
+            "D2_register": "technical",
+            "D3_typo_weight": "heavy",
+            "D4_palette": "cold",
+            "D5_velocity": "still",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": "IMA Awards 496/500",
+          "nexos_note": "Information architecture à grande échelle. Comment organiser 1000+ entités de manière navigable. Blueprint pour tout site avec catalogue volumineux."
+        },
+        {
+          "id": "S23",
+          "name": "BD&P (Burnet Duckworth & Palmer)",
+          "url": "https://bdplaw.com",
+          "style": "Cabinet mid-size Calgary, parallax + code-breaking",
+          "primary_patterns": ["P14", "P17"],
+          "personality_6d": {
+            "D1_density": 3,
+            "D2_register": "technical",
+            "D3_typo_weight": "medium",
+            "D4_palette": "cold",
+            "D5_velocity": "slow-organic",
+            "D6_structure": "asymmetric-soft"
+          },
+          "measured_metric": null,
+          "nexos_note": "Casse volontairement les codes visuels juridiques. Quand toute l'industrie utilise le même template, le casser = avantage compétitif."
+        },
+        {
+          "id": "S24",
+          "name": "Bend Law Group",
+          "url": "https://bendlawgroup.com",
+          "style": "Single-page scroll, ciblé startups (SF)",
+          "primary_patterns": ["P05"],
+          "personality_6d": {
+            "D1_density": 2,
+            "D2_register": "emotional",
+            "D3_typo_weight": "medium",
+            "D4_palette": "warm",
+            "D5_velocity": "slow-organic",
+            "D6_structure": "asymmetric-soft"
+          },
+          "measured_metric": null,
+          "nexos_note": "Single-page legal. Prouve qu'un cabinet peut être accessible avec une seule page bien structurée. Parfait pour cabinets boutique et PME de services professionnels."
+        },
+        {
+          "id": "S25",
+          "name": "Hudgell Solicitors",
+          "url": "https://hudgellsolicitors.co.uk",
+          "style": "Cabinet multi-spécialités UK, color-coded par domaine",
+          "primary_patterns": ["P03", "P04"],
+          "personality_6d": {
+            "D1_density": 4,
+            "D2_register": "emotional",
+            "D3_typo_weight": "medium",
+            "D4_palette": "variable",
+            "D5_velocity": "slow-organic",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": "Design a doublé les conversions YoY. Digital Impact Award",
+          "nexos_note": "Color-coding par domaine → navigation intuitive sans lire. Podcasts + vidéos + articles comme canaux alternatifs."
+        }
+      ]
+    },
+    {
+      "id": "SEC-06",
+      "name": "Électrique industriel",
+      "nexos_clients": ["electro-maitre-industriel"],
+      "sites": [
+        {
+          "id": "S26",
+          "name": "Gibbs Electric Company",
+          "url": "https://gibbselectric.com",
+          "style": "Entrepreneur luxe, dark teal premium (San Diego)",
+          "primary_patterns": ["P12"],
+          "personality_6d": {
+            "D1_density": 2,
+            "D2_register": "technical-warm",
+            "D3_typo_weight": "heavy",
+            "D4_palette": "cold",
+            "D5_velocity": "slow-organic",
+            "D6_structure": "asymmetric-soft"
+          },
+          "measured_metric": null,
+          "nexos_note": "Premium trade positioning. Palette non-conventionnelle (dark teal vs bleu/blanc) repositionne instantanément un business trade comme premium. Le design fait le pricing."
+        },
+        {
+          "id": "S27",
+          "name": "Puckett Electric",
+          "url": "https://puckettelectric.com",
+          "style": "Parallax + grayscale→couleur hover (rouge vif primaire)",
+          "primary_patterns": ["P06", "P12"],
+          "personality_6d": {
+            "D1_density": 3,
+            "D2_register": "technical-warm",
+            "D3_typo_weight": "heavy",
+            "D4_palette": "industrial",
+            "D5_velocity": "fast-purposeful",
+            "D6_structure": "asymmetric-soft"
+          },
+          "measured_metric": null,
+          "nexos_note": "Grayscale-to-color hover reveal. Les projets en N&B se révèlent au survol. Effet CSS simple mais impactant. Rouge vif unique dans l'électrique."
+        },
+        {
+          "id": "S28",
+          "name": "Louis Shiffman Electric",
+          "url": "https://shiffmanelectric.com",
+          "style": "Legacy 100 ans NYC, fleet + warehouse (contractor + fournisseur)",
+          "primary_patterns": ["P16"],
+          "personality_6d": {
+            "D1_density": 4,
+            "D2_register": "technical",
+            "D3_typo_weight": "medium",
+            "D4_palette": "cold",
+            "D5_velocity": "still",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": null,
+          "nexos_note": "Double positionnement contractor + supplier (rare). Legacy communiquée par flotte + entrepôt + photos historiques. Le patrimoine visible crée la confiance instantanée."
+        },
+        {
+          "id": "S29",
+          "name": "Green Electrical",
+          "url": "https://greenelectrical.ie",
+          "style": "Animations scroll dans un secteur statique (Irlande)",
+          "primary_patterns": ["P17", "P14"],
+          "personality_6d": {
+            "D1_density": 3,
+            "D2_register": "technical-warm",
+            "D3_typo_weight": "medium",
+            "D4_palette": "warm",
+            "D5_velocity": "fast-purposeful",
+            "D6_structure": "asymmetric-soft"
+          },
+          "measured_metric": null,
+          "nexos_note": "Animated trade site. Les animations scroll (que les concurrents n'utilisent jamais) créent un écart de perception de qualité massif dans un secteur visuellement homogène."
+        },
+        {
+          "id": "S30",
+          "name": "Kollmann Electric",
+          "url": "https://kollmannelectric.com",
+          "style": "Minimaliste pur, white space dominant",
+          "primary_patterns": ["P13", "P14"],
+          "personality_6d": {
+            "D1_density": 1,
+            "D2_register": "technical",
+            "D3_typo_weight": "light",
+            "D4_palette": "cold",
+            "D5_velocity": "still",
+            "D6_structure": "symmetric"
+          },
+          "measured_metric": null,
+          "nexos_note": "Quand tous les concurrents surchargent leurs pages, le minimalisme radical devient le signal de qualité premium. Less = more = confiance. Pattern 'minimalist trade'."
+        }
+      ]
+    }
+  ],
+  "total_sites": 30,
+  "total_sectors": 6
+}

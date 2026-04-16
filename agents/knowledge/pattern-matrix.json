@@ -1,0 +1,437 @@
+{
+  "$schema": "nexos-knowledge/pattern-matrix/v1",
+  "version": "1.0.0",
+  "source": "agents/knowledge/web-patterns-reference.md",
+  "tiers_definition": {
+    "1": "universel — hautement recommandé",
+    "2": "sectoriel — contextuel",
+    "3": "premium — optionnel selon positionnement",
+    "null": "non applicable / non recommandé"
+  },
+  "patterns": [
+    {
+      "id": "P01",
+      "name": "Sticky CTA persistant",
+      "tier_default": 1,
+      "by_sector": {
+        "SEC-01": 1,
+        "SEC-02": 2,
+        "SEC-03": 2,
+        "SEC-04": 2,
+        "SEC-05": 1,
+        "SEC-06": 1
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D2_accessibility"],
+      "anti_patterns": [
+        "CTA disparaît au scroll sans raison ergonomique",
+        "Multi-CTA concurrents dans le header",
+        "Label vague ('En savoir plus') en CTA primaire"
+      ],
+      "reference_sites": ["S01", "S03"],
+      "measured_impact": null
+    },
+    {
+      "id": "P02",
+      "name": "Social proof adjacente au CTA",
+      "tier_default": 1,
+      "by_sector": {
+        "SEC-01": 1,
+        "SEC-02": 2,
+        "SEC-03": 2,
+        "SEC-04": 1,
+        "SEC-05": 1,
+        "SEC-06": 1
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D3_content"],
+      "anti_patterns": [
+        "Témoignages relégués au footer",
+        "Témoignages anonymes sans photo",
+        "Texte générique ('Super service !')",
+        "Ne jamais séparer social proof et CTA"
+      ],
+      "reference_sites": ["S05", "S17"],
+      "measured_impact": "45 → 101 leads/mois (+2×) après mise en place (Bloor Jane S05) ; 2× conversions Hudgell Solicitors (S25)"
+    },
+    {
+      "id": "P03",
+      "name": "Color-coded navigation",
+      "tier_default": 2,
+      "by_sector": {
+        "SEC-01": 3,
+        "SEC-02": 2,
+        "SEC-03": 3,
+        "SEC-04": 2,
+        "SEC-05": 1,
+        "SEC-06": 3
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D6_seo"],
+      "anti_patterns": [
+        "8+ couleurs → chaos visuel",
+        "Contraste AAA négligé pour les couleurs de nav",
+        "Couleur seule comme signal (violation WCAG)"
+      ],
+      "reference_sites": ["S25"],
+      "measured_impact": "Design doublant les conversions year-over-year (Hudgell Solicitors S25)"
+    },
+    {
+      "id": "P04",
+      "name": "Hero vidéo émotionnelle",
+      "tier_default": 3,
+      "by_sector": {
+        "SEC-01": 2,
+        "SEC-02": 1,
+        "SEC-03": 2,
+        "SEC-04": 3,
+        "SEC-05": 3,
+        "SEC-06": 3
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D5_performance", "D8_legal"],
+      "anti_patterns": [
+        "PAS de stock footage",
+        "Vidéo autoplay avec son",
+        "Vidéo > 5 Mo qui casse le LCP",
+        "Absence de fallback pour prefers-reduced-motion"
+      ],
+      "reference_sites": ["S10", "S03"],
+      "measured_impact": null
+    },
+    {
+      "id": "P05",
+      "name": "Single-page scroll",
+      "tier_default": 2,
+      "by_sector": {
+        "SEC-01": 3,
+        "SEC-02": 2,
+        "SEC-03": 3,
+        "SEC-04": 3,
+        "SEC-05": 2,
+        "SEC-06": 2
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D6_seo"],
+      "anti_patterns": [
+        "Page > 10 000 px de haut (fatigue scroll)",
+        "Pas d'ancres nommées (impossible de partager un lien profond)",
+        "SEO sacrifié (une seule URL = une seule cible)"
+      ],
+      "reference_sites": ["S24"],
+      "measured_impact": null
+    },
+    {
+      "id": "P06",
+      "name": "Grayscale → Color reveal",
+      "tier_default": 3,
+      "by_sector": {
+        "SEC-01": 3,
+        "SEC-02": 1,
+        "SEC-03": 3,
+        "SEC-04": 3,
+        "SEC-05": 3,
+        "SEC-06": 1
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D5_performance"],
+      "anti_patterns": [
+        "Transition trop longue (> 500ms) qui ralentit le scan",
+        "Effet appliqué à des photos où le N&B tue le message (ex : food porn)",
+        "Oubli du focus state (clavier)"
+      ],
+      "reference_sites": ["S27"],
+      "measured_impact": null
+    },
+    {
+      "id": "P07",
+      "name": "Multi-template portfolio",
+      "tier_default": 2,
+      "by_sector": {
+        "SEC-01": 3,
+        "SEC-02": 1,
+        "SEC-03": 3,
+        "SEC-04": 2,
+        "SEC-05": 3,
+        "SEC-06": 3
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D3_content", "D6_seo"],
+      "anti_patterns": [
+        "Design uniforme qui dit 'on fait tout' sans démontrer",
+        "Inconsistance sur la nav racine (utilisateur perdu)",
+        "Perf cassée par 4× tout le CSS"
+      ],
+      "reference_sites": ["S09"],
+      "measured_impact": null
+    },
+    {
+      "id": "P08",
+      "name": "Story-first design",
+      "tier_default": 3,
+      "by_sector": {
+        "SEC-01": 3,
+        "SEC-02": 2,
+        "SEC-03": 1,
+        "SEC-04": 2,
+        "SEC-05": 3,
+        "SEC-06": 3
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D3_content"],
+      "anti_patterns": [
+        "Histoire rédigée en corporate-speak ('Notre mission est de...')",
+        "Photos stock qui tuent l'authenticité",
+        "Longueur sans substance (> 1500 mots)"
+      ],
+      "reference_sites": ["S15", "S11", "S20"],
+      "measured_impact": null
+    },
+    {
+      "id": "P09",
+      "name": "3-word brand messaging",
+      "tier_default": 1,
+      "by_sector": {
+        "SEC-01": 2,
+        "SEC-02": 2,
+        "SEC-03": 1,
+        "SEC-04": 1,
+        "SEC-05": 2,
+        "SEC-06": 2
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D3_content", "D6_seo"],
+      "anti_patterns": [
+        "Tagline abstraite ('Innovative solutions for modern businesses')",
+        "3 mots techniques qui ne disent rien au client final",
+        "Police trop fine pour un impact instantané"
+      ],
+      "reference_sites": ["S13"],
+      "measured_impact": null
+    },
+    {
+      "id": "P10",
+      "name": "Démo interactive hero",
+      "tier_default": 3,
+      "by_sector": {
+        "SEC-01": 3,
+        "SEC-02": 2,
+        "SEC-03": 3,
+        "SEC-04": 1,
+        "SEC-05": 3,
+        "SEC-06": 3
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D5_performance"],
+      "anti_patterns": [
+        "JS lourd qui casse le LCP (> 3s)",
+        "Données réelles exposées dans la démo",
+        "Démo qui diffère tellement du produit réel que c'est trompeur"
+      ],
+      "reference_sites": ["S17"],
+      "measured_impact": null
+    },
+    {
+      "id": "P11",
+      "name": "Page par localisation",
+      "tier_default": 2,
+      "by_sector": {
+        "SEC-01": 1,
+        "SEC-02": 3,
+        "SEC-03": 2,
+        "SEC-04": 3,
+        "SEC-05": 2,
+        "SEC-06": 1
+      },
+      "soic_dimensions_impacted": ["D6_seo", "D1_ux"],
+      "anti_patterns": [
+        "Pas duplicate content (SEO multi-locations)",
+        "NAP incohérent entre la page et Google My Business",
+        "Schema.org LocalBusiness omis"
+      ],
+      "reference_sites": ["S01", "S02"],
+      "measured_impact": null
+    },
+    {
+      "id": "P12",
+      "name": "Premium palette shift",
+      "tier_default": 2,
+      "by_sector": {
+        "SEC-01": 2,
+        "SEC-02": 2,
+        "SEC-03": 2,
+        "SEC-04": 2,
+        "SEC-05": 2,
+        "SEC-06": 1
+      },
+      "soic_dimensions_impacted": ["D1_ux"],
+      "anti_patterns": [
+        "Cliché de secteur respecté → aucune différenciation",
+        "Palette 'chic' mais incohérente avec le produit (prix low-cost)",
+        "Contraste AA sacrifié pour l'esthétique"
+      ],
+      "reference_sites": ["S26", "S27"],
+      "measured_impact": null
+    },
+    {
+      "id": "P13",
+      "name": "Anti-polish authenticity",
+      "tier_default": 3,
+      "by_sector": {
+        "SEC-01": 3,
+        "SEC-02": 2,
+        "SEC-03": 1,
+        "SEC-04": 3,
+        "SEC-05": 3,
+        "SEC-06": 2
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D3_content"],
+      "anti_patterns": [
+        "Faux anti-polish (photos retouchées pour paraître brutes)",
+        "Navigation sacrifiée au nom de l'esthétique",
+        "Tailles de texte illisibles (< 14px) au nom de la personnalité"
+      ],
+      "reference_sites": ["S12", "S30"],
+      "measured_impact": null
+    },
+    {
+      "id": "P14",
+      "name": "Industry code-breaking",
+      "tier_default": 2,
+      "by_sector": {
+        "SEC-01": 2,
+        "SEC-02": 2,
+        "SEC-03": 2,
+        "SEC-04": 2,
+        "SEC-05": 1,
+        "SEC-06": 2
+      },
+      "soic_dimensions_impacted": ["D1_ux"],
+      "anti_patterns": [
+        "Rupture gratuite (aucune cohérence avec le positionnement)",
+        "Rupture qui sacrifie la lisibilité ou la confiance",
+        "Rupture en surface (couleur seulement) sans cohérence structurelle"
+      ],
+      "reference_sites": ["S23", "S21", "S29"],
+      "measured_impact": null
+    },
+    {
+      "id": "P15",
+      "name": "Gamified navigation",
+      "tier_default": 3,
+      "by_sector": {
+        "SEC-01": 3,
+        "SEC-02": 1,
+        "SEC-03": 3,
+        "SEC-04": 3,
+        "SEC-05": 3,
+        "SEC-06": 3
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D2_accessibility", "D5_performance"],
+      "anti_patterns": [
+        "Pas de fallback → exclusion clavier / lecteur d'écran (violation WCAG)",
+        "WebGL > 2Mo → mobile cassé",
+        "Navigation 'astucieuse' qui perd l'utilisateur sans carte"
+      ],
+      "reference_sites": ["S07", "S08"],
+      "measured_impact": null
+    },
+    {
+      "id": "P16",
+      "name": "Legacy authority visuals",
+      "tier_default": 2,
+      "by_sector": {
+        "SEC-01": 2,
+        "SEC-02": 3,
+        "SEC-03": 3,
+        "SEC-04": 3,
+        "SEC-05": 2,
+        "SEC-06": 1
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D3_content"],
+      "anti_patterns": [
+        "Photos stock anonymes (aucune crédibilité)",
+        "Stats non sourcées",
+        "Pages 'À propos' perdues dans la nav (patrimoine caché)"
+      ],
+      "reference_sites": ["S28", "S22"],
+      "measured_impact": "IMA Awards 496/500 (Quinn Emanuel S22 — signal de qualité objective)"
+    },
+    {
+      "id": "P17",
+      "name": "Scroll-triggered animations",
+      "tier_default": 1,
+      "by_sector": {
+        "SEC-01": 1,
+        "SEC-02": 1,
+        "SEC-03": 1,
+        "SEC-04": 1,
+        "SEC-05": 1,
+        "SEC-06": 1
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D2_accessibility", "D5_performance"],
+      "anti_patterns": [
+        "Framer Motion sur 100+ éléments → CLS catastrophique",
+        "Parallax lourd au scroll (layout thrashing)",
+        "Animation au scroll bidirectionnel (désoriente)",
+        "Absence de prefers-reduced-motion"
+      ],
+      "reference_sites": ["S02", "S10", "S29"],
+      "measured_impact": null
+    },
+    {
+      "id": "P18",
+      "name": "Micro-univers sections",
+      "tier_default": 3,
+      "by_sector": {
+        "SEC-01": 3,
+        "SEC-02": 2,
+        "SEC-03": 3,
+        "SEC-04": 3,
+        "SEC-05": 3,
+        "SEC-06": 3
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D6_seo"],
+      "anti_patterns": [
+        "Nav globale qui disparaît dans certains univers (utilisateur perdu)",
+        "6+ univers radicalement différents → cacophonie",
+        "CSS qui fuite entre univers (bugs de style)"
+      ],
+      "reference_sites": ["S06", "S08"],
+      "measured_impact": null
+    },
+    {
+      "id": "P19",
+      "name": "StoryBrand messaging",
+      "tier_default": 2,
+      "by_sector": {
+        "SEC-01": 2,
+        "SEC-02": 2,
+        "SEC-03": 3,
+        "SEC-04": 1,
+        "SEC-05": 2,
+        "SEC-06": 2
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D3_content"],
+      "anti_patterns": [
+        "Agence héroïsée (le client doit être le héros)",
+        "Plan en 10 étapes (trop → friction)",
+        "Résultat abstrait ('satisfaction garantie')"
+      ],
+      "reference_sites": ["S19", "S16"],
+      "measured_impact": "420% augmentation de trafic (case study Bop Design S19)"
+    },
+    {
+      "id": "P20",
+      "name": "Menu galerie images",
+      "tier_default": 2,
+      "by_sector": {
+        "SEC-01": null,
+        "SEC-02": 3,
+        "SEC-03": 1,
+        "SEC-04": 3,
+        "SEC-05": null,
+        "SEC-06": 3
+      },
+      "soic_dimensions_impacted": ["D1_ux", "D5_performance"],
+      "anti_patterns": [
+        "PDF téléchargeable comme seul menu (SEO nul, mobile cassé)",
+        "Images > 500ko chacune → CLS + LCP catastrophiques",
+        "Pas d'alt-text sur les plats (accessibilité + SEO)"
+      ],
+      "reference_sites": ["S14"],
+      "measured_impact": null
+    }
+  ],
+  "total_patterns": 20
+}
