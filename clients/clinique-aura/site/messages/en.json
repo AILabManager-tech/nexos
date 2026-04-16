@@ -1,0 +1,126 @@
+{
+  "site": {
+    "name": "Clinique Aura",
+    "tagline": "Physiotherapy · Osteopathy · Massage therapy",
+    "locale": "en-CA"
+  },
+  "layout": {
+    "header": {
+      "nav": {
+        "home": "Home",
+        "services": "Services",
+        "team": "Team",
+        "contact": "Contact"
+      },
+      "cta_short": "Book an appointment",
+      "language_switch": "Français"
+    },
+    "footer": {
+      "rights": "All rights reserved",
+      "address": "1234 avenue du Parc, Montréal (Québec) H2V 4H2",
+      "phone": "+1 514 555 0199",
+      "email": "info@clinique-aura.ca",
+      "privacy": "Privacy policy",
+      "legal": "Legal notice"
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Boutique clinic",
+      "title": "Restore your body's balance",
+      "subtitle": "Physiotherapy, osteopathy and massage therapy in a space designed for your wellbeing.",
+      "cta_primary": "Book an appointment",
+      "cta_secondary": "Discover our services",
+      "image_alt": "A Clinique Aura therapist gently places her hands on the shoulder of a smiling patient in a bright treatment room with ivory and light wood tones",
+      "image_caption": "Our therapists welcome you in a space designed for wellbeing"
+    },
+    "services": {
+      "eyebrow": "Our care",
+      "title": "Three approaches, one shared goal",
+      "subtitle": "Personalized follow-up for every patient, at your own pace.",
+      "items": {
+        "physio": {
+          "title": "Physiotherapy",
+          "description": "Assessment and treatment of musculoskeletal injuries by recognized professionals."
+        },
+        "osteo": {
+          "title": "Osteopathy",
+          "description": "A global manual approach to restore mobility and relieve chronic tension."
+        },
+        "massage": {
+          "title": "Massage therapy",
+          "description": "Release and drainage techniques to support recovery and relaxation."
+        }
+      }
+    },
+    "testimonialsCta": {
+      "sr_heading": "Patient testimonials and appointment booking",
+      "testimonials_aria_label": "Testimonials from Clinique Aura patients",
+      "eyebrow": "Ready to get started?",
+      "title": "Give your body room to breathe",
+      "subtitle": "Our therapists welcome you Monday to Saturday. First consultation by appointment, personalized follow-up from the second session.",
+      "cta_primary": "Book online",
+      "cta_secondary": "Call us",
+      "trust_line": "No cancellation fee up to 24 hours before the appointment.",
+      "items": {
+        "marie": {
+          "quote": "In three sessions I recovered mobility I thought I'd lost after my accident. The welcome matches the quality of care.",
+          "author": "Marie L.",
+          "role": "Patient, Montréal"
+        },
+        "julien": {
+          "quote": "My osteopath took the time to understand my desk-bound work. The results hold over time.",
+          "author": "Julien T.",
+          "role": "Patient, Outremont"
+        },
+        "sophie": {
+          "quote": "I've tried several clinics. Aura is the only one where I feel heard and never rushed.",
+          "author": "Sophie R.",
+          "role": "Patient since 2023"
+        }
+      }
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacy policy",
+      "intro": "Clinique Aura complies with Québec's Act 25 on the protection of personal information in the private sector.",
+      "rpp_label": "Personal information protection officer",
+      "rpp_name": "Dr. Sophie Tremblay",
+      "rpp_title": "Clinic director",
+      "rpp_email": "confidentialite@clinique-aura.ca",
+      "data_title": "Data collected",
+      "data_body": "Name, email, phone, clinical information (within the scope of therapeutic follow-up).",
+      "purposes_title": "Purposes",
+      "purposes_body": "Appointment booking, contact form, clinical follow-up, anonymized usage analytics.",
+      "retention_title": "Retention",
+      "retention_body": "Clinical records are kept for 10 years after the last visit. Navigation data is kept for 24 months maximum.",
+      "rights_title": "Your rights",
+      "rights_body": "You may request access, rectification or deletion of your data at any time by contacting our officer."
+    },
+    "mentions": {
+      "title": "Legal notice",
+      "company": "Clinique Aura inc.",
+      "neq_label": "NEQ",
+      "neq_value": "1175432908",
+      "address_label": "Head office",
+      "address_value": "1234 avenue du Parc, Montréal (Québec) H2V 4H2",
+      "phone_label": "Phone",
+      "phone_value": "+1 514 555 0199",
+      "email_label": "Email",
+      "email_value": "info@clinique-aura.ca",
+      "host_label": "Hosting provider",
+      "host_value": "Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, United States"
+    }
+  },
+  "cookies": {
+    "banner_title": "Your privacy matters",
+    "banner_body": "We use essential cookies to run the site. Analytics cookies are only enabled with your consent.",
+    "accept_all": "Accept all",
+    "reject_all": "Reject",
+    "customize": "Customize",
+    "essentials": "Essentials",
+    "analytics": "Analytics",
+    "marketing": "Marketing"
+  }
+}

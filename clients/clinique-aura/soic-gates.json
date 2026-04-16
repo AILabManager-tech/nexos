@@ -1,0 +1,74 @@
+{
+  "$schema": "nexos/soic-gates/v1",
+  "client_slug": "clinique-aura",
+  "baseline": {
+    "captured_at": "2026-04-16T14:00:00-04:00",
+    "phase": "chantier-E option-A scaffold (avant patterns)",
+    "note": "Scaffold minimal Next.js 15 + TS strict + Tailwind + next-intl. Hero générique (gradient décoratif), CTA simple (pas de social proof adjacent).",
+    "soic_mu": 8.1,
+    "dimensions": {
+      "D1_ux": 7.5,
+      "D2_accessibility": 8.0,
+      "D3_content": 7.0,
+      "D4_security": 9.0,
+      "D5_performance": 8.0,
+      "D6_seo": 8.0,
+      "D7_i18n": 9.0,
+      "D8_legal": 8.3,
+      "D9_quality": 8.5
+    },
+    "measurement_methods": {
+      "D8_legal": "soic/evaluate.py::evaluate_d8_legal() — programmatique (5/6 vérifications : privacy, legal-mentions, cookie-consent, vercel-headers 4/4, RPP)",
+      "D4_security": "vercel.json headers + next.config.mjs headers + npm audit (0 HIGH/CRITICAL, 1 moderate next-intl)",
+      "others": "qualitatif (Lighthouse/pa11y non installés — voir phase-E-report.md §Observabilité)"
+    }
+  },
+  "runs": [
+    {
+      "run_id": "run-001-phase-E-post-patterns",
+      "captured_at": "2026-04-16T14:50:00-04:00",
+      "phase": "chantier-E pilot (après P04 + P02)",
+      "patterns_applied": ["P04", "P02"],
+      "soic_mu": 8.6,
+      "dimensions": {
+        "D1_ux": 8.5,
+        "D2_accessibility": 8.5,
+        "D3_content": 8.0,
+        "D4_security": 9.0,
+        "D5_performance": 8.0,
+        "D6_seo": 8.0,
+        "D7_i18n": 9.0,
+        "D8_legal": 8.3,
+        "D9_quality": 8.5
+      },
+      "delta_vs_baseline": {
+        "soic_mu": 0.5,
+        "D1_ux": 1.0,
+        "D2_accessibility": 0.5,
+        "D3_content": 1.0,
+        "D4_security": 0.0,
+        "D5_performance": 0.0,
+        "D6_seo": 0.0,
+        "D7_i18n": 0.0,
+        "D8_legal": 0.0,
+        "D9_quality": 0.0
+      },
+      "rationale": "P04 améliore D1_ux (hero humain > gradient décoratif) et D2 (alt descriptif humain) et légèrement D3 (message plus fort). P02 améliore D1_ux (social proof adjacente doublée des leads selon Bloor Jane) et D3_content (témoignages ajoutés). D4/D5/D8 inchangés car la structure de sécurité/Loi 25 n'est pas touchée par les patterns appliqués.",
+      "build": {
+        "tsc": "PASS (0 erreurs)",
+        "next_build": "PASS (11 pages statiques)",
+        "npm_audit_high_critical": 0,
+        "npm_audit_moderate": 1,
+        "first_load_js_homepage_kb": 113
+      },
+      "gate_decision": "GO",
+      "gate_thresholds_check": {
+        "build_pass": true,
+        "d4_gte_8": true,
+        "d8_gte_7": true,
+        "mu_gte_baseline": true,
+        "mu_delta_ge_minus_0_5": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "$schema": "nexos-ph1/pattern-recommendation/v1",
+  "generated_at": "2026-04-16T14:30:00-04:00",
+  "client_slug": "clinique-aura",
+  "sector_id": "SEC-01",
+  "sector_name": "Santé / Physiothérapie",
+  "patterns_recommended": [
+    {
+      "id": "P02",
+      "name": "Social proof adjacente au CTA",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-01, ROI mesuré +2× leads (Bloor Jane S05). Alignement direct avec KPI conversion de Clinique Aura.",
+      "primary": true
+    },
+    {
+      "id": "P03",
+      "name": "Color-coded navigation",
+      "tier_for_this_client": 1,
+      "rationale": "Boosté luxury (3→2→1) + conversion D1_ux (cap 1). ROI mesuré chez Hudgell Solicitors (double conversions). Différencie les services physio/ostéo/massage visuellement.",
+      "primary": true
+    },
+    {
+      "id": "P19",
+      "name": "StoryBrand messaging",
+      "tier_for_this_client": 1,
+      "rationale": "Boosté luxury. Mesure 420% trafic (Bop Design S19). Narrative centré patient = conversion.",
+      "primary": true
+    },
+    {
+      "id": "P16",
+      "name": "Legacy authority visuals",
+      "tier_for_this_client": 1,
+      "rationale": "Boosté luxury. Authorité clinique (formations, certifications) crédibilise le positionnement haut de gamme.",
+      "primary": true
+    },
+    {
+      "id": "P01",
+      "name": "Sticky CTA persistant",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-01 + boost conversion : CTA 'Prendre rendez-vous' omniprésent réduit friction de booking.",
+      "primary": true
+    },
+    {
+      "id": "P04",
+      "name": "Hero vidéo / photo émotionnelle",
+      "tier_for_this_client": 1,
+      "rationale": "Boosté luxury (2→1) + conversion D1_ux (cap 1). Hero humain et chaleureux qualifie la patientèle cible (femmes 30-60) dès l'arrivée, aligné D2=emotional.",
+      "primary": true
+    },
+    {
+      "id": "P05",
+      "name": "Single-page scroll",
+      "tier_for_this_client": 1,
+      "rationale": "Boosté luxury + conversion D1_ux. Homepage orientée scroll narrative avec ancres nommées (services, équipe, contact).",
+      "primary": true
+    },
+    {
+      "id": "P06",
+      "name": "Grayscale → Color reveal",
+      "tier_for_this_client": 1,
+      "rationale": "Boosté luxury. Signature premium : photos en niveaux de gris qui se colorent au hover/scroll, respectant prefers-reduced-motion.",
+      "primary": true
+    }
+  ],
+  "patterns_avoided": [
+    {
+      "id": "P20",
+      "reason": "SEC-01 : tier null (menu galerie images non applicable à une clinique de physiothérapie)."
+    }
+  ],
+  "reference_sites": [
+    {
+      "id": "S03",
+      "name": "Athletix Rehab",
+      "url": "https://athletixrehab.com",
+      "applicable_patterns": ["P01", "P04"],
+      "study_priority": 1
+    },
+    {
+      "id": "S05",
+      "name": "Bloor Jane Physiotherapy",
+      "url": "https://bloorjanephysio.com",
+      "applicable_patterns": ["P02"],
+      "study_priority": 2
+    },
+    {
+      "id": "S25",
+      "name": "Hudgell Solicitors",
+      "url": "(cf. sector-references.json SEC-05)",
+      "applicable_patterns": ["P03"],
+      "study_priority": 2
+    },
+    {
+      "id": "S10",
+      "name": "Pixelflakes",
+      "url": "(cf. sector-references.json SEC-02)",
+      "applicable_patterns": ["P04"],
+      "study_priority": 2
+    },
+    {
+      "id": "S27",
+      "name": "Grayscale reveal reference (SEC-02/06)",
+      "url": "(cf. sector-references.json)",
+      "applicable_patterns": ["P06"],
+      "study_priority": 2
+    }
+  ],
+  "personality_6d_proposed": {
+    "D1_density": 1,
+    "D2_register": "emotional",
+    "D3_typo_weight": "light",
+    "D4_palette": "warm",
+    "D5_velocity": "slow-organic",
+    "D6_structure": "asymmetric-soft",
+    "rationale_per_dim": {
+      "D1_density": "Luxury × SEC-01 → whitespace massif, opposé du clinique typique corporate dense. Ancré par personality_hints.D1=1.",
+      "D2_register": "Chaleur humaine primordiale en soin corporel. Hint brief confirmé.",
+      "D3_typo_weight": "Light = délicatesse, respiration (table luxury × SEC-01). Renforce D1=1.",
+      "D4_palette": "Warm (ivoire/crème/terre de Sienne) = opposé du bleu médical froid. Hint brief confirmé.",
+      "D5_velocity": "Transitions organiques = respect du corps, pas de pression commerciale. Hint brief confirmé.",
+      "D6_structure": "Asymétrie douce humanise la rigueur clinique sans perdre la confiance. Hint brief confirmé."
+    }
+  },
+  "opposition_check": {
+    "compared_against": ["clinique-aura", "beaumont-avocats", "electro-maitre-industriel", "collectif-nova"],
+    "max_opposition_score": 5,
+    "passes_rule_of_gold": true,
+    "detail": {
+      "vs_clinique-aura": {
+        "opposed_on": [],
+        "count": 0,
+        "passes": false,
+        "note": "Self-comparison (canonical example du même client). Attendu."
+      },
+      "vs_beaumont-avocats": {
+        "opposed_on": ["D2", "D4"],
+        "count": 2,
+        "passes": false
+      },
+      "vs_electro-maitre-industriel": {
+        "opposed_on": ["D1", "D2", "D3", "D4", "D5"],
+        "count": 5,
+        "passes": true
+      },
+      "vs_collectif-nova": {
+        "opposed_on": ["D6"],
+        "count": 1,
+        "passes": false
+      }
+    }
+  },
+  "soic_risks_flagged": [
+    {
+      "dimension": "D8_legal",
+      "risk": "Secteur santé (SEC-01) + données cliniques sensibles : RPP identifié + consentement explicite obligatoire (Loi 25 art. 12). Brief Clinique Aura conforme (RPP Dr. Tremblay)."
+    },
+    {
+      "dimension": "D5_performance",
+      "risk": "P04 (hero vidéo) + P06 (grayscale→color) + P17 (non inclus ici mais à surveiller si ajouté) : cumul animations → surveiller LCP mobile. Respect prefers-reduced-motion requis."
+    },
+    {
+      "dimension": "D2_accessibility",
+      "risk": "P04 hero émotionnel : alt descriptif humain (pas 'illustration abstraite'), contraste AA sur overlay texte, fallback prefers-reduced-motion si vidéo."
+    }
+  ],
+  "confidence_score": 0.88,
+  "notes": "Recommandation à confiance élevée : brief riche en personality_hints pré-remplis, secteur SEC-01 bien couvert par la knowledge, patterns P02+P04 (pilote phase E) tous deux recommandés tier 1. Règle d'or validée (5 oppositions vs electro-maitre-industriel). Obs : algorithme §3.2 produit 19/20 patterns en tier 1 après cumul boosts luxury + conversion — troncature à 8 par (measured_impact, order matrice) sélectionne P02, P03, P19, P16, P01, P04, P05, P06. Phase E applique uniquement P02 + P04 sur Hero + CTA."
+}

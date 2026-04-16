@@ -1,0 +1,45 @@
+{
+  "$schema": "nexos/changelog/v1",
+  "client_slug": "clinique-aura",
+  "events": [
+    {
+      "type": "CLIENT_SCAFFOLDED",
+      "at": "2026-04-16T14:00:00-04:00",
+      "phase": "chantier-E option-A",
+      "origin": "PHASE_E_PILOTE_CLINIQUE_AURA.md",
+      "details": "Scaffold minimal Next.js 15 + TS strict + Tailwind + next-intl pour débloquer la phase E après ANOMALIE_PHASE_E (clinique-aura n'existait pas comme client matériel)"
+    },
+    {
+      "type": "PATTERN_APPLIED",
+      "at": "2026-04-16T14:45:00-04:00",
+      "phase": "chantier-E pilot",
+      "pattern_id": "P04",
+      "section_id": "S-001",
+      "details": "Hero émotionnel : next/image priority (LCP), alt descriptif humain (thérapeute + patiente), overlay AA, prefers-reduced-motion respecté via globals.css"
+    },
+    {
+      "type": "PATTERN_APPLIED",
+      "at": "2026-04-16T14:45:00-04:00",
+      "phase": "chantier-E pilot",
+      "pattern_id": "P02",
+      "section_id": "S-003",
+      "details": "Social proof adjacente au CTA : 3 témoignages + CTA dans la même section (2 colonnes desktop, stack mobile). Remplace ContactCta simple. Ref S05 Bloor Jane (+2× leads mesuré)."
+    },
+    {
+      "type": "SECTION_LIFECYCLE",
+      "at": "2026-04-16T14:45:00-04:00",
+      "phase": "chantier-E pilot",
+      "section_id": "S-001",
+      "event": "modified",
+      "details": "pattern_applied = P04"
+    },
+    {
+      "type": "SECTION_LIFECYCLE",
+      "at": "2026-04-16T14:45:00-04:00",
+      "phase": "chantier-E pilot",
+      "section_id": "S-003",
+      "event": "renamed+modified",
+      "details": "ContactCta → TestimonialsAdjacentCta ; pattern_applied = P02"
+    }
+  ]
+}

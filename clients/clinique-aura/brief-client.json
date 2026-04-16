@@ -1,0 +1,88 @@
+{
+  "_meta": {
+    "generator": "nexos-v3.0",
+    "created_at": "2026-04-16T14:00:00-04:00",
+    "mode": "create",
+    "phase_origin": "chantier-E option A scaffold"
+  },
+  "client": {
+    "name": "Clinique Aura",
+    "slug": "clinique-aura",
+    "sector": "santé / physiothérapie",
+    "sub_sector": "clinique boutique physiothérapie + ostéopathie",
+    "positioning": "luxury",
+    "size": "small",
+    "locations": ["Montréal (Québec)"],
+    "personality_hints": {
+      "D1_density": 1,
+      "D2_register": "emotional",
+      "D4_palette": "warm",
+      "D5_velocity": "slow-organic",
+      "D6_structure": "asymmetric-soft"
+    }
+  },
+  "legal": {
+    "company_name": "Clinique Aura inc.",
+    "neq": "1175432908",
+    "address": "1234 avenue du Parc, Montréal (Québec) H2V 4H2",
+    "phone": "+1 514 555 0199",
+    "email": "info@clinique-aura.ca",
+    "rpp_name": "Dr. Sophie Tremblay",
+    "rpp_email": "confidentialite@clinique-aura.ca",
+    "rpp_title": "Directrice clinique et Responsable de la protection des renseignements personnels",
+    "data_collected": ["nom", "courriel", "telephone", "sensible"],
+    "purposes": ["formulaire-contact", "rendez-vous", "analytics"],
+    "retention": "Les renseignements cliniques sont conservés 10 ans après la dernière visite (loi provinciale sur les archives médicales). Les données de navigation sont conservées 24 mois maximum.",
+    "transfer_outside_qc": false,
+    "transfer_countries": [],
+    "third_parties": ["Vercel (hébergement — États-Unis)", "Resend (courriels transactionnels — Union européenne)"],
+    "cookie_consent": "opt-in",
+    "incident_process": true,
+    "incident_email": "incident@clinique-aura.ca"
+  },
+  "site": {
+    "stack": "nextjs",
+    "type": "vitrine",
+    "pages": [
+      "home",
+      "services",
+      "equipe",
+      "contact",
+      "politique-confidentialite",
+      "mentions-legales"
+    ],
+    "languages": ["fr", "en"],
+    "features": ["prise-rdv", "formulaire-contact", "blog-sante"],
+    "hosting": "vercel",
+    "domain": "clinique-aura.ca"
+  },
+  "context": {
+    "competitors": [
+      "https://twinboro.com",
+      "https://bloorjanephysio.com"
+    ],
+    "keywords_seo": [
+      "physiothérapie Montréal",
+      "clinique physiothérapie",
+      "ostéopathie Parc",
+      "prise de rendez-vous physio"
+    ],
+    "free_text": "Clinique boutique axée sur l'expérience patient haut de gamme : salles spacieuses, approche humaine, personnel bilingue. KPI principal : conversion (prise de RDV en ligne). Clientèle cible : femmes 30-60 ans, professionnelles urbaines."
+  },
+  "design": {
+    "palette": "warm (ivoire, crème, terre de Sienne, ambre)",
+    "typography": "serif déliée + sans fine",
+    "style": "minimaliste",
+    "logo_provided": false,
+    "references": [
+      "https://twinboro.com (architecture multi-cliniques)",
+      "https://bloorjanephysio.com (proximity conversion — pattern P02)"
+    ]
+  },
+  "goals": {
+    "primary_kpi": "conversion",
+    "secondary_kpis": ["brand", "seo"],
+    "target_conversion_rate": "5 % visiteurs → RDV en ligne",
+    "monthly_rdv_target": 120
+  }
+}
