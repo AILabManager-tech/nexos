@@ -1,0 +1,69 @@
+{
+  "$schema": "nexos/changelog/v1",
+  "client_slug": "beaumont-avocats",
+  "events": [
+    {
+      "type": "CLIENT_SCAFFOLDED",
+      "at": "2026-04-17T10:00:00-04:00",
+      "phase": "chantier-I option-A",
+      "origin": "PHASE_I_DEMO_BEAUMONT_AVOCATS.md",
+      "details": "Scaffold minimal Next.js 15 + TS strict + Tailwind 3.4 + next-intl 3.25 pour démo industrialisation chantier knowledge (démo 4/5 lot F-J). Palette cold SEC-05 juridique (noir d'encre + ivoire + bordeaux mat) dès le scaffold = D4=cold canonique. Typographie serif Fraunces display + Inter sans body (P14 rupture 1). Copy conservatrice ton autorité préservé tout au long."
+    },
+    {
+      "type": "PATTERN_APPLIED",
+      "at": "2026-04-17T10:30:00-04:00",
+      "phase": "chantier-I beaumont-avocats",
+      "pattern_id": "P14",
+      "section_id": "S-001,S-002,S-004",
+      "details": "Industry code-breaking juridique (ref S23 BD&P + S21 Bick Law). 3 ruptures identifiées brief phase I toutes appliquées : (1) typographie Fraunces serif moderne 700 + Inter sans géométrique — rompt Garamond classique + Arial banal ; (2) palette noir #0A0A0A + ivoire #F5F1EA + bordeaux mat #6B1E23 — rompt bleu marine + or + blanc corporate ; (3) structure : hero asymétrique 7/5 + expertises liste éditoriale numérotée 01-05 (pas cards) + biographies placeholders portrait N&B éditoriaux (pas headshots stock). Anti-patterns évités (pattern-matrix.json P14) : pas de rupture gratuite (cohérence palette sobre complète), pas de sacrifice lisibilité (contraste WCAG AAA partout), rupture structurelle complète (pas seulement palette)."
+    },
+    {
+      "type": "PATTERN_APPLIED",
+      "at": "2026-04-17T10:30:00-04:00",
+      "phase": "chantier-I beaumont-avocats",
+      "pattern_id": "P17",
+      "section_id": "S-002,S-003,S-004,S-005",
+      "details": "Scroll-triggered animations subtiles (ref S21 Bick Law nominé Webby). Atom RevealOnScroll créé components/atoms/ : IntersectionObserver natif (pas de lib JS), CSS transitions opacity+translate-y 700ms + optionnel grayscale→grayscale-0 1000ms pour photos (mode grayscale=true). SSR-safe (contenu affiché si JS off, animation ajoutée à l'hydratation). prefers-reduced-motion honoré (visible immédiat, pas d'observer). Appliqué : Expertises cascade 5×80ms, Approche cascade 3×100ms, Équipe 4 bios cascade 120ms avec grayscale, ContactCTA 3 vagues 120ms. Anti-patterns évités (P17 dans matrix) : pas de Framer Motion (lib JS lourde), pas de parallax scroll bidirectionnel, pas d'animations 100+ éléments (observers ciblés)."
+    },
+    {
+      "type": "SECTION_LIFECYCLE",
+      "at": "2026-04-17T10:30:00-04:00",
+      "phase": "chantier-I beaumont-avocats",
+      "section_id": "S-001",
+      "event": "created",
+      "details": "Hero asymétrique 7/5. pattern_applied=P14."
+    },
+    {
+      "type": "SECTION_LIFECYCLE",
+      "at": "2026-04-17T10:30:00-04:00",
+      "phase": "chantier-I beaumont-avocats",
+      "section_id": "S-002",
+      "event": "created",
+      "details": "Expertises liste éditoriale 01-05. pattern_applied=P14."
+    },
+    {
+      "type": "SECTION_LIFECYCLE",
+      "at": "2026-04-17T10:30:00-04:00",
+      "phase": "chantier-I beaumont-avocats",
+      "section_id": "S-003",
+      "event": "created",
+      "details": "Approche narrative 3 paragraphes. pattern_applied=P17."
+    },
+    {
+      "type": "SECTION_LIFECYCLE",
+      "at": "2026-04-17T10:30:00-04:00",
+      "phase": "chantier-I beaumont-avocats",
+      "section_id": "S-004",
+      "event": "created",
+      "details": "Équipe 4 associés bios N&B grayscale→couleur. pattern_applied=P14+P17."
+    },
+    {
+      "type": "SECTION_LIFECYCLE",
+      "at": "2026-04-17T10:30:00-04:00",
+      "phase": "chantier-I beaumont-avocats",
+      "section_id": "S-005",
+      "event": "created",
+      "details": "ContactCTA éditorial + trust_line secret professionnel. pattern_applied=P17."
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "site": {
+    "name": "Beaumont Avocats",
+    "tagline": "Cabinet d'avocats · droit des affaires · Montréal",
+    "locale": "fr-CA"
+  },
+  "layout": {
+    "header": {
+      "nav": {
+        "expertises": "Expertises",
+        "approche": "L'approche",
+        "equipe": "L'équipe",
+        "contact": "Contact"
+      },
+      "cta_short": "Nous joindre",
+      "language_switch": "English"
+    },
+    "footer": {
+      "rights": "Tous droits réservés",
+      "address": "1200 avenue McGill College, bureau 1600, Montréal (Québec) H3B 4G7",
+      "phone": "+1 514 555 0213",
+      "email": "info@beaumont-avocats.ca",
+      "hours": "Du lundi au vendredi · 9 h à 18 h (HE)",
+      "privacy": "Politique de confidentialité",
+      "legal": "Mentions légales",
+      "tagline": "Conseil stratégique aux dirigeants d'entreprise. Montréal, depuis 2007."
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Cabinet d'avocats · Montréal",
+      "title_line_1": "Conseillers",
+      "title_line_2": "des dirigeants",
+      "title_line_3": "qui construisent.",
+      "subtitle": "Beaumont Avocats accompagne les entreprises québécoises dans les décisions qui comptent — transactions, gouvernance, différends stratégiques. Depuis 2007.",
+      "cta_primary": "Nous joindre",
+      "cta_secondary": "Nos expertises",
+      "portrait_alt": "Hall d'entrée du cabinet Beaumont Avocats, bibliothèque d'ouvrages juridiques anciens sur un mur d'acajou, lumière latérale en noir et blanc"
+    },
+    "expertises": {
+      "eyebrow": "Les domaines",
+      "title": "Cinq expertises, une seule manière de travailler.",
+      "intro": "Nous n'offrons pas 17 services. Nous sommes reconnus pour cinq domaines que nous pratiquons tous les jours depuis dix-huit ans. Pour tout ce qui sort de ce périmètre, nous dirigeons nos clients vers des confrères de confiance.",
+      "items": {
+        "e1": {
+          "number": "01",
+          "title": "Droit des affaires et transactions",
+          "body": "Fusions-acquisitions de PME québécoises, réorganisations corporatives, financement d'entreprise, conventions entre actionnaires. Intervention fréquente en cessation d'activités et transmission familiale."
+        },
+        "e2": {
+          "number": "02",
+          "title": "Litige commercial",
+          "body": "Différends contractuels, recours en oppression, vices cachés commerciaux, litiges post-clôture. Nous privilégions la négociation rapide ; nous plaidons quand la négociation échoue."
+        },
+        "e3": {
+          "number": "03",
+          "title": "Droit du travail et ressources humaines",
+          "body": "Cessations d'emploi individuelles et collectives, clauses restrictives, gestion des griefs, négociation de conventions. Services aux employeurs, représentés par leurs dirigeants."
+        },
+        "e4": {
+          "number": "04",
+          "title": "Gouvernance et conseil d'administration",
+          "body": "Formation et fonctionnement de conseils d'administration, politiques de gouvernance, accompagnement des comités d'audit et de rémunération. Mentorat ponctuel d'administrateurs."
+        },
+        "e5": {
+          "number": "05",
+          "title": "Conformité et protection des renseignements",
+          "body": "Loi 25 du Québec, politiques de sécurité de l'information, préparation aux incidents de confidentialité, audits de conformité pour PME et organismes à but non lucratif."
+        }
+      }
+    },
+    "approche": {
+      "eyebrow": "L'approche",
+      "title": "Conseiller comme un associé de votre équipe, pas comme un fournisseur facturé à l'heure.",
+      "p1": "La majorité de nos mandats sont à forfait ou à prix plafonné. Nos clients nous appellent pour un café et un tour d'horizon, pas pour autoriser une ouverture de dossier. Le conseil juridique, pour être utile, doit se donner avant la décision, pas après.",
+      "p2": "Nous travaillons avec une vingtaine de clients récurrents. Nous connaissons leurs dirigeants, leurs bilans, leurs fournisseurs clés. Quand un nouveau dossier arrive, nous n'avons pas besoin de deux semaines pour comprendre le contexte.",
+      "p3": "Nous refusons régulièrement des mandats qui ne rentrent pas dans nos domaines. C'est inconfortable financièrement à court terme ; c'est la seule manière de garder la qualité et l'attention qu'on doit aux clients qui nous font confiance depuis dix-huit ans."
+    },
+    "equipe": {
+      "eyebrow": "L'équipe",
+      "title": "Quatre associés. Six avocats-conseils. Un cabinet.",
+      "intro": "Le cabinet est intentionnellement petit. Chaque dossier est pris en charge par un associé de bout en bout — pas de « paralegal » anonyme, pas de transfert entre équipes.",
+      "members": {
+        "m1": {
+          "name": "Marie-Ève Beaumont",
+          "role": "Associée fondatrice · droit des affaires",
+          "bio": "Diplômée de McGill et Columbia. Avant de fonder le cabinet en 2007, pratiquait chez Stikeman Elliott et chez Davies. Trente-deux ans au Barreau du Québec.",
+          "image_alt": "Portrait éditorial noir et blanc de Marie-Ève Beaumont, associée fondatrice, assise devant une fenêtre, lumière naturelle latérale, regard direct caméra"
+        },
+        "m2": {
+          "name": "Philippe Tremblay",
+          "role": "Associé · litige commercial",
+          "bio": "Université de Montréal et Cambridge. Ancien greffier à la Cour supérieure du Québec. Plaide régulièrement devant la Cour d'appel du Québec depuis 2011.",
+          "image_alt": "Portrait éditorial noir et blanc de Philippe Tremblay, associé, debout devant une bibliothèque juridique, vue trois-quarts, ambiance sobre"
+        },
+        "m3": {
+          "name": "Aïcha Diallo",
+          "role": "Associée · droit du travail",
+          "bio": "Université Laval et HEC. Spécialisation en relations du travail et cessations d'emploi. Siège au conseil d'administration de la Fondation du Barreau du Québec depuis 2023.",
+          "image_alt": "Portrait éditorial noir et blanc d'Aïcha Diallo, associée, assise à son bureau, documents et stylo plume visibles, expression concentrée"
+        },
+        "m4": {
+          "name": "Jean-Christophe Laurier",
+          "role": "Associé · gouvernance et conformité",
+          "bio": "Université de Sherbrooke et Kellogg (MBA). Administrateur de sociétés certifié (ASC). Accompagne une douzaine de conseils d'administration au Québec et en Ontario.",
+          "image_alt": "Portrait éditorial noir et blanc de Jean-Christophe Laurier, associé, de profil, contre-jour doux, matière de veste en laine visible"
+        }
+      }
+    },
+    "contact": {
+      "eyebrow": "Nous joindre",
+      "title": "Le premier appel est toujours gratuit.",
+      "subtitle": "Quinze minutes au téléphone ou une rencontre de trente minutes à nos bureaux, au choix. Sans frais, sans engagement. Si nous ne sommes pas les avocats qu'il vous faut, nous vous en recommanderons d'autres.",
+      "phone_label": "Téléphone",
+      "phone_value": "+1 514 555 0213",
+      "email_label": "Courriel",
+      "email_value": "mandat@beaumont-avocats.ca",
+      "address_label": "Bureaux",
+      "address_value": "1200 avenue McGill College, bureau 1600, Montréal (Québec) H3B 4G7",
+      "cta_phone": "Prendre rendez-vous",
+      "trust_line": "Sous secret professionnel dès le premier contact. Chaque dossier est reçu par un associé, pas par un adjoint."
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "intro": "Beaumont Avocats est soumis à la Loi 25 du Québec sur la protection des renseignements personnels dans le secteur privé et aux règles de déontologie du Barreau du Québec, dont le secret professionnel.",
+      "rpp_label": "Responsable de la protection des renseignements personnels",
+      "rpp_name": "Jean-Christophe Laurier",
+      "rpp_title": "Associé responsable de la conformité",
+      "rpp_email": "rpp@beaumont-avocats.ca",
+      "data_title": "Renseignements collectés",
+      "data_body": "Dans le cadre d'un mandat : identité des parties, documents requis au dossier, correspondance, facturation. Sur ce site : nom, courriel, sujet du message pour les demandes via le formulaire de contact.",
+      "purposes_title": "Finalités",
+      "purposes_body": "Exécution des mandats juridiques, obligations légales et déontologiques (archivage, lutte contre le blanchiment), facturation, communication générale du cabinet.",
+      "retention_title": "Conservation",
+      "retention_body": "Les dossiers clients sont conservés au minimum dix ans après la fermeture conformément au Règlement sur la comptabilité et les normes d'exercice de la profession d'avocat. Les échanges courriel hors-mandat sont conservés 24 mois.",
+      "rights_title": "Vos droits",
+      "rights_body": "Vous pouvez en tout temps demander l'accès, la rectification ou la suppression de vos données personnelles hors-mandat en contactant notre responsable. Les données protégées par le secret professionnel ne peuvent être communiquées qu'au client concerné."
+    },
+    "mentions": {
+      "title": "Mentions légales",
+      "company": "Beaumont Avocats S.E.N.C.R.L.",
+      "neq_label": "NEQ",
+      "neq_value": "1164722018",
+      "address_label": "Siège social",
+      "address_value": "1200 avenue McGill College, bureau 1600, Montréal (Québec) H3B 4G7",
+      "phone_label": "Téléphone",
+      "phone_value": "+1 514 555 0213",
+      "email_label": "Courriel",
+      "email_value": "info@beaumont-avocats.ca",
+      "host_label": "Hébergeur",
+      "host_value": "Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis"
+    }
+  },
+  "cookies": {
+    "banner_title": "Votre vie privée compte",
+    "banner_body": "Nous utilisons des témoins (cookies) essentiels au fonctionnement du site. Les cookies d'analyse ne sont activés qu'avec votre consentement.",
+    "accept_all": "Accepter tout",
+    "reject_all": "Refuser",
+    "customize": "Personnaliser",
+    "essentials": "Essentiels",
+    "analytics": "Analyse d'usage",
+    "marketing": "Marketing"
+  }
+}

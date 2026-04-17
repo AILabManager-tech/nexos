@@ -1,0 +1,166 @@
+{
+  "site": {
+    "name": "Beaumont Avocats",
+    "tagline": "Law firm · business law · Montreal",
+    "locale": "en-CA"
+  },
+  "layout": {
+    "header": {
+      "nav": {
+        "expertises": "Practice areas",
+        "approche": "Our approach",
+        "equipe": "Our team",
+        "contact": "Contact"
+      },
+      "cta_short": "Contact us",
+      "language_switch": "Français"
+    },
+    "footer": {
+      "rights": "All rights reserved",
+      "address": "1200 McGill College Avenue, suite 1600, Montreal (Quebec) H3B 4G7",
+      "phone": "+1 514 555 0213",
+      "email": "info@beaumont-avocats.ca",
+      "hours": "Monday to Friday · 9 AM to 6 PM (ET)",
+      "privacy": "Privacy policy",
+      "legal": "Legal notices",
+      "tagline": "Strategic counsel to company leadership. Montreal, since 2007."
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Law firm · Montreal",
+      "title_line_1": "Counsel to",
+      "title_line_2": "the leaders",
+      "title_line_3": "who build.",
+      "subtitle": "Beaumont Avocats advises Quebec companies on the decisions that matter — transactions, governance, strategic disputes. Since 2007.",
+      "cta_primary": "Contact us",
+      "cta_secondary": "Practice areas",
+      "portrait_alt": "Entrance hall of Beaumont Avocats, legal library with aged volumes on a mahogany wall, side light in black and white"
+    },
+    "expertises": {
+      "eyebrow": "Practice areas",
+      "title": "Five areas, one way of working.",
+      "intro": "We don't offer 17 services. We're known for five areas we practice every day for eighteen years. Anything outside that scope, we refer our clients to trusted colleagues.",
+      "items": {
+        "e1": {
+          "number": "01",
+          "title": "Business law & transactions",
+          "body": "M&A for Quebec SMBs, corporate reorganizations, business financing, shareholder agreements. Frequent work on wind-downs and family-business transmissions."
+        },
+        "e2": {
+          "number": "02",
+          "title": "Commercial litigation",
+          "body": "Contract disputes, oppression remedies, latent-defect commercial cases, post-closing litigation. We favor fast negotiation; we litigate when negotiation fails."
+        },
+        "e3": {
+          "number": "03",
+          "title": "Employment & HR law",
+          "body": "Individual and collective terminations, restrictive covenants, grievance management, collective-agreement negotiation. We represent employers, through their leadership."
+        },
+        "e4": {
+          "number": "04",
+          "title": "Governance & boards",
+          "body": "Board formation and operation, governance policies, advisory to audit and compensation committees. Occasional director mentoring."
+        },
+        "e5": {
+          "number": "05",
+          "title": "Compliance & privacy",
+          "body": "Quebec Law 25, information-security policies, privacy-incident preparedness, compliance audits for SMBs and non-profit organizations."
+        }
+      }
+    },
+    "approche": {
+      "eyebrow": "Our approach",
+      "title": "Counsel like a partner on your team, not a vendor billed hourly.",
+      "p1": "Most of our mandates are flat-fee or capped. Our clients call us for a coffee and a landscape review, not to authorize opening a file. Legal counsel is only useful when given before the decision, not after.",
+      "p2": "We work with about twenty recurring clients. We know their leadership, their balance sheets, their key suppliers. When a new matter comes in, we don't need two weeks to understand the context.",
+      "p3": "We regularly decline mandates that fall outside our areas. It's financially uncomfortable short-term; it's the only way to keep the quality and attention we owe to clients who have trusted us for eighteen years."
+    },
+    "equipe": {
+      "eyebrow": "Our team",
+      "title": "Four partners. Six counsel. One firm.",
+      "intro": "The firm is intentionally small. Every matter is handled by a partner from start to finish — no anonymous \"paralegal\", no team hand-offs.",
+      "members": {
+        "m1": {
+          "name": "Marie-Ève Beaumont",
+          "role": "Founding partner · business law",
+          "bio": "McGill and Columbia graduate. Before founding the firm in 2007, practiced at Stikeman Elliott and Davies. Thirty-two years at the Barreau du Québec.",
+          "image_alt": "Editorial black-and-white portrait of Marie-Ève Beaumont, founding partner, seated by a window, natural side light, direct gaze to camera"
+        },
+        "m2": {
+          "name": "Philippe Tremblay",
+          "role": "Partner · commercial litigation",
+          "bio": "Université de Montréal and Cambridge. Former clerk at the Quebec Superior Court. Regularly pleads before the Quebec Court of Appeal since 2011.",
+          "image_alt": "Editorial black-and-white portrait of Philippe Tremblay, partner, standing in front of a law library, three-quarter view, sober atmosphere"
+        },
+        "m3": {
+          "name": "Aïcha Diallo",
+          "role": "Partner · employment law",
+          "bio": "Université Laval and HEC. Specialized in labor relations and termination. Serves on the board of the Fondation du Barreau du Québec since 2023.",
+          "image_alt": "Editorial black-and-white portrait of Aïcha Diallo, partner, seated at her desk, documents and fountain pen visible, focused expression"
+        },
+        "m4": {
+          "name": "Jean-Christophe Laurier",
+          "role": "Partner · governance & compliance",
+          "bio": "Université de Sherbrooke and Kellogg (MBA). Certified corporate director (ASC). Advises about a dozen boards across Quebec and Ontario.",
+          "image_alt": "Editorial black-and-white portrait of Jean-Christophe Laurier, partner, in profile, soft backlight, wool jacket texture visible"
+        }
+      }
+    },
+    "contact": {
+      "eyebrow": "Contact",
+      "title": "The first call is always free.",
+      "subtitle": "Fifteen minutes on the phone or a thirty-minute meeting at our offices — your choice. No fee, no obligation. If we're not the right lawyers for you, we'll recommend others.",
+      "phone_label": "Phone",
+      "phone_value": "+1 514 555 0213",
+      "email_label": "Email",
+      "email_value": "mandat@beaumont-avocats.ca",
+      "address_label": "Offices",
+      "address_value": "1200 McGill College Avenue, suite 1600, Montreal (Quebec) H3B 4G7",
+      "cta_phone": "Book a call",
+      "trust_line": "Covered by attorney-client privilege from first contact. Every matter is received by a partner, not an assistant."
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacy policy",
+      "intro": "Beaumont Avocats is subject to Quebec's Law 25 on the protection of personal information in the private sector, and to the rules of ethics of the Barreau du Québec, including attorney-client privilege.",
+      "rpp_label": "Privacy Officer",
+      "rpp_name": "Jean-Christophe Laurier",
+      "rpp_title": "Partner responsible for compliance",
+      "rpp_email": "rpp@beaumont-avocats.ca",
+      "data_title": "Collected data",
+      "data_body": "Within a mandate: identity of the parties, documents required for the file, correspondence, billing. On this site: name, email, message subject for contact-form inquiries.",
+      "purposes_title": "Purposes",
+      "purposes_body": "Execution of legal mandates, legal and deontological obligations (archiving, anti-money-laundering), billing, general communication from the firm.",
+      "retention_title": "Retention",
+      "retention_body": "Client files are retained for at least ten years after closing, in accordance with the Regulation respecting accounting and standards of professional practice of the Barreau du Québec. Off-mandate email exchanges are retained 24 months.",
+      "rights_title": "Your rights",
+      "rights_body": "You may at any time request access, rectification, or deletion of your off-mandate personal data by contacting our officer. Data protected by attorney-client privilege may only be disclosed to the client concerned."
+    },
+    "mentions": {
+      "title": "Legal notices",
+      "company": "Beaumont Avocats S.E.N.C.R.L.",
+      "neq_label": "Quebec Enterprise Number (NEQ)",
+      "neq_value": "1164722018",
+      "address_label": "Registered office",
+      "address_value": "1200 McGill College Avenue, suite 1600, Montreal (Quebec) H3B 4G7",
+      "phone_label": "Phone",
+      "phone_value": "+1 514 555 0213",
+      "email_label": "Email",
+      "email_value": "info@beaumont-avocats.ca",
+      "host_label": "Host",
+      "host_value": "Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA"
+    }
+  },
+  "cookies": {
+    "banner_title": "Your privacy matters",
+    "banner_body": "We use essential cookies to operate the site. Analytics cookies are only activated with your consent.",
+    "accept_all": "Accept all",
+    "reject_all": "Reject",
+    "customize": "Customize",
+    "essentials": "Essentials",
+    "analytics": "Usage analytics",
+    "marketing": "Marketing"
+  }
+}

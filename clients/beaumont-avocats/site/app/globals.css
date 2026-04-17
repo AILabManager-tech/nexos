@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Fraunces', 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-surface text-ink font-sans antialiased;
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+/* P14 rupture 1 — typographie : serif Fraunces pour autorité en display,
+   sans-serif Inter géométrique pour lisibilité des longs documents juridiques. */
+h1, h2, h3, h4 {
+  @apply font-display;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-optical-sizing: auto;
+  font-variation-settings: 'opsz' 144, 'SOFT' 30;
+}
+
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-accent;
+}
+
+/* P17 — respect prefers-reduced-motion. RevealOnScroll affiche immédiatement le
+   contenu si reduce, et désactive les transitions ici pour tout le reste. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

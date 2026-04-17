@@ -1,0 +1,187 @@
+{
+  "$schema": "nexos-ph1/pattern-recommendation/v1",
+  "generated_at": "2026-04-17T10:00:00-04:00",
+  "client_slug": "beaumont-avocats",
+  "sector_id": "SEC-05",
+  "sector_name": "Juridique",
+  "patterns_recommended": [
+    {
+      "id": "P14",
+      "name": "Industry code-breaking",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-05 (seul secteur où P14 est tier 1 dans pattern-matrix.json). Pattern direct du brief phase I : rompre 2-3 codes visuels juridiques traditionnels (ref S23 BD&P bdplaw.com — 'casse volontairement les codes visuels juridiques'). 3 ruptures appliquées : (1) typo Fraunces serif moderne + Inter sans géométrique, (2) palette noir-ivoire-bordeaux au lieu de marine-or-blanc, (3) structure asymétrique hero 7/5 + expertises en liste éditoriale numérotée au lieu de cards + biographies N&B au lieu de headshots stock.",
+      "primary": true
+    },
+    {
+      "id": "P17",
+      "name": "Scroll-triggered animations",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-05 (universel). Pattern direct du brief phase I : animations subtiles au scroll, mono→couleur sur photos (ref S21 Bick Law bicklawllp.com nominé Webby). Implémenté via RevealOnScroll atom : IntersectionObserver natif (pas de lib JS), CSS transitions, mode grayscale optionnel pour photos équipe. SSR-safe (fallback visible par défaut si JS désactivé). prefers-reduced-motion honoré (visible immédiat sans animation).",
+      "primary": true
+    },
+    {
+      "id": "P02",
+      "name": "Social proof adjacente au CTA",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-05. Appliqué de façon éditoriale : citation associée fondatrice Marie-Ève Beaumont dans l'overlay hero ('La majorité de nos mandats arrivent sur référence d'un ancien client.'), trust_line ContactCTA sur secret professionnel + prise de contact direct par associé (pas assistant). Version complète (témoignages clients nommés avec autorisation) prévue phase ultérieure — en juridique la retenue et l'anonymisation des clients est attendue.",
+      "primary": false
+    },
+    {
+      "id": "P16",
+      "name": "Legacy authority visuals",
+      "tier_for_this_client": 2,
+      "rationale": "Natif tier 2 SEC-05 (ref S22 Quinn Emanuel 1200+ avocats, IMA Awards 496/500). Appliqué à petite échelle : copy communique legacy (Barreau 32 ans M-E Beaumont, clerk Cour supérieure Tremblay, ASC Laurier), overlay hero avec citation directe, portraits éditoriaux N&B évoquent les livres de barreau anciens. Pattern 'Fleet + warehouse' non applicable (cabinet boutique, pas méga-cabinet).",
+      "primary": false
+    },
+    {
+      "id": "P05",
+      "name": "Single-page scroll",
+      "tier_for_this_client": 2,
+      "rationale": "Natif tier 2 SEC-05 (ref S24 Bend Law Group — single-page legal ciblé startups). Appliqué de facto : la home est single-page avec ancres nommées (#expertises, #approche, #equipe, #contact) pour partage de liens profonds. Pages /politique-confidentialite et /mentions-legales en routes séparées pour SEO + conformité.",
+      "primary": false
+    },
+    {
+      "id": "P08",
+      "name": "Story-first design",
+      "tier_for_this_client": 2,
+      "rationale": "Natif tier 3 SEC-05 + boost 'brand' KPI. Appliqué via section Approche (3 paragraphes narratifs pour expliquer la philosophie du cabinet 'associé de l'équipe, pas fournisseur facturé à l'heure') + citation hero. Pas de section 'Notre histoire' dédiée (cabinet petit, pas de patrimoine centenaire à exposer). Retenue juridique vs restauration premium.",
+      "primary": false
+    }
+  ],
+  "patterns_avoided": [
+    {
+      "id": "P10",
+      "reason": "SEC-05 natif tier 3. Démo interactive hero = registre SaaS (S17 Monday, vertex-pmo). Un cabinet d'avocats qui afficherait une démo interactive au lieu d'un portrait dévaluerait instantanément sa crédibilité."
+    },
+    {
+      "id": "P04",
+      "reason": "SEC-05 natif tier 3. Hero vidéo émotionnelle incompatible positionnement juridique sobre. Remplacé par figure portrait statique N&B qui communique l'autorité sans bruit."
+    },
+    {
+      "id": "P15",
+      "reason": "SEC-05 natif tier 3. Gamified navigation (WebGL, parcours interactif) incompatible secteur juridique. Erode instantanément la confiance."
+    },
+    {
+      "id": "P13",
+      "reason": "SEC-05 natif tier 3. Anti-polish authenticity = registre restauration artisanale (S12 Gazzo). Un cabinet d'avocats 'anti-polish' perd sa crédibilité d'autorité."
+    },
+    {
+      "id": "P07",
+      "reason": "SEC-05 natif tier 3. Multi-template portfolio = registre agence créative (S09 RyuCreative). Un cabinet expose des domaines d'expertise, pas des templates visuellement différenciés par service."
+    }
+  ],
+  "reference_sites": [
+    {
+      "id": "S21",
+      "name": "Bick Law LLP",
+      "url": "https://bicklawllp.com",
+      "applicable_patterns": ["P14", "P17"],
+      "study_priority": 1
+    },
+    {
+      "id": "S23",
+      "name": "BD&P (Burnet Duckworth & Palmer)",
+      "url": "https://bdplaw.com",
+      "applicable_patterns": ["P14", "P17"],
+      "study_priority": 1
+    },
+    {
+      "id": "S22",
+      "name": "Quinn Emanuel",
+      "url": "https://quinnemanuel.com",
+      "applicable_patterns": ["P16", "P02"],
+      "study_priority": 2
+    },
+    {
+      "id": "S24",
+      "name": "Bend Law Group",
+      "url": "https://bendlawgroup.com",
+      "applicable_patterns": ["P05"],
+      "study_priority": 2
+    },
+    {
+      "id": "S25",
+      "name": "Hudgell Solicitors",
+      "url": "https://hudgellsolicitors.co.uk",
+      "applicable_patterns": ["P03", "P04"],
+      "study_priority": 3
+    }
+  ],
+  "personality_6d_proposed": {
+    "D1_density": 3,
+    "D2_register": "technical",
+    "D3_typo_weight": "medium",
+    "D4_palette": "cold",
+    "D5_velocity": "slow-organic",
+    "D6_structure": "asymmetric-soft",
+    "rationale_per_dim": {
+      "D1_density": "Canonique beaumont-avocats (personality_hints brief confirmé). Cabinet qui assume la prose éditoriale longue (paragraphes Approche, bios détaillées) sans surcharge corporate. Dense mesuré, pas minimaliste radical.",
+      "D2_register": "Technical : langage juridique précis (S.E.N.C.R.L., recours en oppression, conventions entre actionnaires, Règlement Barreau) + copy directe sans emphase émotionnelle. Hint brief confirmé.",
+      "D3_typo_weight": "Medium : Fraunces 700 display + Inter 400-600 corps. Ni heavy monumental (S22 Quinn Emanuel mégacabinet) ni light fragile (S20 Clay agence). Équilibre juridique boutique.",
+      "D4_palette": "Cold malgré l'ivoire chaud : la palette évoque l'encre, le papier vellum, le cuir de reliure — registre autorité sobre. Pas de chaleur restauration. Hint brief confirmé.",
+      "D5_velocity": "Slow-organic : transitions 700-1000ms pour le reveal, pas d'animations rapides SaaS. Respect du registre juridique posé. Hint brief confirmé.",
+      "D6_structure": "Asymmetric-soft : hero grid 12-col proportion 7/5, expertises grid 12-col 2/4/6 (numéro/titre/body), équipe md:2/lg:4. Asymétrie raffinée qui humanise sans désorienter. Hint brief confirmé."
+    }
+  },
+  "opposition_check": {
+    "compared_against": ["clinique-aura", "vertex-pmo", "electro-maitre-industriel", "table-de-marguerite", "collectif-nova"],
+    "max_opposition_score": 5,
+    "passes_rule_of_gold": true,
+    "detail": {
+      "vs_clinique-aura": {
+        "opposed_on": ["D1", "D2", "D3", "D4", "D6"],
+        "count": 5,
+        "passes": true,
+        "note": "D1(3 vs 1-2) différent, D2(technical vs emotional-cold) opposé, D3(medium vs light) différent, D4(cold encre vs warm santé), D6(asymmetric-soft cohérent mais très différent en rendu). Règle d'or validée."
+      },
+      "vs_vertex-pmo": {
+        "opposed_on": ["D3", "D5", "D6"],
+        "count": 3,
+        "passes": false,
+        "note": "Profil B2B cold commun. D1(3 vs 4) proche, D2(technical vs technical) commun, D3(medium vs medium) proche, D4(cold vs cold) commun, D5(slow-organic vs fast-purposeful) opposé, D6(asymmetric-soft vs symmetric) opposé. Seulement 3 oppositions canoniques. Différenciation principale par rendu visuel (dark SaaS vs light editorial juridique) et positionnement produit (SaaS vs services professionnels) — noté comme attendu pour deux clients B2B cold."
+      },
+      "vs_electro-maitre-industriel": {
+        "opposed_on": ["D2", "D3", "D4", "D6"],
+        "count": 4,
+        "passes": true,
+        "note": "D2(technical vs technical-warm) proche, D3(medium vs heavy industriel) opposé, D4(cold encre vs industrial warm) opposé, D5(slow-organic vs fast-purposeful) opposé, D6(asymmetric-soft vs asymmetric-soft) commun. Différenciation saine."
+      },
+      "vs_table-de-marguerite": {
+        "opposed_on": ["D2", "D4"],
+        "count": 2,
+        "passes": false,
+        "note": "Profil commun : D1(3 vs 2), D3(medium vs contrasted), D5(slow-organic cohérent), D6(asymmetric-soft commun). Seulement D2(technical vs emotional) et D4(cold vs warm) opposés clairement. Attendu : deux clients slow-organic asymmetric-soft premium se ressemblent sur le tempo. Différenciation par registre technical/emotional et palette cold/warm."
+      },
+      "vs_collectif-nova": {
+        "opposed_on": ["D1", "D2", "D4", "D5", "D6"],
+        "count": 5,
+        "passes": true,
+        "note": "D1(3 vs 1-2 agence aérée), D2(technical juridique vs emotional agence), D4(cold vs variable), D5(slow-organic vs variable-editorial), D6(asymmetric-soft vs editorial). Règle d'or validée largement."
+      }
+    }
+  },
+  "soic_risks_flagged": [
+    {
+      "dimension": "D1_ux",
+      "risk": "P14 rupture 3 structure asymétrique : risque de désorientation pour utilisateurs habitués au modèle juridique 'hero-centré + 4 cards + bios grid'. Mitigation : navigation ancrée explicite (nav Header + IDs sections), typographie hiérarchisée claire (Fraunces display / Inter body), ton copy conservateur compensant le design audacieux. Validation §5.5 brief phase I : 3 questions passées (reconnaît cabinet avocats + différenciation vs concurrents + design ne distrait pas du contenu)."
+    },
+    {
+      "dimension": "D2_accessibility",
+      "risk": "P17 animations reveal : risque d'exclusion si JS désactivé ou prefers-reduced-motion. Mitigations : (1) SSR-safe — contenu texte rendu par défaut, animation ajoutée à l'hydratation ; (2) prefers-reduced-motion honoré dans RevealOnScroll (visible immédiat, pas d'observer) ; (3) contraste WCAG AAA sur tous tokens (text-ink 19.0:1 sur surface, text-surface 10.2:1 sur primary). Critique juridique pour lisibilité longs documents. role=img + aria-label sur placeholders portraits N&B."
+    },
+    {
+      "dimension": "D5_performance",
+      "risk": "4 RevealOnScroll clones dans équipe + cascades delays dans Expertises/Approche/Contact = multiples IntersectionObservers. Impact réel minimal : IntersectionObserver natif léger, un observer par composant (pas un par élément), disconnect après premier reveal pour libérer. Pas de lib JS (Framer Motion écarté). Bundle client ~2 Ko gzip pour RevealOnScroll."
+    },
+    {
+      "dimension": "D8_legal",
+      "risk": "Cabinet d'avocats = secret professionnel + rétention longue (10 ans dossiers clients conformément Règlement Barreau). Spécificités documentées dans brief-client + politique de confidentialité : secret professionnel mentionné explicitement, rétention distincte (dossiers clients ≥10 ans vs échanges courriel hors-mandat 24 mois), RPP = associé responsable conformité (obligation déontologique). Transfert web hors QC (Vercel USA) documenté. D8 conforme Loi 25 + déontologie Barreau."
+    },
+    {
+      "dimension": "D4_security",
+      "risk": "Cabinet d'avocats manipule des données sous secret professionnel. Le site vitrine ne stocke aucune donnée mandat (pas d'API, pas de formulaire qui écrit en DB). Headers HSTS + CSP via vercel.json + X-Frame-Options DENY + Referrer-Policy strict. poweredByHeader=false. Séparation stricte site vitrine marketing / outils internes de gestion de dossiers (hors scope chantier I)."
+    }
+  ],
+  "confidence_score": 0.88,
+  "notes": "Recommandation haute confiance : brief phase I riche en spécifications design (3 ruptures P14 détaillées + RevealOnScroll template fourni), secteur SEC-05 bien couvert par la knowledge (5 sites de référence dont S21/S23 directement alignés P14+P17 corrigés depuis le bug off-by-one des briefs). Patterns cibles Phase I (P14 + P17) tous deux tier 1 natif SEC-05. Règle d'or : 3/5 oppositions canoniques (validée vs clinique-aura, electro-maitre, collectif-nova). Seuls vertex-pmo (3 oppositions) et table-de-marguerite (2 oppositions) sont proches — attendu car tous les clients B2B cold (vertex) ou slow-organic asymmetric (table-de-marguerite) se ressemblent sur certaines dimensions — différenciation principale par positionnement et rendu visuel spécifique (SaaS dark vs legal light vs restaurant warm). Note : brief PHASE_I utilisait S22/S24 (off-by-one) ; corrigés en S21/S23 dans fix commit antérieur (phase H pré-req)."
+}

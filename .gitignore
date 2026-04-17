@@ -19,8 +19,14 @@ logs/
 *.zip
 
 # Client templates (separate repos)
-clients/beaumont-avocats/
 clients/collectif-nova/
+# beaumont-avocats : matérialisé dans ce repo par le chantier knowledge phase I
+# (option A scaffold + patterns P14 + P17). Voir phase-I-report.md.
+clients/beaumont-avocats/site/node_modules/
+clients/beaumont-avocats/site/.next/
+clients/beaumont-avocats/site/.env
+clients/beaumont-avocats/site/.env.local
+clients/beaumont-avocats/site/next-env.d.ts
 # vertex-pmo : matérialisé dans ce repo par le chantier knowledge phase H
 # (option A scaffold + patterns P10 + P19). Voir phase-H-report.md.
 clients/vertex-pmo/site/node_modules/

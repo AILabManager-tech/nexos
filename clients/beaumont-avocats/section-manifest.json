@@ -1,0 +1,168 @@
+{
+  "$schema": "nexos/section-manifest/v1",
+  "client_slug": "beaumont-avocats",
+  "generated_at": "2026-04-17T10:00:00-04:00",
+  "total_sections": 9,
+  "sections": [
+    {
+      "id": "S-001",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "Hero",
+      "component_name": "Hero",
+      "i18n_namespace": "home.hero",
+      "order": 1,
+      "status": "created",
+      "description": "Hero asymétrique (P14 rupture 3 ref S23 BD&P). Grid 12-col md (7/5) : typo display serif Fraunces à gauche (H1 3-lignes + subtitle + 2 CTAs) + figure portrait aspect-[3/4] à droite avec citation associée fondatrice en overlay N&B. Ton autorité préservé : copy conservatrice, palette sobre, pas d'animation hero.",
+      "dimensions": ["D1", "D3", "D6"],
+      "priority": "critical",
+      "pattern_applied": "P14",
+      "modified_in": "phase-I-beaumont-avocats",
+      "modified_at": "2026-04-17T10:30:00-04:00",
+      "lifecycle": {
+        "ph1_planned": "2026-04-17T10:00:00-04:00",
+        "ph4_built": "2026-04-17T10:30:00-04:00"
+      }
+    },
+    {
+      "id": "S-002",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "Expertises",
+      "component_name": "Expertises",
+      "i18n_namespace": "home.expertises",
+      "order": 2,
+      "status": "created",
+      "description": "P14 rupture 3 : liste éditoriale numérotée (01-05) AU LIEU DE cards 4-services. Chaque expertise = ligne <article> grid 12-col avec numéro serif display primary + titre serif + body prose. 5 expertises seulement (promesse brief : ne pas offrir 17 services). RevealOnScroll en cascade (P17, delay 80ms par item).",
+      "dimensions": ["D1", "D3", "D6"],
+      "priority": "critical",
+      "pattern_applied": "P14",
+      "modified_in": "phase-I-beaumont-avocats",
+      "modified_at": "2026-04-17T10:30:00-04:00",
+      "lifecycle": {
+        "ph1_planned": "2026-04-17T10:00:00-04:00",
+        "ph4_built": "2026-04-17T10:30:00-04:00"
+      }
+    },
+    {
+      "id": "S-003",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "Approche",
+      "component_name": "Approche",
+      "i18n_namespace": "home.approche",
+      "order": 3,
+      "status": "created",
+      "description": "Narrative éditoriale rédigée : H2 + 3 paragraphes texte. Pas de bullet-list, pas de cards. Largeur max-w-4xl pour respirer. RevealOnScroll en cascade (P17, delay 100/200/300ms).",
+      "dimensions": ["D1", "D3"],
+      "priority": "high",
+      "pattern_applied": "P17",
+      "modified_in": "phase-I-beaumont-avocats",
+      "modified_at": "2026-04-17T10:30:00-04:00",
+      "lifecycle": {
+        "ph1_planned": "2026-04-17T10:00:00-04:00",
+        "ph4_built": "2026-04-17T10:30:00-04:00"
+      }
+    },
+    {
+      "id": "S-004",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "Equipe",
+      "component_name": "Equipe",
+      "i18n_namespace": "home.equipe",
+      "order": 4,
+      "status": "created",
+      "description": "P14 rupture 3 + P17 mono→couleur (ref S21 Bick Law). 4 associés en grid md:2 / lg:4 avec placeholders portrait aspect-[3/4] (gradients monochromes N&B jusqu'au shoot photo réel). Au scroll (P17 via RevealOnScroll grayscale=true, threshold 0.25, delay 0/120/240/360ms), les portraits passent de grayscale → grayscale-0 en 1000ms + fade-translate standard 700ms. aria-label descriptifs bilingues sur chaque portrait. role=img sur les div placeholder.",
+      "dimensions": ["D1", "D2", "D3", "D5"],
+      "priority": "critical",
+      "pattern_applied": "P14+P17",
+      "modified_in": "phase-I-beaumont-avocats",
+      "modified_at": "2026-04-17T10:30:00-04:00",
+      "lifecycle": {
+        "ph1_planned": "2026-04-17T10:00:00-04:00",
+        "ph4_built": "2026-04-17T10:30:00-04:00"
+      }
+    },
+    {
+      "id": "S-005",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "ContactCTA",
+      "component_name": "ContactCTA",
+      "i18n_namespace": "home.contact",
+      "order": 5,
+      "status": "created",
+      "description": "CTA final éditorial. Titre + subtitle 'premier appel gratuit'. Puis dl grid md:3-cols (téléphone/courriel/bureau) en mailto/tel liens. CTA primary 'Prendre rendez-vous' (mailto sujet pré-rempli) + trust_line italic sur secret professionnel (signal spécifique secteur juridique). RevealOnScroll en 3 vagues (delay 0/120/240ms).",
+      "dimensions": ["D1", "D3"],
+      "priority": "high",
+      "pattern_applied": "P17",
+      "modified_in": "phase-I-beaumont-avocats",
+      "modified_at": "2026-04-17T10:30:00-04:00",
+      "lifecycle": {
+        "ph1_planned": "2026-04-17T10:00:00-04:00",
+        "ph4_built": "2026-04-17T10:30:00-04:00"
+      }
+    },
+    {
+      "id": "S-101",
+      "page": "politique-confidentialite",
+      "page_route": "/[locale]/politique-confidentialite",
+      "name": "PrivacyPolicy",
+      "component_name": "PrivacyPolicyPage",
+      "i18n_namespace": "legal.privacy",
+      "order": 1,
+      "status": "created",
+      "description": "Politique de confidentialité Loi 25 + déontologie Barreau du Québec. Spécificités cabinet d'avocats : secret professionnel documenté, rétention dossiers clients ≥10 ans (Règlement Barreau), RPP = Jean-Christophe Laurier associé conformité, transfert web hors QC (Vercel USA) documenté.",
+      "dimensions": ["D8"],
+      "priority": "critical",
+      "pattern_applied": null,
+      "lifecycle": { "ph1_planned": "2026-04-17T10:00:00-04:00", "ph4_built": "2026-04-17T10:30:00-04:00" }
+    },
+    {
+      "id": "S-102",
+      "page": "mentions-legales",
+      "page_route": "/[locale]/mentions-legales",
+      "name": "LegalMentions",
+      "component_name": "LegalMentionsPage",
+      "i18n_namespace": "legal.mentions",
+      "order": 1,
+      "status": "created",
+      "description": "Mentions légales (S.E.N.C.R.L. forme juridique spécifique cabinets d'avocats Québec, NEQ 1164722018, siège 1200 McGill College Montréal, hébergeur Vercel).",
+      "dimensions": ["D8"],
+      "priority": "critical",
+      "pattern_applied": null,
+      "lifecycle": { "ph1_planned": "2026-04-17T10:00:00-04:00", "ph4_built": "2026-04-17T10:30:00-04:00" }
+    },
+    {
+      "id": "S-201",
+      "page": "*",
+      "page_route": "*",
+      "name": "Header",
+      "component_name": "Header",
+      "i18n_namespace": "layout.header",
+      "order": 0,
+      "status": "created",
+      "description": "Header sticky avec logo serif Fraunces 'Beaumont · Avocats' (séparateur point bordeaux entre les deux mots) + nav anchors (Expertises, L'approche, L'équipe, Contact) + sélecteur langue + CTA Nous joindre. Palette ivoire/primary bordeaux. Skip link accessible.",
+      "dimensions": ["D1", "D2"],
+      "priority": "critical",
+      "pattern_applied": null,
+      "lifecycle": { "ph1_planned": "2026-04-17T10:00:00-04:00", "ph4_built": "2026-04-17T10:30:00-04:00" }
+    },
+    {
+      "id": "S-202",
+      "page": "*",
+      "page_route": "*",
+      "name": "Footer",
+      "component_name": "Footer",
+      "i18n_namespace": "layout.footer",
+      "order": 99,
+      "status": "created",
+      "description": "Footer avec logo + tagline + NAP (McGill College/Montréal) + hours + liens légaux + copyright S.E.N.C.R.L. Palette surface-alt.",
+      "dimensions": ["D1", "D8"],
+      "priority": "critical",
+      "pattern_applied": null,
+      "lifecycle": { "ph1_planned": "2026-04-17T10:00:00-04:00", "ph4_built": "2026-04-17T10:30:00-04:00" }
+    }
+  ]
+}

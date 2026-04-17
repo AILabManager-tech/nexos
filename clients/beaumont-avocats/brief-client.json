@@ -1,0 +1,101 @@
+{
+  "_meta": {
+    "generator": "nexos-v3.0",
+    "created_at": "2026-04-17T10:00:00-04:00",
+    "mode": "create",
+    "phase_origin": "chantier-I option A scaffold + patterns P14 + P17"
+  },
+  "client": {
+    "name": "Beaumont Avocats",
+    "slug": "beaumont-avocats",
+    "sector": "Juridique · Services professionnels",
+    "sub_sector": "Cabinet d'avocats · droit des affaires + litige commercial + droit du travail + gouvernance + conformité",
+    "positioning": "premium boutique (vingtaine de clients récurrents)",
+    "size": "small (4 associés + 6 avocats-conseils)",
+    "locations": ["Montréal (Québec)"],
+    "personality_hints": {
+      "D1_density": 3,
+      "D2_register": "technical",
+      "D3_typo_weight": "medium",
+      "D4_palette": "cold",
+      "D5_velocity": "slow-organic",
+      "D6_structure": "asymmetric-soft"
+    }
+  },
+  "legal": {
+    "company_name": "Beaumont Avocats S.E.N.C.R.L.",
+    "neq": "1164722018",
+    "address": "1200 avenue McGill College, bureau 1600, Montréal (Québec) H3B 4G7",
+    "phone": "+1 514 555 0213",
+    "email": "info@beaumont-avocats.ca",
+    "rpp_name": "Jean-Christophe Laurier",
+    "rpp_email": "rpp@beaumont-avocats.ca",
+    "rpp_title": "Associé responsable de la conformité et Responsable de la protection des renseignements personnels",
+    "data_collected": ["nom", "courriel", "sujet-message", "donnees-dossier-client-sous-secret-professionnel"],
+    "purposes": ["execution-mandats-juridiques", "obligations-deontologiques", "facturation", "communication-cabinet"],
+    "retention": "Les dossiers clients sont conservés au minimum 10 ans après la fermeture conformément au Règlement sur la comptabilité et les normes d'exercice de la profession d'avocat. Les échanges courriel hors-mandat sont conservés 24 mois.",
+    "transfer_outside_qc": true,
+    "transfer_countries": ["États-Unis (hébergement web : Vercel)"],
+    "third_parties": ["Vercel (hébergement web — États-Unis)", "Barreau du Québec (obligations déontologiques — Canada)"],
+    "cookie_consent": "opt-in",
+    "incident_process": true,
+    "incident_email": "incident@beaumont-avocats.ca"
+  },
+  "site": {
+    "stack": "nextjs",
+    "type": "vitrine-cabinet",
+    "pages": [
+      "home",
+      "politique-confidentialite",
+      "mentions-legales"
+    ],
+    "languages": ["fr", "en"],
+    "features": ["hero-asymetrique", "expertises-liste-editoriale", "biographies-mono-couleur-scroll"],
+    "hosting": "vercel",
+    "domain": "beaumont-avocats.ca"
+  },
+  "context": {
+    "competitors": [
+      "https://bicklawllp.com",
+      "https://bdplaw.com",
+      "https://quinnemanuel.com"
+    ],
+    "keywords_seo": [
+      "cabinet avocats Montréal",
+      "droit des affaires Québec",
+      "litige commercial Montréal",
+      "cessation emploi Québec",
+      "gouvernance conseil administration PME"
+    ],
+    "free_text": "Cabinet d'avocats boutique à Montréal (depuis 2007). Positionnement : conseiller comme un associé de l'équipe cliente, pas comme un fournisseur facturé à l'heure. Majorité des mandats à forfait/prix plafonné. Clientèle récurrente d'une vingtaine d'entreprises québécoises (PME à mid-market). Différenciation : sortir des codes juridiques classiques (marine+or+blanc corporate, serif Garamond, hero centré 4-cards-services) tout en préservant l'autorité et la confiance. Références d'inspiration : S21 Bick Law LLP (Webby, design = message) + S23 BD&P (rupture codes juridiques, parallax raffiné)."
+  },
+  "design": {
+    "palette": "noir d'encre + ivoire + bordeaux mat (rupture vs marine+or+blanc juridique classique)",
+    "typography": "Fraunces 700 serif moderne (rupture vs Garamond classique) + Inter 400-600 corps géométrique",
+    "style": "éditorial-juridique raffiné",
+    "logo_provided": false,
+    "references": [
+      "https://bicklawllp.com (S21 — animations mono→couleur scroll P17, thème environnemental, Webby)",
+      "https://bdplaw.com (S23 — rupture codes juridiques, parallax raffiné P14)",
+      "https://quinnemanuel.com (S22 — information architecture à grande échelle)"
+    ],
+    "color_tokens": {
+      "primary": "#6B1E23",
+      "primary_deep": "#4A1417",
+      "primary_soft": "#8C3A41",
+      "surface": "#F5F1EA",
+      "surface_alt": "#EDE7DB",
+      "surface_raised": "#E3DBC8",
+      "surface_dark": "#0A0A0A",
+      "ink": "#0A0A0A",
+      "ink_soft": "#2B2B2B",
+      "ink_muted": "#5A5A5A"
+    }
+  },
+  "goals": {
+    "primary_kpi": "brand",
+    "secondary_kpis": ["qualification-lead"],
+    "target_conversion_rate": "2% visiteurs → prise de contact (très sélectif, boutique)",
+    "monthly_qualified_leads_target": 8
+  }
+}
