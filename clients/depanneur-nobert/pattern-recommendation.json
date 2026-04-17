@@ -1,0 +1,165 @@
+{
+  "$schema": "nexos-ph1/pattern-recommendation/v1",
+  "generated_at": "2026-04-17T05:35:00Z",
+  "client_slug": "depanneur-nobert",
+  "sector_id": "SEC-03",
+  "sector_name": "Restauration (mapping par proximité — commerce de proximité alimentaire)",
+  "sector_mapping_confidence": 0.5,
+  "sector_notes": "Secteur réel = commerce de proximité hybride (épicerie + snack + lotto). Non couvert directement par les 6 taxonomies NEXOS. Mapping SEC-03 retenu manuellement par proximité culturelle (alimentaire + ancrage local + registre chaleureux). Cas test de dégradation du pattern-recommender — confidence_score global abaissé en conséquence.",
+  "patterns_recommended": [
+    {
+      "id": "P01",
+      "name": "Sticky CTA persistant",
+      "tier_for_this_client": 1,
+      "rationale": "KPI conversion + CTA 'Voir les promotions de la semaine' doit rester accessible à tout moment pendant le scroll (tier 2 SEC-03 boosté à 1 par D1_ux + conversion).",
+      "primary": true
+    },
+    {
+      "id": "P02",
+      "name": "Social proof adjacente au CTA",
+      "tier_for_this_client": 1,
+      "rationale": "Commerce de proximité = confiance du voisinage. Measured impact S05 Bloor Jane : 45 → 101 leads/mois (+2×) après mise en place sociale proof. Tier 2 SEC-03 boosté par conversion.",
+      "primary": true
+    },
+    {
+      "id": "P09",
+      "name": "3-word brand messaging",
+      "tier_for_this_client": 1,
+      "rationale": "Positionnement accessible + D3_typo_weight heavy → messaging direct et lisible (ex: 'Ton dépanneur. Ton quartier.'). Tier 1 SEC-03 par défaut, confirmé.",
+      "primary": true
+    },
+    {
+      "id": "P11",
+      "name": "Page par localisation",
+      "tier_for_this_client": 1,
+      "rationale": "SEO priorities du brief : 'dépanneur + [ville]', 'bière + [ville]', 'loto québec [ville]' — ancrage géographique = priorité absolue. Tier 2 SEC-03 boosté à 1 par conversion+D6_seo.",
+      "primary": true
+    },
+    {
+      "id": "P13",
+      "name": "Anti-polish authenticity",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 SEC-03 par défaut. Aligné avec free_text du brief : 'anti-corporate, authentique, local'. Opposé du registre chaîne (Couche-Tard). Textures papier/boiseries, photos non retouchées, ton direct.",
+      "primary": true
+    },
+    {
+      "id": "P17",
+      "name": "Scroll-triggered animations",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 SEC-03 par défaut, apporte modernité sobre sans casser D5_velocity slow-organic. Respecter prefers-reduced-motion (D2_accessibility). Risque perf à surveiller (D5_performance impacté).",
+      "primary": true
+    },
+    {
+      "id": "P20",
+      "name": "Menu galerie images",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 SEC-03 par défaut. Catalogue produits = cœur du dépanneur — format galerie essentiel pour page /produits et section promotions home. Réf S14 La Semilla.",
+      "primary": true
+    },
+    {
+      "id": "P19",
+      "name": "StoryBrand messaging",
+      "tier_for_this_client": 2,
+      "rationale": "Cadre narratif ('client = héros, Nobert = guide') utile pour home + about. Measured impact S19 Bop Design : +420% trafic. Secondaire car demande rédaction soignée.",
+      "primary": false
+    }
+  ],
+  "patterns_avoided": [
+    { "id": "P04", "reason": "Hero vidéo émotionnelle : coût de production prohibitif pour un propriétaire solo, KPI conversion ne le justifie pas. Pas de stock footage acceptable (garde-fou knowledge)." },
+    { "id": "P07", "reason": "Multi-template portfolio : démoté à null pour size=solo (§3.2.4). Trop coûteux à maintenir pour un propriétaire unique." },
+    { "id": "P08", "reason": "Story-first design : tier 1 SEC-03 mais redondant avec P19 StoryBrand retenu — éviter doublon narratif." },
+    { "id": "P10", "reason": "Démo interactive hero : démoté à null pour size=solo (§3.2.4). Non applicable à un commerce physique." },
+    { "id": "P12", "reason": "Premium palette shift : palette imposée par le brief (warm brun/or/crème), pattern non applicable." },
+    { "id": "P14", "reason": "Industry code-breaking : tendance créative/gastro (agence, bistro haut de gamme). Hors registre d'un dépanneur de quartier accessible." },
+    { "id": "P15", "reason": "Gamified navigation : démoté à null pour size=solo + risque D2_accessibility WCAG pour clientèle tous âges (registre emotional dépanneur ≠ audience tech-savvy)." },
+    { "id": "P18", "reason": "Micro-univers sections : overkill pour un solo, risque CLS sans pay-off équivalent (brief ne justifie pas la complexité)." }
+  ],
+  "reference_sites": [
+    {
+      "id": "S01",
+      "name": "Twin Boro Physical Therapy",
+      "url": "https://twinboro.com",
+      "sector_id": "SEC-01",
+      "applicable_patterns": ["P01", "P11"],
+      "study_priority": 1,
+      "note": "Architecture multi-localisations + sticky CTA — transposable directement à 'dépanneur + [ville]'."
+    },
+    {
+      "id": "S14",
+      "name": "La Semilla",
+      "url": "https://lasemillanyc.com",
+      "sector_id": "SEC-03",
+      "applicable_patterns": ["P20"],
+      "study_priority": 2,
+      "note": "Menu galerie images — modèle de catalogue produit visuel pour /produits."
+    },
+    {
+      "id": "S13",
+      "name": "Ma'ono",
+      "url": "https://maono.com",
+      "sector_id": "SEC-03",
+      "applicable_patterns": ["P09"],
+      "study_priority": 2,
+      "note": "Jaune bold + hero photo surdimensionnée — palette cousine (warm + accent jaune) utile comme référence visuelle."
+    },
+    {
+      "id": "S12",
+      "name": "Gazzo",
+      "url": "https://gazzo.dk",
+      "sector_id": "SEC-03",
+      "applicable_patterns": ["P13"],
+      "study_priority": 2,
+      "note": "Anti-polish raw playful — exemplaire du registre authentique recherché (opposé chaîne)."
+    },
+    {
+      "id": "S05",
+      "name": "Bloor Jane Physiotherapy",
+      "url": "https://bloorjanephysio.com",
+      "sector_id": "SEC-01",
+      "applicable_patterns": ["P02"],
+      "study_priority": 2,
+      "note": "Social proof adjacente CTA — measured +2× leads/mois. Transposable au contexte dépanneur (avis voisinage)."
+    }
+  ],
+  "personality_6d_proposed": {
+    "D1_density": 3,
+    "D2_register": "emotional",
+    "D3_typo_weight": "heavy",
+    "D4_palette": "warm",
+    "D5_velocity": "slow-organic",
+    "D6_structure": "symmetric",
+    "rationale_per_dim": {
+      "D1_density": "Densité équilibrée (3) — catalogue produits visible sans saturation, respecte positionnement accessible.",
+      "D2_register": "Registre emotional — dépanneur de quartier = convivialité locale, anti-corporate par nature.",
+      "D3_typo_weight": "Heavy — lisibilité immédiate pour clientèle tous âges (voisins 20-80 ans), opposé du light corporate.",
+      "D4_palette": "Warm (forcée par palette_imposed brun/or/crème) — boiseries traditionnelles, lumière doré conviviale, rejet explicite du bleu corporate.",
+      "D5_velocity": "Slow-organic — pas de gadget, respect d'un commerce ancré (vs mechanical industrie ou fast-purposeful tech).",
+      "D6_structure": "Symmetric — structure rassurante classique, accessible à tous, opposé de l'editorial créatif."
+    },
+    "source": "personality_hints du brief (§5.2) — ancrage dur conformément à pattern-recommender §3.4.2. Palette imposée confirme D4=warm (§3.4.3)."
+  },
+  "opposition_check": {
+    "compared_against": ["clinique-aura", "beaumont-avocats", "table-de-marguerite", "vertex-pmo", "electro-maitre-industriel"],
+    "not_compared": [
+      { "slug": "collectif-nova", "reason": "brief absent — client non scaffolded (phase J en attente)" }
+    ],
+    "max_opposition_score": 4,
+    "passes_rule_of_gold": true,
+    "detail": {
+      "vs_clinique-aura": { "opposed_on": [], "count": 0, "passes": false, "note": "même registre emotional + palette warm (faible opposition attendue, secteurs proches émotionnellement)" },
+      "vs_beaumont-avocats": { "opposed_on": ["D2_register", "D4_palette"], "count": 2, "passes": false },
+      "vs_table-de-marguerite": { "opposed_on": [], "count": 0, "passes": false, "note": "restaurant gastro warm/emotional — proche de Nobert dans la 6D, opposition faible structurellement" },
+      "vs_vertex-pmo": { "opposed_on": ["D2_register", "D4_palette"], "count": 2, "passes": false },
+      "vs_electro-maitre-industriel": { "opposed_on": ["D2_register", "D4_palette", "D5_velocity", "D6_structure"], "count": 4, "passes": true }
+    },
+    "interpretation": "La règle d'or est satisfaite vs electro-maitre-industriel (secteur industrie — opposé culturel complet). Les faibles oppositions vs clinique-aura et table-de-marguerite sont attendues (tous emotional+warm). La 6D proposée est donc légitime — aucun ajustement requis."
+  },
+  "soic_risks_flagged": [
+    { "dimension": "D8_legal", "risk": "Mapping sectoriel ambigu (confidence 0.5) → revue humaine obligatoire avant Phase L. Loi 25 standardement requise : RPP défini, 3 pages obligatoires listées, cookie consent opt-in, incident_process actif." },
+    { "dimension": "D6_seo", "risk": "P11 page par localisation recommandé → Schema.org LocalBusiness + NAP cohérent (adresse/téléphone/horaires) sur Google My Business requis. Variable [ville] à fixer au kickoff." },
+    { "dimension": "D2_accessibility", "risk": "P20 menu galerie images recommandé → alt-text descriptif obligatoire sur chaque produit catalogué (WCAG 2.2 AA + SEO)." },
+    { "dimension": "D5_performance", "risk": "P17 scroll-triggered animations retenu → respecter prefers-reduced-motion, limiter animations au viewport, surveiller CLS mobile." }
+  ],
+  "confidence_score": 0.6,
+  "notes": "Confidence score abaissé à 0.60 : (1) mapping SEC-03 manuel avec confidence 0.5 — secteur commerce de proximité non nativement couvert ; (2) 3 clients existants (clinique-aura, table-de-marguerite) ont opposition faible — attendu car registre emotional partagé, compensé par opposition complète vs electro-maitre-industriel (4/6). Phase M devra évaluer la robustesse du mapping SEC-03 comme proxy pour commerce de proximité. Option envisageable : enrichir la taxonomie NEXOS avec SEC-07 (commerce de proximité) si Phase M conclut que l'approximation est insuffisante."
+}
