@@ -1,0 +1,178 @@
+{
+  "site": {
+    "name": "La Table de Marguerite",
+    "tagline": "Seasonal bistronomic cuisine · Québec City",
+    "locale": "en-CA"
+  },
+  "layout": {
+    "header": {
+      "nav": {
+        "home": "Home",
+        "histoire": "The story",
+        "menu": "Menu",
+        "reservation": "Reservations"
+      },
+      "cta_short": "Reserve",
+      "language_switch": "Français"
+    },
+    "footer": {
+      "rights": "All rights reserved",
+      "address": "412 rue Saint-Vallier Est, Québec (Québec) G1K 3P4",
+      "phone": "+1 418 555 0164",
+      "email": "info@table-de-marguerite.ca",
+      "hours": "Open Wednesday to Sunday — dinner service only.",
+      "privacy": "Privacy policy",
+      "legal": "Legal notice"
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Seasonal restaurant · Saint-Roch",
+      "title_line_1": "One table. One land.",
+      "title_line_2": "All the time it needs.",
+      "subtitle": "Seasonal bistronomic cuisine in Québec City, rebuilt each week around the growers of the moment. Twenty seats. One menu. The rhythm of what's alive.",
+      "image_alt": "Editorial still life: sourdough loaves fresh from the oven, farmhouse butter and a bread knife set on an écru linen cloth — La Table de Marguerite terroir composition",
+      "image_caption": "Terroir still life — sourdough and farmhouse butter"
+    },
+    "chefStory": {
+      "eyebrow": "The story",
+      "title": "From farm to table, the shortest road.",
+      "image_alt": "Portrait of Marguerite Lefebvre, chef-owner of La Table de Marguerite, standing in front of a rack of dried herbs in her kitchen, warm natural light",
+      "image_caption": "Marguerite Lefebvre, chef-owner",
+      "p1": "Marguerite opened her table in 2019, after a five-year apprenticeship between Copenhagen and Charlevoix. The idea fit on a single line: cook only what people she knows have grown, fished or raised that week.",
+      "p2": "The menu changes every Thursday. It starts with a phone call to Étienne Côté, a market gardener in Saint-Apollinaire, a returning fisher in Saint-Siméon, or a walk in the woods behind her parents' farm. Every dish is a portrait of a producer, signed on a plate.",
+      "p3_quote": "\"We don't cook products. We cook people.\"",
+      "signature_name": "Marguerite Lefebvre",
+      "signature_role": "Chef-owner"
+    },
+    "menu": {
+      "eyebrow": "On the menu this week",
+      "title": "Nine dishes, three chapters, one season.",
+      "subtitle": "The menu reads like a terroir notebook: each dish signs a Québec producer. Photos are updated every Thursday, following the deliveries. Wine pairings available.",
+      "categories": {
+        "entrees": "Starters",
+        "plats": "Mains",
+        "desserts": "Desserts"
+      },
+      "categories_tag": {
+        "entrees": "to begin",
+        "plats": "at the centre of the table",
+        "desserts": "to finish softly"
+      },
+      "categories_aria": {
+        "entrees": "Starters from the seasonal menu",
+        "plats": "Main courses from the seasonal menu",
+        "desserts": "Desserts from the seasonal menu"
+      },
+      "footer_note": "Allergens are communicated at service. Please flag dietary restrictions at reservation — the kitchen adapts, within the limits of each week's harvest.",
+      "items": {
+        "tartare-bison": {
+          "name": "Bison tartare, capers, hazelnut oil",
+          "description": "Charlevoix-raised bison, North Shore capers, hazelnut oil roasted in-house.",
+          "terroir": "Ferme Terre-Ciel · Baie-Saint-Paul",
+          "alt": "Vertical photograph of a hand-cut bison tartare garnished with capers and hazelnuts, served on an ivory handcrafted ceramic plate"
+        },
+        "beets-chevre": {
+          "name": "Roasted beets, fresh goat cheese, spruce syrup",
+          "description": "Multicoloured beets from Étienne Côté, fresh goat cheese from Ferme Tournevent, spruce-bud syrup foraged in May.",
+          "terroir": "Maraîchage Côté · Saint-Apollinaire",
+          "alt": "Editorial vertical photograph of roasted beets in purple, golden and white, fanned on a stoneware plate with shavings of fresh goat cheese on top"
+        },
+        "tomme-saison": {
+          "name": "Kamouraska tomme, buckwheat honey, dark bread",
+          "description": "Six-month-aged farmhouse tomme, buckwheat-flower honey, sourdough dark bread baked each morning.",
+          "terroir": "Fromagerie du Domaine · Kamouraska",
+          "alt": "Vertical photograph of a rustic wedge of tomme cheese, served with a drizzle of amber honey and a slice of cracked dark sourdough"
+        },
+        "omble-chevalier": {
+          "name": "Arctic char, sea beans, ice-cider beurre blanc",
+          "description": "Arctic char from the Saguenay fjord, sea beans foraged at low tide, ice-cider beurre blanc.",
+          "terroir": "Pêcherie Saint-Siméon · Charlevoix",
+          "alt": "Vertical photograph of a pink pearlescent arctic char fillet, garnished with fresh green sea beans, napped with a creamy beurre blanc on a white plate"
+        },
+        "agneau-charlevoix": {
+          "name": "Charlevoix lamb, sunchoke, wild thyme",
+          "description": "Eight-hour-braised lamb shoulder, sunchoke purée, wild thyme dried in the farm's attic.",
+          "terroir": "Bergerie Les Hauts · La Malbaie",
+          "alt": "Vertical photograph of a slice of braised lamb shoulder, deep mahogany colour, on a bed of golden sunchoke purée, sprig of thyme for garnish"
+        },
+        "tarte-poireaux": {
+          "name": "Leek tart, trout broth, quail egg",
+          "description": "Four-hour-confit leeks, butter-rich shortcrust, house-smoked trout broth, a runny quail-egg yolk.",
+          "terroir": "Pisciculture Les Saules · Saint-Damien",
+          "alt": "Vertical photograph of a rectangular leek tart with soft-green confit leeks, topped with a glossy quail-egg yolk, amber broth around"
+        },
+        "sabayon-sureau": {
+          "name": "Elderflower sabayon, raspberries, buckwheat biscotti",
+          "description": "Warm wild-elderflower sabayon, summer black raspberries, buckwheat biscotti from Bas-Saint-Laurent.",
+          "terroir": "Wild harvest · Île d'Orléans",
+          "alt": "Vertical photograph of a cream-coloured foamy sabayon in a wine glass, black raspberries and buckwheat biscotti set beside"
+        },
+        "tarte-argousier": {
+          "name": "Sea buckthorn tart, torched meringue",
+          "description": "Fjord sea-buckthorn curd, almond shortcrust, Italian meringue torched at the pass.",
+          "terroir": "Argousiers de l'Anse · Bic",
+          "alt": "Vertical photograph of an individual orange-hued sea-buckthorn tart, crowned with golden meringue peaks caramelised on the tips"
+        },
+        "chocolat-sarrasin": {
+          "name": "80% chocolate, buckwheat honey, hay-milk ice cream",
+          "description": "Manjari 80% chocolate fondant, buckwheat-honey ganache, hay-milk ice cream from last summer's drying.",
+          "terroir": "Atelier du Lait · Saint-Jacques",
+          "alt": "Vertical photograph of a glossy dark-chocolate fondant, molten centre, served with a white quenelle of ice cream and a drizzle of buckwheat honey"
+        }
+      }
+    },
+    "reservation": {
+      "eyebrow": "Book a table",
+      "title": "Twenty seats. One menu. Five evenings a week.",
+      "subtitle": "Reservations are taken by phone or email — no platform. Marguerite answers you herself within 24 hours. Please flag allergies or dietary restrictions: the kitchen always adapts.",
+      "phone": "+1 418 555 0164",
+      "email": "reservation@table-de-marguerite.ca",
+      "cta_phone": "Call the chef",
+      "cta_email": "Write by email",
+      "trust_line": "Wed–Sun · 5:30 to 10 pm · single dining room, non-smoking"
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacy policy",
+      "intro": "La Table de Marguerite complies with Québec's Act 25 on the protection of personal information in the private sector.",
+      "rpp_label": "Personal information protection officer",
+      "rpp_name": "Marguerite Lefebvre",
+      "rpp_title": "Chef-owner",
+      "rpp_email": "rpp@table-de-marguerite.ca",
+      "data_title": "Data collected",
+      "data_body": "Name, email, phone, dietary restrictions/allergies declared at reservation time.",
+      "purposes_title": "Purposes",
+      "purposes_body": "Reservation management, menu adaptation for allergens, seasonal newsletter (separate opt-in), anonymized usage analytics.",
+      "retention_title": "Retention",
+      "retention_body": "Reservations are kept for 24 months. Declared allergens are kept only during service and destroyed afterward. Navigation data is kept for 24 months maximum.",
+      "rights_title": "Your rights",
+      "rights_body": "You may request access, rectification or deletion of your data at any time by contacting our officer."
+    },
+    "mentions": {
+      "title": "Legal notice",
+      "company": "La Table de Marguerite inc.",
+      "neq_label": "NEQ",
+      "neq_value": "1176543221",
+      "address_label": "Head office",
+      "address_value": "412 rue Saint-Vallier Est, Québec (Québec) G1K 3P4",
+      "phone_label": "Phone",
+      "phone_value": "+1 418 555 0164",
+      "email_label": "Email",
+      "email_value": "info@table-de-marguerite.ca",
+      "host_label": "Hosting provider",
+      "host_value": "Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, United States"
+    }
+  },
+  "cookies": {
+    "banner_title": "Your privacy matters",
+    "banner_body": "We use essential cookies to run the site. Analytics cookies are only enabled with your consent.",
+    "accept_all": "Accept all",
+    "reject_all": "Reject",
+    "customize": "Customize",
+    "essentials": "Essentials",
+    "analytics": "Analytics",
+    "marketing": "Marketing"
+  }
+}

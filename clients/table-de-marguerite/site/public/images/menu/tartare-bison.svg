@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Placeholder — bison tartare">
+  <rect width="800" height="1000" fill="#F3EDE3"/>
+  <circle cx="400" cy="520" r="280" fill="#FAF6F0"/>
+  <circle cx="400" cy="520" r="275" fill="none" stroke="#E8D0A0" stroke-width="2"/>
+  <circle cx="400" cy="520" r="140" fill="#8F3D2A"/>
+  <circle cx="400" cy="520" r="130" fill="#A04A33"/>
+  <g fill="#6D2E1C">
+    <circle cx="360" cy="490" r="5"/>
+    <circle cx="430" cy="500" r="4"/>
+    <circle cx="400" cy="540" r="5"/>
+    <circle cx="370" cy="550" r="3"/>
+    <circle cx="440" cy="530" r="4"/>
+  </g>
+  <g fill="#5A8A3A">
+    <circle cx="390" cy="470" r="4"/>
+    <circle cx="420" cy="520" r="3"/>
+    <circle cx="360" cy="530" r="4"/>
+  </g>
+  <g fill="#8A6028">
+    <rect x="390" y="440" width="20" height="4" transform="rotate(-20 400 442)"/>
+    <rect x="420" y="570" width="18" height="4" transform="rotate(15 429 572)"/>
+  </g>
+</svg>

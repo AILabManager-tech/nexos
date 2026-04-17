@@ -1,0 +1,178 @@
+{
+  "site": {
+    "name": "La Table de Marguerite",
+    "tagline": "Cuisine bistronomique de saison · Québec",
+    "locale": "fr-CA"
+  },
+  "layout": {
+    "header": {
+      "nav": {
+        "home": "Accueil",
+        "histoire": "L'histoire",
+        "menu": "Menu",
+        "reservation": "Réservation"
+      },
+      "cta_short": "Réserver",
+      "language_switch": "English"
+    },
+    "footer": {
+      "rights": "Tous droits réservés",
+      "address": "412 rue Saint-Vallier Est, Québec (Québec) G1K 3P4",
+      "phone": "+1 418 555 0164",
+      "email": "info@table-de-marguerite.ca",
+      "hours": "Ouvert du mercredi au dimanche — service du soir uniquement.",
+      "privacy": "Politique de confidentialité",
+      "legal": "Mentions légales"
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Restaurant de saison · Saint-Roch",
+      "title_line_1": "Une table. Un territoire.",
+      "title_line_2": "Et tout le temps qu'il faut.",
+      "subtitle": "Cuisine bistronomique de saison à Québec, construite chaque semaine autour des producteurs du moment. Vingt couverts. Un menu unique. Le rythme du vivant.",
+      "image_alt": "Composition éditoriale : miches de pain au levain sortant du four, beurre fermier et couteau à pain posés sur une nappe de lin écru — nature morte terroir de La Table de Marguerite",
+      "image_caption": "Nature morte terroir — pain au levain et beurre fermier"
+    },
+    "chefStory": {
+      "eyebrow": "L'histoire",
+      "title": "De la ferme à la table, le chemin le plus court.",
+      "image_alt": "Portrait de Marguerite Lefebvre, cheffe-propriétaire de La Table de Marguerite, debout devant une étagère d'herbes séchées dans sa cuisine, lumière naturelle chaude",
+      "image_caption": "Marguerite Lefebvre, cheffe-propriétaire",
+      "p1": "Marguerite a ouvert sa table en 2019, au retour d'un apprentissage de cinq ans entre Copenhague et Charlevoix. L'idée tenait en une ligne : ne cuisiner que ce que des gens qu'elle connaît ont fait pousser, pêché ou élevé cette semaine-là.",
+      "p2": "Le menu change tous les jeudis. Il part d'un coup de téléphone avec Étienne Côté, maraîcher à Saint-Apollinaire, d'un retour de pêche à Saint-Siméon, ou d'une promenade dans le boisé derrière la ferme des parents. Chaque plat est un portrait d'un producteur, signé d'une assiette.",
+      "p3_quote": "« On ne cuisine pas des produits. On cuisine des gens. »",
+      "signature_name": "Marguerite Lefebvre",
+      "signature_role": "Cheffe-propriétaire"
+    },
+    "menu": {
+      "eyebrow": "Au menu cette semaine",
+      "title": "Neuf plats, trois chapitres, une saison.",
+      "subtitle": "Le menu se lit comme un carnet de terroir : chaque plat signe un producteur québécois. Les photos sont mises à jour chaque jeudi, au rythme des livraisons. Accords mets-vins en supplément.",
+      "categories": {
+        "entrees": "Entrées",
+        "plats": "Plats",
+        "desserts": "Desserts"
+      },
+      "categories_tag": {
+        "entrees": "pour commencer",
+        "plats": "au centre de la table",
+        "desserts": "pour terminer doucement"
+      },
+      "categories_aria": {
+        "entrees": "Entrées du menu de saison",
+        "plats": "Plats principaux du menu de saison",
+        "desserts": "Desserts du menu de saison"
+      },
+      "footer_note": "Les allergènes sont précisés au service. Préciser les restrictions alimentaires lors de la réservation — la cuisine s'adapte, dans la limite des arrivages.",
+      "items": {
+        "tartare-bison": {
+          "name": "Tartare de bison, câpres, noisette",
+          "description": "Bison d'élevage de Charlevoix, câpres de la Côte-Nord, huile de noisette torréfiée au restaurant.",
+          "terroir": "Ferme Terre-Ciel · Baie-Saint-Paul",
+          "alt": "Photo en cadrage vertical d'un tartare de bison coupé au couteau, garni de câpres et de noisettes, servi sur une assiette en céramique artisanale ivoire"
+        },
+        "beets-chevre": {
+          "name": "Betteraves rôties, chèvre frais, sirop de sapin",
+          "description": "Betteraves multicolores d'Étienne Côté, chèvre frais de la Ferme Tournevent, sirop de bourgeons de sapin cueillis en mai.",
+          "terroir": "Maraîchage Côté · Saint-Apollinaire",
+          "alt": "Photo éditoriale verticale de betteraves rôties aux couleurs pourpre, dorée et blanche, disposées en éventail sur une assiette de grès, copeaux de chèvre frais dessus"
+        },
+        "tomme-saison": {
+          "name": "Tomme de Kamouraska, miel de sarrasin, pain noir",
+          "description": "Tomme fermière affinée six mois, miel d'un rucher de sarrasin, pain noir au levain cuit chaque matin.",
+          "terroir": "Fromagerie du Domaine · Kamouraska",
+          "alt": "Photo verticale d'une portion de tomme rustique découpée, servie avec un filet de miel ambré et une tranche de pain noir craquelé"
+        },
+        "omble-chevalier": {
+          "name": "Omble chevalier, salicorne, beurre blanc au cidre",
+          "description": "Omble chevalier pêché dans le fjord du Saguenay, salicorne cueillie à marée basse, beurre blanc au cidre de glace.",
+          "terroir": "Pêcherie Saint-Siméon · Charlevoix",
+          "alt": "Photo verticale d'un filet d'omble chevalier rosé nacré, garni de salicorne verte fraîche, nappé d'un beurre blanc crémeux, servi sur assiette blanche"
+        },
+        "agneau-charlevoix": {
+          "name": "Agneau de Charlevoix, topinambour, thym des champs",
+          "description": "Épaule d'agneau braisée huit heures, purée de topinambours, thym des champs séché dans le grenier de la ferme.",
+          "terroir": "Bergerie Les Hauts · La Malbaie",
+          "alt": "Photo verticale d'une tranche d'épaule d'agneau braisée, couleur acajou profond, sur un lit de purée de topinambour doré, brindille de thym en garniture"
+        },
+        "tarte-poireaux": {
+          "name": "Tarte fine aux poireaux, fumet de truite, oeuf de caille",
+          "description": "Poireaux confits quatre heures, pâte brisée au beurre fermier, fumet de truite fumée sur place, jaune d'oeuf de caille coulant.",
+          "terroir": "Pisciculture Les Saules · Saint-Damien",
+          "alt": "Photo verticale d'une tarte fine rectangulaire aux poireaux confits vert tendre, surmontée d'un jaune d'oeuf de caille brillant, filet de fumet ambré autour"
+        },
+        "sabayon-sureau": {
+          "name": "Sabayon au sureau, framboises, biscotti au sarrasin",
+          "description": "Sabayon chaud aux fleurs de sureau sauvages, framboises noires d'été, biscotti au sarrasin du Bas-Saint-Laurent.",
+          "terroir": "Cueillette sauvage · Île d'Orléans",
+          "alt": "Photo verticale d'un sabayon mousseux couleur crème, dressé dans un verre à vin, framboises noires fraîches et biscotti au sarrasin posés à côté"
+        },
+        "tarte-argousier": {
+          "name": "Tarte à l'argousier, meringue brûlée au chalumeau",
+          "description": "Crémeux d'argousier du fjord, pâte sablée aux amandes, meringue à l'italienne brûlée au chalumeau à l'envoi.",
+          "terroir": "Argousiers de l'Anse · Bic",
+          "alt": "Photo verticale d'une tarte individuelle à l'argousier orangé acidulé, couronnée d'une meringue dorée aux pointes caramélisées"
+        },
+        "chocolat-sarrasin": {
+          "name": "Chocolat 80%, miel de sarrasin, crème glacée au lait de foin",
+          "description": "Fondant au chocolat Manjari 80%, ganache au miel de sarrasin, crème glacée au lait de foin séché l'été dernier.",
+          "terroir": "Atelier du Lait · Saint-Jacques",
+          "alt": "Photo verticale d'un fondant au chocolat noir brillant, coeur coulant, accompagné d'une quenelle de crème glacée blanche et d'un filet de miel de sarrasin"
+        }
+      }
+    },
+    "reservation": {
+      "eyebrow": "Réserver une table",
+      "title": "Vingt couverts. Un menu. Cinq soirs par semaine.",
+      "subtitle": "Les réservations se prennent par téléphone ou courriel, pas de plateforme. Marguerite vous répond elle-même sous 24 h. Préciser les allergies ou restrictions — la cuisine s'adapte, toujours.",
+      "phone": "+1 418 555 0164",
+      "email": "reservation@table-de-marguerite.ca",
+      "cta_phone": "Appeler la cheffe",
+      "cta_email": "Écrire par courriel",
+      "trust_line": "Services du mercredi au dimanche · 17 h 30 à 22 h · salle unique, non-fumeur"
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "intro": "La Table de Marguerite est soumise à la Loi 25 du Québec sur la protection des renseignements personnels dans le secteur privé.",
+      "rpp_label": "Responsable de la protection des renseignements personnels",
+      "rpp_name": "Marguerite Lefebvre",
+      "rpp_title": "Cheffe-propriétaire",
+      "rpp_email": "rpp@table-de-marguerite.ca",
+      "data_title": "Renseignements collectés",
+      "data_body": "Nom, courriel, téléphone, allergies/restrictions alimentaires déclarées au moment de la réservation.",
+      "purposes_title": "Finalités",
+      "purposes_body": "Gestion des réservations, adaptation du menu aux allergènes, envoi de l'infolettre saisonnière (opt-in séparé), analyse d'usage anonymisée.",
+      "retention_title": "Conservation",
+      "retention_body": "Les réservations sont conservées 24 mois. Les allergènes déclarés ne sont conservés que le temps du service et détruits après. Les données de navigation sont conservées 24 mois maximum.",
+      "rights_title": "Vos droits",
+      "rights_body": "Vous pouvez en tout temps demander l'accès, la rectification ou la suppression de vos données en contactant notre RPP."
+    },
+    "mentions": {
+      "title": "Mentions légales",
+      "company": "La Table de Marguerite inc.",
+      "neq_label": "NEQ",
+      "neq_value": "1176543221",
+      "address_label": "Siège social",
+      "address_value": "412 rue Saint-Vallier Est, Québec (Québec) G1K 3P4",
+      "phone_label": "Téléphone",
+      "phone_value": "+1 418 555 0164",
+      "email_label": "Courriel",
+      "email_value": "info@table-de-marguerite.ca",
+      "host_label": "Hébergeur",
+      "host_value": "Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis"
+    }
+  },
+  "cookies": {
+    "banner_title": "Votre vie privée compte",
+    "banner_body": "Nous utilisons des témoins (cookies) essentiels pour faire fonctionner le site. Les cookies d'analyse ne sont activés qu'avec votre consentement.",
+    "accept_all": "Accepter tout",
+    "reject_all": "Refuser",
+    "customize": "Personnaliser",
+    "essentials": "Essentiels",
+    "analytics": "Analyse d'usage",
+    "marketing": "Marketing"
+  }
+}

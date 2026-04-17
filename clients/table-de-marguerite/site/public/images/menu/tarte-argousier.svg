@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Placeholder — sea buckthorn tart">
+  <rect width="800" height="1000" fill="#EDE5D4"/>
+  <circle cx="400" cy="520" r="270" fill="#F3EDE3"/>
+  <circle cx="400" cy="520" r="170" fill="#A0803A"/>
+  <circle cx="400" cy="520" r="155" fill="#C89F4B"/>
+  <circle cx="400" cy="510" r="130" fill="#E68A2E"/>
+  <circle cx="400" cy="505" r="120" fill="#F2A24A"/>
+  <g transform="translate(400 480)" fill="#FAF6F0">
+    <path d="M -60 -30 Q -50 -60 -40 -30 Q -30 -60 -20 -30 Q -10 -60 0 -30 Q 10 -60 20 -30 Q 30 -60 40 -30 Q 50 -60 60 -30 L 60 0 L -60 0 Z"/>
+    <path d="M -50 -20 Q -45 -40 -35 -20 Q -25 -42 -15 -20 Q -5 -42 5 -20 Q 15 -42 25 -20 Q 35 -42 45 -20 L 45 0 L -50 0 Z" fill="#E8D0A0"/>
+  </g>
+  <g fill="#8A4A18" opacity="0.6">
+    <ellipse cx="365" cy="450" rx="12" ry="4"/>
+    <ellipse cx="435" cy="450" rx="12" ry="4"/>
+  </g>
+</svg>

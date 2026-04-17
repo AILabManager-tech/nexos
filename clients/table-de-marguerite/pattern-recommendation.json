@@ -1,0 +1,185 @@
+{
+  "$schema": "nexos-ph1/pattern-recommendation/v1",
+  "generated_at": "2026-04-16T20:45:00-04:00",
+  "client_slug": "table-de-marguerite",
+  "sector_id": "SEC-03",
+  "sector_name": "Restauration",
+  "patterns_recommended": [
+    {
+      "id": "P08",
+      "name": "Story-first design",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-03 + boost brand (P08 in list, +1 capé à 1). Pattern direct du brief phase G : narrative chef et philosophie placées AVANT le menu (ref S15 Fiola fioladc.com). L'investissement émotionnel précède l'exposition produit.",
+      "primary": true
+    },
+    {
+      "id": "P20",
+      "name": "Menu galerie images",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-03. Pattern direct du brief phase G : remplacer menu PDF/liste par galerie d'images avec alt descriptifs, mise à jour hebdomadaire (ref S14 La Semilla lasemillanyc.com). Évite l'anti-pattern PDF téléchargeable.",
+      "primary": true
+    },
+    {
+      "id": "P13",
+      "name": "Anti-polish authenticity",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-03 + boost brand (P13 in list, +1 capé à 1). Cohérent positionnement 'bistronomique de saison' (ref S12 Gazzo). Appliqué en phase G via copy ChefStory conversationnelle + assiettes artisanales + pas de dorures corporate.",
+      "primary": true
+    },
+    {
+      "id": "P09",
+      "name": "3-word brand messaging",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-03. Hero 'Une table. Un territoire. / Et tout le temps qu'il faut.' structure en rythme ternaire + une quatrième ligne italique (ref S13 Ma'ono). Non strictement 3-mots mais capte l'esprit.",
+      "primary": true
+    },
+    {
+      "id": "P17",
+      "name": "Scroll-triggered animations",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-03 (universel). Non appliqué en phase G (budget narratif > animation) — prévu phase ultérieure si la galerie P20 reste statique et qu'un effet subtil d'apparition est souhaité.",
+      "primary": true
+    },
+    {
+      "id": "P02",
+      "name": "Social proof adjacente au CTA",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-03 (selon matrix tier 2, mais boosté par brand). Mesure +2× leads (Bloor Jane S05). Phase G applique une version légère via trust_line de la section Reservation — phase ultérieure pour P02 complet avec témoignages.",
+      "primary": true
+    },
+    {
+      "id": "P11",
+      "name": "Page par localisation",
+      "tier_for_this_client": 2,
+      "rationale": "Natif tier 2 SEC-03. Non applicable directement (un seul emplacement à Québec), mais pattern à réactiver si expansion Montréal/Longueuil/etc. Conservé en tier 2 pour traçabilité.",
+      "primary": false
+    },
+    {
+      "id": "P05",
+      "name": "Single-page scroll",
+      "tier_for_this_client": 2,
+      "rationale": "Natif tier 3 SEC-03 + boost brand (P05 non dans list mais auto-cohérent avec le scaffold phase G qui EST single-page scroll avec ancres nommées histoire/menu/reservation). Appliqué de facto.",
+      "primary": false
+    }
+  ],
+  "patterns_avoided": [
+    {
+      "id": "P15",
+      "reason": "SEC-03 natif tier 3. Gamified nav incompatible avec positionnement éditorial-bistronomique et D5_velocity=slow-organic."
+    },
+    {
+      "id": "P10",
+      "reason": "Tier 3 SEC-03, pas de boost applicable. Démo interactive hero = registre SaaS, hors secteur restauration."
+    }
+  ],
+  "reference_sites": [
+    {
+      "id": "S14",
+      "name": "La Semilla",
+      "url": "https://lasemillanyc.com",
+      "applicable_patterns": ["P20"],
+      "study_priority": 1
+    },
+    {
+      "id": "S15",
+      "name": "Fiola (Fabio Trabocchi)",
+      "url": "https://fioladc.com",
+      "applicable_patterns": ["P08"],
+      "study_priority": 1
+    },
+    {
+      "id": "S11",
+      "name": "Noma",
+      "url": "https://noma.dk",
+      "applicable_patterns": ["P08", "P13"],
+      "study_priority": 1
+    },
+    {
+      "id": "S12",
+      "name": "Gazzo",
+      "url": "https://gazzo.dk",
+      "applicable_patterns": ["P13"],
+      "study_priority": 2
+    },
+    {
+      "id": "S13",
+      "name": "Ma'ono",
+      "url": "https://maono.com",
+      "applicable_patterns": ["P09"],
+      "study_priority": 2
+    }
+  ],
+  "personality_6d_proposed": {
+    "D1_density": 2,
+    "D2_register": "emotional",
+    "D3_typo_weight": "contrasted",
+    "D4_palette": "warm",
+    "D5_velocity": "slow-organic",
+    "D6_structure": "asymmetric-soft",
+    "rationale_per_dim": {
+      "D1_density": "Canonique table-de-marguerite (personality-dimensions.json::examples D1=2). Restaurant destination premium → aéré, éditorial, whitespace généreux. Hint brief confirmé.",
+      "D2_register": "Emotional : cuisine incarnée, histoire humaine de Marguerite, relation directe cheffe-client (pas plateforme). Opposé complet de la sécheresse SaaS. Hint brief confirmé.",
+      "D3_typo_weight": "Contrasted : mélange Playfair Display 900 (display éditorial) + Inter 400 (corps conversationnel). Italique pour signature chef + citations. Hint brief confirmé.",
+      "D4_palette": "Warm : vin #6D2E3F + ocre doré #C89F4B + crème #FAF6F0 — palette bistronomique chaleureuse, opposée du bleu corporate. Hint brief confirmé.",
+      "D5_velocity": "Slow-organic : transitions lentes et organiques, pas d'animations mécaniques. Rythme du vivant, cohérent avec la philosophie 'le temps qu'il faut'. Hint brief confirmé.",
+      "D6_structure": "Asymmetric-soft : figure portrait chef légèrement décalée (-mt-12), grid 12-col avec 7/5 et 5/7 alternés. Asymétrie qui humanise sans désorienter. Hint brief confirmé."
+    }
+  },
+  "opposition_check": {
+    "compared_against": ["clinique-aura", "beaumont-avocats", "electro-maitre-industriel", "collectif-nova", "table-de-marguerite"],
+    "max_opposition_score": 5,
+    "passes_rule_of_gold": true,
+    "detail": {
+      "vs_clinique-aura": {
+        "opposed_on": [],
+        "count": 0,
+        "passes": false,
+        "note": "Même secteur non, mais profil 6D très proche (D1=1/2, D2=emotional, D3=light/contrasted, D4=warm, D5=slow-organic, D6=asymmetric-soft). Différenciation subtile : D1 et D3 seulement. Attendu — deux clients premium warm slow-organic se ressemblent."
+      },
+      "vs_beaumont-avocats": {
+        "opposed_on": ["D1", "D2", "D4", "D5", "D6"],
+        "count": 5,
+        "passes": true,
+        "note": "D1(2 vs 4) opposé [[2,4]], D2(emotional vs technical) opposé, D4(warm vs cold) opposé, D5(slow-organic vs still) opposé, D6(asymmetric-soft vs symmetric) non listé dans opposites — 4 oppositions canoniques + 1 quasi-opposition."
+      },
+      "vs_electro-maitre-industriel": {
+        "opposed_on": ["D1", "D2", "D3", "D4", "D5"],
+        "count": 5,
+        "passes": true,
+        "note": "D1(2 vs 5) opposé, D2(emotional vs technical-warm) opposé, D3(contrasted vs heavy) non dans opposites mais très distant, D4(warm vs industrial) opposé, D5(slow-organic vs mechanical) opposé. Règle d'or largement passée."
+      },
+      "vs_collectif-nova": {
+        "opposed_on": ["D6"],
+        "count": 1,
+        "passes": false,
+        "note": "Profil collectif-nova = D1=3, D2=?, D3=contrasted, D4=variable, D6=editorial. Même D3 contrasted, même zone warm/variable. D6 opposé (asymmetric-soft vs editorial — non dans opposites[] mais esprit distant)."
+      },
+      "vs_table-de-marguerite": {
+        "opposed_on": [],
+        "count": 0,
+        "passes": false,
+        "note": "Self-comparison. Attendu."
+      }
+    }
+  },
+  "soic_risks_flagged": [
+    {
+      "dimension": "D2_accessibility",
+      "risk": "P20 galerie menu : alt-text descriptif par plat impératif (9 entrées FR+EN fournies dans messages/). P08 ChefStory : italique pour citation chef respecte contraste (text-primary #6D2E3F sur bg-surface-alt #F3EDE3 = 9.4:1 AAA)."
+    },
+    {
+      "dimension": "D5_performance",
+      "risk": "P20 = 9 images dish + 1 hero + 1 chef = 11 images. SVG placeholders < 3 Ko chacun. En production : exiger AVIF/WebP < 100 Ko/image (brief P20). next/image avec sizes précis configuré dans MenuGallery (28vw desktop, 45vw tablet, 90vw mobile)."
+    },
+    {
+      "dimension": "D8_legal",
+      "risk": "Données sensibles = allergènes (santé). Brief documente rétention limitée au temps du service + destruction après (Loi 25 art. 12 proportionnalité). RPP = cheffe elle-même (petit établissement, RPP = dirigeant conforme)."
+    },
+    {
+      "dimension": "D6_seo",
+      "risk": "P20 nécessite alt-text descriptif par plat pour indexation image. 9 alts rédigés en FR+EN dans messages/. Prévoir Schema.org Restaurant + Menu/MenuItem à la phase SEO dédiée (hors phase G)."
+    }
+  ],
+  "confidence_score": 0.87,
+  "notes": "Recommandation à confiance élevée : brief riche en personality_hints pré-remplis (canonique table-de-marguerite), secteur SEC-03 bien couvert par la knowledge (5 sites de référence dont S14/S15 directement alignés avec P20/P08), patterns cibles Phase G (P08 + P20) tous deux tier 1 natif. Règle d'or validée (5 oppositions vs beaumont-avocats ET electro-maitre-industriel). Note knowledge : brief PHASE_G utilisait des IDs S15/S16 inversés (S15 = Fiola, pas La Semilla ; S16 = Monograph SEC-04, pas Fiola) — recommandation utilise les IDs canoniques de la knowledge, corrige silencieusement le brief."
+}

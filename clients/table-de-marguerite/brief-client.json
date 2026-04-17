@@ -1,0 +1,91 @@
+{
+  "_meta": {
+    "generator": "nexos-v3.0",
+    "created_at": "2026-04-16T20:40:00-04:00",
+    "mode": "create",
+    "phase_origin": "chantier-G option A scaffold + patterns P08 + P20"
+  },
+  "client": {
+    "name": "La Table de Marguerite",
+    "slug": "table-de-marguerite",
+    "sector": "restaurant bistronomique",
+    "sub_sector": "restaurant destination — cuisine de saison québécoise",
+    "positioning": "premium",
+    "size": "small",
+    "locations": ["Montréal (Québec)"],
+    "personality_hints": {
+      "D1_density": 2,
+      "D2_register": "emotional",
+      "D3_typo_weight": "contrasted",
+      "D4_palette": "warm",
+      "D5_velocity": "slow-organic",
+      "D6_structure": "asymmetric-soft"
+    }
+  },
+  "legal": {
+    "company_name": "La Table de Marguerite inc.",
+    "neq": "1176543221",
+    "address": "412 rue Saint-Vallier Est, Québec (Québec) G1K 3P4",
+    "phone": "+1 418 555 0164",
+    "email": "info@table-de-marguerite.ca",
+    "rpp_name": "Marguerite Lefebvre",
+    "rpp_email": "rpp@table-de-marguerite.ca",
+    "rpp_title": "Cheffe-propriétaire et Responsable de la protection des renseignements personnels",
+    "data_collected": ["nom", "courriel", "telephone", "allergenes"],
+    "purposes": ["reservation", "formulaire-contact", "newsletter", "analytics"],
+    "retention": "Les réservations et échanges sont conservés 24 mois. Les allergènes déclarés sont conservés seulement le temps du service. Les données de navigation sont conservées 24 mois maximum.",
+    "transfer_outside_qc": false,
+    "transfer_countries": [],
+    "third_parties": ["Vercel (hébergement — États-Unis)", "Resend (courriels transactionnels — Union européenne)"],
+    "cookie_consent": "opt-in",
+    "incident_process": true,
+    "incident_email": "incident@table-de-marguerite.ca"
+  },
+  "site": {
+    "stack": "nextjs",
+    "type": "vitrine",
+    "pages": [
+      "home",
+      "menu",
+      "histoire",
+      "reservation",
+      "politique-confidentialite",
+      "mentions-legales"
+    ],
+    "languages": ["fr", "en"],
+    "features": ["menu-galerie", "reservation", "newsletter-saison"],
+    "hosting": "vercel",
+    "domain": "table-de-marguerite.ca"
+  },
+  "context": {
+    "competitors": [
+      "https://fioladc.com",
+      "https://lasemillanyc.com",
+      "https://noma.dk"
+    ],
+    "keywords_seo": [
+      "restaurant bistronomique Québec",
+      "table québécoise de saison",
+      "cheffe Québec",
+      "restaurant terroir Vieux-Québec"
+    ],
+    "free_text": "Restaurant destination à Québec (quartier Saint-Roch), cuisine bistronomique de saison ancrée dans le terroir québécois. La cheffe Marguerite Lefebvre forme en cuisine à la ferme : chaque plat est un portrait d'un producteur local. Différenciation voulue : rompre avec le modèle 'hero + menu PDF' générique, raconter l'histoire AVANT le menu (ref Fiola S15) et montrer chaque plat en galerie éditoriale (ref La Semilla S14)."
+  },
+  "design": {
+    "palette": "warm (crème #FAF6F0, vin #6D2E3F, ocre doré #C89F4B, charbon chaud #2B2420)",
+    "typography": "serif contrasted display (Playfair 900) + sans body (Inter 400)",
+    "style": "éditorial-bistronomique",
+    "logo_provided": false,
+    "references": [
+      "https://fioladc.com (S15 — story-first fine dining, P08)",
+      "https://lasemillanyc.com (S14 — menu galerie éditoriale, P20)",
+      "https://noma.dk (S11 — minimalisme comme luxe, P08)"
+    ]
+  },
+  "goals": {
+    "primary_kpi": "brand",
+    "secondary_kpis": ["conversion"],
+    "target_conversion_rate": "8 % visiteurs → réservation",
+    "monthly_reservations_target": 180
+  }
+}

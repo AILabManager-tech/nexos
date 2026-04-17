@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Placeholder — arctic char">
+  <rect width="800" height="1000" fill="#F3EDE3"/>
+  <circle cx="400" cy="520" r="290" fill="#FAF6F0"/>
+  <g transform="translate(400 530) rotate(-12)">
+    <path d="M -200 0 Q -180 -60 0 -55 Q 180 -50 200 0 Q 180 50 0 55 Q -180 60 -200 0 Z" fill="#F3B5A0"/>
+    <path d="M -200 0 Q -180 -60 0 -55 Q 180 -50 200 0 Q 180 50 0 55 Q -180 60 -200 0 Z" fill="url(#g)"/>
+    <defs>
+      <linearGradient id="g" x1="0" y1="-50" x2="0" y2="50">
+        <stop offset="0" stop-color="#F3B5A0" stop-opacity="0.4"/>
+        <stop offset="1" stop-color="#D97A5C" stop-opacity="0.3"/>
+      </linearGradient>
+    </defs>
+    <path d="M -200 0 Q -180 -60 0 -55 Q 180 -50 200 0" fill="none" stroke="#B04A30" stroke-width="1.5" opacity="0.5"/>
+  </g>
+  <g fill="#5A8A3A">
+    <ellipse cx="300" cy="470" rx="8" ry="3" transform="rotate(-20 300 470)"/>
+    <ellipse cx="500" cy="540" rx="8" ry="3" transform="rotate(20 500 540)"/>
+    <ellipse cx="420" cy="580" rx="7" ry="3" transform="rotate(-10 420 580)"/>
+  </g>
+  <ellipse cx="400" cy="520" rx="260" ry="20" fill="#FAF6F0" opacity="0.6"/>
+</svg>

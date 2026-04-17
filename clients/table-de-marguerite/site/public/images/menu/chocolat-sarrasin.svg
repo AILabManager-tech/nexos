@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Placeholder — chocolate fondant with hay-milk ice cream">
+  <rect width="800" height="1000" fill="#F3EDE3"/>
+  <circle cx="400" cy="520" r="290" fill="#FAF6F0"/>
+  <circle cx="340" cy="540" r="100" fill="#1F0A06"/>
+  <circle cx="340" cy="540" r="95" fill="#3A140B"/>
+  <circle cx="340" cy="540" r="85" fill="#2B0F08"/>
+  <circle cx="340" cy="530" r="30" fill="#6D2E1C"/>
+  <circle cx="340" cy="525" r="20" fill="#A04A33"/>
+  <path d="M 330 510 Q 345 495 355 510" fill="none" stroke="#C56F52" stroke-width="4" stroke-linecap="round"/>
+  <g transform="translate(510 510)">
+    <ellipse cx="0" cy="0" rx="75" ry="48" fill="#FFFBE0"/>
+    <ellipse cx="-5" cy="-8" rx="70" ry="40" fill="#FAF6F0"/>
+  </g>
+  <g stroke="#A0803A" stroke-width="2.5" fill="none" opacity="0.8">
+    <path d="M 260 650 Q 320 640 380 650 Q 450 660 520 650 Q 580 640 600 645"/>
+    <path d="M 270 670 Q 330 660 390 670 Q 460 675 530 665"/>
+  </g>
+</svg>

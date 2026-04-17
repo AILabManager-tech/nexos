@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Placeholder — braised lamb shoulder">
+  <rect width="800" height="1000" fill="#EDE5D4"/>
+  <circle cx="400" cy="520" r="290" fill="#F3EDE3"/>
+  <ellipse cx="400" cy="550" rx="220" ry="60" fill="#C89F4B"/>
+  <ellipse cx="400" cy="545" rx="210" ry="54" fill="#D9B470"/>
+  <path d="M 250 450 Q 300 380 400 390 Q 500 400 550 460 Q 560 520 500 540 Q 400 530 300 540 Q 240 520 250 450 Z" fill="#6D2E1C"/>
+  <path d="M 270 460 Q 320 400 400 410 Q 480 420 530 470 Q 540 510 490 520 Q 400 515 310 520 Q 260 510 270 460 Z" fill="#8A3D2B"/>
+  <g stroke="#3A1F10" stroke-width="1.5" fill="none" opacity="0.6">
+    <path d="M 300 440 Q 340 420 400 430"/>
+    <path d="M 400 470 Q 450 460 500 480"/>
+  </g>
+  <g stroke="#5A8A3A" stroke-width="2" fill="none">
+    <path d="M 420 400 L 440 370 M 430 385 L 450 385"/>
+    <path d="M 470 395 L 490 365 M 480 380 L 500 380"/>
+  </g>
+</svg>

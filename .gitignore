@@ -21,7 +21,6 @@ logs/
 # Client templates (separate repos)
 clients/beaumont-avocats/
 clients/collectif-nova/
-clients/table-de-marguerite/
 # clinique-aura : matérialisé dans ce repo par le chantier knowledge phase E (option A)
 # pour servir de pilote empirique à la knowledge B/C/D. Voir ANOMALIE_PHASE_E.md.
 clients/clinique-aura/site/node_modules/
@@ -36,3 +35,10 @@ clients/electro-maitre-industriel/site/.next/
 clients/electro-maitre-industriel/site/.env
 clients/electro-maitre-industriel/site/.env.local
 clients/electro-maitre-industriel/site/next-env.d.ts
+# table-de-marguerite : matérialisé dans ce repo par le chantier knowledge phase G
+# (option A scaffold + patterns P08 + P20). Voir phase-G-report.md.
+clients/table-de-marguerite/site/node_modules/
+clients/table-de-marguerite/site/.next/
+clients/table-de-marguerite/site/.env
+clients/table-de-marguerite/site/.env.local
+clients/table-de-marguerite/site/next-env.d.ts

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Placeholder — roasted beets and goat cheese">
+  <rect width="800" height="1000" fill="#EDE5D4"/>
+  <circle cx="400" cy="520" r="290" fill="#E6D9B8"/>
+  <g>
+    <circle cx="320" cy="470" r="55" fill="#7A1F3C"/>
+    <circle cx="320" cy="465" r="48" fill="#952D4C"/>
+    <circle cx="410" cy="540" r="55" fill="#D98C3B"/>
+    <circle cx="410" cy="535" r="48" fill="#E6A05A"/>
+    <circle cx="490" cy="460" r="50" fill="#F3EDE3"/>
+    <circle cx="490" cy="455" r="44" fill="#FAF6F0"/>
+  </g>
+  <g fill="#FAF6F0">
+    <circle cx="360" cy="520" r="4"/>
+    <circle cx="440" cy="480" r="4"/>
+    <circle cx="420" cy="500" r="3"/>
+    <circle cx="360" cy="450" r="3"/>
+  </g>
+  <g stroke="#5A8A3A" stroke-width="2" fill="none">
+    <path d="M 370 430 Q 380 420 390 430"/>
+    <path d="M 450 570 Q 460 560 470 570"/>
+  </g>
+</svg>
