@@ -1,0 +1,154 @@
+{
+  "site": {
+    "name": "Vertex PMO",
+    "tagline": "Unified project governance for professional-services SMBs",
+    "locale": "en-CA"
+  },
+  "layout": {
+    "header": {
+      "nav": {
+        "home": "Home",
+        "demo": "Demo",
+        "problem": "The problem",
+        "how": "How it works",
+        "pricing": "Pricing"
+      },
+      "cta_short": "Watch the demo",
+      "language_switch": "Français"
+    },
+    "footer": {
+      "rights": "All rights reserved",
+      "address": "1470 rue Peel, suite 540, Montreal (Quebec) H3A 1T1",
+      "phone": "+1 514 555 0189",
+      "email": "hello@vertex-pmo.com",
+      "hours": "Support Monday to Friday · 9 AM to 6 PM (ET)",
+      "privacy": "Privacy policy",
+      "legal": "Legal notices",
+      "tagline": "The PMO SaaS that makes project profitability visible."
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "PMO SaaS · Built for professional-services SMBs",
+      "title_line_1": "How much are your projects",
+      "title_line_2": "really costing you?",
+      "subtitle": "Vertex surfaces project profitability in real time — no spreadsheets, no retroactive data entry, no end-of-month surprises.",
+      "cta_primary": "Watch the 2-min demo",
+      "cta_secondary": "See pricing",
+      "trust_line": "Used by 120 professional-services SMBs in Quebec · ISO 27001 · Canadian hosting"
+    },
+    "demo": {
+      "aria_label": "Animated demonstration: project profitability dashboard filling live (To plan, In progress, Delivered columns — cards advance automatically)",
+      "caption_title": "Live dashboard",
+      "caption_subtitle": "Three projects, three statuses, an average margin that refreshes every 3 seconds.",
+      "columns": {
+        "todo": "To plan",
+        "doing": "In progress",
+        "done": "Delivered"
+      },
+      "cards": {
+        "c1": { "title": "Audit · Caisse-Populaire Lévis", "client": "CPL", "margin": "+18%" },
+        "c2": { "title": "ERP rebuild · Ferme des Voltigeurs", "client": "FDV", "margin": "+09%" },
+        "c3": { "title": "Odoo integration · Brasserie Harricana", "client": "BH", "margin": "+14%" },
+        "c4": { "title": "Security audit · Notaires Rive-Nord", "client": "NRN", "margin": "+22%" },
+        "c5": { "title": "Cloud migration · Coopérative Nord-Côte", "client": "CNC", "margin": "+11%" },
+        "c6": { "title": "HR consulting · Scierie Saint-Raphaël", "client": "SSR", "margin": "+16%" }
+      },
+      "kpi": {
+        "margin_label": "Average margin",
+        "margin_value": "+12%",
+        "margin_note": "across the 47 tracked projects this quarter",
+        "hours_label": "Hours recovered",
+        "hours_value": "6.2h",
+        "hours_note": "per project manager every week"
+      }
+    },
+    "problem": {
+      "eyebrow": "The real cost",
+      "title": "Your projects are losing money without you noticing.",
+      "body": "Unbilled hours slip into spreadsheets, overruns surface at final review, unprofitable clients keep looking profitable in your head. On average, one project in three comes out negative — and nobody knows which one until it is too late.",
+      "proof_stat": "33%",
+      "proof_caption": "of professional-services projects lose money without ever being identified as such (OPEX Quebec study, 2025).",
+      "failures": {
+        "f1": { "title": "Unbilled hours", "body": "Teams track in three different tools. Project managers recover 8 to 12 hours per week that never made it onto an invoice." },
+        "f2": { "title": "Invisible overrun", "body": "Budget is reviewed once a month, at best. By the time the alarm rings, the overrun is already consumed." },
+        "f3": { "title": "Persistent toxic client", "body": "Without margin-by-client visibility, a large account that makes you lose 5% per project still looks like a large account. So you keep it." }
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "How it works",
+      "title": "Three steps. Not ten. No 90-day implementation.",
+      "subtitle": "Vertex connects to your existing tools in under an hour. First metrics land within 7 days. No hourly-billed implementation consultant.",
+      "steps": {
+        "s1": {
+          "number": "01",
+          "title": "Connect",
+          "body": "Your current tools (Harvest, Toggl, Jira, QuickBooks, spreadsheets) snap in via ready-made connectors. No API coding required."
+        },
+        "s2": {
+          "number": "02",
+          "title": "See",
+          "body": "Every project becomes a live card: actual vs budgeted hours, real-time margin, alerts when you slip below the waterline."
+        },
+        "s3": {
+          "number": "03",
+          "title": "Act",
+          "body": "Weekly decisions instead of monthly: re-scope a project at risk, renegotiate a deliverable, drop an unprofitable client. Before the loss, not after."
+        }
+      },
+      "result_label": "Expected outcome · 90 days",
+      "result_value": "+12% average margin",
+      "result_note": "on projects tracked in Vertex, based on the Productive.io case study (ref S18) applied to our Quebec SMB cohort."
+    },
+    "cta": {
+      "eyebrow": "Next quarter",
+      "title": "Your next quarter can be profitable at the right moment.",
+      "subtitle": "Not at end-of-quarter review. This week. 2-minute demo, no commitment, no credit card.",
+      "cta_primary": "Watch the 2-min demo",
+      "cta_secondary": "Talk to a human",
+      "trust_line": "14-day free trial · No credit card · Human support in French & English"
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacy policy",
+      "intro": "Vertex PMO is subject to Quebec's Act respecting the protection of personal information in the private sector (Law 25).",
+      "rpp_label": "Privacy Officer",
+      "rpp_name": "Marie Chen",
+      "rpp_title": "Head of Security and Privacy Officer",
+      "rpp_email": "rpp@vertex-pmo.com",
+      "data_title": "Collected data",
+      "data_body": "Name, business email, company, role, application usage data (projects, hours, budgets — client-owned), authentication logs.",
+      "purposes_title": "Purposes",
+      "purposes_body": "Delivering the SaaS service, billing, customer support, product improvement on anonymized and aggregated data only.",
+      "retention_title": "Retention",
+      "retention_body": "Customer data is retained throughout the contract + 90 days after termination (export window). Authentication logs are retained 12 months. Anonymized aggregated data may be kept indefinitely.",
+      "rights_title": "Your rights",
+      "rights_body": "You may at any time request access, rectification, deletion, or portability of your data by contacting our Privacy Officer. A maximum 30-day response time is respected."
+    },
+    "mentions": {
+      "title": "Legal notices",
+      "company": "Vertex PMO inc.",
+      "neq_label": "Quebec Enterprise Number (NEQ)",
+      "neq_value": "1179042311",
+      "address_label": "Registered office",
+      "address_value": "1470 rue Peel, suite 540, Montreal (Quebec) H3A 1T1",
+      "phone_label": "Phone",
+      "phone_value": "+1 514 555 0189",
+      "email_label": "Email",
+      "email_value": "hello@vertex-pmo.com",
+      "host_label": "Host",
+      "host_value": "Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA · Application data: AWS ca-central-1 (Montreal)"
+    }
+  },
+  "cookies": {
+    "banner_title": "Your privacy matters",
+    "banner_body": "We use essential cookies for authentication. Analytics cookies are only activated with your explicit consent.",
+    "accept_all": "Accept all",
+    "reject_all": "Reject",
+    "customize": "Customize",
+    "essentials": "Essentials",
+    "analytics": "Usage analytics",
+    "marketing": "Marketing"
+  }
+}

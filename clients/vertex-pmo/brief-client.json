@@ -1,0 +1,103 @@
+{
+  "_meta": {
+    "generator": "nexos-v3.0",
+    "created_at": "2026-04-16T21:45:00-04:00",
+    "mode": "create",
+    "phase_origin": "chantier-H option A scaffold + patterns P10 + P19"
+  },
+  "client": {
+    "name": "Vertex PMO",
+    "slug": "vertex-pmo",
+    "sector": "SaaS B2B · Gestion de projet / PMO",
+    "sub_sector": "PMO SaaS pour PME de services — angle profitabilité projet",
+    "positioning": "premium",
+    "size": "small",
+    "locations": ["Montréal (Québec)"],
+    "personality_hints": {
+      "D1_density": 4,
+      "D2_register": "technical",
+      "D3_typo_weight": "medium",
+      "D4_palette": "cold",
+      "D5_velocity": "fast-purposeful",
+      "D6_structure": "symmetric"
+    }
+  },
+  "legal": {
+    "company_name": "Vertex PMO inc.",
+    "neq": "1179042311",
+    "address": "1470 rue Peel, bureau 540, Montréal (Québec) H3A 1T1",
+    "phone": "+1 514 555 0189",
+    "email": "hello@vertex-pmo.com",
+    "rpp_name": "Marie Chen",
+    "rpp_email": "rpp@vertex-pmo.com",
+    "rpp_title": "Chef de la sécurité et Responsable de la protection des renseignements personnels",
+    "data_collected": ["nom", "courriel-professionnel", "entreprise", "poste", "donnees-usage-applicatives", "logs-authentification"],
+    "purposes": ["fourniture-saas", "facturation", "support-client", "amelioration-produit-anonymisee", "analytics-opt-in"],
+    "retention": "Les données client sont conservées pendant la durée du contrat + 90 jours après résiliation (fenêtre d'export). Les logs d'authentification sont conservés 12 mois. Les données agrégées anonymisées peuvent être conservées indéfiniment.",
+    "transfer_outside_qc": true,
+    "transfer_countries": ["États-Unis (hébergement web : Vercel)"],
+    "third_parties": ["Vercel (hébergement web — États-Unis)", "AWS ca-central-1 (données applicatives — Montréal)", "Stripe (facturation — États-Unis)", "Resend (courriels transactionnels — Union européenne)"],
+    "cookie_consent": "opt-in",
+    "incident_process": true,
+    "incident_email": "incident@vertex-pmo.com"
+  },
+  "site": {
+    "stack": "nextjs",
+    "type": "vitrine-saas",
+    "pages": [
+      "home",
+      "politique-confidentialite",
+      "mentions-legales"
+    ],
+    "languages": ["fr", "en"],
+    "features": ["demo-interactive-hero", "storybrand-messaging", "cta-essai-gratuit"],
+    "hosting": "vercel",
+    "domain": "vertex-pmo.com"
+  },
+  "context": {
+    "competitors": [
+      "https://monday.com",
+      "https://productive.io",
+      "https://asana.com"
+    ],
+    "keywords_seo": [
+      "PMO SaaS Québec",
+      "profitabilité projet PME",
+      "gestion projet francophone",
+      "pilotage projet services professionnels",
+      "tableau de bord marge projet"
+    ],
+    "free_text": "SaaS PMO conçu pour les PME de services au Québec (10–150 FTE : agences marketing, cabinets comptables, bureaux d'ingénierie, consultants IT). Différenciation : sortir du messaging générique 'project management' pour adopter l'angle profitabilité (ref S18 Productive.io, angle financier). Le produit connecte les outils existants (Harvest, Toggl, Jira, QuickBooks) et expose la marge par projet en temps réel. Positionnement : éviter la concurrence directe de Monday (mid-market+) et Asana (enterprise). StoryBrand framework (ref S19 Bop Design) : client-héros, Vertex-guide."
+  },
+  "design": {
+    "palette": "cold SaaS enterprise (slate-900 #0F172A + cyan-600 #0891B2 + slate-soft)",
+    "typography": "sans geometric Inter + Space Grotesk display + JetBrains Mono (KPI/metrics)",
+    "style": "SaaS technique sombre — signal fintech/ops",
+    "logo_provided": false,
+    "references": [
+      "https://monday.com (S17 — démo interactive hero P10)",
+      "https://productive.io (S18 — angle profitabilité P19)",
+      "https://bopdesign.com (S19 — StoryBrand framework P19)"
+    ],
+    "color_tokens": {
+      "primary": "#0891B2",
+      "accent_hover": "#06B6D4",
+      "accent_soft": "#67E8F9",
+      "surface": "#0F172A",
+      "surface_alt": "#1E293B",
+      "surface_raised": "#334155",
+      "ink": "#F8FAFC",
+      "ink_soft": "#CBD5E1",
+      "ink_muted": "#64748B",
+      "kpi_success": "#22C55E",
+      "kpi_warning": "#F59E0B",
+      "kpi_info": "#3B82F6"
+    }
+  },
+  "goals": {
+    "primary_kpi": "conversion",
+    "secondary_kpis": ["brand", "qualification-lead"],
+    "target_conversion_rate": "4 % visiteurs → essai gratuit",
+    "monthly_trials_target": 40
+  }
+}

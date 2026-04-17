@@ -21,6 +21,13 @@ logs/
 # Client templates (separate repos)
 clients/beaumont-avocats/
 clients/collectif-nova/
+# vertex-pmo : matérialisé dans ce repo par le chantier knowledge phase H
+# (option A scaffold + patterns P10 + P19). Voir phase-H-report.md.
+clients/vertex-pmo/site/node_modules/
+clients/vertex-pmo/site/.next/
+clients/vertex-pmo/site/.env
+clients/vertex-pmo/site/.env.local
+clients/vertex-pmo/site/next-env.d.ts
 # clinique-aura : matérialisé dans ce repo par le chantier knowledge phase E (option A)
 # pour servir de pilote empirique à la knowledge B/C/D. Voir ANOMALIE_PHASE_E.md.
 clients/clinique-aura/site/node_modules/

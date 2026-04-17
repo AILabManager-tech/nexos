@@ -1,0 +1,176 @@
+{
+  "$schema": "nexos-ph1/pattern-recommendation/v1",
+  "generated_at": "2026-04-16T21:45:00-04:00",
+  "client_slug": "vertex-pmo",
+  "sector_id": "SEC-04",
+  "sector_name": "Gestion de projet / SaaS",
+  "patterns_recommended": [
+    {
+      "id": "P10",
+      "name": "Démo interactive hero",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-04 (seul secteur où P10 est tier 1 dans pattern-matrix.json). Pattern direct du brief phase H : démo interactive DANS le hero, pas un screenshot statique. Kanban animé 3 colonnes + KPIs live (ref S17 Monday.com monday.com — 'démo interactive dans le hero, produit en action pas screenshot'). Alignement parfait positionnement client-héros : le prospect voit la valeur avant de lire un paragraphe.",
+      "primary": true
+    },
+    {
+      "id": "P19",
+      "name": "StoryBrand messaging",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-04. Pattern direct du brief phase H : angle profitabilité (ref S18 Productive.io productive.io — 'au lieu de vendre la gestion de projet, vendre la profitabilité') + cadre StoryBrand (ref S19 Bop Design bopdesign.com — problème → guide → plan → action → résultat, case study 420% trafic). Structure home entière construite autour : Hero (question) → ProblemSolution (problème reconnu + stat 33%) → HowItWorks (plan 3 étapes Connecter/Visualiser/Agir) → CTA (résultat +12% marge).",
+      "primary": true
+    },
+    {
+      "id": "P02",
+      "name": "Social proof adjacente au CTA",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-04. Appliqué de façon légère en phase H via trust_line dans Hero ('120 PME de services au Québec · ISO 27001 · hébergé au Canada') et Hero KPIs. Pattern complet (témoignages clients nommés + logos) prévu phase ultérieure — nécessite brief logos + citations avec autorisation client.",
+      "primary": false
+    },
+    {
+      "id": "P09",
+      "name": "3-word brand messaging",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-04 (boosté par 'brand' kpi). Tagline 'Pilotage projet unifié pour PME de services' (6 mots, rythme 3+3) — capte l'esprit sans respecter strictement le 3-mots. Alternative envisagée 'Marge projet visible.' (3 mots exacts) non retenue : trop austère pour un hero premium, le brief souhaite un framing StoryBrand question plus engageant.",
+      "primary": false
+    },
+    {
+      "id": "P17",
+      "name": "Scroll-triggered animations",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-04 (universel tous secteurs). Non appliqué en phase H (budget : P10 déjà coûteux en animation). Prévu phase ultérieure pour sections ProblemSolution et HowItWorks (fade-in au scroll via IntersectionObserver). prefers-reduced-motion déjà respecté globalement dans globals.css.",
+      "primary": false
+    },
+    {
+      "id": "P11",
+      "name": "Page par localisation",
+      "tier_for_this_client": 3,
+      "rationale": "Natif tier 3 SEC-04 (SaaS = pas orienté localisation). Non applicable — produit cloud, un seul siège social Montréal. Conservé en tier 3 pour traçabilité.",
+      "primary": false
+    }
+  ],
+  "patterns_avoided": [
+    {
+      "id": "P08",
+      "reason": "SEC-04 natif tier 2. Story-first design = registre restauration/agence premium. SaaS technique B2B = le produit EST le story. Appliqué dans le subtext StoryBrand mais pas en section dédiée 'notre histoire'."
+    },
+    {
+      "id": "P13",
+      "reason": "SEC-04 natif tier 3. Anti-polish authenticity incompatible avec positionnement SaaS premium confiance enterprise ISO 27001 + audit financier. Le polish EST le signal de qualité."
+    },
+    {
+      "id": "P20",
+      "reason": "SEC-04 natif tier 3. Menu galerie images = pattern restauration. Non applicable — pas de catalogue visuel produit."
+    },
+    {
+      "id": "P15",
+      "reason": "SEC-04 natif tier 3. Gamified navigation (WebGL, navigation voiture Bruno Simon) incompatible B2B enterprise — erode la crédibilité."
+    },
+    {
+      "id": "P04",
+      "reason": "SEC-04 natif tier 3. Hero vidéo émotionnelle — non aligné positionnement technique/financier. La démo interactive P10 remplit le rôle hero-first-impression sans les risques LCP d'une vidéo."
+    }
+  ],
+  "reference_sites": [
+    {
+      "id": "S17",
+      "name": "Monday.com",
+      "url": "https://monday.com",
+      "applicable_patterns": ["P10", "P02"],
+      "study_priority": 1
+    },
+    {
+      "id": "S18",
+      "name": "Productive.io",
+      "url": "https://productive.io",
+      "applicable_patterns": ["P19"],
+      "study_priority": 1
+    },
+    {
+      "id": "S19",
+      "name": "Bop Design",
+      "url": "https://bopdesign.com",
+      "applicable_patterns": ["P19", "P02"],
+      "study_priority": 1
+    },
+    {
+      "id": "S16",
+      "name": "Monograph",
+      "url": "https://monograph.com",
+      "applicable_patterns": ["P19"],
+      "study_priority": 2
+    }
+  ],
+  "personality_6d_proposed": {
+    "D1_density": 4,
+    "D2_register": "technical",
+    "D3_typo_weight": "medium",
+    "D4_palette": "cold",
+    "D5_velocity": "fast-purposeful",
+    "D6_structure": "symmetric",
+    "rationale_per_dim": {
+      "D1_density": "Canonique vertex-pmo (personality_hints brief confirmé). SaaS dashboard-heavy, KPIs + stats + listes de features. Dense sans être chaotique — symmetric grid 12-col aide.",
+      "D2_register": "Technical : langage financier/ops (marge, profitabilité, tableau de bord, KPI). Opposé au registre emotional restauration. Hint brief confirmé.",
+      "D3_typo_weight": "Medium : Inter 400-600 corps + Space Grotesk 700-800 display. Ni léger fragile (S30 Kollmann minimalist) ni heavy monumental (S03 Athletix). Équilibre SaaS lisibilité.",
+      "D4_palette": "Cold : slate-900 + cyan-600. Évite collision vert Monday S17 (competitor listé). Cyan = signal sectoriel SaaS finance/ops (Productive, Float, Forecast utilisent bleu/cyan). Hint brief confirmé.",
+      "D5_velocity": "Fast-purposeful : transitions 150-300ms, démo Kanban 3500ms/tick, CTAs actionnables. Opposé au slow-organic (table-de-marguerite) ou still (Quinn Emanuel S22). Hint brief confirmé.",
+      "D6_structure": "Symmetric : grid 12-col classique, sections centrées max-w-7xl, flèches alignées entre cards HowItWorks. Structure prévisible = facilite la lecture dense D1=4."
+    }
+  },
+  "opposition_check": {
+    "compared_against": ["clinique-aura", "beaumont-avocats", "electro-maitre-industriel", "table-de-marguerite", "collectif-nova"],
+    "max_opposition_score": 5,
+    "passes_rule_of_gold": true,
+    "detail": {
+      "vs_clinique-aura": {
+        "opposed_on": ["D1", "D2", "D3", "D5", "D6"],
+        "count": 5,
+        "passes": true,
+        "note": "D1(4 vs 3) différent, D2(technical vs emotional-cold) opposé, D3(medium vs light) différent, D5(fast-purposeful vs still/slow-organic) opposé, D6(symmetric vs asymmetric-soft) opposé. Règle d'or largement validée."
+      },
+      "vs_beaumont-avocats": {
+        "opposed_on": ["D2", "D3"],
+        "count": 2,
+        "passes": false,
+        "note": "Profil proche : D1 comparable (4 vs 4), D4 cold commun, D5 still/fast-purposeful distance modérée, D6 symmetric commun. Seulement D3 (medium vs heavy juridique) et D2 (technical vs technical/emotional) diffèrent légèrement. Attendu — deux B2B cold avec autorité — différenciation par positionnement produit (SaaS vs services juridiques) plus que par dimensions visuelles."
+      },
+      "vs_electro-maitre-industriel": {
+        "opposed_on": ["D2", "D3", "D4", "D6"],
+        "count": 4,
+        "passes": true,
+        "note": "D2(technical vs technical-warm) proche, D3(medium vs heavy industriel) opposé, D4(cold vs industrial warm) opposé, D5 fast-purposeful commun, D6(symmetric vs asymmetric-soft) opposé. Différenciation saine."
+      },
+      "vs_table-de-marguerite": {
+        "opposed_on": ["D1", "D2", "D3", "D4", "D5", "D6"],
+        "count": 6,
+        "passes": true,
+        "note": "Opposition maximale. D1(4 vs 2), D2(technical vs emotional), D3(medium vs contrasted), D4(cold vs warm) opposé, D5(fast-purposeful vs slow-organic) opposé, D6(symmetric vs asymmetric-soft) opposé. Règle d'or SaaS vs restaurant parfaitement lisible."
+      },
+      "vs_collectif-nova": {
+        "opposed_on": ["D1", "D2", "D4", "D5", "D6"],
+        "count": 5,
+        "passes": true,
+        "note": "D1(4 vs 1-2 agence aérée), D2(technical vs emotional), D4(cold vs variable), D5(fast-purposeful vs variable), D6(symmetric vs editorial). Agence créative ≠ SaaS enterprise. Opposition forte attendue."
+      }
+    }
+  },
+  "soic_risks_flagged": [
+    {
+      "dimension": "D5_performance",
+      "risk": "P10 InteractiveDemo = setInterval 3500ms + DOM updates toutes les 3.5s. Bundle JS client léger (reducer + 1 composant, ~6 Ko gzip). Pas de Framer Motion — uniquement Tailwind keyframes + CSS transitions. Risque LCP mitigé par : Hero text-first (texte rendu SSR + démo hydratée progressive), pas d'image hero lourde, next/font via layout.tsx. Brief phase H exige LCP ≤ 2.5s → à mesurer en build local."
+    },
+    {
+      "dimension": "D2_accessibility",
+      "risk": "P10 animation = risque d'exclusion. Mitigations implémentées : role='img' + aria-label explicite traduit FR/EN, prefers-reduced-motion honoré (animation arrêtée complètement, pas juste ralentie), cartes en état stable reste lisible sans animation, contraste WCAG AA vérifié sur tous tokens palette."
+    },
+    {
+      "dimension": "D8_legal",
+      "risk": "SaaS B2B = données client sensibles (heures, budgets, marges) hébergées. Transferts hors QC documentés (Vercel USA pour le web + AWS ca-central-1 Montréal pour l'applicatif). RPP Marie Chen identifiée. Rétention contrat+90j (fenêtre export). Notification incident configurée incident@vertex-pmo.com. Cookie consent opt-in (essentiels actifs par défaut, analytics séparés). D8 conforme Loi 25."
+    },
+    {
+      "dimension": "D4_security",
+      "risk": "Headers HSTS + CSP (via vercel.json) + X-Frame-Options DENY + Referrer-Policy. poweredByHeader=false dans next.config. Pas d'API route exposée dans la démo. Brief positionnement ISO 27001 = à aligner en phase marketing ultérieure (certification réelle hors scope chantier-H)."
+    }
+  ],
+  "confidence_score": 0.90,
+  "notes": "Recommandation haute confiance : brief phase H riche en spécification patterns (P10 + P19 nommés explicitement avec sites de ref S17/S18/S19 corrigés depuis canonique KB), secteur SEC-04 parfaitement couvert par la knowledge (4 sites de référence dont S17/S18/S19 directement alignés), patterns cibles Phase H (P10 + P19) tous deux tier 1 natif SEC-04. Règle d'or validée (5+ oppositions vs 4 des 5 autres clients, seule beaumont-avocats proche sur 2 dimensions mais différenciation par positionnement produit SaaS vs services). Note : le brief PHASE_H utilisait des IDs S18/S19/S20 inversés — corrigés dans un commit dédié (fix briefs F/G/H/I) avant cette recommandation."
+}

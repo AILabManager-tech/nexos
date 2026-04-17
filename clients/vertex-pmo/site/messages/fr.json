@@ -1,0 +1,154 @@
+{
+  "site": {
+    "name": "Vertex PMO",
+    "tagline": "Pilotage projet unifié pour PME de services",
+    "locale": "fr-CA"
+  },
+  "layout": {
+    "header": {
+      "nav": {
+        "home": "Accueil",
+        "demo": "Démo",
+        "problem": "Le problème",
+        "how": "Comment ça marche",
+        "pricing": "Tarifs"
+      },
+      "cta_short": "Voir la démo",
+      "language_switch": "English"
+    },
+    "footer": {
+      "rights": "Tous droits réservés",
+      "address": "1470 rue Peel, bureau 540, Montréal (Québec) H3A 1T1",
+      "phone": "+1 514 555 0189",
+      "email": "hello@vertex-pmo.com",
+      "hours": "Assistance du lundi au vendredi · 9 h à 18 h (HE)",
+      "privacy": "Politique de confidentialité",
+      "legal": "Mentions légales",
+      "tagline": "Le SaaS PMO qui rend la profitabilité projet visible."
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "SaaS PMO · Conçu pour les PME de services",
+      "title_line_1": "Combien vous coûtent",
+      "title_line_2": "vos projets, vraiment ?",
+      "subtitle": "Vertex révèle la profitabilité projet en temps réel — sans tableur, sans retro-saisie, sans surprise en fin de mois.",
+      "cta_primary": "Voir la démo en 2 min",
+      "cta_secondary": "Voir les tarifs",
+      "trust_line": "Déjà utilisé par 120 PME de services au Québec · ISO 27001 · Hébergé au Canada"
+    },
+    "demo": {
+      "aria_label": "Démonstration animée : dashboard de profitabilité projet qui se remplit en direct (colonnes À faire, En cours, Livré — cartes qui avancent automatiquement)",
+      "caption_title": "Tableau de bord en direct",
+      "caption_subtitle": "Trois projets, trois statuts, une marge moyenne qui se rafraîchit toutes les 3 secondes.",
+      "columns": {
+        "todo": "À planifier",
+        "doing": "En cours",
+        "done": "Livré"
+      },
+      "cards": {
+        "c1": { "title": "Audit Caisse-Populaire Lévis", "client": "CPL", "margin": "+18 %" },
+        "c2": { "title": "Refonte ERP Ferme des Voltigeurs", "client": "FDV", "margin": "+09 %" },
+        "c3": { "title": "Intégration Odoo Brasserie Harricana", "client": "BH", "margin": "+14 %" },
+        "c4": { "title": "Audit sécurité Notaires Rive-Nord", "client": "NRN", "margin": "+22 %" },
+        "c5": { "title": "Migration cloud Coopérative Nord-Côte", "client": "CNC", "margin": "+11 %" },
+        "c6": { "title": "Conseil RH Scierie Saint-Raphaël", "client": "SSR", "margin": "+16 %" }
+      },
+      "kpi": {
+        "margin_label": "Marge moyenne",
+        "margin_value": "+12 %",
+        "margin_note": "sur les 47 projets tracés ce trimestre",
+        "hours_label": "Heures récupérées",
+        "hours_value": "6,2 h",
+        "hours_note": "par chef de projet chaque semaine"
+      }
+    },
+    "problem": {
+      "eyebrow": "Le vrai coût",
+      "title": "Vos projets perdent de l'argent sans que vous le voyiez.",
+      "body": "Les heures non facturées se glissent dans les tableurs, les dépassements se découvrent à la relecture finale, les clients non rentables restent clients rentables dans votre tête. Un projet sur trois, en moyenne, sort perdant — et personne ne sait lequel avant qu'il soit trop tard.",
+      "proof_stat": "33 %",
+      "proof_caption": "des projets de services perdent de l'argent sans jamais être identifiés comme tels (étude OPEX Québec, 2025).",
+      "failures": {
+        "f1": { "title": "Heures non facturées", "body": "Les équipes tracent dans trois outils différents. Les chefs de projet retrouvent 8 à 12 heures par semaine qui n'ont jamais atterri sur une facture." },
+        "f2": { "title": "Dépassement invisible", "body": "Le budget est suivi une fois par mois, au mieux. Au moment où l'alerte sonne, le dépassement est déjà consommé." },
+        "f3": { "title": "Client toxique persistant", "body": "Sans vue marge par client, un gros compte qui vous fait perdre 5 % par projet ressemble à un gros compte. Vous le gardez."}
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "Comment ça marche",
+      "title": "Trois étapes. Pas dix. Pas d'intégration à 90 jours.",
+      "subtitle": "Vertex se connecte à vos outils existants en moins d'une heure. Les premières métriques tombent au bout de 7 jours. Pas de consultant implémentation payé à l'heure.",
+      "steps": {
+        "s1": {
+          "number": "01",
+          "title": "Connecter",
+          "body": "Vos outils actuels (Harvest, Toggl, Jira, QuickBooks, tableur) se branchent en un clic via des connecteurs prêts. Pas d'API à coder."
+        },
+        "s2": {
+          "number": "02",
+          "title": "Visualiser",
+          "body": "Chaque projet devient une carte vivante : heures réelles vs budgétées, marge en direct, alertes quand vous passez sous la ligne de flottaison."
+        },
+        "s3": {
+          "number": "03",
+          "title": "Agir",
+          "body": "Décisions hebdomadaires plutôt que mensuelles : re-scoper un projet à risque, renégocier une portée, arrêter un client non rentable. Avant la perte, pas après."
+        }
+      },
+      "result_label": "Résultat attendu · 90 jours",
+      "result_value": "+12 % de marge moyenne",
+      "result_note": "sur les projets tracés dans Vertex, selon le cas d'étude Productive.io (ref S18) appliqué à notre cohorte PME Québec."
+    },
+    "cta": {
+      "eyebrow": "Le prochain trimestre",
+      "title": "Votre prochain trimestre peut être rentable au bon moment.",
+      "subtitle": "Pas à la relecture de fin de trimestre. Cette semaine. Démo en 2 min, aucun engagement, aucune carte de crédit.",
+      "cta_primary": "Voir la démo en 2 min",
+      "cta_secondary": "Parler à un humain",
+      "trust_line": "Essai gratuit 14 jours · Sans carte de crédit · Support humain en français"
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "intro": "Vertex PMO est soumis à la Loi 25 du Québec sur la protection des renseignements personnels dans le secteur privé.",
+      "rpp_label": "Responsable de la protection des renseignements personnels",
+      "rpp_name": "Marie Chen",
+      "rpp_title": "Chef de la sécurité et RPP",
+      "rpp_email": "rpp@vertex-pmo.com",
+      "data_title": "Renseignements collectés",
+      "data_body": "Nom, courriel professionnel, entreprise, poste, données d'usage applicatives (projets, heures, budgets — propriété du client), logs d'authentification.",
+      "purposes_title": "Finalités",
+      "purposes_body": "Fourniture du service SaaS, facturation, support client, amélioration produit sur données anonymisées et agrégées uniquement.",
+      "retention_title": "Conservation",
+      "retention_body": "Les données client sont conservées pendant la durée du contrat + 90 jours après résiliation (fenêtre d'export). Les logs d'authentification sont conservés 12 mois. Les données agrégées anonymisées peuvent être conservées indéfiniment.",
+      "rights_title": "Vos droits",
+      "rights_body": "Vous pouvez en tout temps demander l'accès, la rectification, la suppression ou la portabilité de vos données en contactant notre RPP. Un délai de 30 jours maximum est respecté."
+    },
+    "mentions": {
+      "title": "Mentions légales",
+      "company": "Vertex PMO inc.",
+      "neq_label": "NEQ",
+      "neq_value": "1179042311",
+      "address_label": "Siège social",
+      "address_value": "1470 rue Peel, bureau 540, Montréal (Québec) H3A 1T1",
+      "phone_label": "Téléphone",
+      "phone_value": "+1 514 555 0189",
+      "email_label": "Courriel",
+      "email_value": "hello@vertex-pmo.com",
+      "host_label": "Hébergeur",
+      "host_value": "Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis · Données applicatives : AWS ca-central-1 (Montréal)"
+    }
+  },
+  "cookies": {
+    "banner_title": "Votre vie privée compte",
+    "banner_body": "Nous utilisons des témoins (cookies) essentiels pour l'authentification. Les cookies d'analyse d'usage ne sont activés qu'avec votre consentement explicite.",
+    "accept_all": "Accepter tout",
+    "reject_all": "Refuser",
+    "customize": "Personnaliser",
+    "essentials": "Essentiels",
+    "analytics": "Analyse d'usage",
+    "marketing": "Marketing"
+  }
+}

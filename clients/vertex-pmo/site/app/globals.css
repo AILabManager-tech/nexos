@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, monospace;
+}
+
+/* Inter supporte les chiffres tabulaires nativement — utilisé sur KPI/metrics via
+   la classe `tabular-nums` (Tailwind built-in), pas besoin d'une 3e famille mono. */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-surface text-ink font-sans antialiased;
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+h1, h2, h3, h4 {
+  @apply font-display;
+  letter-spacing: -0.02em;
+}
+
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-accent;
+}
+
+/* P17 — respect prefers-reduced-motion sur animations (P10 demo interactive DOIT s'arreter). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
