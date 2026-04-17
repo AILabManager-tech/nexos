@@ -1,0 +1,91 @@
+{
+  "_meta": {
+    "generator": "nexos-v3.0",
+    "created_at": "2026-04-16T17:30:00-04:00",
+    "mode": "create",
+    "phase_origin": "chantier-F option A scaffold + patterns P06 + P12"
+  },
+  "client": {
+    "name": "Électro-Maître Industriel",
+    "slug": "electro-maitre-industriel",
+    "sector": "électrique industriel",
+    "sub_sector": "contractor industriel + automatisation + maintenance",
+    "positioning": "premium",
+    "size": "medium",
+    "locations": ["Montréal-Est (Québec)"],
+    "personality_hints": {
+      "D1_density": 5,
+      "D2_register": "technical-warm",
+      "D3_typo_weight": "heavy",
+      "D4_palette": "industrial",
+      "D5_velocity": "mechanical",
+      "D6_structure": "asymmetric-strong"
+    }
+  },
+  "legal": {
+    "company_name": "Électro-Maître Industriel inc.",
+    "neq": "1174892345",
+    "address": "8500 boulevard Industriel, Montréal-Est (Québec) H1G 4B2",
+    "phone": "+1 514 555 0177",
+    "email": "info@electro-maitre-industriel.ca",
+    "rpp_name": "Jean-Pierre Morin",
+    "rpp_email": "rpp@electro-maitre-industriel.ca",
+    "rpp_title": "Directeur des opérations et Responsable de la protection des renseignements personnels",
+    "data_collected": ["nom", "courriel", "telephone", "entreprise"],
+    "purposes": ["formulaire-contact", "demande-soumission", "analytics"],
+    "retention": "Les soumissions et échanges commerciaux sont conservés 7 ans (exigence fiscale Revenu Québec). Les données de navigation sont conservées 24 mois maximum.",
+    "transfer_outside_qc": false,
+    "transfer_countries": [],
+    "third_parties": ["Vercel (hébergement — États-Unis)", "Resend (courriels transactionnels — Union européenne)"],
+    "cookie_consent": "opt-in",
+    "incident_process": true,
+    "incident_email": "incident@electro-maitre-industriel.ca"
+  },
+  "site": {
+    "stack": "nextjs",
+    "type": "vitrine",
+    "pages": [
+      "home",
+      "services",
+      "projets",
+      "contact",
+      "politique-confidentialite",
+      "mentions-legales"
+    ],
+    "languages": ["fr", "en"],
+    "features": ["formulaire-soumission", "galerie-projets", "urgence-24-7"],
+    "hosting": "vercel",
+    "domain": "electro-maitre-industriel.ca"
+  },
+  "context": {
+    "competitors": [
+      "https://gibbselectric.com",
+      "https://puckettelectric.com",
+      "https://shiffmanelectric.com"
+    ],
+    "keywords_seo": [
+      "électricien industriel Montréal",
+      "automatisation industrielle Québec",
+      "entretien électrique usine",
+      "contractor électrique commercial"
+    ],
+    "free_text": "Contractor électrique industriel haut de gamme à Montréal-Est. Expertise automatisation (PLC Allen-Bradley, Siemens), maintenance préventive 24/7, clientèle manufacturière et agroalimentaire. Différenciation voulue : design premium dans un secteur 'blue collar' — repositionnement perçu qualité via palette dark teal (ref Gibbs Electric S26) et galerie de projets cinématique (ref Puckett S27)."
+  },
+  "design": {
+    "palette": "industrial (dark teal #0A3D40 + quasi-noir #0A0A0A + touche or #D4AF37 + ivoire #F5F5F0)",
+    "typography": "sans heavy + sans lourd display",
+    "style": "industriel-premium",
+    "logo_provided": false,
+    "references": [
+      "https://gibbselectric.com (S26 — dark teal premium palette, pattern P12 direct)",
+      "https://puckettelectric.com (S27 — galerie grayscale→color, pattern P06 direct)",
+      "https://shiffmanelectric.com (S28 — legacy authority, pattern P16)"
+    ]
+  },
+  "goals": {
+    "primary_kpi": "brand",
+    "secondary_kpis": ["conversion", "seo"],
+    "target_conversion_rate": "3 % visiteurs → demande de soumission",
+    "monthly_leads_target": 20
+  }
+}

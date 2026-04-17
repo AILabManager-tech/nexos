@@ -1,0 +1,157 @@
+{
+  "site": {
+    "name": "Électro-Maître Industriel",
+    "tagline": "Industrial electrical contractor · Automation · 24/7 maintenance",
+    "locale": "en-CA"
+  },
+  "layout": {
+    "header": {
+      "nav": {
+        "home": "Home",
+        "services": "Services",
+        "projects": "Projects",
+        "contact": "Contact"
+      },
+      "cta_short": "Request a quote",
+      "language_switch": "Français"
+    },
+    "footer": {
+      "rights": "All rights reserved",
+      "address": "8500 boulevard Industriel, Montréal-Est (Québec) H1G 4B2",
+      "phone": "+1 514 555 0177",
+      "email": "info@electro-maitre-industriel.ca",
+      "privacy": "Privacy policy",
+      "legal": "Legal notice"
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Industrial contractor",
+      "title": "Industrial electrical, without compromise.",
+      "subtitle": "Automation, preventive maintenance and 24/7 emergency service for manufacturers, food plants and data centers. Guaranteed availability, certified engineering.",
+      "cta_primary": "Request a quote",
+      "cta_secondary": "View our projects",
+      "stat_years": "Years of experience",
+      "stat_availability": "Availability"
+    },
+    "services": {
+      "eyebrow": "Our expertise",
+      "title": "Four domains, one standard",
+      "subtitle": "Every project is led by a licensed master electrician. Detailed reports, firm quotes, no surprises.",
+      "items": {
+        "industrial": {
+          "title": "Industrial electrical",
+          "description": "High-capacity installations, medium-voltage distribution, CSA and Canadian Electrical Code compliance."
+        },
+        "automation": {
+          "title": "Automation",
+          "description": "Allen-Bradley and Siemens PLC programming, HMI, SCADA integration, production line retrofits."
+        },
+        "maintenance": {
+          "title": "Preventive maintenance",
+          "description": "Annual plans, infrared thermography, power quality analysis, long-term service agreements."
+        },
+        "emergency": {
+          "title": "24/7 emergency",
+          "description": "Critical troubleshooting with 2-hour on-site response on Montréal island, 4 hours in the surrounding area."
+        }
+      }
+    },
+    "projects": {
+      "eyebrow": "Projects",
+      "title": "Work that speaks for itself",
+      "subtitle": "Hover each card to reveal the project in color. Every mandate meets manufacturing deadlines — the plant doesn't stop for us.",
+      "aria_label": "Électro-Maître Industriel project gallery",
+      "items": {
+        "manufacturing": {
+          "title": "Bottling line — Anjou",
+          "sector": "Manufacturing",
+          "summary": "Complete 600 V switchboard retrofit and PLC automation delivered in 6 weeks.",
+          "alt": "Refurbished 600 V switchboard in a bottling plant in Anjou, industrial photograph shown in greyscale and revealed in color on hover"
+        },
+        "food-plant": {
+          "title": "Food processing plant — Laval",
+          "sector": "Food & beverage",
+          "summary": "NSF compliance upgrade and conveyor automation with zero production downtime.",
+          "alt": "Automated conveyor line in a food processing plant in Laval, industrial photograph shown in greyscale and revealed in color on hover"
+        },
+        "datacenter": {
+          "title": "Tier III data center — Ville-Saint-Laurent",
+          "sector": "Data center",
+          "summary": "2N redundant distribution, 800 kVA UPS, centralized energy monitoring.",
+          "alt": "Redundant electrical distribution room of a Tier III data center, technical photograph shown in greyscale and revealed in color on hover"
+        },
+        "warehouse": {
+          "title": "Logistics warehouse — Pointe-aux-Trembles",
+          "sector": "Logistics",
+          "summary": "Smart LED lighting, occupancy sensors, 38% energy bill savings.",
+          "alt": "Logistics warehouse with industrial LED lighting, photograph shown in greyscale and revealed in color on hover"
+        },
+        "switchgear": {
+          "title": "Busbar replacement — East Montréal",
+          "sector": "Distribution",
+          "summary": "12 kV swap operation completed within an 18-hour maintenance window.",
+          "alt": "Technician performing a 12 kV busbar replacement during scheduled maintenance, photograph shown in greyscale and revealed in color on hover"
+        },
+        "automation": {
+          "title": "Siemens S7 retrofit — Longueuil",
+          "sector": "Automation",
+          "summary": "Legacy S5 migration to S7-1500 with new touch HMIs.",
+          "alt": "Newly installed Siemens S7-1500 PLC cabinet with touch HMIs, technical photograph shown in greyscale and revealed in color on hover"
+        }
+      }
+    },
+    "contactCta": {
+      "eyebrow": "Contact us",
+      "title": "One industrial project. One firm quote. One point of contact.",
+      "subtitle": "Every request is reviewed by a licensed master electrician. Reply within 24 business hours for quotes, within 2 hours for emergencies.",
+      "email": "soumissions@electro-maitre-industriel.ca",
+      "phone": "+1 514 555 0177",
+      "cta_primary": "Request a quote",
+      "cta_secondary": "24/7 emergency",
+      "trust_line": "RBQ 5678-9012-34 · CMEQ member · $5 M liability coverage"
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacy policy",
+      "intro": "Électro-Maître Industriel complies with Québec's Act 25 on the protection of personal information in the private sector.",
+      "rpp_label": "Personal information protection officer",
+      "rpp_name": "Jean-Pierre Morin",
+      "rpp_title": "Operations director",
+      "rpp_email": "rpp@electro-maitre-industriel.ca",
+      "data_title": "Data collected",
+      "data_body": "Name, email, phone, company name, description of need (within the scope of quote requests and contracts).",
+      "purposes_title": "Purposes",
+      "purposes_body": "Quote request processing, contract execution, project tracking, billing, anonymized usage analytics.",
+      "retention_title": "Retention",
+      "retention_body": "Quotes and commercial exchanges are kept for 7 years (Revenu Québec tax requirement). Navigation data is kept for 24 months maximum.",
+      "rights_title": "Your rights",
+      "rights_body": "You may request access, rectification or deletion of your data at any time by contacting our officer."
+    },
+    "mentions": {
+      "title": "Legal notice",
+      "company": "Électro-Maître Industriel inc.",
+      "neq_label": "NEQ",
+      "neq_value": "1174892345",
+      "address_label": "Head office",
+      "address_value": "8500 boulevard Industriel, Montréal-Est (Québec) H1G 4B2",
+      "phone_label": "Phone",
+      "phone_value": "+1 514 555 0177",
+      "email_label": "Email",
+      "email_value": "info@electro-maitre-industriel.ca",
+      "host_label": "Hosting provider",
+      "host_value": "Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, United States"
+    }
+  },
+  "cookies": {
+    "banner_title": "Your privacy matters",
+    "banner_body": "We use essential cookies to run the site. Analytics cookies are only enabled with your consent.",
+    "accept_all": "Accept all",
+    "reject_all": "Reject",
+    "customize": "Customize",
+    "essentials": "Essentials",
+    "analytics": "Analytics",
+    "marketing": "Marketing"
+  }
+}

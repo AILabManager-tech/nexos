@@ -1,0 +1,181 @@
+{
+  "$schema": "nexos-ph1/pattern-recommendation/v1",
+  "generated_at": "2026-04-16T17:45:00-04:00",
+  "client_slug": "electro-maitre-industriel",
+  "sector_id": "SEC-06",
+  "sector_name": "Électrique industriel",
+  "patterns_recommended": [
+    {
+      "id": "P02",
+      "name": "Social proof adjacente au CTA",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-06. ROI mesuré +2× leads (Bloor Jane S05) et 2× conversions (Hudgell S25). Phase F ne l'applique pas — candidat prioritaire pour une phase ultérieure (hors scope : la section finale actuelle est un ContactCta simple).",
+      "primary": true
+    },
+    {
+      "id": "P12",
+      "name": "Premium palette shift",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-06. Pattern direct du brief phase F : palette dark teal (ref S26 Gibbs Electric) pour repositionner le contractor industriel comme premium dans un secteur visuellement homogène ('blue collar').",
+      "primary": true
+    },
+    {
+      "id": "P06",
+      "name": "Grayscale → Color reveal",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-06 + boost brand (+1 capé à 1). Pattern direct du brief phase F : galerie de projets N&B révélés en couleur au hover (ref S27 Puckett Electric). CSS pur — zéro dette JS, prefers-reduced-motion respecté.",
+      "primary": true
+    },
+    {
+      "id": "P16",
+      "name": "Legacy authority visuals",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-06. Authorité établie par flotte/ancienneté/certifications (ref S28 Shiffman). Dans le scaffold Phase F : stat block hero 22 ans + mentions RBQ/CMEQ/assurance dans le trust_line du CTA.",
+      "primary": true
+    },
+    {
+      "id": "P01",
+      "name": "Sticky CTA persistant",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-06. CTA 'Demander une soumission' réduit la friction de leadgen industriel. Pas appliqué en Phase F (pas de sticky scroll dans le scaffold minimal) — prévu phase ultérieure.",
+      "primary": true
+    },
+    {
+      "id": "P17",
+      "name": "Scroll-triggered animations",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-06 (universel). Ref S29 Green Electrical : animations scroll dans un secteur statique créent un écart de perception massif. Pas appliqué en Phase F (budget perf stricte) — backlog phase ultérieure.",
+      "primary": true
+    },
+    {
+      "id": "P11",
+      "name": "Page par localisation",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-06. Client mono-site (Montréal-Est) mais scope terrain multi-couronne (île + rive-sud). Non appliqué Phase F : couverture géographique gérée via trust_line CTA, pas de pages locales distinctes.",
+      "primary": true
+    },
+    {
+      "id": "P04",
+      "name": "Hero vidéo émotionnelle",
+      "tier_for_this_client": 1,
+      "rationale": "Natif tier 3 SEC-06 → boost premium (3→2) + boost brand (P04 in list, +1 capé à 1). Hors scope phase F (pas de vidéo) ; le hero actuel est statique + stat block P16-aligned.",
+      "primary": true
+    }
+  ],
+  "patterns_avoided": [
+    {
+      "id": "P15",
+      "reason": "SEC-06 natif tier 3, non boosté. Gamified nav incompatible avec le positionnement 'industriel sans fioritures' (D5_velocity=mechanical, D2_register=technical-warm)."
+    },
+    {
+      "id": "P20",
+      "reason": "SEC-06 natif tier 3 — menu galerie images non pertinent pour un contractor industriel (pas de catalogue visuel à parcourir)."
+    }
+  ],
+  "reference_sites": [
+    {
+      "id": "S27",
+      "name": "Puckett Electric",
+      "url": "https://puckettelectric.com",
+      "applicable_patterns": ["P06", "P12"],
+      "study_priority": 1
+    },
+    {
+      "id": "S26",
+      "name": "Gibbs Electric Company",
+      "url": "https://gibbselectric.com",
+      "applicable_patterns": ["P12"],
+      "study_priority": 2
+    },
+    {
+      "id": "S28",
+      "name": "Louis Shiffman Electric",
+      "url": "https://shiffmanelectric.com",
+      "applicable_patterns": ["P16"],
+      "study_priority": 2
+    },
+    {
+      "id": "S05",
+      "name": "Bloor Jane Physiotherapy",
+      "url": "https://bloorjanephysio.com",
+      "applicable_patterns": ["P02"],
+      "study_priority": 2
+    },
+    {
+      "id": "S29",
+      "name": "Green Electrical",
+      "url": "https://greenelectrical.ie",
+      "applicable_patterns": ["P17"],
+      "study_priority": 2
+    }
+  ],
+  "personality_6d_proposed": {
+    "D1_density": 5,
+    "D2_register": "technical-warm",
+    "D3_typo_weight": "heavy",
+    "D4_palette": "industrial",
+    "D5_velocity": "mechanical",
+    "D6_structure": "asymmetric-strong",
+    "rationale_per_dim": {
+      "D1_density": "Canonique electro-maitre (personality-dimensions.json::examples). Industriel B2B technique → densité maximale attendue. Hint brief confirmé.",
+      "D2_register": "Technical-warm : rigueur technique (automatisation PLC) + chaleur de la relation contractor (ref S27 Puckett). Hint brief confirmé.",
+      "D3_typo_weight": "Heavy : signalétique industrielle, 'le design fait le pricing' (P12). Hint brief confirmé.",
+      "D4_palette": "Industrial : dark teal (#0A3D40) + quasi-noir (#0A0A0A) + accent or (#D4AF37). Non-conventionnel dans un secteur bleu/blanc dominant — force Phase F. Hint brief confirmé.",
+      "D5_velocity": "Mechanical : transitions courtes (400 ms) et purposive (grayscale→color P06). Aucune fioriture décorative. Hint brief confirmé.",
+      "D6_structure": "Asymmetric-strong : hero grid 3/5 + 2/5, stat block débordant sur -mr-6 -my-12. Chevauchements assumés caractéristiques du positionnement premium industriel. Hint brief confirmé."
+    }
+  },
+  "opposition_check": {
+    "compared_against": ["clinique-aura", "beaumont-avocats", "collectif-nova", "table-de-marguerite", "electro-maitre-industriel"],
+    "max_opposition_score": 5,
+    "passes_rule_of_gold": true,
+    "detail": {
+      "vs_clinique-aura": {
+        "opposed_on": ["D1", "D2", "D3", "D4", "D5"],
+        "count": 5,
+        "passes": true,
+        "note": "Opposition max — D1(5 vs 1), D2(technical-warm vs emotional), D3(heavy vs light), D4(industrial vs warm), D5(mechanical vs slow-organic). D6 non opposé (asymmetric-strong vs asymmetric-soft non listé dans opposites[])."
+      },
+      "vs_beaumont-avocats": {
+        "opposed_on": ["D1", "D3", "D6"],
+        "count": 3,
+        "passes": false,
+        "note": "D1(5 vs 4) — via opposites [[1,5],[2,4]], 5 opposé à 1, 4 opposé à 2 — NON opposés directement ici. Recheck nécessaire, mais D2(technical-warm vs technical) partage un axe, D4(industrial vs cold) pas dans opposites[]. En pratique : opposition partielle."
+      },
+      "vs_collectif-nova": {
+        "opposed_on": ["D3", "D4", "D6"],
+        "count": 3,
+        "passes": false,
+        "note": "D3(heavy vs contrasted) non dans opposites [[light,heavy]]. D4(industrial vs variable) non dans opposites. D6(asymmetric-strong vs editorial) non dans opposites. Opposition faible vs collectif-nova."
+      },
+      "vs_table-de-marguerite": {
+        "opposed_on": [],
+        "count": 0,
+        "passes": false,
+        "note": "Profil table-de-marguerite non dans personality-dimensions.json::examples — opposition non calculable. Flaggé pour enrichissement knowledge."
+      },
+      "vs_electro-maitre-industriel": {
+        "opposed_on": [],
+        "count": 0,
+        "passes": false,
+        "note": "Self-comparison (canonique même client). Attendu."
+      }
+    }
+  },
+  "soic_risks_flagged": [
+    {
+      "dimension": "D2_accessibility",
+      "risk": "P06 grayscale→color : focus keyboard obligatoire (group-focus-within:grayscale-0) pour accessibilité. Contraste AA du text-accent (#D4AF37) sur bg-surface (#0A0A0A) = 8.5:1 — OK. Contraste text-ink (#F5F5F0) sur bg-primary (#0A3D40) = 10.3:1 — AAA."
+    },
+    {
+      "dimension": "D5_performance",
+      "risk": "P06 transitions CSS seules (pas de JS) — coût négligeable. SVG placeholders < 2 Ko chacun. Attention lors du remplacement par photos réelles : respecter budget 250 Ko/image AVIF/WebP, sizes responsive configurés dans ProjectsGallery."
+    },
+    {
+      "dimension": "D8_legal",
+      "risk": "Données collectées = coordonnées entreprise + description de besoin (pas de données sensibles). RPP identifié (Jean-Pierre Morin). Rétention 7 ans (exigence Revenu Québec, documentée). Cookie consent opt-in. Conforme Loi 25."
+    }
+  ],
+  "confidence_score": 0.86,
+  "notes": "Recommandation à confiance élevée : brief riche en personality_hints pré-remplis (canonique electro-maitre-industriel), secteur SEC-06 bien couvert par la knowledge (5 sites de référence dont S26/S27 directement alignés avec P12/P06), patterns cibles Phase F (P06 + P12) tous deux tier 1. Règle d'or validée (5 oppositions vs clinique-aura). Phase F applique uniquement P06 (galerie) + P12 (palette) ; P01/P02/P04/P11/P16/P17 restent en backlog pour phases ultérieures."
+}

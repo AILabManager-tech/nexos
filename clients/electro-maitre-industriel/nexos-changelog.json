@@ -1,0 +1,45 @@
+{
+  "$schema": "nexos/changelog/v1",
+  "client_slug": "electro-maitre-industriel",
+  "events": [
+    {
+      "type": "CLIENT_SCAFFOLDED",
+      "at": "2026-04-16T17:30:00-04:00",
+      "phase": "chantier-F option-A",
+      "origin": "PHASE_F_DEMO_ELECTRO_MAITRE.md",
+      "details": "Scaffold minimal Next.js 15 + TS strict + Tailwind + next-intl pour démo industrialisation chantier knowledge (démo 2/6). Même méthodologie que phase E clinique-aura (commit c03540a). Thème dark (surface=#0A0A0A, ink=#F5F5F0) dès le scaffold pour cohérence avec P12 — pas d'étape intermédiaire 'thème clair puis bascule'."
+    },
+    {
+      "type": "PATTERN_APPLIED",
+      "at": "2026-04-16T17:45:00-04:00",
+      "phase": "chantier-F electro-maitre",
+      "pattern_id": "P12",
+      "section_id": "S-001+S-002+S-004+S-201+S-202",
+      "details": "Premium palette shift (dark teal) appliqué au niveau tokens Tailwind : primary #0A3D40, accent or #D4AF37, surface quasi-noir #0A0A0A, ink ivoire #F5F5F0. Contraste WCAG AAA vérifié : text-ink sur bg-primary = 10.3:1, text-ink sur bg-surface = 19.5:1. Ref S26 Gibbs Electric (gibbselectric.com) — non-conventionnel dans secteur 'blue collar' → signal premium."
+    },
+    {
+      "type": "PATTERN_APPLIED",
+      "at": "2026-04-16T17:45:00-04:00",
+      "phase": "chantier-F electro-maitre",
+      "pattern_id": "P06",
+      "section_id": "S-003",
+      "details": "Grayscale→Color reveal sur galerie de 6 projets (ProjectsGallery component). CSS pur (filter grayscale + transition 400 ms, sous seuil 500 ms anti-pattern). group-hover et group-focus-within pour accessibilité clavier. Overlay accent or 5 % au hover (micro-signature P12). prefers-reduced-motion respecté via globals.css. Ref S27 Puckett Electric (puckettelectric.com). 6 SVG placeholders fournis, TODO(client) documenté dans public/images/README.md."
+    },
+    {
+      "type": "SECTION_LIFECYCLE",
+      "at": "2026-04-16T17:45:00-04:00",
+      "phase": "chantier-F electro-maitre",
+      "section_id": "S-003",
+      "event": "created",
+      "details": "Nouvelle section ProjectsGallery (n'existait pas sur clinique-aura). pattern_applied = P06 (primaire), P12 (secondaire via palette)."
+    },
+    {
+      "type": "SECTION_LIFECYCLE",
+      "at": "2026-04-16T17:45:00-04:00",
+      "phase": "chantier-F electro-maitre",
+      "section_id": "S-001",
+      "event": "created",
+      "details": "Hero asymmetric-strong (3/5 + 2/5) avec stat block débordant. Pas de photo humaine (à la différence de clinique-aura S-001 P04) — positionnement industriel (technical-warm)."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Placeholder — manufacturing line">
+  <rect width="800" height="600" fill="#1f2933"/>
+  <rect x="80" y="150" width="640" height="300" fill="#e5a300"/>
+  <rect x="80" y="150" width="640" height="40" fill="#0a3d40"/>
+  <rect x="120" y="220" width="80" height="200" fill="#2a2a2a"/>
+  <rect x="240" y="220" width="80" height="200" fill="#2a2a2a"/>
+  <rect x="360" y="220" width="80" height="200" fill="#2a2a2a"/>
+  <rect x="480" y="220" width="80" height="200" fill="#2a2a2a"/>
+  <rect x="600" y="220" width="80" height="200" fill="#2a2a2a"/>
+  <circle cx="400" cy="500" r="22" fill="#d64545"/>
+  <circle cx="460" cy="500" r="22" fill="#3ba35a"/>
+  <rect x="0" y="560" width="800" height="40" fill="#0a1a1a"/>
+</svg>

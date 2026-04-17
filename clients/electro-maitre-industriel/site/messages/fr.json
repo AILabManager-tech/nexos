@@ -1,0 +1,157 @@
+{
+  "site": {
+    "name": "Électro-Maître Industriel",
+    "tagline": "Contractor électrique industriel · Automatisation · Maintenance 24/7",
+    "locale": "fr-CA"
+  },
+  "layout": {
+    "header": {
+      "nav": {
+        "home": "Accueil",
+        "services": "Services",
+        "projects": "Projets",
+        "contact": "Contact"
+      },
+      "cta_short": "Demander une soumission",
+      "language_switch": "English"
+    },
+    "footer": {
+      "rights": "Tous droits réservés",
+      "address": "8500 boulevard Industriel, Montréal-Est (Québec) H1G 4B2",
+      "phone": "+1 514 555 0177",
+      "email": "info@electro-maitre-industriel.ca",
+      "privacy": "Politique de confidentialité",
+      "legal": "Mentions légales"
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Contractor industriel",
+      "title": "L'électricité industrielle, sans compromis.",
+      "subtitle": "Automatisation, maintenance préventive et urgence 24/7 pour manufacturiers, agroalimentaires et centres de données. Disponibilité garantie, ingénierie certifiée.",
+      "cta_primary": "Demander une soumission",
+      "cta_secondary": "Voir nos réalisations",
+      "stat_years": "Années d'expérience",
+      "stat_availability": "Disponibilité"
+    },
+    "services": {
+      "eyebrow": "Nos expertises",
+      "title": "Quatre domaines, un seul standard",
+      "subtitle": "Chaque projet est piloté par un maître électricien licencié. Rapports détaillés, devis fermes, aucune surprise.",
+      "items": {
+        "industrial": {
+          "title": "Électricité industrielle",
+          "description": "Installations haute capacité, distribution moyenne tension, mise aux normes CSA et Code canadien."
+        },
+        "automation": {
+          "title": "Automatisation",
+          "description": "Programmation PLC Allen-Bradley et Siemens, HMI, intégration SCADA, rétrofit de chaînes de production."
+        },
+        "maintenance": {
+          "title": "Maintenance préventive",
+          "description": "Plans annuels, thermographie infrarouge, analyse de qualité d'onde, contrats d'entretien long terme."
+        },
+        "emergency": {
+          "title": "Urgence 24/7",
+          "description": "Dépannage critique avec intervention sous 2 heures sur l'île de Montréal, 4 heures en couronne."
+        }
+      }
+    },
+    "projects": {
+      "eyebrow": "Réalisations",
+      "title": "Des projets qui parlent d'eux-mêmes",
+      "subtitle": "Survolez chaque carte pour révéler le projet en couleur. Chaque mandat respecte les délais manufacturiers — l'usine ne s'arrête pas pour nous.",
+      "aria_label": "Galerie des réalisations Électro-Maître Industriel",
+      "items": {
+        "manufacturing": {
+          "title": "Ligne d'embouteillage — Anjou",
+          "sector": "Manufacturier",
+          "summary": "Rénovation complète du tableau 600 V et automatisation PLC en 6 semaines.",
+          "alt": "Tableau électrique 600 V rénové dans une usine d'embouteillage à Anjou, photo industrielle en niveaux de gris révélée en couleur au survol"
+        },
+        "food-plant": {
+          "title": "Usine agroalimentaire — Laval",
+          "sector": "Agroalimentaire",
+          "summary": "Mise aux normes NSF et automatisation des convoyeurs, zéro arrêt de production.",
+          "alt": "Chaîne de convoyeurs automatisée dans une usine agroalimentaire à Laval, photo industrielle en niveaux de gris révélée en couleur au survol"
+        },
+        "datacenter": {
+          "title": "Centre de données Tier III — Ville-Saint-Laurent",
+          "sector": "Centre de données",
+          "summary": "Distribution redondante 2N, ASI 800 kVA, monitoring énergétique centralisé.",
+          "alt": "Salle de distribution électrique redondante d'un centre de données Tier III, photo technique en niveaux de gris révélée en couleur au survol"
+        },
+        "warehouse": {
+          "title": "Entrepôt logistique — Pointe-aux-Trembles",
+          "sector": "Logistique",
+          "summary": "Éclairage LED intelligent, capteurs de présence, économies de 38 % sur la facture d'énergie.",
+          "alt": "Entrepôt logistique avec éclairage LED industriel, photo en niveaux de gris révélée en couleur au survol"
+        },
+        "switchgear": {
+          "title": "Remplacement de barre omnibus — Est de Montréal",
+          "sector": "Distribution",
+          "summary": "Opération de swap 12 kV pendant une fenêtre de maintenance de 18 heures.",
+          "alt": "Technicien effectuant un remplacement de barre omnibus 12 kV pendant une maintenance programmée, photo en niveaux de gris révélée en couleur au survol"
+        },
+        "automation": {
+          "title": "Automate Siemens S7 — Longueuil",
+          "sector": "Automatisation",
+          "summary": "Migration d'un legacy S5 vers S7-1500 avec nouvelles IHM tactiles.",
+          "alt": "Armoire d'automate Siemens S7-1500 nouvellement installée avec IHM tactiles, photo technique en niveaux de gris révélée en couleur au survol"
+        }
+      }
+    },
+    "contactCta": {
+      "eyebrow": "Contactez-nous",
+      "title": "Un projet industriel. Un devis ferme. Un interlocuteur.",
+      "subtitle": "Chaque demande est analysée par un maître électricien licencié. Réponse sous 24 h ouvrables pour les soumissions, sous 2 heures pour les urgences.",
+      "email": "soumissions@electro-maitre-industriel.ca",
+      "phone": "+1 514 555 0177",
+      "cta_primary": "Demander une soumission",
+      "cta_secondary": "Urgence 24/7",
+      "trust_line": "RBQ 5678-9012-34 · CMEQ membre · Assurance responsabilité 5 M$"
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "intro": "Électro-Maître Industriel est soumise à la Loi 25 du Québec sur la protection des renseignements personnels dans le secteur privé.",
+      "rpp_label": "Responsable de la protection des renseignements personnels",
+      "rpp_name": "Jean-Pierre Morin",
+      "rpp_title": "Directeur des opérations",
+      "rpp_email": "rpp@electro-maitre-industriel.ca",
+      "data_title": "Renseignements collectés",
+      "data_body": "Nom, courriel, téléphone, nom d'entreprise, description du besoin (dans le cadre des demandes de soumission et des contrats).",
+      "purposes_title": "Finalités",
+      "purposes_body": "Traitement des demandes de soumission, exécution des contrats, suivi de chantier, facturation, analyse d'usage anonymisée.",
+      "retention_title": "Conservation",
+      "retention_body": "Les soumissions et échanges commerciaux sont conservés 7 ans (exigence fiscale Revenu Québec). Les données de navigation sont conservées 24 mois maximum.",
+      "rights_title": "Vos droits",
+      "rights_body": "Vous pouvez en tout temps demander l'accès, la rectification ou la suppression de vos données en contactant notre RPP."
+    },
+    "mentions": {
+      "title": "Mentions légales",
+      "company": "Électro-Maître Industriel inc.",
+      "neq_label": "NEQ",
+      "neq_value": "1174892345",
+      "address_label": "Siège social",
+      "address_value": "8500 boulevard Industriel, Montréal-Est (Québec) H1G 4B2",
+      "phone_label": "Téléphone",
+      "phone_value": "+1 514 555 0177",
+      "email_label": "Courriel",
+      "email_value": "info@electro-maitre-industriel.ca",
+      "host_label": "Hébergeur",
+      "host_value": "Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis"
+    }
+  },
+  "cookies": {
+    "banner_title": "Votre vie privée compte",
+    "banner_body": "Nous utilisons des témoins (cookies) essentiels pour faire fonctionner le site. Les cookies d'analyse ne sont activés qu'avec votre consentement.",
+    "accept_all": "Accepter tout",
+    "reject_all": "Refuser",
+    "customize": "Personnaliser",
+    "essentials": "Essentiels",
+    "analytics": "Analyse d'usage",
+    "marketing": "Marketing"
+  }
+}

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Placeholder — warehouse LED lighting">
+  <rect width="800" height="600" fill="#1a2028"/>
+  <polygon points="0,180 800,180 720,120 80,120" fill="#2a3642"/>
+  <rect x="0" y="500" width="800" height="100" fill="#0a0f14"/>
+  <g fill="#f5d06b">
+    <ellipse cx="150" cy="195" rx="50" ry="15" opacity="0.85"/>
+    <ellipse cx="400" cy="195" rx="50" ry="15" opacity="0.85"/>
+    <ellipse cx="650" cy="195" rx="50" ry="15" opacity="0.85"/>
+  </g>
+  <g fill="#f5d06b" opacity="0.25">
+    <polygon points="100,210 200,210 260,500 40,500"/>
+    <polygon points="350,210 450,210 510,500 290,500"/>
+    <polygon points="600,210 700,210 760,500 540,500"/>
+  </g>
+  <g fill="#5a6a7a">
+    <rect x="100" y="360" width="90" height="140"/>
+    <rect x="350" y="360" width="90" height="140"/>
+    <rect x="600" y="360" width="90" height="140"/>
+  </g>
+</svg>

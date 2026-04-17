@@ -29,3 +29,10 @@ clients/clinique-aura/site/.next/
 clients/clinique-aura/site/.env
 clients/clinique-aura/site/.env.local
 clients/clinique-aura/site/next-env.d.ts
+# electro-maitre-industriel : matérialisé dans ce repo par le chantier knowledge phase F
+# (option A scaffold + patterns P06 + P12). Voir phase-F-report.md.
+clients/electro-maitre-industriel/site/node_modules/
+clients/electro-maitre-industriel/site/.next/
+clients/electro-maitre-industriel/site/.env
+clients/electro-maitre-industriel/site/.env.local
+clients/electro-maitre-industriel/site/next-env.d.ts

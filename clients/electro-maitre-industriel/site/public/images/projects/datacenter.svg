@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Placeholder — data center power distribution">
+  <rect width="800" height="600" fill="#0f1820"/>
+  <rect x="100" y="100" width="180" height="400" fill="#263241"/>
+  <rect x="310" y="100" width="180" height="400" fill="#263241"/>
+  <rect x="520" y="100" width="180" height="400" fill="#263241"/>
+  <g fill="#3b82f6">
+    <rect x="120" y="120" width="140" height="12"/>
+    <rect x="120" y="150" width="140" height="12"/>
+    <rect x="120" y="180" width="140" height="12"/>
+    <rect x="330" y="120" width="140" height="12"/>
+    <rect x="330" y="150" width="140" height="12"/>
+    <rect x="540" y="120" width="140" height="12"/>
+  </g>
+  <g fill="#22c55e">
+    <rect x="120" y="210" width="140" height="12"/>
+    <rect x="330" y="180" width="140" height="12"/>
+    <rect x="540" y="150" width="140" height="12"/>
+  </g>
+  <g fill="#d4af37">
+    <circle cx="200" cy="460" r="12"/>
+    <circle cx="400" cy="460" r="12"/>
+    <circle cx="610" cy="460" r="12"/>
+  </g>
+</svg>
