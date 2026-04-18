@@ -1,0 +1,63 @@
+{
+  "header": {
+    "services": "Services",
+    "projects": "Projects",
+    "contact": "Contact",
+    "cta": "Start a project"
+  },
+  "footer": {
+    "tagline": "Premium creative studio Montreal",
+    "quicklinks": "Quick links",
+    "home": "Home",
+    "projects": "Projects",
+    "contact": "Contact",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "mentions": "Legal Notices",
+    "rights": "All rights reserved."
+  },
+  "hero": {
+    "title": "Create. Differentiate. Engage.",
+    "subtitle": "Premium creative studio for brands that refuse compromise. Visual identity, motion design, digital experience.",
+    "cta": "Start a project"
+  },
+  "services": {
+    "title": "Our services",
+    "item1": {
+      "title": "Visual Identity",
+      "desc": "Complete identity system: logo, palette, typography, guidelines."
+    },
+    "item2": {
+      "title": "Motion Design",
+      "desc": "Cinema-quality animations and web interactions that tell your story."
+    },
+    "item3": {
+      "title": "Experience Design",
+      "desc": "Web and mobile interfaces designed for conversion and engagement."
+    },
+    "item4": {
+      "title": "Creative Consulting",
+      "desc": "Visual strategy and positioning to differentiate your brand."
+    }
+  },
+  "cases": {
+    "title": "Recent projects",
+    "label": "Interactive project gallery",
+    "project1": {
+      "title": "Aurora Project",
+      "desc": "Complete identity overhaul for tech startup. New geometric logo, modern palette, comprehensive guidelines."
+    },
+    "project2": {
+      "title": "Horizon Project",
+      "desc": "Immersive site for luxury brand. Scroll animations, microinteractions, premium experience."
+    },
+    "project3": {
+      "title": "Echo Project",
+      "desc": "Motion campaign for product launch. 15 seconds of cinema, social media distribution, viral impact."
+    },
+    "prev": "Previous project",
+    "next": "Next project",
+    "goto": "Go to project",
+    "keyboard": "Use"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "_meta": {
+    "generator": "nexos-v3.0",
+    "created_at": "2026-04-17T22:30:00-04:00",
+    "mode": "modify",
+    "phase_origin": "chantier-J option A scaffold + P15+P18"
+  },
+  "client": {
+    "name": "Collectif Nova",
+    "slug": "collectif-nova",
+    "sector": "créatif / agence numérique",
+    "sub_sector": "studio créatif multiprojets — identité, motion, expérientiel",
+    "positioning": "premium",
+    "size": "boutique",
+    "locations": ["Montréal (Québec)"],
+    "personality_hints": {
+      "D1_density": 3,
+      "D2_register": "technical-warm",
+      "D3_typo_weight": "contrasted",
+      "D4_palette": "variable",
+      "D5_velocity": "fast-purposeful",
+      "D6_structure": "editorial"
+    }
+  },
+  "legal": {
+    "company_name": "Collectif Nova inc.",
+    "neq": "1188765432",
+    "address": "456 rue de Bleury, Montréal (Québec) H2Z 1Y5",
+    "phone": "+1 438 555 0777",
+    "email": "hello@collectif-nova.com",
+    "rpp_name": "Alex Rousseau",
+    "rpp_email": "confidentialite@collectif-nova.com",
+    "rpp_title": "Directeur créatif et Responsable de la protection des renseignements personnels",
+    "data_collected": ["nom", "courriel", "telephone", "portfolio_url"],
+    "purposes": ["demande-projet", "newsletter-createurs", "analytics"],
+    "retention": "Demandes de projet : conservées 12 mois. Newsletter : consentement opt-in, conservation jusqu'à désinscription explicite. Données de navigation : 30 jours maximum.",
+    "transfer_outside_qc": true,
+    "transfer_countries": ["États-Unis (Google Analytics — IP tronquée, pseudonymisé)", "États-Unis (Vercel — hébergement)"],
+    "third_parties": ["Google Analytics (mesure audience, opt-in)", "Vercel (hébergement — États-Unis)"],
+    "cookie_consent": "opt-in",
+    "incident_process": true,
+    "incident_email": "confidentialite@collectif-nova.com"
+  },
+  "site": {
+    "stack": "nextjs",
+    "type": "vitrine-portfolio",
+    "pages": [
+      "home",
+      "services",
+      "projects",
+      "contact",
+      "politique-confidentialite",
+      "mentions-legales"
+    ],
+    "languages": ["fr", "en"],
+    "features": ["portfolio-gamified", "case-study-navigation", "contact-form"],
+    "hosting": "vercel",
+    "domain": "collectif-nova.com"
+  },
+  "context": {
+    "competitors": [
+      "https://spacewcowboys.com",
+      "https://cappen.com",
+      "https://bruno-simon.com"
+    ],
+    "keywords_seo": [
+      "agence créative Montréal",
+      "studio design Québec",
+      "design d'expérience interactive",
+      "identité visuelle marque"
+    ],
+    "free_text": "Studio créatif premium : 8 créatifs (design, dev, motion). Positionné sur la différenciation visuelle et interactivité. KPI principal : brand/leads qualifiés (5-10 projets annuels de haut calibre). Clientèle : PME technologie, startups, marques établies. Besoin : portfolio gamifié qui montre la versatilité créative (micro-univers par projet), navigation non-conventionnelle (P15)."
+  },
+  "design": {
+    "palette": "variable (noir + corail + violet + or — cf. P18 micro-univers)",
+    "typography": "contrasted (géométrique + serif + display alternés)",
+    "style": "expérientiel, non-conventionnel",
+    "logo_provided": false,
+    "references": [
+      "https://spacewcowboys.com (gamified case studies + P15 + P18)",
+      "https://cappen.com (micro-univers sections + P18)",
+      "https://bruno-simon.com (navigation WebGL premium — plafond aspirationnel)"
+    ]
+  },
+  "goals": {
+    "primary_kpi": "brand",
+    "secondary_kpis": ["engagement", "lead-quality"],
+    "target_leads_monthly": 8,
+    "target_conversion_rate": "3% visiteurs → contact qualifié"
+  }
+}

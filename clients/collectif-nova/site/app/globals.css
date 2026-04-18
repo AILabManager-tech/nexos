@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-serif: 'Spectral', Georgia, serif;
+  --font-serif2: 'Playfair Display', Georgia, serif;
+
+  --brand-primary: #FF6B6B;
+  --brand-bg: #0D0D0D;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply font-sans antialiased;
+  background-color: var(--brand-bg);
+  color: #FFFFFF;
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+h1, h2, h3, h4 {
+  letter-spacing: -0.01em;
+}
+
+:focus-visible {
+  @apply outline-2 outline-offset-2;
+  outline-color: var(--brand-primary);
+}
+
+/* === P18 MICRO-UNIVERS SECTIONS === */
+
+[data-section="hero"] {
+  --section-bg: #0A0A0A;
+  --section-accent: #FF6B6B;
+  --section-text: #F5F5F0;
+  background-color: var(--section-bg);
+  color: var(--section-text);
+}
+
+[data-section="hero"] h1,
+[data-section="hero"] h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+[data-section="hero"] button {
+  background-color: var(--section-accent);
+  color: var(--section-bg);
+}
+
+[data-section="services"] {
+  --section-bg: #1A1E3A;
+  --section-accent: #A78BFA;
+  --section-text: #FFFFFF;
+  background-color: var(--section-bg);
+  color: var(--section-text);
+}
+
+[data-section="services"] h2,
+[data-section="services"] h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-style: italic;
+}
+
+[data-section="services"] button {
+  background-color: var(--section-accent);
+  color: var(--section-bg);
+}
+
+[data-section="case-studies"] {
+  --section-bg: #F5F5F0;
+  --section-accent: #D4AF37;
+  --section-text: #1A1A1A;
+  background-color: var(--section-bg);
+  color: var(--section-text);
+}
+
+[data-section="case-studies"] h2,
+[data-section="case-studies"] h3 {
+  font-family: var(--font-serif2);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+[data-section="case-studies"] button {
+  background-color: var(--section-accent);
+  color: var(--section-bg);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-item {
+  animation: slideUp 0.6s ease-out backwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0.1s; }
+.stagger-item:nth-child(2) { animation-delay: 0.2s; }
+.stagger-item:nth-child(3) { animation-delay: 0.3s; }
+.stagger-item:nth-child(4) { animation-delay: 0.4s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.keyboard-hint {
+  font-size: 0.875rem;
+  opacity: 0.7;
+  margin-top: 1rem;
+}
+
+.keyboard-hint kbd {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.75rem;
+  margin: 0 0.25rem;
+}

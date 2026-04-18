@@ -1,0 +1,149 @@
+{
+  "$schema": "nexos-ph1/pattern-recommendation/v1",
+  "generated_at": "2026-04-17T22:35:00-04:00",
+  "client_slug": "collectif-nova",
+  "sector_id": "SEC-02",
+  "sector_name": "Créatif / Agence numérique",
+  "patterns_recommended": [
+    {
+      "id": "P15",
+      "name": "Gamified navigation",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 natif SEC-02. Référence S08 Space Cowboys (navigation clavier ←→ case studies, VR-like showroom). Collectif Nova : navigation gamifiée des projets via clavier/swipe. ROI mesuré : engagement 240% (Bruno Simon, plafond). Alignement direct avec KPI brand/engagement.",
+      "primary": true
+    },
+    {
+      "id": "P18",
+      "name": "Micro-univers sections",
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 pour SEC-02 contextuel + brand (non conversion). Référence S06 Cappen Studio (chaque case study = univers visuel distinct). Collectif Nova : 3 sections (Hero, Services, Projects) chacune avec palette locale + typo + interaction propres. Montre la versatilité créative. Alignement D4_palette=variable + D6_structure=editorial.",
+      "primary": true
+    },
+    {
+      "id": "P17",
+      "name": "Scroll-triggered animations",
+      "tier_for_this_client": 2,
+      "rationale": "Boosté premium + D5_velocity=fast-purposeful. Transitions entre micro-univers (P18) renforcées par reveal/stagger animations. Respecte prefers-reduced-motion.",
+      "primary": false
+    },
+    {
+      "id": "P09",
+      "name": "3-word brand messaging",
+      "tier_for_this_client": 2,
+      "rationale": "Boosté premium. Hero titre court percutant : 'Créer. Différencier. Engager.' aligne D2_register=technical-warm.",
+      "primary": false
+    },
+    {
+      "id": "P01",
+      "name": "Sticky CTA persistant",
+      "tier_for_this_client": 2,
+      "rationale": "CTA 'Démarrer un projet' omniprésent. Aide lead qualification (conversion secondaire).",
+      "primary": false
+    }
+  ],
+  "patterns_avoided": [
+    {
+      "id": "P04",
+      "reason": "SEC-02 premium + D2_technical : hero émotionnel/vidéo peut diluer la rigueur créative. Collectif Nova préfère 'kinetic typography' interactif (P15)."
+    },
+    {
+      "id": "P20",
+      "reason": "SEC-02 : tier null + risk CLS. Menu galerie images + P18 micro-univers = redundant visual complexity."
+    },
+    {
+      "id": "P14",
+      "reason": "Code-breaking = contexte tech/dev. Collectif Nova = agence créative hybride. Peut distraire du portfolio."
+    },
+    {
+      "id": "P10",
+      "reason": "Demo interactive requiert prototype/outil vendor-lock. Collectif Nova préfère démo portfolio statique (case studies)."
+    }
+  ],
+  "reference_sites": [
+    {
+      "id": "S08",
+      "name": "Space Cowboys",
+      "url": "https://spacewcowboys.com",
+      "applicable_patterns": ["P15", "P18"],
+      "study_priority": 1
+    },
+    {
+      "id": "S06",
+      "name": "Cappen Studio",
+      "url": "https://cappen.com",
+      "applicable_patterns": ["P18"],
+      "study_priority": 1
+    },
+    {
+      "id": "S07",
+      "name": "Bruno Simon",
+      "url": "https://bruno-simon.com",
+      "applicable_patterns": ["P15"],
+      "study_priority": 2
+    }
+  ],
+  "personality_6d_proposed": {
+    "D1_density": 3,
+    "D2_register": "technical-warm",
+    "D3_typo_weight": "contrasted",
+    "D4_palette": "variable",
+    "D5_velocity": "fast-purposeful",
+    "D6_structure": "editorial",
+    "rationale_per_dim": {
+      "D1_density": "Boutique = équilibré (pas spa minimaliste, pas agence dense). D1=3 permet grille de projets dense + whitespace stratégique. Hint brief confirmé.",
+      "D2_register": "Technical-warm = créatifs avec rigueur + humanité. Pas froid corporate, pas émotionnel plaisant. Code + art. Hint brief confirmé.",
+      "D3_typo_weight": "Contrasted = alternance extrêmes (200 léger géométrique Hero + 700 serif éditorial Services + 400 display fin Projects). Montre versatilité. Pas de 'palette typographique cohérente' — intention.",
+      "D4_palette": "Variable = CSS custom properties par section. Noir + corail (Hero), Violet + lavande (Services), Ivoire + or (Projects). Chaque univers sa couleur. Intention P18.",
+      "D5_velocity": "Fast-purposeful = transitions rapides (pas slow-organic), toujours dirigées vers action (next project, contact). Momentum. Hint brief confirmé.",
+      "D6_structure": "Editorial = layout libre, asymétrique, pas de grille rigide. Chaque section raconte une histoire. Pas symmetric corporate. Hint brief confirmé."
+    }
+  },
+  "opposition_check": {
+    "compared_against": ["clinique-aura", "beaumont-avocats", "electro-maitre-industriel", "vertex-pmo", "table-de-marguerite"],
+    "max_opposition_score": 6,
+    "passes_rule_of_gold": true,
+    "detail": {
+      "vs_clinique-aura": {
+        "opposed_on": ["D1", "D2", "D3", "D4", "D5", "D6"],
+        "count": 6,
+        "passes": true
+      },
+      "vs_beaumont-avocats": {
+        "opposed_on": ["D2", "D4", "D5", "D6"],
+        "count": 4,
+        "passes": true
+      },
+      "vs_electro-maitre-industriel": {
+        "opposed_on": ["D1", "D2", "D3", "D4", "D5"],
+        "count": 5,
+        "passes": true
+      },
+      "vs_vertex-pmo": {
+        "opposed_on": ["D1", "D4", "D6"],
+        "count": 3,
+        "passes": true
+      },
+      "vs_table-de-marguerite": {
+        "opposed_on": ["D2", "D3", "D4", "D6"],
+        "count": 4,
+        "passes": true
+      }
+    }
+  },
+  "soic_risks_flagged": [
+    {
+      "dimension": "D2_accessibility",
+      "risk": "P15 navigation gamifiée : fallback clavier + lecteur d'écran obligatoire (WCAG 2.2 AA). Keyboard capture scopée au viewport. Hint visible ('Utilise ← → pour naviguer'). aria-live, aria-roledescription, alt descriptifs."
+    },
+    {
+      "dimension": "D5_performance",
+      "risk": "Cumul P15 (keyboard listener) + P18 (3 sections palette distinct CSS + 3 fonts Google) + P17 (animations scroll) : LCP/CLS mobile à surveiller. Budget perf strict. Recommend : fonts preload, section lazy-load après hero, minimiser WebGL (Bruno Simon = plafond, exclus)."
+    },
+    {
+      "dimension": "D8_legal",
+      "risk": "Loi 25 : portfolio public (pas données sensibles). Cookie consent opt-in (analytics + Vercel suffisent). RPP identifié (Alex Rousseau). Incident process en place."
+    }
+  ],
+  "confidence_score": 0.92,
+  "notes": "Recommandation à confiance très élevée. Brief riche personality_hints 6D pré-remplis, secteur SEC-02 bien couvert par la knowledge (S06, S08, S07), patterns P15+P18 dédiés SEC-02 agence créative. Règle d'or validée : 6 oppositions vs clinique-aura, 4+ vs chaque autre démo. Risk D2 accessibility (P15 fallback) et D5 performance (cumul anims) à gérer en implémentation. Phase J applique P15 + P18 primaires, P17 + P09 + P01 contextuels selon temps disponible. Micro-univers 3 sections (Hero noir/corail kinetic, Services violet/lavande stagger, Projects ivoire/or gamified) suffisent à démonstration."
+}

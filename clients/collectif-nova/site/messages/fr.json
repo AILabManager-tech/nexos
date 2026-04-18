@@ -1,0 +1,63 @@
+{
+  "header": {
+    "services": "Services",
+    "projects": "Projets",
+    "contact": "Contact",
+    "cta": "Démarrer un projet"
+  },
+  "footer": {
+    "tagline": "Studio créatif premium Montréal",
+    "quicklinks": "Liens rapides",
+    "home": "Accueil",
+    "projects": "Projets",
+    "contact": "Contact",
+    "legal": "Légal",
+    "privacy": "Politique de confidentialité",
+    "mentions": "Mentions légales",
+    "rights": "Tous droits réservés."
+  },
+  "hero": {
+    "title": "Créer. Différencier. Engager.",
+    "subtitle": "Studio créatif premium pour marques qui refusent le compromis. Identité visuelle, motion design, expérience numérique.",
+    "cta": "Démarrer un projet"
+  },
+  "services": {
+    "title": "Nos services",
+    "item1": {
+      "title": "Identité visuelle",
+      "desc": "Système d'identité complet : logo, palette, typographie, guidelines."
+    },
+    "item2": {
+      "title": "Motion design",
+      "desc": "Animations cinéma et interactions web qui racontent votre histoire."
+    },
+    "item3": {
+      "title": "Design d'expérience",
+      "desc": "Interfaces web et mobile pensées pour la conversion et l'engagement."
+    },
+    "item4": {
+      "title": "Conseil créatif",
+      "desc": "Stratégie visuelle et positionnement pour différencier votre marque."
+    }
+  },
+  "cases": {
+    "title": "Nos projets récents",
+    "label": "Galerie de projets interactifs",
+    "project1": {
+      "title": "Projet Aurore",
+      "desc": "Refonte d'identité complète pour startup technologie. Nouveau logo géométrique, palette moderne, guide complet."
+    },
+    "project2": {
+      "title": "Projet Horizon",
+      "desc": "Site immersif pour marque de luxe. Scroll animations, microinteractions, expérience premium."
+    },
+    "project3": {
+      "title": "Projet Écho",
+      "desc": "Campagne motion pour lancement produit. 15 secondes de cinéma, diffusion réseaux sociaux, impact viral."
+    },
+    "prev": "Projet précédent",
+    "next": "Projet suivant",
+    "goto": "Aller au projet",
+    "keyboard": "Utilise"
+  }
+}

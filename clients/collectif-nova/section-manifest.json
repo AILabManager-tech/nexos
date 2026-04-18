@@ -1,0 +1,82 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "created_at": "2026-04-17T22:40:00-04:00",
+    "client": "collectif-nova",
+    "purpose": "Section registry — tracks sections creatable in modify mode via --section flag"
+  },
+  "sections": [
+    {
+      "id": "S-001",
+      "page": "home",
+      "component": "Hero",
+      "pattern_primary": "P18",
+      "pattern_secondary": "P15",
+      "status": "planned",
+      "description": "Hero noir + corail — kinetic typography titre, CTA sticky, P18 micro-univers 1"
+    },
+    {
+      "id": "S-002",
+      "page": "home",
+      "component": "Services",
+      "pattern_primary": "P18",
+      "pattern_secondary": "P17",
+      "status": "planned",
+      "description": "Services violet + lavande — 4 offres (identité, motion, experience, conseil), stagger reveal scroll, P18 micro-univers 2"
+    },
+    {
+      "id": "S-003",
+      "page": "home",
+      "component": "CaseStudiesGamified",
+      "pattern_primary": "P15",
+      "pattern_secondary": "P18",
+      "status": "planned",
+      "description": "Projects ivoire + or — 3-6 case studies navigables clavier ←→ + swipe + boutons, P15 gamified nav + P18 micro-univers 3"
+    },
+    {
+      "id": "S-004",
+      "page": "home",
+      "component": "ContactCTA",
+      "pattern_primary": "P01",
+      "pattern_secondary": null,
+      "status": "planned",
+      "description": "CTA contact inline — 'Démarrer un projet', formulaire ou lien mailto, P01 sticky"
+    },
+    {
+      "id": "S-101",
+      "page": "politique-confidentialite",
+      "component": "PrivacyPolicyPage",
+      "pattern_primary": null,
+      "pattern_secondary": null,
+      "status": "planned",
+      "description": "Loi 25 — politique de confidentialité 6 sections (données, finalités, rétention, droits, tiers, incident)"
+    },
+    {
+      "id": "S-102",
+      "page": "mentions-legales",
+      "component": "LegalMentionsPage",
+      "pattern_primary": null,
+      "pattern_secondary": null,
+      "status": "planned",
+      "description": "Mentions légales — CNIL-style avec NEQ, adresse, contact, hébergeur"
+    },
+    {
+      "id": "S-201",
+      "page": "*",
+      "component": "Header",
+      "pattern_primary": "P01",
+      "pattern_secondary": null,
+      "status": "planned",
+      "description": "Header sticky — logo, nav (services, projects, contact), CTA, language switcher"
+    },
+    {
+      "id": "S-202",
+      "page": "*",
+      "component": "Footer",
+      "pattern_primary": null,
+      "pattern_secondary": null,
+      "status": "planned",
+      "description": "Footer — liens légaux, copyright, socials"
+    }
+  ]
+}
