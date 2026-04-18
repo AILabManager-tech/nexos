@@ -10,7 +10,7 @@ from rich.table import Table
 
 from ._shared import AGENTS_DIR, KNOWLEDGE_DIR, LOGS_DIR, NEXOS_ROOT, say
 from .brief import slugify
-from .cli_runner import run_codex_cli
+from .cli_runner import run_cli
 
 
 def run_knowledge_agent(
@@ -101,7 +101,7 @@ def run_knowledge_agent(
     )
 
     log_path = LOGS_DIR / f"{timestamp}_hexabrief_{source_slug}.log"
-    returncode = run_codex_cli(prompt, str(NEXOS_ROOT), log_path)
+    returncode = run_cli(prompt, str(NEXOS_ROOT), log_path)
 
     if returncode != 0:
         say(f"[red]✗ HexaBrief échoué (code {returncode})[/]")

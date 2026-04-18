@@ -239,7 +239,7 @@ class RerunContext:
 
         Signature matches RerunCallback: (phase, feedback, iteration) -> bool.
         """
-        from .cli_runner import run_codex_cli
+        from .cli_runner import run_cli
         from .prompts import build_phase_prompt
 
         # Re-run preflight tooling for QA phase
@@ -253,7 +253,7 @@ class RerunContext:
         )
         rerun_prompt += f"\n\n# SOIC FEEDBACK — Iteration {iteration + 1}\n{feedback}"
         rerun_log = LOGS_DIR / f"{self.timestamp}_{phase}_iter{iteration + 1}.log"
-        return run_codex_cli(rerun_prompt, str(NEXOS_ROOT), rerun_log) == 0
+        return run_cli(rerun_prompt, str(NEXOS_ROOT), rerun_log) == 0
 
 
 __all__ = [

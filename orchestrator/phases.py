@@ -32,7 +32,7 @@ from ._shared import (
     say,
 )
 from .brief import load_runtime_brief
-from .cli_runner import run_codex_cli
+from .cli_runner import run_cli
 from .preflight import RerunContext, run_preflight, run_preflight_tooling
 from .prompts import build_phase_prompt
 from .verify import _fix_report_to_dict, verify_phase_output
@@ -208,8 +208,8 @@ def run_pipeline(
         )
         log_path = LOGS_DIR / f"{timestamp}_{phase}.log"
 
-        # Exécuter Codex CLI
-        returncode = run_codex_cli(prompt, str(NEXOS_ROOT), log_path)
+        # Exécuter CLI (claude, codex, ou gemini)
+        returncode = run_cli(prompt, str(NEXOS_ROOT), log_path)
 
         if returncode != 0:
             say(f"[red]✗ Phase {phase} échouée (code {returncode})[/]")
