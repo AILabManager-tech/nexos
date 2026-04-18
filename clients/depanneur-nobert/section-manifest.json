@@ -1,0 +1,82 @@
+{
+  "$schema": "nexos-manifest/section/v1",
+  "client_slug": "depanneur-nobert",
+  "generated_at": "2026-04-17T22:30:00Z",
+  "sections": [
+    {
+      "id": "S-001",
+      "name": "Header",
+      "component": "components/Header.tsx",
+      "pattern_id": null,
+      "description": "Navigation, branding, contact info",
+      "status": "deployed"
+    },
+    {
+      "id": "S-002",
+      "name": "Hero + 3-word messaging",
+      "component": "components/Hero.tsx",
+      "pattern_id": ["P09", "P13"],
+      "description": "TON/DÉPANNEUR/TON/QUARTIER hero with anti-polish aesthetics",
+      "status": "deployed"
+    },
+    {
+      "id": "S-003",
+      "name": "Sticky CTA (weekly promos)",
+      "component": "components/StickyCTA.tsx",
+      "pattern_id": "P01",
+      "description": "Fixed bottom CTA expandable promos — always-on conversion",
+      "status": "deployed"
+    },
+    {
+      "id": "S-004",
+      "name": "StoryBrand narrative",
+      "component": "components/StorySection.tsx",
+      "pattern_id": "P19",
+      "description": "You (hero) + Us (guide) + Action narrative",
+      "status": "deployed"
+    },
+    {
+      "id": "S-005",
+      "name": "Product gallery + catalog",
+      "component": "components/ProductGallery.tsx",
+      "pattern_id": ["P20", "P17"],
+      "description": "3-tab menu galerie (provisions, snacks, loterie) with scroll animations",
+      "status": "deployed"
+    },
+    {
+      "id": "S-006",
+      "name": "Social proof testimonials",
+      "component": "components/SocialProof.tsx",
+      "pattern_id": "P02",
+      "description": "3 testimonials + trust indicators (4.9★, 37 ans, 50K+ clients)",
+      "status": "deployed"
+    },
+    {
+      "id": "S-007",
+      "name": "Multi-city locations (P11)",
+      "component": "components/LocationPages.tsx",
+      "pattern_id": "P11",
+      "description": "3 locations (Plateau, Griffintown, Rosemont) with Schema.org LocalBusiness",
+      "status": "deployed"
+    },
+    {
+      "id": "S-008",
+      "name": "Footer",
+      "component": "components/Footer.tsx",
+      "pattern_id": null,
+      "description": "Links, contact, legal placeholders",
+      "status": "deployed"
+    }
+  ],
+  "patterns_summary": {
+    "P01": "Sticky CTA — S-003",
+    "P02": "Social proof — S-006",
+    "P09": "3-word messaging — S-002",
+    "P11": "Multi-city locations — S-007",
+    "P13": "Anti-polish aesthetics — S-002",
+    "P17": "Scroll-triggered animations — S-005",
+    "P19": "StoryBrand narrative — S-004",
+    "P20": "Product menu galerie — S-005"
+  },
+  "notes": "All 8 primary patterns (P01, P02, P09, P11, P13, P17, P19, P20) deployed in Phase L scaffold. Loi 25 components (cookie consent, legal pages) deferred to next phase."
+}
