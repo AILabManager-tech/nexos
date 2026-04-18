@@ -316,7 +316,6 @@ def run_pipeline(
                 max_iter=4,
                 store=store,
                 site_dir=str(site_dir) if site_dir else None,
-                profile=profile,
             )
 
             ctx = RerunContext(
