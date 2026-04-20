@@ -15,6 +15,7 @@ htmlcov/
 coverage.xml
 *.env
 .env.*
+.claude/settings.local.json
 logs/
 *.zip
 
