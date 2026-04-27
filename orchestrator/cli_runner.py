@@ -20,6 +20,8 @@ def get_cli_host() -> str:
     Ordre de préférence :
     1. NEXOS_LLM_HOST env var (claude, codex, gemini)
     2. Détection automatique : claude > codex > gemini
+    3. Fallback : claude (défaut depuis pivot 2026-04-17 phase-L,
+       codex auth s'étant révélée fragile en production)
     """
     env_host = os.environ.get("NEXOS_LLM_HOST", "").lower()
     if env_host in ("claude", "codex", "gemini"):
@@ -33,8 +35,8 @@ def get_cli_host() -> str:
         except (FileNotFoundError, subprocess.TimeoutExpired):
             continue
 
-    # Fallback : default to codex
-    return "codex"
+    # Fallback : default to claude (depuis pivot 2026-04-17)
+    return "claude"
 
 
 def run_codex_cli(prompt: str, cwd: str, log_path: Path) -> int:
