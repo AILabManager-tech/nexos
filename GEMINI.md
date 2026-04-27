@@ -193,6 +193,29 @@ Le package `nexos/` contient 5 modules qui se branchent sur `orchestrator.py` :
 - `nexos fix <client> [--dry-run]` : auto-fix standalone
 - `nexos report <client>` : rapport agrege
 
+## NEXOS v4.2 — KNOWLEDGE BASE
+
+Le dossier `agents/knowledge/` porte le referentiel design et strategy active dans ph1 :
+
+### `agents/knowledge/web-patterns-reference.md`
+- 30 sites de reference reels, 20 patterns universels P01-P20, anti-patterns et notes d'usage
+
+### `agents/knowledge/sector-references.json`
+- Catalogue machine-readable des references par secteur avec signaux 6D
+
+### `agents/knowledge/pattern-matrix.json`
+- Matrice patterns x secteurs x impacts SOIC x tiers d'usage
+
+### `agents/knowledge/personality-dimensions.json`
+- 6 dimensions de personnalite D1-D6 + regle d'or de differenciation
+
+### `agents/ph1-strategy/pattern-recommender.md`
+- Agent requis en ph1 qui consomme le brief et la knowledge base
+- Sortie : `pattern-recommendation.json` avec patterns, sites de reference, personnalite 6D et opposition check
+- Cible runtime : < 30 s
+
+Regle d'or active : deux sites NEXOS avec des valeurs opposees sur >= 4 des 6 dimensions doivent sembler venir de deux agences differentes.
+
 ## TEMPLATES SECURISES
 
 Tout nouveau projet utilise les templates dans `templates/` :

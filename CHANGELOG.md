@@ -1,5 +1,19 @@
 # NEXOS — CHANGELOG
 
+## [4.2.1] — 2026-04-20
+
+### Added
+- Documentation knowledge-driven synchronisee dans `README.md`, `AGENTS.md`, `CLAUDE.md` et `GEMINI.md`
+- Cas client complet `clients/depanneur-nobert/site/` avec routes FR/EN, pages legales Loi 25, APIs `contact` et `newsletter`, `robots.txt` et `sitemap.xml`
+
+### Fixed
+- `clients/depanneur-nobert/site` : scaffold incomplet corrige pour permettre `next build`
+- `clients/depanneur-nobert/site` : dependances Next.js / next-intl / vitest mises a jour pour ramener `npm audit` a `0 vulnerabilites`
+
+### Internal
+- Chantier knowledge base A->N rapproche d'un etat clos avec evidence build, audit et livrables finaux de phase
+- Le cas `depanneur-nobert` confirme l'usage de `pattern-recommender` et la differenciation 6D sur un create end-to-end
+
 ## [4.2.0] — 2026-04-15
 
 ### Fixed (Pilier 1 — Déblocages critiques)

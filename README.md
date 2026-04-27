@@ -14,6 +14,18 @@ Il orchestre 56 agents specialises a travers 6 phases sequentielles avec quality
 
 Objectif : **qualite premium des la premiere generation** (score SOIC >= 8.5/10).
 
+## Knowledge-driven Design
+
+NEXOS s'appuie maintenant sur une knowledge base exploitable en ph1-strategy:
+
+- `agents/knowledge/web-patterns-reference.md` : 30 sites de reference et 20 patterns P01-P20
+- `agents/knowledge/sector-references.json` : catalogue machine-readable des references
+- `agents/knowledge/pattern-matrix.json` : matrice patterns x secteurs x impact SOIC
+- `agents/knowledge/personality-dimensions.json` : 6 dimensions D1-D6 et regle d'or
+- `agents/ph1-strategy/pattern-recommender.md` : recommandation patterns + references + 6D + opposition check
+
+Regle d'or : deux clients configures avec des valeurs opposees sur >= 4 des 6 dimensions doivent sembler venir de deux agences differentes.
+
 ## Quick Start
 
 ```bash
