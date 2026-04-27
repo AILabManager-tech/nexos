@@ -115,11 +115,15 @@ def run_claude_cli(prompt: str, cwd: str, log_path: Path) -> int:
 
     Timeout: 30 minutes par défaut pour éviter un blocage indéfini.
     """
-    cmd = ["claude", "eval", "-"]
+    cmd = ["claude", "-p", "--dangerously-skip-permissions"]
 
     log_path.parent.mkdir(parents=True, exist_ok=True)
 
     env = os.environ.copy()
+    # Force session-auth (keychain/OAuth) rather than inheriting an invalid
+    # ANTHROPIC_API_KEY from the parent shell. Without this, the child CLI
+    # errors with "Invalid API key · Fix external API key".
+    env.pop("ANTHROPIC_API_KEY", None)
 
     process = None
     try:
