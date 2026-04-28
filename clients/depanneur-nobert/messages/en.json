@@ -1,0 +1,599 @@
+{
+  "common": {
+    "brand": {
+      "name": "Dépanneur Nobert",
+      "shortName": "Nobert",
+      "tagline": "Your store. Your block.",
+      "uvp": "Your authentic neighbourhood corner store, since {anneeFondation}",
+      "promise": "Everything you need, just steps from home — with Nobert's smile included."
+    },
+    "nav": {
+      "home": "Home",
+      "promotions": "Promotions",
+      "produits": "Products",
+      "contact": "Contact",
+      "skipToContent": "Skip to main content",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
+      "currentLang": "English",
+      "switchLang": "Français"
+    },
+    "footer": {
+      "columnNavigate": "Navigate",
+      "columnInfos": "Visit us",
+      "columnLegal": "Legal",
+      "linkPrivacy": "Privacy Policy",
+      "linkLegal": "Legal Notice",
+      "linkRpp": "Your rights under Law 25",
+      "address": "{adresseLigne}, {ville} (Quebec) {codePostal}",
+      "phone": "Phone: {telephone}",
+      "email": "Email: {email}",
+      "hoursLabel": "Opening hours",
+      "copyright": "© {currentYear} Dépanneur Nobert inc. All rights reserved.",
+      "madeWithCare": "Made with care for the neighbourhood of {ville}."
+    },
+    "buttons": {
+      "viewPromotions": "View promotions",
+      "viewWeekPromotions": "See this week's promotions",
+      "findAddress": "Find the address",
+      "callUs": "Call us",
+      "subscribe": "Sign me up",
+      "send": "Send",
+      "cancel": "Cancel",
+      "back": "Back",
+      "loadMap": "Load the map",
+      "viewAllProducts": "View full catalog",
+      "viewAllPromotions": "View all promotions",
+      "openHours": "See our hours"
+    },
+    "forms": {
+      "labelName": "Your name",
+      "labelEmail": "Your email",
+      "labelPhone": "Phone (optional)",
+      "labelMessage": "Your message",
+      "labelConsent": "I agree that my information may be used to handle my request, in accordance with the privacy policy.",
+      "placeholderName": "First and last name",
+      "placeholderEmail": "you@example.ca",
+      "placeholderPhone": "418 555-0000",
+      "placeholderMessage": "How can we help?",
+      "required": "This field is required.",
+      "invalidEmail": "Invalid email address.",
+      "invalidPhone": "Invalid phone number.",
+      "consentRequired": "Your consent is required to handle your request.",
+      "messageMinLength": "Your message must contain at least 10 characters.",
+      "submitting": "Sending…",
+      "successTitle": "Message received",
+      "successMessage": "Thank you, we'll get back to you shortly. Have a great day from the neighbourhood.",
+      "errorTitle": "A small hiccup",
+      "errorMessage": "The message could not be sent. Please try again or call us at {telephone}.",
+      "honeypotLabel": "Leave this field blank",
+      "linkPrivacy": "Privacy policy"
+    },
+    "consent": {
+      "bannerTitle": "Your cookies, your choice",
+      "bannerBody": "We use cookies to run the website and, with your consent, to measure its audience. You can accept, decline or customize. You stay in control at any time.",
+      "bannerLearnMore": "Learn more in the privacy policy",
+      "categoryEssentialsTitle": "Essential",
+      "categoryEssentialsBody": "Required for the website to work. Always active.",
+      "categoryAnalyticsTitle": "Analytics",
+      "categoryAnalyticsBody": "Measure page traffic (Google Analytics, truncated IP, transfer to the United States).",
+      "categoryMarketingTitle": "Interactive map",
+      "categoryMarketingBody": "Display the Google Maps interactive map from partner servers (transfer to the United States).",
+      "actionAccept": "Accept",
+      "actionDecline": "Decline",
+      "actionCustomize": "Customize",
+      "actionSave": "Save my choices",
+      "preferencesTitle": "My cookie preferences",
+      "noticeLaw25": "Your data is protected under Quebec's Law 25. The privacy officer is Mr. Nobert Tremblay ({rppEmail})."
+    },
+    "stickyCta": {
+      "label": "See this week's promotions",
+      "ariaLabel": "See this week's promotions — quick access",
+      "dismiss": "Dismiss reminder"
+    },
+    "languageSwitcher": {
+      "ariaLabel": "Choose website language",
+      "fr": "Français",
+      "en": "English"
+    },
+    "schedule": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday",
+      "open": "Open",
+      "closed": "Closed",
+      "openNow": "Open now",
+      "openUntil": "Open until {hour}",
+      "closesIn": "Closes in {minutes} min",
+      "opensAt": "Opens at {hour}",
+      "regularHours": "Regular hours",
+      "holidayHours": "Holiday hours"
+    },
+    "errors": {
+      "notFoundTitle": "This page seems to be on a break",
+      "notFoundBody": "The page you're looking for is no longer here, but we are. Head back home or check out the promotions.",
+      "notFoundCta": "Back to home",
+      "genericTitle": "Something slipped",
+      "genericBody": "The site is having a small hiccup. Please try again in a moment or call us at {telephone}.",
+      "genericCta": "Reload the page"
+    }
+  },
+  "home": {
+    "meta": {
+      "title": "Neighbourhood Convenience Store in {city} — Beer, Lotto | Nobert",
+      "description": "The authentic neighbourhood convenience store in {city}. Weekly promotions, beer, lotto, snacks. Personal service close to home. Drop by anytime.",
+      "ogTitle": "Dépanneur Nobert — Your neighbourhood corner in {city}",
+      "ogDescription": "Weekly promotions, beer, lotto, snacks. The authentic neighbourhood corner store, since {anneeFondation}."
+    },
+    "hero": {
+      "eyebrow": "{city} neighbourhood",
+      "title": "Your neighbourhood convenience store in {city}",
+      "subtitle": "Weekly promotions, local craft beer, lotto, snacks. Nobert's personal service, just steps from home.",
+      "ctaPrimary": "View promotions",
+      "ctaSecondary": "Find the address",
+      "ctaPrimaryAria": "See this week's promotions",
+      "ctaSecondaryAria": "Find the store address on the map",
+      "imageAlt": "The warm storefront of Dépanneur Nobert in the {city} neighbourhood, golden morning light",
+      "trustNote": "Open for you, Monday to Sunday."
+    },
+    "promotionsHighlight": {
+      "eyebrow": "This week",
+      "title": "This week's promotions, at a glance",
+      "subtitle": "Three deals you don't want to miss, refreshed every Friday by Nobert.",
+      "badgeLabel": "Weekly deal",
+      "validUntil": "Valid until {date}",
+      "ctaAll": "View all promotions",
+      "emptyState": "The new flyer drops Friday. Come back then.",
+      "imageAltTemplate": "{produit} — this week's promotion at Dépanneur Nobert"
+    },
+    "categories": {
+      "eyebrow": "Everything for your day",
+      "title": "Four aisles, a thousand small pleasures",
+      "subtitle": "Local beer, snacks, lotto, essentials — find it all in just a few steps.",
+      "items": {
+        "bieres": {
+          "title": "Beer",
+          "description": "Quebec craft breweries and major brands, fresh on refrigerated shelves.",
+          "cta": "View beer",
+          "iconAlt": "Beer mug pictogram"
+        },
+        "snacks": {
+          "title": "Snacks",
+          "description": "Cold snacks, hot snacks, late-night munchies, treats to share.",
+          "cta": "View snacks",
+          "iconAlt": "Cookie pack pictogram"
+        },
+        "lotto": {
+          "title": "Loto-Québec",
+          "description": "All Loto-Québec tickets, scratch cards and validation points right here.",
+          "cta": "View lotto",
+          "iconAlt": "Lottery ticket pictogram"
+        },
+        "essentiels": {
+          "title": "Essentials",
+          "description": "Bread, milk, coffee, paper, takeaway coffee — the things you forget on the way home.",
+          "cta": "View essentials",
+          "iconAlt": "Grocery basket pictogram"
+        }
+      }
+    },
+    "socialProof": {
+      "eyebrow": "The neighbourhood is talking",
+      "title": "Not reviews. Neighbours.",
+      "subtitle": "Three people from the {city} neighbourhood who have been dropping by Nobert's for a long time.",
+      "ctaReminder": "Take advantage of this week's promotions",
+      "ctaReminderAction": "View promotions",
+      "items": {
+        "voisin1": {
+          "name": "Marie",
+          "role": "Neighbour, next street over",
+          "quote": "I stop in for my lotto ticket and walk out with a cold beer for dinner. It's become a ritual."
+        },
+        "voisin2": {
+          "name": "Jean-Philippe",
+          "role": "Father, around the corner",
+          "quote": "Sunday nights, Nobert's is what saves our Monday lunch boxes. Always open, always smiling."
+        },
+        "voisin3": {
+          "name": "Lise",
+          "role": "Local resident for 30 years",
+          "quote": "Nobert knows my first name and my habits. That's rare and that's precious."
+        }
+      },
+      "consentNote": "Testimonials published with written consent, in accordance with Quebec's Law 25.",
+      "imageAltTemplate": "Portrait of {name}, neighbour and regular at Dépanneur Nobert"
+    },
+    "infosPratiques": {
+      "eyebrow": "Just steps away",
+      "title": "Address, hours, phone",
+      "subtitle": "Everything you need to drop by, all in one glance.",
+      "addressLabel": "Address",
+      "addressLine": "{adresseLigne}, {ville} (Quebec) {codePostal}",
+      "phoneLabel": "Phone",
+      "phoneValue": "{telephone}",
+      "phoneAria": "Call Dépanneur Nobert at {telephone}",
+      "hoursLabel": "Hours",
+      "hoursNote": "Regular hours shown. Special closures are posted in store.",
+      "ctaMap": "Find the address",
+      "ctaCall": "Call the store",
+      "mapPlaceholderAlt": "Neighbourhood map of {city} showing Dépanneur Nobert's location"
+    },
+    "storyBrand": {
+      "eyebrow": "Our story",
+      "title": "You, the neighbourhood, and a store that knows you",
+      "paragraphHero": "The neighbourhood is you. You have your habits, your small pleasures, your rhythm — a coffee before work, a beer on Friday, a hopeful lotto ticket on Sunday.",
+      "paragraphGuide": "Nobert has been running the store since {anneeFondation}. He knows the names, the habits, the good news. He orders the craft beer you love and keeps the bread fresh for those who drop in late in the day.",
+      "paragraphPromise": "No chain, no loyalty cards, no slogans. Just a store open for you, steps away, with the smile and personal service that go with it.",
+      "imageAlt": "Nobert Tremblay, owner, behind the counter of his store in {city}",
+      "ctaPromotions": "See this week's promotions"
+    },
+    "newsletter": {
+      "eyebrow": "Not spam, just the good deals",
+      "title": "Get the Friday flyer",
+      "subtitle": "This week's promotions, one short email, every Friday morning. Unsubscribe in one click anytime.",
+      "labelEmail": "Your email",
+      "placeholderEmail": "you@example.ca",
+      "ctaSubscribe": "Sign me up for the flyer",
+      "consentLabel": "I agree to receive Dépanneur Nobert's weekly flyer. I can unsubscribe at any time.",
+      "consentNote": "Stored 12 months after the last interaction. No reselling, no third-party sharing.",
+      "successTitle": "Subscription confirmed",
+      "successMessage": "Thank you. The first email arrives this Friday.",
+      "errorMessage": "The subscription didn't go through. Please try again or write to {email}."
+    }
+  },
+  "promotions": {
+    "meta": {
+      "title": "Weekly Promotions — Dépanneur Nobert {city}",
+      "description": "Discover this week's promotions at Dépanneur Nobert in {city}: beer, snacks, essentials at reduced prices. Updated every Friday.",
+      "ogTitle": "Weekly Promotions — Dépanneur Nobert",
+      "ogDescription": "Beer, snacks and essentials on sale this week at Dépanneur Nobert in {city}."
+    },
+    "hero": {
+      "eyebrow": "This week, for you",
+      "title": "This week's promotions",
+      "subtitle": "Refreshed every Friday. Enjoy the deals — no coupons, no signups, no hassle.",
+      "lastUpdate": "Updated on {date}",
+      "validityNote": "Promotions valid until {endDate} or while supplies last.",
+      "imageAlt": "Weekly promotions shelves at Dépanneur Nobert"
+    },
+    "list": {
+      "title": "All current promotions",
+      "subtitle": "Click a category to filter. No coupon required — the price applies in store.",
+      "filterAll": "View all",
+      "filterBieres": "Beer",
+      "filterSnacks": "Snacks",
+      "filterEssentiels": "Essentials",
+      "filterAriaLabel": "Filter promotions by category",
+      "regularPriceLabel": "Regular price",
+      "promoPriceLabel": "Sale price",
+      "savingsLabel": "You save",
+      "validUntilLabel": "Valid until {date}",
+      "limitedStockLabel": "Limited stock",
+      "emptyState": {
+        "title": "No promotion in this category this week",
+        "subtitle": "The new flyer drops Friday. Come back then."
+      },
+      "imageAltTemplate": "{produit}, on sale at {prix} until {date}"
+    },
+    "faq": {
+      "title": "Your questions about promotions",
+      "subtitle": "Three common questions from the neighbourhood.",
+      "items": {
+        "duree": {
+          "question": "How long do the promotions last?",
+          "answer": "Each promotion is valid for one week, from Friday to the following Thursday. Some run longer — the end date is always shown on the card."
+        },
+        "retrait": {
+          "question": "Can I reserve a promotional item?",
+          "answer": "Yes, call us at {telephone}. We'll set the item aside for the day. No deposit required for the regular neighbourhood."
+        },
+        "livraison": {
+          "question": "Do you offer delivery?",
+          "answer": "Not at the moment. Dépanneur Nobert stays a neighbourhood shop — we count on your in-store visits to keep the connection."
+        }
+      }
+    },
+    "crossSell": {
+      "title": "Want the full catalog?",
+      "subtitle": "Beyond the promotions, find everything you need on our shelves.",
+      "ctaProducts": "View full catalog"
+    }
+  },
+  "produits": {
+    "meta": {
+      "title": "Our Products — Beer, Snacks, Lotto, Essentials | Dépanneur Nobert",
+      "description": "Full catalog at Dépanneur Nobert in {city}: beer (craft and major brands), snacks, lotto, daily essentials. Serving the neighbourhood since {anneeFondation}.",
+      "ogTitle": "Dépanneur Nobert's catalog in {city}",
+      "ogDescription": "Beer, snacks, lotto, essentials — everything for the neighbourhood's day."
+    },
+    "hero": {
+      "eyebrow": "Our catalog",
+      "title": "Everything you need, every day",
+      "subtitle": "Everything you need, just steps away. Local craft beer, snacks, lotto, essentials — pick your aisle.",
+      "anchorLabel": "Jump to an aisle",
+      "imageAlt": "Overview of the aisles at Dépanneur Nobert: beer, snacks, lotto, essentials"
+    },
+    "categoriesNav": {
+      "ariaLabel": "Browse the catalog aisles",
+      "items": {
+        "bieres": "Beer",
+        "snacks": "Snacks",
+        "lotto": "Lotto",
+        "essentiels": "Essentials"
+      },
+      "scrollHint": "Scroll to browse the aisle."
+    },
+    "galerie": {
+      "sectionsLabel": "Catalog aisles",
+      "bieres": {
+        "anchorId": "bieres",
+        "title": "Local craft beer and major brands",
+        "subtitle": "Quebec craft breweries and well-chilled classics. Selection refreshed by season.",
+        "note": "Alcohol sales are regulated by SAQ. Permit posted in store. Sales to minors are prohibited."
+      },
+      "snacks": {
+        "anchorId": "snacks",
+        "title": "Cold snacks, hot snacks",
+        "subtitle": "Late-night munchies, evening treats, chips, chocolate — the right pick for any break."
+      },
+      "lotto": {
+        "anchorId": "lotto",
+        "title": "Loto-Québec tickets and scratch cards",
+        "subtitle": "All Loto-Québec tickets, scratch cards and validations. Draws posted at the counter."
+      },
+      "essentiels": {
+        "anchorId": "essentiels",
+        "title": "Daily essentials",
+        "subtitle": "Bread, milk, coffee, paper, takeaway coffee — the things you forget on the way home.",
+        "note": "Selection adjusted by season and neighbourhood needs. A special request? Just ask Nobert."
+      },
+      "productCardLabel": "Product",
+      "imageAltTemplateBieres": "{marque} {type}, {format} format, {origine} brewery",
+      "imageAltTemplateSnacks": "{marque} {produit}, {format} format",
+      "imageAltTemplateLotto": "Loto-Québec ticket — {jeu}",
+      "imageAltTemplateEssentiels": "{marque} {produit}, {format} format",
+      "outOfStockLabel": "Temporarily unavailable",
+      "askInStore": "Ask in store"
+    },
+    "faq": {
+      "title": "Your questions about our products",
+      "subtitle": "The most common questions from the neighbourhood.",
+      "items": {
+        "commandeSpeciale": {
+          "question": "Do you take special orders?",
+          "answer": "Often, yes. Ask Nobert in store or call {telephone} — he'll tell you in two minutes if the order is possible."
+        },
+        "commandeTelephone": {
+          "question": "Do you take phone orders?",
+          "answer": "Yes, for the neighbourhood regulars. Call {telephone}, we'll prepare the order and you can pick it up when convenient."
+        },
+        "permisBiere": {
+          "question": "Do you have a permit to sell beer?",
+          "answer": "Yes, the SAQ permit is posted in store. Alcohol sales to minors are prohibited under Quebec law."
+        }
+      }
+    },
+    "crossSell": {
+      "title": "Active promotions this week",
+      "subtitle": "Take advantage of the deals before the flyer ends.",
+      "ctaPromotions": "View promotions"
+    }
+  },
+  "contact": {
+    "meta": {
+      "title": "Address, Hours, Phone — Dépanneur Nobert {city}",
+      "description": "Find Dépanneur Nobert: address in {city}, opening hours, phone number and Google map. Open every day for the neighbourhood.",
+      "ogTitle": "Contact — Dépanneur Nobert",
+      "ogDescription": "Address, hours and phone for Dépanneur Nobert in {city}."
+    },
+    "hero": {
+      "eyebrow": "To drop by",
+      "title": "Reach us, find us",
+      "subtitle": "The address, the phone and the hours — extra large, because reading comfort matters.",
+      "addressDisplay": "{adresseLigne}, {ville}",
+      "phoneDisplay": "{telephone}",
+      "phoneAria": "Call Dépanneur Nobert at {telephone}",
+      "ctaCall": "Call",
+      "ctaMap": "View on the map"
+    },
+    "coordonnees": {
+      "title": "Contact and hours",
+      "subtitle": "Every way to reach us, Monday through Sunday.",
+      "addressLabel": "Address",
+      "addressLine": "{adresseLigne}, {ville} (Quebec) {codePostal}",
+      "phoneLabel": "Phone",
+      "phoneValue": "{telephone}",
+      "emailLabel": "Email",
+      "emailValue": "{email}",
+      "hoursLabel": "Opening hours",
+      "hoursTableCaption": "Regular weekly hours",
+      "hoursColumnDay": "Day",
+      "hoursColumnHours": "Hours",
+      "specialClosuresTitle": "Special closures",
+      "specialClosuresNote": "Holiday closures are posted in store and on the home page at least 7 days in advance."
+    },
+    "maps": {
+      "title": "Find us on the map",
+      "subtitle": "The map is loaded from Google Maps (United States) after your consent.",
+      "placeholderTitle": "Interactive map (Google Maps)",
+      "placeholderBody": "To display the map, we load Google Maps. This involves a data transfer to Google's servers in the United States.",
+      "ctaLoad": "Load the map (Google Maps — United States)",
+      "ctaCancel": "Keep the map offline",
+      "consentNote": "By loading the map, you accept the transfer of your IP address to the United States (see privacy policy).",
+      "fallbackTitle": "Our address",
+      "fallbackBody": "If you'd rather not load the map, here's the exact address: {adresseLigne}, {ville} (Quebec) {codePostal}.",
+      "imageAlt": "Static preview of the {city} neighbourhood map showing Dépanneur Nobert"
+    },
+    "form": {
+      "title": "A question? Write to us",
+      "subtitle": "We read every message. Reply within 24 to 48 hours, Monday to Saturday.",
+      "labelName": "Your name",
+      "labelEmail": "Your email",
+      "labelPhone": "Phone (optional)",
+      "labelMessage": "Your message",
+      "labelConsent": "I agree that my name, email and message may be used to handle my request, in accordance with the privacy policy.",
+      "consentNote": "Stored 24 months after the last interaction. You can request deletion at any time ({rppEmail}).",
+      "submit": "Send my message",
+      "submitting": "Sending…",
+      "successTitle": "Message received",
+      "successMessage": "Thank you, we'll get back to you shortly. Have a great day from the neighbourhood.",
+      "errorMessage": "The message couldn't be sent. Try again or call us at {telephone}."
+    },
+    "rpp": {
+      "title": "Your rights, your peace of mind",
+      "body": "Your personal information is protected under Quebec's Law 25. You may consult, correct or request the deletion of your data by writing to the privacy officer:",
+      "rppName": "Mr. Nobert Tremblay",
+      "rppRole": "Owner and Privacy Officer (Law 25, art. 3.1)",
+      "rppEmail": "{rppEmail}",
+      "linkPrivacy": "Read our privacy policy",
+      "incidentNote": "In the event of a privacy incident, write to {rppEmail}: we follow a notification process compliant with art. 3.5 of Law 25."
+    }
+  },
+  "legal": {
+    "privacy": {
+      "meta": {
+        "title": "Privacy Policy (Law 25) — Dépanneur Nobert",
+        "description": "Privacy policy of Dépanneur Nobert compliant with Quebec's Law 25: data collected, purposes, retention, rights, privacy officer."
+      },
+      "title": "Privacy Policy",
+      "lastUpdate": "Last updated: {dateMaj}",
+      "intro": "Dépanneur Nobert inc. (hereinafter \"we,\" \"our\" or \"Dépanneur Nobert\") considers the protection of your personal information fundamental. This policy explains, in plain language, what data we collect, why, how long we keep it, who it is shared with, and how to exercise your rights under Quebec's Act respecting the protection of personal information in the private sector (Law 25).",
+      "rppTitle": "1. Privacy Officer",
+      "rppBody": "In accordance with article 3.1 of Law 25, Dépanneur Nobert has appointed a privacy officer. For any question about this policy, your data, or the exercise of your rights, please contact:",
+      "rppName": "Mr. Nobert Tremblay",
+      "rppRole": "Owner and Privacy Officer",
+      "rppEmail": "{rppEmail}",
+      "rppAddress": "{adresseLigne}, {ville} (Quebec) {codePostal}",
+      "dataTitle": "2. Personal information collected",
+      "dataIntro": "We only collect information necessary for the purposes described below:",
+      "dataItems": {
+        "newsletter": {
+          "label": "Newsletter signup",
+          "fields": "Email address.",
+          "purpose": "To send you the weekly promotions flyer.",
+          "retention": "12 months after your last interaction (click, open)."
+        },
+        "contact": {
+          "label": "Contact form",
+          "fields": "Name, email address, phone (optional), message content.",
+          "purpose": "To handle your request and reply to it.",
+          "retention": "24 months after the last interaction."
+        },
+        "phoneOrder": {
+          "label": "Phone orders",
+          "fields": "First name, phone number, order content.",
+          "purpose": "To prepare your order and follow up if needed.",
+          "retention": "6 months after the last order."
+        },
+        "analytics": {
+          "label": "Audience measurement (with consent)",
+          "fields": "Truncated IP address, pages viewed, device type, source.",
+          "purpose": "To understand site traffic and improve it.",
+          "retention": "30 days for analytics cookies."
+        },
+        "cookiesEssentials": {
+          "label": "Essential cookies",
+          "fields": "Consent preferences, chosen language.",
+          "purpose": "To run the site (language, cookie choices).",
+          "retention": "Session or 12 months depending on the cookie (details in the banner)."
+        }
+      },
+      "purposesTitle": "3. Purposes and legal basis",
+      "purposesBody": "Your information is processed for specific, legitimate purposes limited to what is necessary. No personal information is used for automated profiling, resale, or third-party marketing sharing.",
+      "consentTitle": "4. Consent",
+      "consentBody": "Your consent is explicit, free, informed and revocable at any time. For non-essential cookies (analytics, interactive map), you give your agreement via the consent banner, which offers Accept, Decline or Customize with strict visual parity. No box is pre-checked.",
+      "thirdPartiesTitle": "5. Subprocessors and data sharing",
+      "thirdPartiesIntro": "We rely on service providers to run the website. These subprocessors are bound by contract to confidentiality and data security:",
+      "thirdPartiesItems": {
+        "vercel": {
+          "name": "Vercel Inc.",
+          "service": "Website hosting",
+          "country": "United States",
+          "purpose": "To serve the site's pages with performance and security."
+        },
+        "googleAnalytics": {
+          "name": "Google LLC (Analytics)",
+          "service": "Anonymized audience measurement",
+          "country": "United States",
+          "purpose": "Traffic statistics (truncated IP, pseudonymization, mandatory opt-in)."
+        },
+        "googleMaps": {
+          "name": "Google LLC (Maps)",
+          "service": "Interactive map",
+          "country": "United States",
+          "purpose": "To display the neighbourhood map on the Contact page, after consent."
+        },
+        "resend": {
+          "name": "Resend Inc.",
+          "service": "Transactional email delivery",
+          "country": "United States",
+          "purpose": "To send the flyer and form confirmations."
+        }
+      },
+      "transferTitle": "6. Transfers outside Quebec",
+      "transferBody": "Some information may be transferred to the United States (Vercel, Google, Resend). We ensure these transfers carry appropriate contractual safeguards (standard clauses, encryption in transit and at rest). You are informed of these transfers before any non-essential processing.",
+      "rightsTitle": "7. Your rights",
+      "rightsIntro": "Law 25 grants you several rights you can exercise at any time by writing to the privacy officer:",
+      "rightsItems": {
+        "access": "Right of access: obtain the list of your information held by us.",
+        "rectification": "Right of rectification: correct inaccurate data.",
+        "deletion": "Right of deletion: request the erasure of your data.",
+        "portability": "Right to portability: receive your data in a machine-readable format.",
+        "withdraw": "Right to withdraw consent: at any time, for non-essential processing.",
+        "complaint": "Right to file a complaint with the Quebec Access to Information Commission (cai.gouv.qc.ca).",
+        "deindex": "Right to de-indexing: request the cessation of the diffusion of personal information."
+      },
+      "rightsResponseTime": "We answer any request within a maximum of 30 days, in accordance with Law 25.",
+      "incidentTitle": "8. Privacy incident",
+      "incidentBody": "In the event of a privacy incident posing a serious risk of harm, Dépanneur Nobert applies a notification procedure in accordance with article 3.5 of Law 25: register, risk assessment, notification to the Access to Information Commission and to the persons concerned as soon as possible. To report an incident, write to {rppEmail}.",
+      "securityTitle": "9. Security measures",
+      "securityBody": "We apply reasonable technical and organizational measures: TLS encryption on all pages, security headers (HSTS, CSP), restricted data access, forms protected against spam, regular software dependency updates.",
+      "minorsTitle": "10. Minors",
+      "minorsBody": "The site is not intended for children under 14. No voluntary collection takes place from minors. If a parent or guardian notices an involuntary collection, they can write to {rppEmail} for immediate deletion.",
+      "updatesTitle": "11. Policy updates",
+      "updatesBody": "This policy may be updated to reflect legal or operational changes. The last update date is shown at the top of the page. In case of major changes, a visible notification will be posted on the site for 30 days.",
+      "contactTitle": "12. Contact us",
+      "contactBody": "For any question about your data, contact the privacy officer at {rppEmail}, or by postal mail at: Dépanneur Nobert inc. — Privacy Officer, {adresseLigne}, {ville} (Quebec) {codePostal}, Canada."
+    },
+    "notice": {
+      "meta": {
+        "title": "Legal Notice — Dépanneur Nobert",
+        "description": "Legal notice of Dépanneur Nobert: company name, NEQ, address, contact, hosting provider. Company legal information."
+      },
+      "title": "Legal Notice",
+      "lastUpdate": "Last updated: {dateMaj}",
+      "intro": "This legal notice informs visitors and users of the depanneur-nobert.ca website about the publisher's identity, the hosting provider, and the conditions of use of the website.",
+      "editorTitle": "1. Website publisher",
+      "editorBody": "The depanneur-nobert.ca website is published by:",
+      "editorName": "Dépanneur Nobert inc.",
+      "editorNeqLabel": "Quebec Enterprise Number (NEQ)",
+      "editorNeqValue": "{NEQ}",
+      "editorAddressLabel": "Registered office",
+      "editorAddressValue": "{adresseLigne}, {ville} (Quebec) {codePostal}, Canada",
+      "editorPhoneLabel": "Phone",
+      "editorPhoneValue": "{telephone}",
+      "editorEmailLabel": "Email",
+      "editorEmailValue": "{email}",
+      "editorRepresentativeLabel": "Publication officer",
+      "editorRepresentativeValue": "Mr. Nobert Tremblay, owner",
+      "hostingTitle": "2. Hosting",
+      "hostingBody": "The website is hosted by Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, United States. Service data flows between Canada and the United States. For more information about transfers outside Quebec, please consult our privacy policy.",
+      "ipTitle": "3. Intellectual property",
+      "ipBody": "All website content (texts, photographs, logo, trademarks, layouts) is the property of Dépanneur Nobert inc. or its partners, and is protected by copyright and trademark law. Any reproduction, distribution or use without prior written consent is prohibited.",
+      "linksTitle": "4. External links",
+      "linksBody": "The site may contain links to third-party websites. Dépanneur Nobert inc. has no control over the content of these sites and disclaims all responsibility regarding their use. Browsing third-party sites is solely under the user's responsibility.",
+      "liabilityTitle": "5. Limitation of liability",
+      "liabilityBody": "Dépanneur Nobert inc. makes every effort to ensure the accuracy and timeliness of the information published. However, no guarantee is given regarding the absence of errors or the uninterrupted availability of the site. The publisher's liability cannot be engaged for any direct or indirect damage resulting from the use of the site.",
+      "applicableLawTitle": "6. Applicable law",
+      "applicableLawBody": "This notice is subject to Quebec law and applicable Canadian law. Any dispute relating to the website will be brought before the competent courts of the judicial district of Quebec.",
+      "alcoholNoticeTitle": "7. Alcohol sales",
+      "alcoholNoticeBody": "Alcohol sales are regulated by Quebec's Régie des alcools, des courses et des jeux. The sales permit is posted in store. Sales to minors are strictly prohibited.",
+      "contactTitle": "8. Contact",
+      "contactBody": "For any question about this notice or the site, write to {email} or call {telephone}."
+    }
+  }
+}

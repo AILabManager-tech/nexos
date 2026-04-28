@@ -1,0 +1,627 @@
+{
+  "$schema": "nexos-ph1/section-manifest/v1",
+  "generated_at": "2026-04-28T00:00:00Z",
+  "client_slug": "depanneur-nobert",
+  "phase_origin": "ph1-strategy",
+  "total_sections": 24,
+  "sections": [
+    {
+      "id": "S-001",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "Hero",
+      "component_name": "Hero",
+      "i18n_namespace": "home.hero",
+      "order": 1,
+      "status": "audited",
+      "description": "Hero pleine largeur — photo authentique vitrine, H1 'Votre dépanneur de quartier à [ville]', sous-titre, CTA primaire 'Voir les promotions de la semaine' (P01) + CTA secondaire 'Trouver l'adresse'",
+      "patterns_applied": [
+        "P01",
+        "P09",
+        "P13"
+      ],
+      "dimensions": [
+        "D1",
+        "D2",
+        "D3",
+        "D7"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-002",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "PromotionsHighlight",
+      "component_name": "PromotionsHighlight",
+      "i18n_namespace": "home.promotionsHighlight",
+      "order": 2,
+      "status": "audited",
+      "description": "Aperçu top 3 promotions de la semaine sous forme de cards (Card.tsx + Badge.tsx accent jaune) avec lien 'Voir toutes les promotions'",
+      "patterns_applied": [
+        "P20"
+      ],
+      "dimensions": [
+        "D1",
+        "D3",
+        "D7"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-003",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "CategoriesProduits",
+      "component_name": "CategoriesProduits",
+      "i18n_namespace": "home.categories",
+      "order": 3,
+      "status": "audited",
+      "description": "Grille 4 catégories (Bières, Snacks, Lotto, Essentiels) — icônes Lucide, lien vers /produits#categorie",
+      "patterns_applied": [
+        "P20"
+      ],
+      "dimensions": [
+        "D1",
+        "D3"
+      ],
+      "priority": "high",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-004",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "SocialProofVoisinage",
+      "component_name": "SocialProofVoisinage",
+      "i18n_namespace": "home.socialProof",
+      "order": 4,
+      "status": "audited",
+      "description": "Témoignages voisinage (3-5) placés ADJACENTS au CTA promos (P02 — measured +2× leads). Photos prénom + citation courte authentique.",
+      "patterns_applied": [
+        "P02",
+        "P13"
+      ],
+      "dimensions": [
+        "D1",
+        "D3"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-005",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "InfosPratiques",
+      "component_name": "InfosPratiques",
+      "i18n_namespace": "home.infosPratiques",
+      "order": 5,
+      "status": "audited",
+      "description": "Bloc adresse + horaires structurés (table) + téléphone (tel: link) + Maps placeholder + bouton 'Trouver l'adresse'",
+      "patterns_applied": [
+        "P11"
+      ],
+      "dimensions": [
+        "D1",
+        "D7",
+        "D8"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-006",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "StoryBrand",
+      "component_name": "StoryBrand",
+      "i18n_namespace": "home.storyBrand",
+      "order": 6,
+      "status": "audited",
+      "description": "Storytelling court — voisin = héros, Nobert = guide de proximité. P19 cadre StoryBrand. Photo authentique propriétaire ou intérieur.",
+      "patterns_applied": [
+        "P19",
+        "P13"
+      ],
+      "dimensions": [
+        "D1",
+        "D3"
+      ],
+      "priority": "high",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-007",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "NewsletterCTA",
+      "component_name": "NewsletterCTA",
+      "i18n_namespace": "home.newsletter",
+      "order": 7,
+      "status": "audited",
+      "description": "Inline form 1 champ courriel + bouton 'M'inscrire' + checkbox consentement Loi 25 (FORM-NEWSLETTER)",
+      "patterns_applied": [],
+      "dimensions": [
+        "D1",
+        "D8"
+      ],
+      "priority": "high",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-008",
+      "page": "global",
+      "page_route": "*",
+      "name": "StickyCTAGlobal",
+      "component_name": "StickyCTA",
+      "i18n_namespace": "common.stickyCta",
+      "order": 99,
+      "status": "audited",
+      "description": "Sticky CTA global 'Voir les promotions' (P01) — affiché sur toutes les pages SAUF /promotions, bottom-right desktop / bottom full-width mobile",
+      "patterns_applied": [
+        "P01"
+      ],
+      "dimensions": [
+        "D1",
+        "D3"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-009",
+      "page": "promotions",
+      "page_route": "/[locale]/promotions",
+      "name": "PromotionsHero",
+      "component_name": "PromotionsHero",
+      "i18n_namespace": "promotions.hero",
+      "order": 1,
+      "status": "audited",
+      "description": "Hero page promotions — H1, intro courte, date 'Mise à jour le [vendredi]'",
+      "patterns_applied": [
+        "P09"
+      ],
+      "dimensions": [
+        "D1",
+        "D3",
+        "D7"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-010",
+      "page": "promotions",
+      "page_route": "/[locale]/promotions",
+      "name": "PromotionsList",
+      "component_name": "PromotionsList",
+      "i18n_namespace": "promotions.list",
+      "order": 2,
+      "status": "audited",
+      "description": "Grille complète des promotions actives (Card + Badge accent + image + dates validité). Lecture data/promotions.json + ISR weekly.",
+      "patterns_applied": [
+        "P20"
+      ],
+      "dimensions": [
+        "D1",
+        "D3",
+        "D7"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-011",
+      "page": "promotions",
+      "page_route": "/[locale]/promotions",
+      "name": "PromotionsFAQ",
+      "component_name": "PromotionsFAQ",
+      "i18n_namespace": "promotions.faq",
+      "order": 3,
+      "status": "audited",
+      "description": "FAQ courte (3 questions : durée validité, retrait en magasin, livraison disponible ?) — booste AI SEO + AI Overviews",
+      "patterns_applied": [],
+      "dimensions": [
+        "D1",
+        "D3",
+        "D7"
+      ],
+      "priority": "medium",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-012",
+      "page": "promotions",
+      "page_route": "/[locale]/promotions",
+      "name": "CrossSellProduits",
+      "component_name": "CrossSellProduits",
+      "i18n_namespace": "promotions.crossSell",
+      "order": 4,
+      "status": "audited",
+      "description": "Bandeau 'Voir tout le catalogue' avec aperçu 4 catégories — réduit la friction de navigation",
+      "patterns_applied": [],
+      "dimensions": [
+        "D1"
+      ],
+      "priority": "medium",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-013",
+      "page": "produits",
+      "page_route": "/[locale]/produits",
+      "name": "ProduitsHero",
+      "component_name": "ProduitsHero",
+      "i18n_namespace": "produits.hero",
+      "order": 1,
+      "status": "audited",
+      "description": "Hero page produits — H1, intro 'Tout ce qu'il vous faut, à deux pas' + nav d'ancres rapides catégories",
+      "patterns_applied": [
+        "P09"
+      ],
+      "dimensions": [
+        "D1",
+        "D3"
+      ],
+      "priority": "high",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-014",
+      "page": "produits",
+      "page_route": "/[locale]/produits",
+      "name": "ProduitsCategoriesNav",
+      "component_name": "ProduitsCategoriesNav",
+      "i18n_namespace": "produits.categoriesNav",
+      "order": 2,
+      "status": "audited",
+      "description": "Sticky sub-header avec ancres locales (Bières / Snacks / Lotto / Essentiels) — facilite la navigation longue page",
+      "patterns_applied": [],
+      "dimensions": [
+        "D1"
+      ],
+      "priority": "high",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-015",
+      "page": "produits",
+      "page_route": "/[locale]/produits",
+      "name": "ProduitsGalerie",
+      "component_name": "ProduitsGalerie",
+      "i18n_namespace": "produits.galerie",
+      "order": 3,
+      "status": "audited",
+      "description": "Galerie images produits par catégorie (P20 menu galerie images) — 4 sections ancrées. Alt-text descriptif obligatoire chaque produit.",
+      "patterns_applied": [
+        "P20"
+      ],
+      "dimensions": [
+        "D1",
+        "D2",
+        "D3",
+        "D7"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-016",
+      "page": "produits",
+      "page_route": "/[locale]/produits",
+      "name": "ProduitsFAQ",
+      "component_name": "ProduitsFAQ",
+      "i18n_namespace": "produits.faq",
+      "order": 4,
+      "status": "audited",
+      "description": "FAQ produits : 'Faites-vous des commandes spéciales ?', 'Acceptez-vous les commandes téléphone ?', 'Bières : avez-vous le permis ?'",
+      "patterns_applied": [],
+      "dimensions": [
+        "D1",
+        "D3",
+        "D7"
+      ],
+      "priority": "medium",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-017",
+      "page": "produits",
+      "page_route": "/[locale]/produits",
+      "name": "CrossSellPromotions",
+      "component_name": "CrossSellPromotions",
+      "i18n_namespace": "produits.crossSell",
+      "order": 5,
+      "status": "audited",
+      "description": "Bandeau 'Promotions actives cette semaine' — cross-sell direct vers /promotions",
+      "patterns_applied": [
+        "P01"
+      ],
+      "dimensions": [
+        "D1"
+      ],
+      "priority": "medium",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-018",
+      "page": "contact",
+      "page_route": "/[locale]/contact",
+      "name": "ContactHero",
+      "component_name": "ContactHero",
+      "i18n_namespace": "contact.hero",
+      "order": 1,
+      "status": "audited",
+      "description": "Hero contact — H1 + adresse en grand (lisible 80 ans) + téléphone tel: link",
+      "patterns_applied": [
+        "P11"
+      ],
+      "dimensions": [
+        "D1",
+        "D2",
+        "D7"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-019",
+      "page": "contact",
+      "page_route": "/[locale]/contact",
+      "name": "CoordonneesHoraires",
+      "component_name": "CoordonneesHoraires",
+      "i18n_namespace": "contact.coordonnees",
+      "order": 2,
+      "status": "audited",
+      "description": "Coordonnées détaillées : adresse, téléphone, courriel, horaires structurés (table accessible avec th/td) — Schema OpeningHours",
+      "patterns_applied": [
+        "P11"
+      ],
+      "dimensions": [
+        "D1",
+        "D2",
+        "D7"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-020",
+      "page": "contact",
+      "page_route": "/[locale]/contact",
+      "name": "MapsEmbed",
+      "component_name": "MapsEmbed",
+      "i18n_namespace": "contact.maps",
+      "order": 3,
+      "status": "audited",
+      "description": "Maps embed conditionnel au consent. Avant consent : placeholder image + bouton 'Charger la carte (Google Maps - États-Unis)' avec note transfert.",
+      "patterns_applied": [
+        "P11"
+      ],
+      "dimensions": [
+        "D1",
+        "D7",
+        "D8"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-021",
+      "page": "contact",
+      "page_route": "/[locale]/contact",
+      "name": "ContactForm",
+      "component_name": "ContactForm",
+      "i18n_namespace": "contact.form",
+      "order": 4,
+      "status": "audited",
+      "description": "Formulaire contact : nom, courriel, téléphone (optionnel), message, honeypot, consentement Loi 25 (FORM-CONTACT). Validation Zod + RHF + messages localisés.",
+      "patterns_applied": [],
+      "dimensions": [
+        "D1",
+        "D2",
+        "D8"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-022",
+      "page": "contact",
+      "page_route": "/[locale]/contact",
+      "name": "ContactNoteRPP",
+      "component_name": "ContactNoteRPP",
+      "i18n_namespace": "contact.rpp",
+      "order": 5,
+      "status": "audited",
+      "description": "Encadré 'Vos droits Loi 25' avec nom RPP (Nobert Tremblay), courriel RPP, lien politique-confidentialite",
+      "patterns_applied": [],
+      "dimensions": [
+        "D8"
+      ],
+      "priority": "high",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-023",
+      "page": "politique-confidentialite",
+      "page_route": "/[locale]/politique-confidentialite",
+      "name": "PolitiqueContent",
+      "component_name": "LegalDocBody",
+      "i18n_namespace": "legal.privacy",
+      "order": 1,
+      "status": "audited",
+      "description": "Contenu politique Loi 25 complet : RPP, données collectées, finalités, rétention, droits, transferts hors QC, services tiers, contact RPP. Issu de templates/privacy-policy-template.md.",
+      "patterns_applied": [],
+      "dimensions": [
+        "D8"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    },
+    {
+      "id": "S-024",
+      "page": "mentions-legales",
+      "page_route": "/[locale]/mentions-legales",
+      "name": "MentionsContent",
+      "component_name": "LegalDocBody",
+      "i18n_namespace": "legal.notice",
+      "order": 1,
+      "status": "audited",
+      "description": "Contenu mentions légales : dénomination sociale Dépanneur Nobert inc., NEQ ([NEQ]), adresse siège, courriel, hébergeur Vercel (États-Unis). Issu de templates/legal-mentions-template.md.",
+      "patterns_applied": [],
+      "dimensions": [
+        "D8"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-04-28T00:00:00Z",
+        "ph2_designed": "2026-04-28T00:00:00Z",
+        "ph3_content_ready": "2026-04-28T00:00:00Z",
+        "ph4_built": "2026-04-28T07:30:00Z",
+        "ph5_audited": "2026-04-28T17:00:00Z"
+      }
+    }
+  ]
+}

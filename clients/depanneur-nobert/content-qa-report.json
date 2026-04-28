@@ -1,0 +1,175 @@
+{
+  "$schema": "nexos-ph3/content-qa-report/v1",
+  "verdict": "PASS_WITH_WARNINGS",
+  "timestamp": "2026-04-28T00:00:00Z",
+  "client_slug": "depanneur-nobert",
+  "files_reviewed": [
+    "clients/depanneur-nobert/messages/fr.json",
+    "clients/depanneur-nobert/messages/en.json",
+    "clients/depanneur-nobert/seo-content.json"
+  ],
+  "scope": {
+    "pages_reviewed": 6,
+    "sections_reviewed": 24,
+    "i18n_keys_total_fr": 516,
+    "i18n_keys_total_en": 516,
+    "i18n_parity_fr_en": true,
+    "estimated_words_fr": 3180,
+    "estimated_words_en": 3210,
+    "languages": ["fr-CA", "en-CA"]
+  },
+  "scores": {
+    "orthography": {
+      "score": 9.7,
+      "issues": 0,
+      "details": "FR vérifié contre lexique allowed/banned (brand-identity §1.2). Accents complets sur majuscules. Tirets cadratin (—) utilisés pour les césures, virgules et tirets simples respectent la typographie québécoise."
+    },
+    "grammar": {
+      "score": 10.0,
+      "issues": 0,
+      "details": "Voix active prédominante. Phrases courtes 8-14 mots conformes brand-identity. Concordance des temps respectée (présent narratif sur StoryBrand)."
+    },
+    "tone_consistency": {
+      "score": 9.5,
+      "issues": 1,
+      "details": "Vouvoiement constant FR. Aucun terme du lexique banni détecté ('premium', 'leader', 'innovant', 'on-the-go', 'convenience store' absents du contenu marketing FR). Note : 'convenience store' apparaît UNIQUEMENT dans les meta SEO EN où c'est l'équivalent EN obligatoire (pas un breach)."
+    },
+    "seo_quality": {
+      "score": 8.5,
+      "issues": 3,
+      "details": "Tous les meta descriptions FR dans la fenêtre 134-154 chars. Tous les H1 uniques par page. 3 titres FR > 60 chars (home 67, produits 67, privacy 56) — restent < 70 chars conforme seo-strategy.json validé Ph1, mais dépassent le seuil 60 chars de l'agent seo-copywriter (warning non bloquant, justifié par le besoin de placer keyword + nom de marque)."
+    },
+    "i18n_completeness": {
+      "score": 10.0,
+      "missing_keys_fr": 0,
+      "missing_keys_en": 0,
+      "details": "Parité parfaite des 516 clés FR/EN. Variables d'interpolation identiques ({ville}/{city}, {anneeFondation}, {telephone}, {adresseLigne}, {codePostal}, {NEQ}, {email}, {rppEmail}, {currentYear}, {dateMaj}). 14 sections du manifest avec contenu i18n complet."
+    },
+    "legal_compliance": {
+      "score": 10.0,
+      "consent_texts_present": true,
+      "privacy_link": true,
+      "details": "Loi 25 100% couverte : RPP nommé (Nobert Tremblay) avec courriel + titre, 3 catégories cookies opt-in, pas de pré-coche, mentions transferts hors QC explicites (US ×4 : Vercel, Google Analytics, Google Maps, Resend), incident process actif, droits Loi 25 documentés (accès/rectification/suppression/portabilité/retrait/plainte/déréférencement)."
+    },
+    "brand_alignment": {
+      "score": 9.5,
+      "details": "Lexique allowed appliqué (voisinage, à deux pas, chaleureux, accueillant, depuis [année], passez voir, fidélité, soutenir le local). UVP primaire 7 mots respectée. Tagline 3-mots intégrée en common.brand.tagline. Anti-positionnement corporate tenu (aucun terme banni). StoryBrand respecte le cadre P19 : héros (le voisin) → guide (Nobert) → promesse (proximité)."
+    }
+  },
+  "overall_score": 9.6,
+  "issues": [
+    {
+      "id": "CR-001",
+      "severity": "warning",
+      "type": "seo_quality",
+      "location": "meta_tags.home.title_fr",
+      "current": "Dépanneur de quartier à {ville} — Promotions, bière, lotto | Nobert (67 chars)",
+      "suggested": "Conserver — prioriser keyword + brand sur la limite stricte 60 chars",
+      "note": "Au-dessus du seuil 60 chars de l'agent seo-copywriter mais sous 70 chars (cf. seo-strategy.json validé Ph1). Google rend ~580px ≈ 65-70 chars en 2026."
+    },
+    {
+      "id": "CR-002",
+      "severity": "warning",
+      "type": "seo_quality",
+      "location": "meta_tags.produits.title_fr",
+      "current": "Nos produits — Bières, snacks, lotto, essentiels | Dépanneur Nobert (67 chars)",
+      "suggested": "Conserver — alignement seo-strategy.json",
+      "note": "Idem CR-001 — au-dessus de 60 mais sous 70."
+    },
+    {
+      "id": "CR-003",
+      "severity": "info",
+      "type": "i18n_architecture",
+      "location": "home.categories.items.{key}.title (et autres maps similaires)",
+      "current": "Profondeur de clé i18n max = 6 (page.section.items.itemId.title)",
+      "suggested": "Conserver la structure clé-par-identifiant (vs index numérique) pour compatibilité next-intl + lisibilité",
+      "note": "Dépasse le seuil indicatif de 4 niveaux du content-architect, mais c'est le pattern idiomatique next-intl quand on stocke des collections nommées (catégories, témoignages, FAQ items). Justification architecturale documentée."
+    },
+    {
+      "id": "CR-004",
+      "severity": "info",
+      "type": "tone_consistency",
+      "location": "produits.faq.items.commandeTelephone",
+      "current": "Pour les habitué·es du voisinage",
+      "suggested": "Conserver — usage épicène ponctuel acceptable (cf. brand-identity §cultural_markers : 'rédaction épicène quand naturel')",
+      "note": "Le brand-identity privilégie la lisibilité. Ici l'usage du point médian est ponctuel et naturel — 1 occurrence sur 3180 mots."
+    },
+    {
+      "id": "CR-005",
+      "severity": "info",
+      "type": "kickoff_dependency",
+      "location": "Tous les fichiers (fr.json, en.json, seo-content.json)",
+      "current": "Variables {ville}, {anneeFondation}, {telephone}, {adresseLigne}, {codePostal}, {NEQ}, {email}, {rppEmail} non résolues",
+      "suggested": "Résoudre au kickoff client (cf. ph0 §7.6 et ph1 §6.1 — 6 variables CRITIQUES bloquantes Ph4 build)",
+      "note": "Les placeholders sont prévus pour interpolation runtime (next-intl) ou substitution build-time. Aucune valeur synthétique injectée — conforme garde-fou ph1 §5bis.5."
+    }
+  ],
+  "blocking_issues": [],
+  "image_assets_pending": {
+    "note": "Le contenu textuel est livrable Ph3. Les sections suivantes restent CONTENT-DEPENDENT-ON-ASSETS car leurs alt-text référencent des photos non encore fournies par le client.",
+    "sections_dependent_on_client_photos": [
+      {
+        "section_id": "S-001",
+        "alt_text_template_ready": true,
+        "photo_required": "Photo vitrine extérieure"
+      },
+      {
+        "section_id": "S-004",
+        "alt_text_template_ready": true,
+        "photo_required": "3-5 portraits voisins + consentement écrit Loi 25 art. 5"
+      },
+      {
+        "section_id": "S-006",
+        "alt_text_template_ready": true,
+        "photo_required": "Portrait Nobert OU photo intérieur"
+      },
+      {
+        "section_id": "S-015",
+        "alt_text_template_ready": true,
+        "photo_required": "~30 packshots produits (4 catégories)"
+      }
+    ],
+    "blocker_for_ph4": false,
+    "rationale": "Les templates d'alt-text sont produits avec variables {marque}, {type}, {format}, {origine}, {jeu}, {produit}, {prix}, {date}, {name}. La résolution se fait à l'injection des données data/produits.json + data/promotions.json + data/temoignages.json en Ph4."
+  },
+  "soic_dimensions_evaluated": {
+    "D2_accessibility": {
+      "score": 9.8,
+      "note": "Alt-text bilingue obligatoire planifié 100% (asset-plan §alt_text_global_policy respecté). FAQ Schema FAQPage prête. Skip-link, ARIA labels, role=alert/status couverts dans common.errors et common.forms."
+    },
+    "D5_i18n": {
+      "score": 10.0,
+      "note": "Parité 516/516 clés FR↔EN, variables identiques, hreflang FR-CA / EN-CA / x-default planifié (cf. seo-content.json §meta_tags)."
+    },
+    "D7_seo": {
+      "score": 9.0,
+      "note": "Title 51-67 chars (≤70), meta 134-154 chars FR, H1 unique × 6 pages, Schema LocalBusiness/ConvenienceStore/ItemList/FAQPage/BreadcrumbList prêts, AI crawlers permis."
+    },
+    "D8_legal": {
+      "score": 10.0,
+      "note": "Loi 25 native : RPP nommé, opt-in 3 catégories cookies (parité visuelle), 4 sous-traitants documentés (US transferts), 7 droits documentés, incident process actif, mineurs <14 ans, mises à jour notification 30 jours."
+    },
+    "D9_qualite": {
+      "score": 9.5,
+      "note": "Lexique allowed/banned respecté, voix active, phrases 8-14 mots, anti-corporate, JSON valide × 3, parité parfaite, aucun gallicisme EN détecté."
+    }
+  },
+  "approval": "PASS_WITH_WARNINGS — Contenu prêt pour Phase 4 Build. 5 warnings non bloquants documentés. Conditions Ph4 : (1) résoudre les 6 variables kickoff client, (2) injecter les données photos client (data/produits.json, data/promotions.json, data/temoignages.json), (3) générer messages/en.json final = ce fichier (déjà bilingue, pas de [EN] placeholder).",
+  "checklist": {
+    "json_valid_fr": true,
+    "json_valid_en": true,
+    "json_valid_seo": true,
+    "i18n_parity_fr_en": true,
+    "h1_unique_per_page": true,
+    "meta_120_to_155_chars_fr": true,
+    "title_under_70_chars": true,
+    "title_under_60_chars": false,
+    "ctas_specific_no_generic": true,
+    "tone_consistent_brand_identity": true,
+    "law25_consent_texts_present": true,
+    "law25_rpp_named": true,
+    "law25_third_parties_documented": true,
+    "no_dangerous_html_in_strings": true,
+    "no_secrets_or_pii_in_strings": true
+  }
+}

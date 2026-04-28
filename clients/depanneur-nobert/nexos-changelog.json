@@ -1,0 +1,232 @@
+[
+  {
+    "event": "pipeline_start",
+    "timestamp": "2026-04-28T02:09:55",
+    "agent": "orchestrator",
+    "details": {
+      "mode": "create",
+      "phases": [
+        "ph0-discovery",
+        "ph1-strategy",
+        "ph2-design",
+        "ph3-content",
+        "ph4-build",
+        "ph5-qa"
+      ]
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-04-28T02:09:55",
+    "phase": "ph0-discovery",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-04-28T02:16:19",
+    "phase": "ph0-discovery",
+    "agent": "soic",
+    "details": {
+      "mu": 7.044776119402985,
+      "threshold": 7.0,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-04-28T02:16:19",
+    "phase": "ph1-strategy",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-04-28T02:38:47",
+    "phase": "ph1-strategy",
+    "agent": "soic",
+    "details": {
+      "mu": 9.58955223880597,
+      "threshold": 8.0,
+      "iterations": 2
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-04-28T02:38:47",
+    "phase": "ph2-design",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-04-28T02:52:34",
+    "phase": "ph2-design",
+    "agent": "soic",
+    "details": {
+      "mu": 9.067164179104477,
+      "threshold": 8.0,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-04-28T02:52:34",
+    "phase": "ph3-content",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-04-28T03:07:22",
+    "phase": "ph3-content",
+    "agent": "soic",
+    "details": {
+      "mu": 9.067164179104477,
+      "threshold": 8.0,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-04-28T03:07:22",
+    "phase": "ph4-build",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "soic_gate_fail",
+    "timestamp": "2026-04-28T03:39:19",
+    "phase": "ph4-build",
+    "agent": "soic",
+    "details": {
+      "mu": 8.531746031746032,
+      "threshold": 8.0,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "pipeline_end",
+    "timestamp": "2026-04-28T03:39:19",
+    "agent": "orchestrator",
+    "details": {
+      "gates": 5,
+      "mode": "create"
+    }
+  },
+  {
+    "event": "pipeline_start",
+    "timestamp": "2026-04-28T12:17:45",
+    "agent": "orchestrator",
+    "details": {
+      "mode": "audit",
+      "phases": [
+        "ph5-qa"
+      ]
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-04-28T12:17:45",
+    "phase": "ph5-qa",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-04-28T12:17:45",
+    "agent": "auto_fixer"
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-04-28T12:17:48",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "privacy_page",
+      "target": "politique-confidentialite"
+    }
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-04-28T12:17:48",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "legal_page",
+      "target": "mentions-legales"
+    }
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-04-28T12:28:52",
+    "phase": "ph5-qa",
+    "agent": "soic",
+    "details": {
+      "mu": 9.068930041152266,
+      "threshold": 8.5,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "pipeline_end",
+    "timestamp": "2026-04-28T12:28:52",
+    "agent": "orchestrator",
+    "details": {
+      "gates": 1,
+      "mode": "audit"
+    }
+  },
+  {
+    "event": "pipeline_start",
+    "timestamp": "2026-04-28T12:59:45",
+    "agent": "orchestrator",
+    "details": {
+      "mode": "audit",
+      "phases": [
+        "ph5-qa"
+      ]
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-04-28T12:59:45",
+    "phase": "ph5-qa",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-04-28T12:59:45",
+    "agent": "auto_fixer"
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-04-28T12:59:48",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "privacy_page",
+      "target": "politique-confidentialite"
+    }
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-04-28T12:59:48",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "legal_page",
+      "target": "mentions-legales"
+    }
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-04-28T13:10:11",
+    "phase": "ph5-qa",
+    "agent": "soic",
+    "details": {
+      "mu": 9.068930041152266,
+      "threshold": 8.5,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "pipeline_end",
+    "timestamp": "2026-04-28T13:10:11",
+    "agent": "orchestrator",
+    "details": {
+      "gates": 1,
+      "mode": "audit"
+    }
+  }
+]

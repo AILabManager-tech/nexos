@@ -1,0 +1,63 @@
+[
+  {
+    "phase": "ph0-discovery",
+    "mu": 7.044776119402985,
+    "threshold": 7.0,
+    "converged": true,
+    "iterations": 1,
+    "decision": "ACCEPT",
+    "abort_reason": "",
+    "timestamp": "2026-04-28T02:16:19.479018"
+  },
+  {
+    "phase": "ph1-strategy",
+    "mu": 9.58955223880597,
+    "threshold": 8.0,
+    "converged": true,
+    "iterations": 2,
+    "decision": "ACCEPT",
+    "abort_reason": "",
+    "timestamp": "2026-04-28T02:38:47.771046"
+  },
+  {
+    "phase": "ph2-design",
+    "mu": 9.067164179104477,
+    "threshold": 8.0,
+    "converged": true,
+    "iterations": 1,
+    "decision": "ACCEPT",
+    "abort_reason": "",
+    "timestamp": "2026-04-28T02:52:34.583049"
+  },
+  {
+    "phase": "ph3-content",
+    "mu": 9.067164179104477,
+    "threshold": 8.0,
+    "converged": true,
+    "iterations": 1,
+    "decision": "ACCEPT",
+    "abort_reason": "",
+    "timestamp": "2026-04-28T03:07:22.467437"
+  },
+  {
+    "phase": "ph4-build",
+    "mu": 9.841269841269842,
+    "threshold": 8.0,
+    "converged": true,
+    "iterations": 2,
+    "decision": "ACCEPT",
+    "abort_reason": "",
+    "timestamp": "2026-04-28T12:17:33.000000",
+    "_note": "iter 2 ré-évaluée manuellement post-race-condition (anomalie A-002 SESSION_04). iter 1 originale (μ=8.53, ABORT_MAX_ITER, race condition checker tourné avant fin écriture fichiers ph4) tracée dans soic-runs.jsonl ligne 1. iter 2 (μ=9.84, 7/7 PASS) tracée ligne 2."
+  },
+  {
+    "phase": "ph5-qa",
+    "mu": 9.068930041152266,
+    "threshold": 8.5,
+    "converged": true,
+    "iterations": 1,
+    "decision": "ACCEPT",
+    "abort_reason": "",
+    "timestamp": "2026-04-28T12:28:52.957768"
+  }
+]

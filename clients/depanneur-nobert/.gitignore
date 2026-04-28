@@ -1,0 +1,9 @@
+# Build artifacts
+site/tsconfig.tsbuildinfo
+site/.next/
+site/node_modules/
+
+# Heavy tooling outputs (regénérables, déterministes)
+tooling/lighthouse.json
+
+# Garder en repo : pa11y.json, headers.json, ssl-status.json, soic-gates.json, soic-runs.jsonl, runs.jsonl, rapports .md, brief-client.json, pattern-recommendation.json, mission.json, section-manifest.json, site/* (sauf exceptions ci-dessus)

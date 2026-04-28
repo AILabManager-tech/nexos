@@ -1,0 +1,291 @@
+{
+  "$schema": "nexos-ph1/stack-decision/v1",
+  "generated_at": "2026-04-28T00:00:00Z",
+  "client_slug": "depanneur-nobert",
+  "based_on": [
+    "brief-client.json",
+    "ph0-discovery-report.md",
+    "pattern-recommendation.json",
+    "site-map-logic.json"
+  ],
+  "stack": {
+    "framework": {
+      "name": "Next.js",
+      "version": "15.x",
+      "router": "App Router",
+      "rendering_strategy": "SSG par défaut + ISR (revalidate weekly) sur /promotions ; SSR uniquement pour API routes",
+      "reason": "Standard NEXOS imposé brief (`design.stack_imposed.framework=nextjs`). SSG/ISR optimal pour vitrine + circulaire hebdo. App Router seul (Pages Router rejeté)."
+    },
+    "language": {
+      "name": "TypeScript",
+      "version": "5.x",
+      "strict_mode": true,
+      "compiler_options": {
+        "noUncheckedIndexedAccess": true,
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "exactOptionalPropertyTypes": true
+      },
+      "reason": "Standard NEXOS — type safety obligatoire. Strict mode aligne avec règles CLAUDE.md."
+    },
+    "css": {
+      "name": "Tailwind CSS",
+      "version": "3.4.x",
+      "version_rationale": "Tailwind 3.4 retenu (vs 4.x) pour stabilité écosystème (next-intl 3.x + plugins Forms/Typography). Migration 4 envisageable v2.",
+      "config_extensions": [
+        "Theme tokens issus de brand-identity.json (color_system + typography)",
+        "Plugin @tailwindcss/typography pour /politique-confidentialite + /mentions-legales",
+        "Plugin @tailwindcss/forms pour styles cohérents formulaires",
+        "Custom plugin sticky-cta utilities (P01)"
+      ],
+      "reason": "Standard NEXOS imposé brief. Utility-first compatible avec design tokens warm + responsive natif."
+    },
+    "i18n": {
+      "name": "next-intl",
+      "version": "3.x",
+      "locales": ["fr", "en"],
+      "default_locale": "fr",
+      "default_locale_strategy": "as-needed (préfixe `/en/...` ; FR sans préfixe au root)",
+      "messages_structure": "messages/{locale}.json (un fichier par langue)",
+      "reason": "Standard NEXOS imposé brief. Type-safe, intégration App Router native, hreflang automatique."
+    },
+    "testing": {
+      "unit": {
+        "tool": "Vitest",
+        "version": "2.x"
+      },
+      "component": {
+        "tool": "@testing-library/react",
+        "version": "16.x"
+      },
+      "e2e": {
+        "tool": "Playwright",
+        "version": "1.x",
+        "decision": "include",
+        "rationale": "Smoke tests Ph5 sur les 4 parcours critiques (home → promos, contact form, language switch, cookie consent flow)"
+      },
+      "coverage_target_min": "70% (lib + components/ui + composants formulaires) ; sections vitrines exemptes (visual + Lighthouse couvrent)",
+      "reason": "Standard NEXOS — Vitest rapide, ESM natif, parfait pour Next.js 15"
+    },
+    "linting_formatting": {
+      "eslint": {
+        "config": "eslint-config-next + eslint-plugin-jsx-a11y + @typescript-eslint",
+        "rules_added": ["jsx-a11y/alt-text: error", "react/no-danger: error", "no-restricted-imports: aucune lib UI exotique"]
+      },
+      "prettier": "3.x — config racine `.prettierrc.json`",
+      "stylelint": "non requis (Tailwind seul)"
+    },
+    "images": {
+      "tool": "next/image",
+      "remote_patterns": ["maps.googleapis.com (préview Maps tile au-delà du embed)"],
+      "formats": ["avif", "webp"],
+      "loader": "default Next (Vercel-optimized)",
+      "reason": "Standard NEXOS — optimisation auto, lazy loading, prevention CLS"
+    },
+    "fonts": {
+      "tool": "next/font/google",
+      "fonts_loaded": [
+        { "name": "Fraunces", "weights": [600, 700], "subsets": ["latin", "latin-ext"], "display": "swap", "variable": "--font-fraunces" },
+        { "name": "Inter", "weights": [400, 600], "subsets": ["latin", "latin-ext"], "display": "swap", "variable": "--font-inter" }
+      ],
+      "woff2_files_total": 4,
+      "self_hosted": true,
+      "reason": "next/font self-hoste les fichiers + élimine le layout shift (CLS=0). 2 familles × 2 poids = 4 woff2 (sous le plafond brand-identity)."
+    },
+    "deployment": {
+      "provider": "Vercel",
+      "regions": ["iad1 (Washington)", "yul1 (Montréal — fallback selon disponibilité)"],
+      "preview_deployments": "activés sur chaque branche feature/* + main",
+      "production_branch": "main",
+      "edge_middleware": "next-intl middleware en Edge (rapidité de redirect locale)",
+      "reason": "Standard NEXOS imposé brief (`design.stack_imposed.deploy=vercel`). CI/CD natif Next.js."
+    }
+  },
+  "optional_additions": [
+    {
+      "name": "Framer Motion",
+      "version": "11.x",
+      "reason": "P17 scroll-triggered animations recommandé par pattern-recommender (cf. pattern-recommendation.json). Animations sobres (fade-in, hover) avec respect prefers-reduced-motion.",
+      "impact_kb": 15,
+      "decision": "include",
+      "scope_d_application": "Réservé aux sections home (StoryBrand, SocialProof) + transition page (subtile). Interdit sur Header/Footer pour éviter CLS persistante.",
+      "alternatives_considered": ["CSS-only animations", "GSAP", "Lottie"],
+      "alternatives_rejected_reason": "CSS-only insuffisant pour intersection-observer staggered ; GSAP + 30 KB ; Lottie non requis (pas d'illustration animée)"
+    },
+    {
+      "name": "React Hook Form + Zod",
+      "version": "7.x + 3.x",
+      "reason": "Validation type-safe des 2 formulaires (newsletter + contact) avec messages localisés FR/EN.",
+      "impact_kb": 12,
+      "decision": "include",
+      "alternatives_considered": ["formik", "validation native HTML5"],
+      "alternatives_rejected_reason": "formik abandonné (maintenance) ; HTML5 insuffisant pour i18n des erreurs"
+    },
+    {
+      "name": "@vercel/analytics + @vercel/speed-insights",
+      "decision": "include_conditional",
+      "rationale": "Analytics Vercel premier-party (RUM Core Web Vitals) — chargé uniquement après consentement analytics du cookie banner.",
+      "impact_kb": 6,
+      "loi_25_compliance": "Activation conditionnelle au consent — chargement async post-acceptation"
+    },
+    {
+      "name": "Lucide React",
+      "decision": "include",
+      "version": "0.x",
+      "rationale": "Iconographie cohérente Lucide alignée brief (cf. ph0 §6.5 — décision Discovery)",
+      "impact_kb": "tree-shaken par Next (~3 KB pour 20 icônes utilisées)"
+    },
+    {
+      "name": "isomorphic-dompurify",
+      "decision": "include_if_needed",
+      "rationale": "Réservé si rendu HTML utilisateur (commentaires, témoignages). Phase 1 : aucun champ HTML user-submitted prévu — décision en attente Ph3 content. Inclusion conditionnelle Ph4."
+    }
+  ],
+  "explicitly_rejected": [
+    { "name": "jQuery", "reason": "Obsolète, incompatible philosophie React, +90 KB. Aucun usage justifiable en 2026." },
+    { "name": "styled-components / Emotion", "reason": "Runtime CSS-in-JS — impact perf SSR + double maintenance avec Tailwind imposé." },
+    { "name": "Pages Router (Next.js)", "reason": "Legacy — App Router est le standard depuis Next 13.4, exigé CLAUDE.md." },
+    { "name": "WordPress / Headless CMS", "reason": "Site vitrine 6 pages + circulaire hebdo gérable par fichier JSON commit + ISR. CMS = surcoût injustifié pour propriétaire solo." },
+    { "name": "Auth/NextAuth", "reason": "Aucun espace authentifié — site vitrine pure. Inclusion serait surdimensionnée." },
+    { "name": "Prisma / Drizzle / DB", "reason": "Aucune persistance dynamique — promotions = JSON commit + ISR. Inscription newsletter = relais email (Mailgun/Resend) sans DB locale." },
+    { "name": "GSAP", "reason": "Framer Motion suffisant pour le scope P17 ; GSAP +30 KB sans pay-off." },
+    { "name": "Sanity / Contentful", "reason": "Idem WordPress — surcoût pour 6 pages + 1 circulaire hebdo." }
+  ],
+  "external_services": [
+    {
+      "service": "Google Maps Embed API",
+      "purpose": "Carte du commerce sur /contact",
+      "loi_25_treatment": "Embed conditionnel post-consentement (catégorie 'marketing'). Avant consent : placeholder statique avec lien externe.",
+      "data_transfer": "États-Unis (documenté politique-confidentialite)"
+    },
+    {
+      "service": "Google Analytics 4",
+      "purpose": "Mesure d'audience anonymisée",
+      "loi_25_treatment": "Chargement conditionnel post-consentement (catégorie 'analytics'). anonymizeIp=true, IP tronquée.",
+      "data_transfer": "États-Unis (documenté politique-confidentialite)"
+    },
+    {
+      "service": "Resend (ou Mailgun)",
+      "purpose": "Relais email pour FORM-CONTACT et FORM-NEWSLETTER",
+      "decision": "Resend recommandé (DX Next.js + free tier 100 emails/jour suffisant)",
+      "loi_25_treatment": "Sous-traitant — clause confidentialité dans politique-confidentialite. Données : courriel + nom + message uniquement."
+    }
+  ],
+  "security_config": {
+    "next_config": {
+      "poweredByHeader": false,
+      "reactStrictMode": true,
+      "compress": true,
+      "headers": [
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(self), interest-cohort=()" },
+        { "key": "X-DNS-Prefetch-Control", "value": "on" }
+      ]
+    },
+    "vercel_json_headers_overlay": "Cf. templates/vercel-headers.template.json — vercel.json source de vérité au déploiement",
+    "csp_strategy": {
+      "approach": "Nonce-based CSP via middleware Next.js",
+      "default_src": "'self'",
+      "script_src": "'self' 'nonce-{nonce}' https://www.googletagmanager.com https://www.google-analytics.com",
+      "img_src": "'self' data: https://maps.googleapis.com https://maps.gstatic.com https://www.google-analytics.com",
+      "frame_src": "https://www.google.com/maps/embed",
+      "connect_src": "'self' https://www.google-analytics.com https://api.resend.com",
+      "font_src": "'self' data:",
+      "style_src": "'self' 'unsafe-inline'",
+      "rationale": "CSP strict mais permissif sur sources légitimes (Maps + GA4 + Resend). 'unsafe-inline' style toléré (Tailwind utilities + next/font css) — script_src reste nonce-only."
+    },
+    "rate_limiting": {
+      "scope": "API routes uniquement (/api/newsletter, /api/contact)",
+      "implementation": "Middleware avec @vercel/kv (token bucket) ou simple in-memory si < 50 req/min en prod",
+      "limits_doc": "5 newsletter/IP/10min ; 3 contact/IP/30min (cf. site-map-logic.json data_flow)"
+    }
+  },
+  "performance_budget": {
+    "first_load_js_max_kb": 180,
+    "lcp_mobile_target_seconds": 2.5,
+    "cls_target": 0.1,
+    "inp_target_ms": 200,
+    "image_per_kb_max": 200,
+    "fonts_woff2_max": 4,
+    "rationale": "Audience tous âges + 3G/4G ruraux → budget strict. Framer Motion (15 KB) + RHF/Zod (12 KB) + Lucide (3 KB) + analytics (6 KB conditional) = ~36 KB extra sur stack base."
+  },
+  "dependencies_count_estimate": {
+    "production": 9,
+    "development": 11,
+    "production_max_target": 10,
+    "rationale": "next, react, react-dom, next-intl, framer-motion, react-hook-form, zod, lucide-react, isomorphic-dompurify (conditional). Sous le plafond NEXOS de 10 prod-deps."
+  },
+  "adr_log": [
+    {
+      "id": "ADR-001",
+      "title": "Tailwind CSS 3.4 retenu (vs 4.x)",
+      "status": "accepted",
+      "date": "2026-04-28",
+      "context": "CLAUDE.md mentionne Tailwind 3.4+ ou 4. Tailwind 4 introduit un changement de pipeline (Lightning CSS, JIT-only) et certains plugins next-intl/Forms/Typography ne sont pas encore stables sur 4.x.",
+      "decision": "Adopter 3.4 pour stabilité écosystème en avril 2026.",
+      "consequences": "Migration 4.x à prévoir v2 (+effort estimé 4-8h). Bénéfice : zéro friction stack.",
+      "alternatives_considered": ["Tailwind 4.x"]
+    },
+    {
+      "id": "ADR-002",
+      "title": "Framer Motion inclus pour P17",
+      "status": "accepted",
+      "date": "2026-04-28",
+      "context": "Pattern-recommender retient P17 scroll-triggered animations (tier 1 SEC-03). Le pattern dépasse les capacités CSS-only pour les staggered intersection-observer animations.",
+      "decision": "Inclure Framer Motion 11.x, scope strict (sections home uniquement, pas Header/Footer).",
+      "consequences": "+15 KB bundle. Risque CLS mitigé par viewport-only + reduced-motion fallback.",
+      "alternatives_considered": ["CSS-only intersection-observer", "GSAP", "react-intersection-observer + CSS"]
+    },
+    {
+      "id": "ADR-003",
+      "title": "Pas de CMS ni de DB",
+      "status": "accepted",
+      "date": "2026-04-28",
+      "context": "Site vitrine 6 pages, propriétaire solo, circulaire hebdo. Aucun contenu user-generated.",
+      "decision": "Promotions stockées en `data/promotions.json` (commit + ISR weekly). Newsletter relayée par Resend (sans DB locale).",
+      "consequences": "Édition circulaire = éditer JSON + commit (Nobert peut être formé en 30 min). Pas d'admin UI à maintenir. Coût opérationnel zéro.",
+      "alternatives_considered": ["Sanity headless", "Notion API", "Google Sheets API", "Contentful free"]
+    },
+    {
+      "id": "ADR-004",
+      "title": "Resend retenu pour relais email",
+      "status": "accepted",
+      "date": "2026-04-28",
+      "context": "Besoin d'envoyer FORM-CONTACT à nobert@depanneur-nobert.ca + relayer FORM-NEWSLETTER. Free tier suffisant pour le volume attendu (< 50 contacts/jour).",
+      "decision": "Resend pour DX Next.js (SDK officiel, React Email templates). Mailgun considéré mais DX inférieur.",
+      "consequences": "Sous-traitant US documenté politique-confidentialite. API key en env Vercel.",
+      "alternatives_considered": ["Mailgun", "SendGrid", "Postmark", "AWS SES"]
+    },
+    {
+      "id": "ADR-005",
+      "title": "Maps embed conditionnel au consent",
+      "status": "accepted",
+      "date": "2026-04-28",
+      "context": "Google Maps = transfert hors QC (US). Loi 25 exige consentement explicite avant tout transfert.",
+      "decision": "Avant consent : placeholder statique (image générique + bouton 'Charger la carte'). Après consent 'marketing' : embed Maps complet.",
+      "consequences": "UX légèrement dégradée pour visiteurs qui refusent — mitigée par lien direct 'Ouvrir dans Google Maps' en fallback.",
+      "alternatives_considered": ["OpenStreetMap embed (sans transfert US)", "Maps embed forcé (non-conforme Loi 25)"]
+    }
+  ],
+  "soic_alignment": {
+    "D1_architecture": "Stack cohérent App Router + ISR + middleware ; structure validée par scaffold-planner",
+    "D2_typescript": "Strict mode complet, no any toléré, exactOptionalPropertyTypes",
+    "D3_performance": "Bundle budget 180 KB first-load + Framer scope strict + fonts self-hosted",
+    "D4_securite": "poweredByHeader=false, headers complets, CSP nonce, rate-limiting API",
+    "D5_i18n": "next-intl FR/EN, middleware Edge, sitemap multilingue",
+    "D8_legal": "Maps + GA4 conditionnels au consent, RPP documenté, retention spécifiée par formulaire",
+    "D9_qualite": "5 ADR rédigés, choix tracés, alternatives documentées"
+  },
+  "checklist": {
+    "stack_complete_versions": true,
+    "optional_additions_justified": true,
+    "rejected_dependencies_documented": true,
+    "security_headers_configured": true,
+    "bundle_impact_estimated": true,
+    "adr_for_non_standard_choices": true,
+    "json_valid": true
+  }
+}

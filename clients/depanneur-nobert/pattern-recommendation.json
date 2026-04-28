@@ -1,6 +1,6 @@
 {
   "$schema": "nexos-ph1/pattern-recommendation/v1",
-  "generated_at": "2026-04-17T05:35:00Z",
+  "generated_at": "2026-04-28T00:00:00Z",
   "client_slug": "depanneur-nobert",
   "sector_id": "SEC-03",
   "sector_name": "Restauration (mapping par proximité — commerce de proximité alimentaire)",

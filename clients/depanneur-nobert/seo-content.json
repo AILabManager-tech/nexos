@@ -1,0 +1,520 @@
+{
+  "$schema": "nexos-ph3/seo-content/v1",
+  "generated_at": "2026-04-28T00:00:00Z",
+  "client_slug": "depanneur-nobert",
+  "based_on": [
+    "seo-strategy.json",
+    "brand-identity.json",
+    "messages/fr.json"
+  ],
+  "notes": {
+    "title_length_policy": "Titres FR cibles 51-67 chars (Ph1 seo-strategy validé). Le seuil <60 chars de l'agent seo-copywriter est dépassé volontairement sur 3 pages (home, produits, privacy) pour conserver les keywords stratégiques + nom de marque ; tous restent < 70 chars (cf. SERP rendering 2026 ~580 px ≈ 65-70 chars).",
+    "kickoff_placeholders": "Les variables {ville}, {anneeFondation}, {NEQ}, {telephone}, {adresseLigne}, {codePostal} restent en placeholder ; toute autre faille SEO découlerait d'un kickoff incomplet."
+  },
+  "meta_tags": [
+    {
+      "page": "home",
+      "route_fr": "/",
+      "route_en": "/en",
+      "title_fr": "Dépanneur de quartier à {ville} — Promotions, bière, lotto | Nobert",
+      "title_en": "Neighbourhood Convenience Store in {city} — Beer, Lotto | Nobert",
+      "title_length_fr": 67,
+      "title_length_en": 64,
+      "description_fr": "Le dépanneur de quartier authentique de {ville}. Promotions de la semaine, bières, lotto, snacks. Service personnel à deux pas de chez vous. Passez nous voir.",
+      "description_en": "The authentic neighbourhood convenience store in {city}. Weekly promotions, beer, lotto, snacks. Personal service close to home. Drop by anytime.",
+      "description_length_fr": 153,
+      "description_length_en": 147,
+      "canonical_fr": "https://depanneur-nobert.ca/",
+      "canonical_en": "https://depanneur-nobert.ca/en",
+      "hreflang": {
+        "fr-CA": "https://depanneur-nobert.ca/",
+        "en-CA": "https://depanneur-nobert.ca/en",
+        "x-default": "https://depanneur-nobert.ca/"
+      },
+      "og_title_fr": "Dépanneur Nobert — Le coin du voisinage à {ville}",
+      "og_title_en": "Dépanneur Nobert — Your neighbourhood corner in {city}",
+      "og_description_fr": "Promotions hebdo, bières, lotto, snacks. Le dépanneur de quartier authentique, depuis {anneeFondation}.",
+      "og_description_en": "Weekly promotions, beer, lotto, snacks. The authentic neighbourhood convenience store, since {anneeFondation}.",
+      "twitter_card": "summary_large_image"
+    },
+    {
+      "page": "promotions",
+      "route_fr": "/promotions",
+      "route_en": "/en/promotions",
+      "title_fr": "Promotions de la semaine — Dépanneur Nobert {ville}",
+      "title_en": "Weekly Promotions — Dépanneur Nobert {city}",
+      "title_length_fr": 51,
+      "title_length_en": 44,
+      "description_fr": "Découvrez les promotions de la semaine au Dépanneur Nobert de {ville} : bières, snacks, essentiels du quotidien à prix réduits. Mises à jour chaque vendredi.",
+      "description_en": "Discover this week's promotions at Dépanneur Nobert in {city}: beer, snacks, essentials at reduced prices. Updated every Friday.",
+      "description_length_fr": 154,
+      "description_length_en": 128,
+      "canonical_fr": "https://depanneur-nobert.ca/promotions",
+      "canonical_en": "https://depanneur-nobert.ca/en/promotions",
+      "hreflang": {
+        "fr-CA": "https://depanneur-nobert.ca/promotions",
+        "en-CA": "https://depanneur-nobert.ca/en/promotions",
+        "x-default": "https://depanneur-nobert.ca/promotions"
+      },
+      "og_title_fr": "Promotions de la semaine — Dépanneur Nobert",
+      "og_title_en": "Weekly Promotions — Dépanneur Nobert",
+      "og_description_fr": "Bières, snacks et essentiels en promo cette semaine au Dépanneur Nobert de {ville}.",
+      "og_description_en": "Beer, snacks and essentials on sale this week at Dépanneur Nobert in {city}.",
+      "twitter_card": "summary_large_image"
+    },
+    {
+      "page": "produits",
+      "route_fr": "/produits",
+      "route_en": "/en/products",
+      "title_fr": "Nos produits — Bières, snacks, lotto, essentiels | Dépanneur Nobert",
+      "title_en": "Our Products — Beer, Snacks, Lotto, Essentials | Dépanneur Nobert",
+      "title_length_fr": 67,
+      "title_length_en": 65,
+      "description_fr": "Catalogue complet du Dépanneur Nobert à {ville} : bières (microbrasseries et grandes marques), snacks, lotto, essentiels du quotidien. Service local depuis {anneeFondation}.",
+      "description_en": "Full catalog at Dépanneur Nobert in {city}: beer (craft and major brands), snacks, lotto, daily essentials. Serving the neighbourhood since {anneeFondation}.",
+      "description_length_fr": 154,
+      "description_length_en": 153,
+      "canonical_fr": "https://depanneur-nobert.ca/produits",
+      "canonical_en": "https://depanneur-nobert.ca/en/products",
+      "hreflang": {
+        "fr-CA": "https://depanneur-nobert.ca/produits",
+        "en-CA": "https://depanneur-nobert.ca/en/products",
+        "x-default": "https://depanneur-nobert.ca/produits"
+      },
+      "og_title_fr": "Le catalogue du Dépanneur Nobert à {ville}",
+      "og_title_en": "Dépanneur Nobert's catalog in {city}",
+      "og_description_fr": "Bières, snacks, lotto, essentiels — tout pour le quotidien du voisinage.",
+      "og_description_en": "Beer, snacks, lotto, essentials — everything for the neighbourhood's day.",
+      "twitter_card": "summary_large_image"
+    },
+    {
+      "page": "contact",
+      "route_fr": "/contact",
+      "route_en": "/en/contact",
+      "title_fr": "Adresse, horaires, téléphone — Dépanneur Nobert {ville}",
+      "title_en": "Address, Hours, Phone — Dépanneur Nobert {city}",
+      "title_length_fr": 54,
+      "title_length_en": 48,
+      "description_fr": "Trouvez le Dépanneur Nobert : adresse à {ville}, horaires d'ouverture, téléphone et carte Google. Ouvert tous les jours pour le voisinage.",
+      "description_en": "Find Dépanneur Nobert: address in {city}, opening hours, phone number and Google map. Open every day for the neighbourhood.",
+      "description_length_fr": 137,
+      "description_length_en": 124,
+      "canonical_fr": "https://depanneur-nobert.ca/contact",
+      "canonical_en": "https://depanneur-nobert.ca/en/contact",
+      "hreflang": {
+        "fr-CA": "https://depanneur-nobert.ca/contact",
+        "en-CA": "https://depanneur-nobert.ca/en/contact",
+        "x-default": "https://depanneur-nobert.ca/contact"
+      },
+      "og_title_fr": "Nous joindre — Dépanneur Nobert",
+      "og_title_en": "Contact — Dépanneur Nobert",
+      "og_description_fr": "Adresse, horaires et téléphone du Dépanneur Nobert à {ville}.",
+      "og_description_en": "Address, hours and phone for Dépanneur Nobert in {city}.",
+      "twitter_card": "summary_large_image"
+    },
+    {
+      "page": "politique-confidentialite",
+      "route_fr": "/politique-confidentialite",
+      "route_en": "/en/privacy-policy",
+      "title_fr": "Politique de confidentialité (Loi 25) — Dépanneur Nobert",
+      "title_en": "Privacy Policy (Law 25) — Dépanneur Nobert",
+      "title_length_fr": 56,
+      "title_length_en": 43,
+      "description_fr": "Politique de confidentialité du Dépanneur Nobert conforme à la Loi 25 du Québec : données collectées, finalités, rétention, droits, RPP.",
+      "description_en": "Privacy policy of Dépanneur Nobert compliant with Quebec's Law 25: data collected, purposes, retention, rights, privacy officer.",
+      "description_length_fr": 138,
+      "description_length_en": 128,
+      "canonical_fr": "https://depanneur-nobert.ca/politique-confidentialite",
+      "canonical_en": "https://depanneur-nobert.ca/en/privacy-policy",
+      "hreflang": {
+        "fr-CA": "https://depanneur-nobert.ca/politique-confidentialite",
+        "en-CA": "https://depanneur-nobert.ca/en/privacy-policy",
+        "x-default": "https://depanneur-nobert.ca/politique-confidentialite"
+      },
+      "og_title_fr": "Politique de confidentialité — Dépanneur Nobert",
+      "og_title_en": "Privacy Policy — Dépanneur Nobert",
+      "og_description_fr": "Politique conforme Loi 25 (Québec) : RPP, données, finalités, rétention, droits.",
+      "og_description_en": "Quebec Law 25 compliant policy: privacy officer, data, purposes, retention, rights.",
+      "twitter_card": "summary",
+      "noindex": false
+    },
+    {
+      "page": "mentions-legales",
+      "route_fr": "/mentions-legales",
+      "route_en": "/en/legal-notice",
+      "title_fr": "Mentions légales — Dépanneur Nobert",
+      "title_en": "Legal Notice — Dépanneur Nobert",
+      "title_length_fr": 35,
+      "title_length_en": 32,
+      "description_fr": "Mentions légales du Dépanneur Nobert : dénomination sociale, NEQ, adresse, contact, hébergeur. Informations légales de l'entreprise.",
+      "description_en": "Legal notice of Dépanneur Nobert: company name, NEQ, address, contact, hosting provider. Company legal information.",
+      "description_length_fr": 134,
+      "description_length_en": 115,
+      "canonical_fr": "https://depanneur-nobert.ca/mentions-legales",
+      "canonical_en": "https://depanneur-nobert.ca/en/legal-notice",
+      "hreflang": {
+        "fr-CA": "https://depanneur-nobert.ca/mentions-legales",
+        "en-CA": "https://depanneur-nobert.ca/en/legal-notice",
+        "x-default": "https://depanneur-nobert.ca/mentions-legales"
+      },
+      "og_title_fr": "Mentions légales — Dépanneur Nobert",
+      "og_title_en": "Legal Notice — Dépanneur Nobert",
+      "og_description_fr": "Identité de l'éditeur, hébergeur, propriété intellectuelle.",
+      "og_description_en": "Editor identity, hosting provider, intellectual property.",
+      "twitter_card": "summary",
+      "noindex": false
+    }
+  ],
+  "heading_optimization": [
+    {
+      "page": "home",
+      "h1_fr": "Votre dépanneur de quartier à {ville}",
+      "h1_en": "Your neighbourhood convenience store in {city}",
+      "h1_keyword_fr": "dépanneur de quartier {ville}",
+      "h1_keyword_en": "neighbourhood convenience store {city}",
+      "h2s_fr": [
+        { "text": "Les promotions de la semaine, en un coup d'œil", "section": "S-002", "keyword": "promotions de la semaine {ville}" },
+        { "text": "Quatre rayons, mille petits plaisirs", "section": "S-003", "keyword": "bières snacks lotto essentiels {ville}" },
+        { "text": "Pas des avis. Des voisins.", "section": "S-004", "keyword": "voisinage {ville}" },
+        { "text": "Adresse, horaires, téléphone", "section": "S-005", "keyword": "dépanneur {ville} adresse horaires" },
+        { "text": "Vous, le quartier, et un dépanneur qui vous connaît", "section": "S-006", "keyword": "dépanneur de quartier {ville}" },
+        { "text": "Recevez la circulaire du vendredi", "section": "S-007", "keyword": "circulaire dépanneur {ville}" }
+      ],
+      "h2s_en": [
+        { "text": "This week's promotions, at a glance", "section": "S-002" },
+        { "text": "Four aisles, a thousand small pleasures", "section": "S-003" },
+        { "text": "Not reviews. Neighbours.", "section": "S-004" },
+        { "text": "Address, hours, phone", "section": "S-005" },
+        { "text": "You, the neighbourhood, and a store that knows you", "section": "S-006" },
+        { "text": "Get the Friday flyer", "section": "S-007" }
+      ]
+    },
+    {
+      "page": "promotions",
+      "h1_fr": "Les promotions de la semaine",
+      "h1_en": "This week's promotions",
+      "h1_keyword_fr": "promotions de la semaine {ville}",
+      "h1_keyword_en": "weekly promotions {city}",
+      "h2s_fr": [
+        { "text": "Toutes les promos en cours", "section": "S-010", "keyword": "rabais dépanneur {ville}" },
+        { "text": "Vos questions sur les promotions", "section": "S-011", "keyword": "FAQ promotions dépanneur" },
+        { "text": "Et notre catalogue complet ?", "section": "S-012", "keyword": "catalogue dépanneur {ville}" }
+      ],
+      "h2s_en": [
+        { "text": "All current promotions", "section": "S-010" },
+        { "text": "Your questions about promotions", "section": "S-011" },
+        { "text": "Want the full catalog?", "section": "S-012" }
+      ]
+    },
+    {
+      "page": "produits",
+      "h1_fr": "Nos produits, pour tout votre quotidien",
+      "h1_en": "Everything you need, every day",
+      "h1_keyword_fr": "produits dépanneur {ville}",
+      "h1_keyword_en": "convenience store products {city}",
+      "h2s_fr": [
+        { "text": "Bières du coin et grandes marques", "section": "S-015 #bieres", "keyword": "bières microbrasserie {ville}" },
+        { "text": "Snacks froids, snacks chauds", "section": "S-015 #snacks", "keyword": "snack froid chaud {ville}" },
+        { "text": "Lotto Québec et gratteux", "section": "S-015 #lotto", "keyword": "loto québec {ville}" },
+        { "text": "Les essentiels du quotidien", "section": "S-015 #essentiels", "keyword": "essentiels dépanneur {ville}" },
+        { "text": "Vos questions sur nos produits", "section": "S-016", "keyword": "FAQ dépanneur {ville}" },
+        { "text": "Promotions actives cette semaine", "section": "S-017", "keyword": "promotions {ville}" }
+      ],
+      "h2s_en": [
+        { "text": "Local craft beer and major brands", "section": "S-015 #bieres" },
+        { "text": "Cold snacks, hot snacks", "section": "S-015 #snacks" },
+        { "text": "Loto-Québec tickets and scratch cards", "section": "S-015 #lotto" },
+        { "text": "Daily essentials", "section": "S-015 #essentiels" },
+        { "text": "Your questions about our products", "section": "S-016" },
+        { "text": "Active promotions this week", "section": "S-017" }
+      ]
+    },
+    {
+      "page": "contact",
+      "h1_fr": "Nous joindre, nous trouver",
+      "h1_en": "Reach us, find us",
+      "h1_keyword_fr": "dépanneur {ville} contact",
+      "h1_keyword_en": "convenience store {city} contact",
+      "h2s_fr": [
+        { "text": "Coordonnées et horaires", "section": "S-019", "keyword": "dépanneur {ville} horaires" },
+        { "text": "Nous trouver sur la carte", "section": "S-020", "keyword": "dépanneur {ville} carte" },
+        { "text": "Une question ? Écrivez-nous", "section": "S-021", "keyword": "contact dépanneur {ville}" },
+        { "text": "Vos droits, votre tranquillité", "section": "S-022", "keyword": "Loi 25 dépanneur {ville}" }
+      ],
+      "h2s_en": [
+        { "text": "Contact and hours", "section": "S-019" },
+        { "text": "Find us on the map", "section": "S-020" },
+        { "text": "A question? Write to us", "section": "S-021" },
+        { "text": "Your rights, your peace of mind", "section": "S-022" }
+      ]
+    },
+    {
+      "page": "politique-confidentialite",
+      "h1_fr": "Politique de confidentialité",
+      "h1_en": "Privacy Policy",
+      "h1_keyword_fr": "politique de confidentialité Loi 25",
+      "h1_keyword_en": "privacy policy Quebec Law 25",
+      "h2s_fr": [
+        "Responsable de la protection des renseignements personnels",
+        "Renseignements personnels collectés",
+        "Finalités et fondement légal",
+        "Consentement",
+        "Sous-traitants et partage des données",
+        "Transferts hors Québec",
+        "Vos droits",
+        "Incident de confidentialité",
+        "Mesures de sécurité",
+        "Mineurs",
+        "Mises à jour de la politique",
+        "Pour nous joindre"
+      ],
+      "h2s_en": [
+        "Privacy Officer",
+        "Personal information collected",
+        "Purposes and legal basis",
+        "Consent",
+        "Subprocessors and data sharing",
+        "Transfers outside Quebec",
+        "Your rights",
+        "Privacy incident",
+        "Security measures",
+        "Minors",
+        "Policy updates",
+        "Contact us"
+      ]
+    },
+    {
+      "page": "mentions-legales",
+      "h1_fr": "Mentions légales",
+      "h1_en": "Legal Notice",
+      "h2s_fr": [
+        "Éditeur du site",
+        "Hébergement",
+        "Propriété intellectuelle",
+        "Liens externes",
+        "Limitation de responsabilité",
+        "Droit applicable",
+        "Vente de boissons alcoolisées",
+        "Contact"
+      ],
+      "h2s_en": [
+        "Publisher",
+        "Hosting",
+        "Intellectual property",
+        "External links",
+        "Limitation of liability",
+        "Applicable law",
+        "Alcohol sales",
+        "Contact"
+      ]
+    }
+  ],
+  "alt_texts": [
+    {
+      "image": "hero-vitrine",
+      "section": "S-001",
+      "alt_fr": "La devanture chaleureuse du Dépanneur Nobert dans le quartier de {ville}, lumière dorée du matin",
+      "alt_en": "The warm storefront of Dépanneur Nobert in the {city} neighbourhood, golden morning light",
+      "seo_keyword_included": true,
+      "decorative": false
+    },
+    {
+      "image": "promo-card-template",
+      "section": "S-002",
+      "alt_fr_template": "{produit} — promotion de la semaine au Dépanneur Nobert",
+      "alt_en_template": "{produit} — this week's promotion at Dépanneur Nobert",
+      "seo_keyword_included": true,
+      "decorative": false
+    },
+    {
+      "image": "categorie-bieres",
+      "section": "S-003",
+      "alt_fr": "Pictogramme d'une chope de bière",
+      "alt_en": "Beer mug pictogram",
+      "decorative": false
+    },
+    {
+      "image": "voisin-portrait-template",
+      "section": "S-004",
+      "alt_fr_template": "Portrait de {name}, voisin et client fidèle du Dépanneur Nobert",
+      "alt_en_template": "Portrait of {name}, neighbour and regular at Dépanneur Nobert",
+      "decorative": false,
+      "consent_note": "Loi 25 art. 5 — consentement écrit obligatoire avant publication"
+    },
+    {
+      "image": "maps-placeholder",
+      "section": "S-005, S-020",
+      "alt_fr": "Carte du quartier de {ville} montrant l'emplacement du Dépanneur Nobert",
+      "alt_en": "Neighbourhood map of {city} showing Dépanneur Nobert's location",
+      "decorative": false
+    },
+    {
+      "image": "story-portrait-nobert",
+      "section": "S-006",
+      "alt_fr": "Nobert Tremblay, propriétaire, derrière le comptoir de son dépanneur à {ville}",
+      "alt_en": "Nobert Tremblay, owner, behind the counter of his store in {city}",
+      "decorative": false
+    },
+    {
+      "image": "promotions-hero-shelves",
+      "section": "S-009",
+      "alt_fr": "Étagères de promotions hebdomadaires au Dépanneur Nobert",
+      "alt_en": "Weekly promotions shelves at Dépanneur Nobert",
+      "decorative": false
+    },
+    {
+      "image": "produits-galerie-bieres",
+      "section": "S-015 #bieres",
+      "alt_fr_template": "{marque} {type}, format {format}, microbrasserie {origine}",
+      "alt_en_template": "{marque} {type}, {format} format, {origine} brewery",
+      "filename_convention": "kebab-case sans accents (ex: biere-ipa-la-souche-750ml.webp)",
+      "decorative": false
+    },
+    {
+      "image": "produits-galerie-snacks",
+      "section": "S-015 #snacks",
+      "alt_fr_template": "{marque} {produit}, format {format}",
+      "alt_en_template": "{marque} {produit}, {format} format",
+      "decorative": false
+    },
+    {
+      "image": "produits-galerie-lotto",
+      "section": "S-015 #lotto",
+      "alt_fr_template": "Billet Loto-Québec — {jeu}",
+      "alt_en_template": "Loto-Québec ticket — {jeu}",
+      "decorative": false
+    },
+    {
+      "image": "produits-galerie-essentiels",
+      "section": "S-015 #essentiels",
+      "alt_fr_template": "{marque} {produit}, format {format}",
+      "alt_en_template": "{marque} {produit}, {format} format",
+      "decorative": false
+    },
+    {
+      "image": "og-image-template",
+      "section": "global",
+      "alt_fr": "Bandeau Open Graph — Dépanneur Nobert, le coin du voisinage à {ville}",
+      "alt_en": "Open Graph banner — Dépanneur Nobert, your neighbourhood corner in {city}",
+      "decorative": false
+    }
+  ],
+  "structured_data_content": {
+    "organization": {
+      "name": "Dépanneur Nobert",
+      "legal_name": "Dépanneur Nobert inc.",
+      "description_fr": "Dépanneur de quartier à {ville}, exploité depuis {anneeFondation} par Nobert Tremblay. Bières (microbrasseries et grandes marques), snacks, lotto, essentiels du quotidien.",
+      "description_en": "Neighbourhood convenience store in {city}, operated since {anneeFondation} by Nobert Tremblay. Beer (craft and major brands), snacks, lotto, daily essentials."
+    },
+    "local_business": {
+      "@type": "ConvenienceStore",
+      "name": "Dépanneur Nobert",
+      "description_fr": "Le dépanneur de quartier authentique de {ville} : promotions hebdo, bières du coin, lotto, snacks, service personnel à deux pas.",
+      "description_en": "The authentic neighbourhood convenience store of {city}: weekly promotions, local beer, lotto, snacks, personal service close to home.",
+      "price_range": "$",
+      "currency": "CAD",
+      "payment_accepted": "Cash, Credit Card, Debit Card",
+      "area_served_fr": "{ville} et quartiers adjacents",
+      "area_served_en": "{city} and adjacent neighbourhoods"
+    },
+    "faq_items": [
+      {
+        "page": "promotions",
+        "question_fr": "Combien de temps durent les promotions ?",
+        "answer_fr": "Chaque promotion est valide une semaine, du vendredi au jeudi suivant. Certaines durent plus longtemps — la date de fin est toujours affichée sur la fiche.",
+        "question_en": "How long do the promotions last?",
+        "answer_en": "Each promotion is valid for one week, from Friday to the following Thursday. Some run longer — the end date is always shown on the card."
+      },
+      {
+        "page": "promotions",
+        "question_fr": "Puis-je réserver un produit en promotion ?",
+        "answer_fr": "Oui, appelez-nous au {telephone}. Nous mettons l'article de côté pour la journée. Aucun acompte demandé pour le voisinage régulier.",
+        "question_en": "Can I reserve a promotional item?",
+        "answer_en": "Yes, call us at {telephone}. We'll set the item aside for the day. No deposit required for the regular neighbourhood."
+      },
+      {
+        "page": "promotions",
+        "question_fr": "Faites-vous la livraison ?",
+        "answer_fr": "Pas pour l'instant. Le Dépanneur Nobert reste un commerce de proximité — nous comptons sur votre passage en magasin pour garder le contact.",
+        "question_en": "Do you offer delivery?",
+        "answer_en": "Not at the moment. Dépanneur Nobert stays a neighbourhood shop — we count on your in-store visits to keep the connection."
+      },
+      {
+        "page": "produits",
+        "question_fr": "Faites-vous des commandes spéciales ?",
+        "answer_fr": "Souvent, oui. Demandez à Nobert directement en magasin ou par téléphone au {telephone} — il vous dit en deux minutes si la commande est possible.",
+        "question_en": "Do you take special orders?",
+        "answer_en": "Often, yes. Ask Nobert in store or call {telephone} — he'll tell you in two minutes if the order is possible."
+      },
+      {
+        "page": "produits",
+        "question_fr": "Acceptez-vous les commandes par téléphone ?",
+        "answer_fr": "Oui, pour les habitué·es du voisinage. Appelez-nous au {telephone}, on prépare l'ordre et vous passez chercher quand vous pouvez.",
+        "question_en": "Do you take phone orders?",
+        "answer_en": "Yes, for the neighbourhood regulars. Call {telephone}, we'll prepare the order and you can pick it up when convenient."
+      },
+      {
+        "page": "produits",
+        "question_fr": "Avez-vous le permis pour vendre de la bière ?",
+        "answer_fr": "Oui, le permis SAQ est affiché en magasin. La vente de boissons alcoolisées est interdite aux personnes mineures, conformément à la loi québécoise.",
+        "question_en": "Do you have a permit to sell beer?",
+        "answer_en": "Yes, the SAQ permit is posted in store. Alcohol sales to minors are prohibited under Quebec law."
+      }
+    ]
+  },
+  "keyword_density_check": [
+    {
+      "page": "home",
+      "primary_keyword": "dépanneur {ville}",
+      "occurrences": 6,
+      "estimated_word_count": 480,
+      "density_percent": 1.25,
+      "status": "optimal"
+    },
+    {
+      "page": "promotions",
+      "primary_keyword": "promotions dépanneur {ville}",
+      "occurrences": 5,
+      "estimated_word_count": 380,
+      "density_percent": 1.31,
+      "status": "optimal"
+    },
+    {
+      "page": "produits",
+      "primary_keyword": "bière dépanneur {ville}",
+      "occurrences": 4,
+      "estimated_word_count": 520,
+      "density_percent": 0.77,
+      "status": "optimal"
+    },
+    {
+      "page": "contact",
+      "primary_keyword": "dépanneur {ville} adresse",
+      "occurrences": 5,
+      "estimated_word_count": 320,
+      "density_percent": 1.56,
+      "status": "optimal"
+    }
+  ],
+  "internal_linking_plan": {
+    "home": ["/promotions", "/produits", "/contact", "/politique-confidentialite"],
+    "promotions": ["/", "/produits", "/contact"],
+    "produits": ["/", "/promotions", "/contact"],
+    "contact": ["/", "/politique-confidentialite", "/mentions-legales"],
+    "politique-confidentialite": ["/", "/contact"],
+    "mentions-legales": ["/", "/contact"]
+  },
+  "checklist": {
+    "title_per_page": true,
+    "meta_per_page": true,
+    "h1_unique_per_page": true,
+    "alt_texts_planned_for_all_images": true,
+    "structured_data_planned": true,
+    "keyword_density_in_range": true,
+    "hreflang_canonical_planned": true,
+    "json_valid": true,
+    "title_under_60_chars": false,
+    "title_under_70_chars": true,
+    "meta_120_to_155_chars_fr": true
+  }
+}

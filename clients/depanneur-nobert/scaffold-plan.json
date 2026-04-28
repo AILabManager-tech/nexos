@@ -1,0 +1,658 @@
+{
+  "$schema": "nexos-ph1/scaffold-plan/v1",
+  "generated_at": "2026-04-28T00:00:00Z",
+  "client_slug": "depanneur-nobert",
+  "project_name": "depanneur-nobert-site",
+  "framework": "Next.js 15 (App Router)",
+  "package_manager": "npm",
+  "node_version": ">=20.10.0",
+  "based_on": [
+    "site-map-logic.json",
+    "brand-identity.json",
+    "seo-strategy.json",
+    "stack-decision.json"
+  ],
+  "directory_structure": {
+    "app/[locale]/": "Pages et layouts (App Router) — un dossier par route, en français (kebab-case)",
+    "app/[locale]/promotions/": "Page promotions hebdo (ISR weekly)",
+    "app/[locale]/produits/": "Page catalogue produits (galerie P20)",
+    "app/[locale]/contact/": "Page contact + formulaire",
+    "app/[locale]/politique-confidentialite/": "Politique Loi 25",
+    "app/[locale]/mentions-legales/": "Mentions légales",
+    "app/api/": "API routes (newsletter + contact uniquement)",
+    "app/api/newsletter/": "Endpoint POST inscription infolettre",
+    "app/api/contact/": "Endpoint POST formulaire contact",
+    "components/ui/": "Composants UI atomiques (Button, Card, Input, etc.)",
+    "components/sections/": "Sections de page (Hero, PromotionsHighlight, SocialProof, etc.)",
+    "components/layout/": "Layout components (Header, Footer, StickyCTA, CookieBanner)",
+    "lib/": "Utilitaires + helpers (formatters, schemas Zod, JSON-LD builders)",
+    "messages/": "Fichiers i18n (fr.json, en.json)",
+    "data/": "Données statiques (promotions.json, produits.json, horaires.json)",
+    "public/": "Assets statiques (favicon, images, og-image.png, robots assets)",
+    "public/images/": "Photos vitrine, intérieur, produits — kebab-case",
+    "styles/": "globals.css + tokens (color/typography vars CSS)",
+    "types/": "Types TypeScript partagés (Promotion, Produit, Horaires, etc.)",
+    "i18n/": "Configuration next-intl (routing.ts, request.ts)",
+    "tests/": "Tests E2E Playwright (smoke flows)",
+    "templates/jsonld/": "Templates JSON-LD (LocalBusiness, ItemList) — copiés depuis NEXOS"
+  },
+  "files": [
+    {
+      "path": "package.json",
+      "type": "config",
+      "description": "Dépendances + scripts (dev/build/start/test/lint/typecheck)",
+      "priority": "critical"
+    },
+    {
+      "path": "tsconfig.json",
+      "type": "config",
+      "description": "TypeScript strict + paths alias `@/*`",
+      "priority": "critical"
+    },
+    {
+      "path": "next.config.mjs",
+      "type": "config",
+      "description": "Next config avec headers sécurité, poweredByHeader=false, i18n via plugin next-intl",
+      "dependencies": ["next-intl/plugin"],
+      "priority": "critical"
+    },
+    {
+      "path": "tailwind.config.ts",
+      "type": "config",
+      "description": "Theme étendu : colors (brand-identity), fontFamily (Fraunces+Inter via CSS vars), plugins typography/forms",
+      "priority": "critical"
+    },
+    {
+      "path": "postcss.config.js",
+      "type": "config",
+      "description": "PostCSS pour Tailwind + autoprefixer",
+      "priority": "critical"
+    },
+    {
+      "path": ".eslintrc.json",
+      "type": "config",
+      "description": "ESLint Next + jsx-a11y + TS rules",
+      "priority": "critical"
+    },
+    {
+      "path": ".prettierrc.json",
+      "type": "config",
+      "description": "Prettier 3.x config",
+      "priority": "high"
+    },
+    {
+      "path": ".env.example",
+      "type": "config",
+      "description": "Template variables : RESEND_API_KEY, NEXT_PUBLIC_GA_ID, NEXT_PUBLIC_MAPS_KEY, NEXT_PUBLIC_SITE_URL",
+      "priority": "critical"
+    },
+    {
+      "path": ".gitignore",
+      "type": "config",
+      "description": "Standard Next.js + .env.local + .vercel",
+      "priority": "critical"
+    },
+    {
+      "path": "vercel.json",
+      "type": "config",
+      "description": "Headers sécurité (overlay), redirects, regions",
+      "priority": "critical"
+    },
+    {
+      "path": "middleware.ts",
+      "type": "middleware",
+      "description": "next-intl middleware (locale detection + redirect) + nonce CSP",
+      "dependencies": ["next-intl"],
+      "priority": "critical"
+    },
+    {
+      "path": "i18n/routing.ts",
+      "type": "config",
+      "description": "Définition locales/defaultLocale next-intl",
+      "priority": "critical"
+    },
+    {
+      "path": "i18n/request.ts",
+      "type": "config",
+      "description": "Chargement messages dynamique selon locale",
+      "priority": "critical"
+    },
+    {
+      "path": "messages/fr.json",
+      "type": "i18n",
+      "description": "Dictionnaire FR (toutes clés home.*, promotions.*, produits.*, contact.*, common.*, legal.*)",
+      "priority": "critical"
+    },
+    {
+      "path": "messages/en.json",
+      "type": "i18n",
+      "description": "Dictionnaire EN (parité stricte avec fr.json)",
+      "priority": "critical"
+    },
+    {
+      "path": "app/[locale]/layout.tsx",
+      "type": "layout",
+      "description": "Root layout : NextIntlClientProvider, fonts (Fraunces+Inter), metadata par défaut, Header, Footer, StickyCTA, CookieConsentBanner",
+      "dependencies": ["next-intl", "next/font/google"],
+      "priority": "critical"
+    },
+    {
+      "path": "app/[locale]/page.tsx",
+      "type": "page",
+      "description": "Homepage — Hero, PromotionsHighlight, CategoriesProduits, SocialProofVoisinage, InfosPratiques, StoryBrand, NewsletterCTA",
+      "i18n_namespace": "home",
+      "sections": ["S-001", "S-002", "S-003", "S-004", "S-005", "S-006", "S-007"],
+      "priority": "critical"
+    },
+    {
+      "path": "app/[locale]/promotions/page.tsx",
+      "type": "page",
+      "description": "Liste promotions hebdo — ISR revalidate 604800",
+      "i18n_namespace": "promotions",
+      "sections": ["S-009", "S-010", "S-011", "S-012"],
+      "priority": "critical"
+    },
+    {
+      "path": "app/[locale]/produits/page.tsx",
+      "type": "page",
+      "description": "Catalogue produits par catégories (P20 menu galerie images)",
+      "i18n_namespace": "produits",
+      "sections": ["S-013", "S-014", "S-015", "S-016", "S-017"],
+      "priority": "high"
+    },
+    {
+      "path": "app/[locale]/contact/page.tsx",
+      "type": "page",
+      "description": "Coordonnées + horaires + Maps + formulaire contact",
+      "i18n_namespace": "contact",
+      "sections": ["S-018", "S-019", "S-020", "S-021", "S-022"],
+      "priority": "critical"
+    },
+    {
+      "path": "app/[locale]/politique-confidentialite/page.tsx",
+      "type": "page",
+      "description": "Politique Loi 25 (générée depuis templates/privacy-policy-template.md)",
+      "i18n_namespace": "legal.privacy",
+      "sections": ["S-023"],
+      "priority": "critical"
+    },
+    {
+      "path": "app/[locale]/mentions-legales/page.tsx",
+      "type": "page",
+      "description": "Mentions légales (générées depuis templates/legal-mentions-template.md)",
+      "i18n_namespace": "legal.notice",
+      "sections": ["S-024"],
+      "priority": "critical"
+    },
+    {
+      "path": "app/[locale]/not-found.tsx",
+      "type": "page",
+      "description": "Page 404 personnalisée — ton chaleureux + retour home",
+      "i18n_namespace": "common.notFound",
+      "priority": "high"
+    },
+    {
+      "path": "app/[locale]/error.tsx",
+      "type": "page",
+      "description": "Error boundary client — fallback gracieux",
+      "priority": "high"
+    },
+    {
+      "path": "app/[locale]/loading.tsx",
+      "type": "page",
+      "description": "Loading UI partagé (skeleton crème)",
+      "priority": "medium"
+    },
+    {
+      "path": "app/sitemap.ts",
+      "type": "seo",
+      "description": "Sitemap dynamique 12 URLs (6 routes × 2 locales) avec hreflang",
+      "priority": "critical"
+    },
+    {
+      "path": "app/robots.ts",
+      "type": "seo",
+      "description": "Robots.txt dynamique — Allow GPTBot/ClaudeBot/PerplexityBot",
+      "priority": "critical"
+    },
+    {
+      "path": "app/manifest.ts",
+      "type": "seo",
+      "description": "Web App Manifest — theme #8B4513, background #FFF8E7",
+      "priority": "medium"
+    },
+    {
+      "path": "app/api/newsletter/route.ts",
+      "type": "api",
+      "description": "POST inscription infolettre — Zod validation + Resend send + rate limit",
+      "dependencies": ["zod", "resend"],
+      "priority": "critical"
+    },
+    {
+      "path": "app/api/contact/route.ts",
+      "type": "api",
+      "description": "POST formulaire contact — Zod validation + Resend send + rate limit + honeypot check",
+      "dependencies": ["zod", "resend"],
+      "priority": "critical"
+    },
+    {
+      "path": "components/ui/Button.tsx",
+      "type": "component",
+      "description": "Bouton avec variants primary/secondary/ghost et sizes sm/md/lg, support `asChild`",
+      "props": ["variant", "size", "disabled", "asChild"],
+      "priority": "critical"
+    },
+    {
+      "path": "components/ui/Card.tsx",
+      "type": "component",
+      "description": "Card container (surface + border + radius) — utilisé pour produits + promos",
+      "priority": "critical"
+    },
+    {
+      "path": "components/ui/Input.tsx",
+      "type": "component",
+      "description": "Input text/email avec label, message d'erreur, aria-* complets",
+      "priority": "critical"
+    },
+    {
+      "path": "components/ui/Textarea.tsx",
+      "type": "component",
+      "description": "Textarea pour message contact",
+      "priority": "high"
+    },
+    {
+      "path": "components/ui/Checkbox.tsx",
+      "type": "component",
+      "description": "Checkbox custom (consentement Loi 25 dans formulaires)",
+      "priority": "high"
+    },
+    {
+      "path": "components/ui/Badge.tsx",
+      "type": "component",
+      "description": "Badge accent (#FFD700 + text #2A1810) — promos / nouveau / arrivage",
+      "priority": "high"
+    },
+    {
+      "path": "components/ui/Container.tsx",
+      "type": "component",
+      "description": "Container responsive (max-w-7xl + padding latéral)",
+      "priority": "critical"
+    },
+    {
+      "path": "components/ui/Section.tsx",
+      "type": "component",
+      "description": "Wrapper section (alternance background/surface, scroll-triggered fade-in via Framer Motion)",
+      "priority": "high"
+    },
+    {
+      "path": "components/layout/Header.tsx",
+      "type": "component",
+      "description": "Header sticky : logo wordmark Fraunces, main nav (4 items), language switcher, telephone CTA desktop",
+      "priority": "critical"
+    },
+    {
+      "path": "components/layout/Footer.tsx",
+      "type": "component",
+      "description": "Footer 3 colonnes (Naviguer / Infos pratiques / Légal) + copyright + Loi 25 note",
+      "priority": "critical"
+    },
+    {
+      "path": "components/layout/StickyCTA.tsx",
+      "type": "component",
+      "description": "Sticky CTA 'Voir les promotions' (P01) — bottom-right desktop, bottom full-width mobile, masqué sur /promotions",
+      "priority": "critical"
+    },
+    {
+      "path": "components/layout/CookieConsentBanner.tsx",
+      "type": "component",
+      "description": "Bandeau consentement Loi 25 opt-in (3 catégories, parité visuelle Accept/Refuser/Personnaliser) — adapté de templates/cookie-consent-component.tsx",
+      "priority": "critical"
+    },
+    {
+      "path": "components/layout/LanguageSwitcher.tsx",
+      "type": "component",
+      "description": "Toggle FR/EN preserving path",
+      "priority": "high"
+    },
+    {
+      "path": "components/sections/Hero.tsx",
+      "type": "component",
+      "description": "Hero home : photo authentique vitrine, H1, sous-titre, CTA primaire 'Voir les promotions', CTA secondaire 'Trouver l'adresse'",
+      "section_id": "S-001",
+      "priority": "critical"
+    },
+    {
+      "path": "components/sections/PromotionsHighlight.tsx",
+      "type": "component",
+      "description": "Aperçu top 3 promos de la semaine (cards) + lien 'Voir toutes les promotions'",
+      "section_id": "S-002",
+      "priority": "critical"
+    },
+    {
+      "path": "components/sections/CategoriesProduits.tsx",
+      "type": "component",
+      "description": "Grille 4 catégories (Bières, Snacks, Lotto, Essentiels) avec icônes Lucide + lien /produits",
+      "section_id": "S-003",
+      "priority": "high"
+    },
+    {
+      "path": "components/sections/SocialProofVoisinage.tsx",
+      "type": "component",
+      "description": "Témoignages voisinage (3-5) — placés adjacents au CTA promos (P02)",
+      "section_id": "S-004",
+      "priority": "critical"
+    },
+    {
+      "path": "components/sections/InfosPratiques.tsx",
+      "type": "component",
+      "description": "Horaires + adresse + téléphone + lien Maps (placeholder pré-consent)",
+      "section_id": "S-005",
+      "priority": "critical"
+    },
+    {
+      "path": "components/sections/StoryBrand.tsx",
+      "type": "component",
+      "description": "Storytelling propriétaire / quartier (P19) — court, authentique, pas de stock photo",
+      "section_id": "S-006",
+      "priority": "high"
+    },
+    {
+      "path": "components/sections/NewsletterCTA.tsx",
+      "type": "component",
+      "description": "Inline form inscription infolettre + consentement Loi 25",
+      "section_id": "S-007",
+      "priority": "high"
+    },
+    {
+      "path": "components/sections/PromotionsHero.tsx",
+      "type": "component",
+      "description": "Hero page /promotions — H1 + date de mise à jour + intro courte",
+      "section_id": "S-009",
+      "priority": "critical"
+    },
+    {
+      "path": "components/sections/PromotionsList.tsx",
+      "type": "component",
+      "description": "Grille complète des promotions actives (cards Card.tsx + Badge.tsx)",
+      "section_id": "S-010",
+      "priority": "critical"
+    },
+    {
+      "path": "components/sections/PromotionsFAQ.tsx",
+      "type": "component",
+      "description": "FAQ courte (3 questions) sur les promos (validité, retrait, etc.) — booste AI SEO",
+      "section_id": "S-011",
+      "priority": "medium"
+    },
+    {
+      "path": "components/sections/CrossSellProduits.tsx",
+      "type": "component",
+      "description": "Bandeau 'Voir tout le catalogue' avec aperçu 4 catégories",
+      "section_id": "S-012",
+      "priority": "medium"
+    },
+    {
+      "path": "components/sections/ProduitsHero.tsx",
+      "type": "component",
+      "description": "Hero page /produits — H1 + intro catégories",
+      "section_id": "S-013",
+      "priority": "high"
+    },
+    {
+      "path": "components/sections/ProduitsCategoriesNav.tsx",
+      "type": "component",
+      "description": "Nav d'ancres locales par catégorie (Bières / Snacks / Lotto / Essentiels) — sticky sub-header",
+      "section_id": "S-014",
+      "priority": "high"
+    },
+    {
+      "path": "components/sections/ProduitsGalerie.tsx",
+      "type": "component",
+      "description": "Galerie images produits par catégorie (P20) — alt-text descriptif obligatoire",
+      "section_id": "S-015",
+      "priority": "critical"
+    },
+    {
+      "path": "components/sections/ProduitsFAQ.tsx",
+      "type": "component",
+      "description": "FAQ produits (livraison ? réservation ? commande téléphone ?)",
+      "section_id": "S-016",
+      "priority": "medium"
+    },
+    {
+      "path": "components/sections/CrossSellPromotions.tsx",
+      "type": "component",
+      "description": "Bandeau 'Promotions actives cette semaine' — cross-sell vers /promotions",
+      "section_id": "S-017",
+      "priority": "medium"
+    },
+    {
+      "path": "components/sections/ContactHero.tsx",
+      "type": "component",
+      "description": "Hero contact — H1 + adresse en gros (lisible)",
+      "section_id": "S-018",
+      "priority": "critical"
+    },
+    {
+      "path": "components/sections/CoordonneesHoraires.tsx",
+      "type": "component",
+      "description": "Bloc coordonnées + horaires structurés (table accessible) + tel: link",
+      "section_id": "S-019",
+      "priority": "critical"
+    },
+    {
+      "path": "components/sections/MapsEmbed.tsx",
+      "type": "component",
+      "description": "Maps embed conditionnel au consent + placeholder pré-consent (image + bouton Charger)",
+      "section_id": "S-020",
+      "priority": "critical"
+    },
+    {
+      "path": "components/sections/ContactForm.tsx",
+      "type": "component",
+      "description": "Formulaire contact React Hook Form + Zod, consentement Loi 25, honeypot, messages localisés",
+      "section_id": "S-021",
+      "priority": "critical"
+    },
+    {
+      "path": "components/sections/ContactNoteRPP.tsx",
+      "type": "component",
+      "description": "Encadré 'Vos droits Loi 25' avec lien politique-confidentialite",
+      "section_id": "S-022",
+      "priority": "high"
+    },
+    {
+      "path": "components/sections/LegalDocBody.tsx",
+      "type": "component",
+      "description": "Composant générique de rendu Markdown pour politique + mentions (Tailwind Typography)",
+      "section_id": "S-023,S-024",
+      "priority": "critical"
+    },
+    {
+      "path": "lib/jsonld.ts",
+      "type": "utility",
+      "description": "Builders JSON-LD typés (LocalBusiness, ItemList, BreadcrumbList) — consommés par generateMetadata",
+      "priority": "critical"
+    },
+    {
+      "path": "lib/schemas.ts",
+      "type": "utility",
+      "description": "Schemas Zod (NewsletterFormSchema, ContactFormSchema)",
+      "dependencies": ["zod"],
+      "priority": "critical"
+    },
+    {
+      "path": "lib/email.ts",
+      "type": "utility",
+      "description": "Wrapper Resend pour envoi formulaires (templates inline minimaux)",
+      "dependencies": ["resend"],
+      "priority": "critical"
+    },
+    {
+      "path": "lib/rateLimit.ts",
+      "type": "utility",
+      "description": "Token bucket simple (in-memory ou @vercel/kv si dispo)",
+      "priority": "high"
+    },
+    {
+      "path": "lib/cookieConsent.ts",
+      "type": "utility",
+      "description": "Hook + helpers de consentement (lecture/écriture localStorage, événements custom)",
+      "priority": "critical"
+    },
+    {
+      "path": "lib/analytics.ts",
+      "type": "utility",
+      "description": "Wrapper GA4 conditionnel + event helpers (track('cta_promotions_click'))",
+      "priority": "high"
+    },
+    {
+      "path": "lib/promotions.ts",
+      "type": "utility",
+      "description": "Lecture data/promotions.json + filtre actives par date",
+      "priority": "critical"
+    },
+    {
+      "path": "lib/produits.ts",
+      "type": "utility",
+      "description": "Lecture data/produits.json + groupement par catégorie",
+      "priority": "high"
+    },
+    {
+      "path": "lib/horaires.ts",
+      "type": "utility",
+      "description": "Lecture data/horaires.json + helpers (estOuvertMaintenant, prochaineFermeture)",
+      "priority": "high"
+    },
+    {
+      "path": "lib/cn.ts",
+      "type": "utility",
+      "description": "Wrapper clsx + tailwind-merge",
+      "priority": "high"
+    },
+    {
+      "path": "data/promotions.json",
+      "type": "data",
+      "description": "Promotions hebdo (id, titre fr/en, description, prix, date_debut, date_fin, image, categorie)",
+      "priority": "critical"
+    },
+    {
+      "path": "data/produits.json",
+      "type": "data",
+      "description": "Catalogue produits par catégorie (id, nom fr/en, description, image, alt_text fr/en)",
+      "priority": "high"
+    },
+    {
+      "path": "data/horaires.json",
+      "type": "data",
+      "description": "Horaires structurés (à fixer kickoff) + jours fériés exceptions",
+      "priority": "critical"
+    },
+    {
+      "path": "data/temoignages.json",
+      "type": "data",
+      "description": "Témoignages voisinage (nom/prénom, citation fr/en, photo optionnelle)",
+      "priority": "high"
+    },
+    {
+      "path": "types/index.ts",
+      "type": "types",
+      "description": "Types Promotion, Produit, Horaires, Categorie, Temoignage, Locale",
+      "priority": "critical"
+    },
+    {
+      "path": "styles/globals.css",
+      "type": "style",
+      "description": "Tailwind directives + CSS custom properties (color tokens) + base styles",
+      "priority": "critical"
+    },
+    {
+      "path": "public/favicon.ico",
+      "type": "asset",
+      "description": "Favicon multi-tailles",
+      "priority": "high"
+    },
+    {
+      "path": "public/icon-192.png",
+      "type": "asset",
+      "description": "Manifest icon 192×192",
+      "priority": "medium"
+    },
+    {
+      "path": "public/icon-512.png",
+      "type": "asset",
+      "description": "Manifest icon 512×512",
+      "priority": "medium"
+    },
+    {
+      "path": "public/apple-touch-icon.png",
+      "type": "asset",
+      "description": "Apple touch icon 180×180",
+      "priority": "medium"
+    },
+    {
+      "path": "public/og-image.png",
+      "type": "asset",
+      "description": "Open Graph 1200×630 — palette warm, wordmark Dépanneur Nobert",
+      "priority": "high"
+    },
+    {
+      "path": "public/maps-placeholder.webp",
+      "type": "asset",
+      "description": "Image placeholder Maps (avant consent) — vue statique sobre",
+      "priority": "high"
+    },
+    {
+      "path": "tests/smoke.spec.ts",
+      "type": "test",
+      "description": "Smoke E2E Playwright : home loads, language switch, CTA promos, contact form, cookie consent flow",
+      "priority": "high"
+    },
+    {
+      "path": "README.md",
+      "type": "doc",
+      "description": "README projet : install + dev + build + variables env + procédure update circulaire (Nobert-friendly)",
+      "priority": "high"
+    }
+  ],
+  "total_files": 78,
+  "files_critical": 41,
+  "files_high": 21,
+  "files_medium": 8,
+  "files_low": 0,
+  "rules_applied": {
+    "no_src_dir": true,
+    "app_router_only": true,
+    "loading_per_page_section": "loading.tsx + error.tsx + not-found.tsx au niveau [locale]",
+    "shared_types_in_types_dir": true,
+    "max_one_subdir_in_components": "components/ui, components/sections, components/layout (1 niveau)",
+    "absolute_imports_via_alias": "@/* configuré dans tsconfig"
+  },
+  "templates_referenced_from_nexos": [
+    "templates/vercel-headers.template.json",
+    "templates/next-config.template.mjs",
+    "templates/cookie-consent-component.tsx",
+    "templates/privacy-policy-template.md",
+    "templates/legal-mentions-template.md",
+    "templates/sitemap.template.xml",
+    "templates/robots.template.txt",
+    "templates/og-image.template.svg"
+  ],
+  "soic_alignment": {
+    "D1_architecture": "App Router structure conforme Next 15, séparation pages/components/lib/data",
+    "D2_typescript": "tsconfig strict, types partagés dans /types, pas de any",
+    "D3_performance": "Composants atomiques, ISR sur /promotions, fonts self-hosted",
+    "D4_securite": "vercel.json + headers next.config + middleware nonce CSP",
+    "D5_i18n": "i18n/* + middleware + messages/* + alternates par page",
+    "D7_seo": "sitemap.ts + robots.ts + manifest.ts + lib/jsonld.ts",
+    "D8_legal": ".env.example sans secrets + politique + mentions + cookie banner + RPP"
+  },
+  "checklist": {
+    "all_required_files_present": true,
+    "every_file_has_type_description_priority": true,
+    "directory_structure_coherent": true,
+    "no_orphan_files": true,
+    "naming_conventions_respected": true,
+    "json_valid": true
+  }
+}

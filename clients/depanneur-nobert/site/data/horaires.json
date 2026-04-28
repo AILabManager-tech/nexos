@@ -1,0 +1,12 @@
+{
+  "regular": [
+    { "day": "monday",    "open": "06:00", "close": "23:00" },
+    { "day": "tuesday",   "open": "06:00", "close": "23:00" },
+    { "day": "wednesday", "open": "06:00", "close": "23:00" },
+    { "day": "thursday",  "open": "06:00", "close": "23:00" },
+    { "day": "friday",    "open": "06:00", "close": "00:00" },
+    { "day": "saturday",  "open": "07:00", "close": "00:00" },
+    { "day": "sunday",    "open": "07:00", "close": "23:00" }
+  ],
+  "exceptions": []
+}

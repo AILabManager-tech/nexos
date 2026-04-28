@@ -1,0 +1,599 @@
+{
+  "common": {
+    "brand": {
+      "name": "Dépanneur Nobert",
+      "shortName": "Nobert",
+      "tagline": "Ton dépanneur. Ton quartier.",
+      "uvp": "Le dépanneur de quartier authentique, depuis {anneeFondation}",
+      "promise": "Tout ce qu'il vous faut, à deux pas de chez vous — avec le sourire de Nobert."
+    },
+    "nav": {
+      "home": "Accueil",
+      "promotions": "Promotions",
+      "produits": "Produits",
+      "contact": "Contact",
+      "skipToContent": "Aller au contenu principal",
+      "openMenu": "Ouvrir le menu",
+      "closeMenu": "Fermer le menu",
+      "currentLang": "Français",
+      "switchLang": "English"
+    },
+    "footer": {
+      "columnNavigate": "Naviguer",
+      "columnInfos": "Infos pratiques",
+      "columnLegal": "Légal",
+      "linkPrivacy": "Politique de confidentialité",
+      "linkLegal": "Mentions légales",
+      "linkRpp": "Vos droits Loi 25",
+      "address": "{adresseLigne}, {ville} (Québec) {codePostal}",
+      "phone": "Téléphone : {telephone}",
+      "email": "Courriel : {email}",
+      "hoursLabel": "Horaires d'ouverture",
+      "copyright": "© {currentYear} Dépanneur Nobert inc. Tous droits réservés.",
+      "madeWithCare": "Fait avec soin pour le voisinage de {ville}."
+    },
+    "buttons": {
+      "viewPromotions": "Voir les promotions",
+      "viewWeekPromotions": "Voir les promotions de la semaine",
+      "findAddress": "Trouver l'adresse",
+      "callUs": "Appeler",
+      "subscribe": "M'inscrire",
+      "send": "Envoyer",
+      "cancel": "Annuler",
+      "back": "Retour",
+      "loadMap": "Charger la carte",
+      "viewAllProducts": "Voir tout le catalogue",
+      "viewAllPromotions": "Voir toutes les promotions",
+      "openHours": "Voir nos horaires"
+    },
+    "forms": {
+      "labelName": "Votre nom",
+      "labelEmail": "Votre courriel",
+      "labelPhone": "Téléphone (facultatif)",
+      "labelMessage": "Votre message",
+      "labelConsent": "J'accepte que mes renseignements soient utilisés pour répondre à ma demande, conformément à la politique de confidentialité.",
+      "placeholderName": "Prénom et nom",
+      "placeholderEmail": "vous@exemple.ca",
+      "placeholderPhone": "418 555-0000",
+      "placeholderMessage": "En quoi pouvons-nous vous être utiles ?",
+      "required": "Ce champ est requis.",
+      "invalidEmail": "Adresse courriel invalide.",
+      "invalidPhone": "Numéro de téléphone invalide.",
+      "consentRequired": "Votre consentement est nécessaire pour traiter votre demande.",
+      "messageMinLength": "Votre message doit contenir au moins 10 caractères.",
+      "submitting": "Envoi en cours…",
+      "successTitle": "Message bien reçu",
+      "successMessage": "Merci, nous vous reviendrons rapidement. Bonne journée du voisinage.",
+      "errorTitle": "Une petite erreur",
+      "errorMessage": "Le message n'a pas pu être envoyé. Veuillez réessayer ou nous appeler au {telephone}.",
+      "honeypotLabel": "Laissez ce champ vide",
+      "linkPrivacy": "Politique de confidentialité"
+    },
+    "consent": {
+      "bannerTitle": "Vos témoins, votre choix",
+      "bannerBody": "Nous utilisons des témoins pour faire fonctionner le site et, avec votre accord, mesurer son audience. Vous pouvez accepter, refuser ou personnaliser. Vous gardez la main à tout moment.",
+      "bannerLearnMore": "En savoir plus dans la politique de confidentialité",
+      "categoryEssentialsTitle": "Essentiels",
+      "categoryEssentialsBody": "Nécessaires au bon fonctionnement du site. Toujours actifs.",
+      "categoryAnalyticsTitle": "Statistiques",
+      "categoryAnalyticsBody": "Mesurer la fréquentation des pages (Google Analytics, IP tronquée, transfert États-Unis).",
+      "categoryMarketingTitle": "Carte interactive",
+      "categoryMarketingBody": "Afficher la carte Google Maps depuis nos serveurs partenaires (transfert États-Unis).",
+      "actionAccept": "Accepter",
+      "actionDecline": "Refuser",
+      "actionCustomize": "Personnaliser",
+      "actionSave": "Enregistrer mes choix",
+      "preferencesTitle": "Mes préférences témoins",
+      "noticeLaw25": "Vos données sont protégées par la Loi 25 du Québec. Le responsable de la protection des renseignements personnels est M. Nobert Tremblay ({rppEmail})."
+    },
+    "stickyCta": {
+      "label": "Voir les promotions de la semaine",
+      "ariaLabel": "Voir les promotions de la semaine — accès rapide",
+      "dismiss": "Masquer le rappel"
+    },
+    "languageSwitcher": {
+      "ariaLabel": "Choisir la langue du site",
+      "fr": "Français",
+      "en": "English"
+    },
+    "schedule": {
+      "monday": "Lundi",
+      "tuesday": "Mardi",
+      "wednesday": "Mercredi",
+      "thursday": "Jeudi",
+      "friday": "Vendredi",
+      "saturday": "Samedi",
+      "sunday": "Dimanche",
+      "open": "Ouvert",
+      "closed": "Fermé",
+      "openNow": "Ouvert maintenant",
+      "openUntil": "Ouvert jusqu'à {hour}",
+      "closesIn": "Ferme dans {minutes} min",
+      "opensAt": "Ouvre à {hour}",
+      "regularHours": "Heures régulières",
+      "holidayHours": "Jours fériés"
+    },
+    "errors": {
+      "notFoundTitle": "Cette page semble avoir pris une pause",
+      "notFoundBody": "La page que vous cherchez n'est plus là, mais nous, oui. Revenez à l'accueil ou consultez les promotions.",
+      "notFoundCta": "Retour à l'accueil",
+      "genericTitle": "Quelque chose a glissé",
+      "genericBody": "Le site rencontre un petit pépin. Merci de réessayer dans un instant ou de nous appeler au {telephone}.",
+      "genericCta": "Recharger la page"
+    }
+  },
+  "home": {
+    "meta": {
+      "title": "Dépanneur de quartier à {ville} — Promotions, bière, lotto | Nobert",
+      "description": "Le dépanneur de quartier authentique de {ville}. Promotions de la semaine, bières, lotto, snacks. Service personnel à deux pas de chez vous. Passez nous voir.",
+      "ogTitle": "Dépanneur Nobert — Le coin du voisinage à {ville}",
+      "ogDescription": "Promotions hebdo, bières, lotto, snacks. Le dépanneur de quartier authentique, depuis {anneeFondation}."
+    },
+    "hero": {
+      "eyebrow": "Voisinage de {ville}",
+      "title": "Votre dépanneur de quartier à {ville}",
+      "subtitle": "Promotions de la semaine, bières du coin, lotto, snacks. Le service personnel de Nobert, à deux pas de chez vous.",
+      "ctaPrimary": "Voir les promotions",
+      "ctaSecondary": "Trouver l'adresse",
+      "ctaPrimaryAria": "Voir les promotions de la semaine",
+      "ctaSecondaryAria": "Trouver l'adresse du dépanneur sur la carte",
+      "imageAlt": "La devanture chaleureuse du Dépanneur Nobert dans le quartier de {ville}, lumière dorée du matin",
+      "trustNote": "Ouvert pour vous, du lundi au dimanche."
+    },
+    "promotionsHighlight": {
+      "eyebrow": "Cette semaine",
+      "title": "Les promotions de la semaine, en un coup d'œil",
+      "subtitle": "Trois rabais à ne pas manquer, mis à jour chaque vendredi par Nobert.",
+      "badgeLabel": "Promo de la semaine",
+      "validUntil": "Valable jusqu'au {date}",
+      "ctaAll": "Voir toutes les promotions",
+      "emptyState": "La nouvelle circulaire arrive vendredi. Repassez nous voir.",
+      "imageAltTemplate": "{produit} — promotion de la semaine au Dépanneur Nobert"
+    },
+    "categories": {
+      "eyebrow": "Tout pour le quotidien",
+      "title": "Quatre rayons, mille petits plaisirs",
+      "subtitle": "Bières du coin, snacks, lotto, essentiels — vous trouvez tout en quelques pas.",
+      "items": {
+        "bieres": {
+          "title": "Bières",
+          "description": "Microbrasseries québécoises et grandes marques, fraîches sur étagères réfrigérées.",
+          "cta": "Voir les bières",
+          "iconAlt": "Pictogramme d'une chope de bière"
+        },
+        "snacks": {
+          "title": "Snacks",
+          "description": "Snacks froids, snacks chauds, petites faims du soir, gâteries à partager.",
+          "cta": "Voir les snacks",
+          "iconAlt": "Pictogramme d'un emballage de biscuit"
+        },
+        "lotto": {
+          "title": "Lotto Québec",
+          "description": "Tous les billets Loto-Québec, gratteux, et points de validation à proximité.",
+          "cta": "Voir le lotto",
+          "iconAlt": "Pictogramme d'un billet de loterie"
+        },
+        "essentiels": {
+          "title": "Essentiels",
+          "description": "Pain, lait, café, papier, café à emporter — tout ce qu'on oublie en chemin.",
+          "cta": "Voir les essentiels",
+          "iconAlt": "Pictogramme d'un panier d'épicerie"
+        }
+      }
+    },
+    "socialProof": {
+      "eyebrow": "Le voisinage en parle",
+      "title": "Pas des avis. Des voisins.",
+      "subtitle": "Trois personnes du quartier de {ville} qui passent voir Nobert depuis longtemps.",
+      "ctaReminder": "Profitez des promotions de la semaine",
+      "ctaReminderAction": "Voir les promotions",
+      "items": {
+        "voisin1": {
+          "name": "Marie",
+          "role": "Voisine, rue voisine",
+          "quote": "Je passe chercher mon billet de lotto et je repars avec une bière fraîche pour le souper. C'est rendu un rendez-vous."
+        },
+        "voisin2": {
+          "name": "Jean-Philippe",
+          "role": "Père de famille, coin de la rue",
+          "quote": "Le dimanche soir, c'est Nobert qui sauve nos paniers de lunch du lundi. Toujours ouvert, toujours souriant."
+        },
+        "voisin3": {
+          "name": "Lise",
+          "role": "Résidente du quartier depuis 30 ans",
+          "quote": "Nobert connaît mon prénom et mes habitudes. C'est rare et c'est précieux."
+        }
+      },
+      "consentNote": "Témoignages publiés avec consentement écrit, conformément à la Loi 25.",
+      "imageAltTemplate": "Portrait de {name}, voisin et client fidèle du Dépanneur Nobert"
+    },
+    "infosPratiques": {
+      "eyebrow": "À deux pas de chez vous",
+      "title": "Adresse, horaires, téléphone",
+      "subtitle": "Tout ce qu'il vous faut pour passer nous voir, en un coup d'œil.",
+      "addressLabel": "Adresse",
+      "addressLine": "{adresseLigne}, {ville} (Québec) {codePostal}",
+      "phoneLabel": "Téléphone",
+      "phoneValue": "{telephone}",
+      "phoneAria": "Appeler le Dépanneur Nobert au {telephone}",
+      "hoursLabel": "Horaires",
+      "hoursNote": "Horaires régulières affichées. Fermetures exceptionnelles annoncées en magasin.",
+      "ctaMap": "Trouver l'adresse",
+      "ctaCall": "Appeler le commerce",
+      "mapPlaceholderAlt": "Carte du quartier de {ville} montrant l'emplacement du Dépanneur Nobert"
+    },
+    "storyBrand": {
+      "eyebrow": "Notre histoire",
+      "title": "Vous, le quartier, et un dépanneur qui vous connaît",
+      "paragraphHero": "Le voisinage, c'est vous. Vous avez vos habitudes, vos petits plaisirs, votre rythme — un café avant le travail, une bière le vendredi, un billet de lotto un peu chanceux le dimanche.",
+      "paragraphGuide": "Nobert tient le commerce depuis {anneeFondation}. Il connaît les prénoms, les habitudes, les bonnes nouvelles. Il commande la microbrasserie que vous aimez et garde le pain frais pour celles et ceux qui passent en fin de journée.",
+      "paragraphPromise": "Pas de chaîne, pas de cartes de fidélité, pas de slogans. Juste un dépanneur ouvert pour vous, à deux pas, avec le sourire et le service personnel qui vont avec.",
+      "imageAlt": "Nobert Tremblay, propriétaire, derrière le comptoir de son dépanneur à {ville}",
+      "ctaPromotions": "Voir les promotions de la semaine"
+    },
+    "newsletter": {
+      "eyebrow": "Pas un spam, juste les bons coups",
+      "title": "Recevez la circulaire du vendredi",
+      "subtitle": "Les promotions de la semaine, un courriel court, le vendredi matin. Vous pouvez vous désinscrire en un clic.",
+      "labelEmail": "Votre courriel",
+      "placeholderEmail": "vous@exemple.ca",
+      "ctaSubscribe": "M'inscrire à la circulaire",
+      "consentLabel": "J'accepte de recevoir la circulaire hebdo du Dépanneur Nobert. Je peux me désinscrire à tout moment.",
+      "consentNote": "Conservation 12 mois après la dernière interaction. Aucune revente, aucun partage tiers.",
+      "successTitle": "Inscription confirmée",
+      "successMessage": "Merci. Le premier courriel arrive ce vendredi.",
+      "errorMessage": "L'inscription n'a pas fonctionné. Réessayez ou écrivez-nous à {email}."
+    }
+  },
+  "promotions": {
+    "meta": {
+      "title": "Promotions de la semaine — Dépanneur Nobert {ville}",
+      "description": "Découvrez les promotions de la semaine au Dépanneur Nobert de {ville} : bières, snacks, essentiels du quotidien à prix réduits. Mises à jour chaque vendredi.",
+      "ogTitle": "Promotions de la semaine — Dépanneur Nobert",
+      "ogDescription": "Bières, snacks et essentiels en promo cette semaine au Dépanneur Nobert de {ville}."
+    },
+    "hero": {
+      "eyebrow": "Cette semaine, pour vous",
+      "title": "Les promotions de la semaine",
+      "subtitle": "Mises à jour chaque vendredi. Profitez des rabais sans bon de réduction, sans inscription, sans détour.",
+      "lastUpdate": "Mise à jour le {date}",
+      "validityNote": "Promotions valides jusqu'au {endDate} ou jusqu'à épuisement des stocks.",
+      "imageAlt": "Étagères de promotions hebdomadaires au Dépanneur Nobert"
+    },
+    "list": {
+      "title": "Toutes les promos en cours",
+      "subtitle": "Cliquez sur une catégorie pour filtrer. Aucun coupon nécessaire — le prix est appliqué en magasin.",
+      "filterAll": "Tout voir",
+      "filterBieres": "Bières",
+      "filterSnacks": "Snacks",
+      "filterEssentiels": "Essentiels",
+      "filterAriaLabel": "Filtrer les promotions par catégorie",
+      "regularPriceLabel": "Prix régulier",
+      "promoPriceLabel": "Prix promo",
+      "savingsLabel": "Vous épargnez",
+      "validUntilLabel": "Valable jusqu'au {date}",
+      "limitedStockLabel": "Quantité limitée",
+      "emptyState": {
+        "title": "Pas de promo dans cette catégorie cette semaine",
+        "subtitle": "La nouvelle circulaire arrive vendredi. Repassez nous voir."
+      },
+      "imageAltTemplate": "{produit}, en promotion à {prix} jusqu'au {date}"
+    },
+    "faq": {
+      "title": "Vos questions sur les promotions",
+      "subtitle": "Trois questions courantes du voisinage.",
+      "items": {
+        "duree": {
+          "question": "Combien de temps durent les promotions ?",
+          "answer": "Chaque promotion est valide une semaine, du vendredi au jeudi suivant. Certaines durent plus longtemps — la date de fin est toujours affichée sur la fiche."
+        },
+        "retrait": {
+          "question": "Puis-je réserver un produit en promotion ?",
+          "answer": "Oui, appelez-nous au {telephone}. Nous mettons l'article de côté pour la journée. Aucun acompte demandé pour le voisinage régulier."
+        },
+        "livraison": {
+          "question": "Faites-vous la livraison ?",
+          "answer": "Pas pour l'instant. Le Dépanneur Nobert reste un commerce de proximité — nous comptons sur votre passage en magasin pour garder le contact."
+        }
+      }
+    },
+    "crossSell": {
+      "title": "Et notre catalogue complet ?",
+      "subtitle": "Au-delà des promotions, retrouvez tout le quotidien dans nos rayons.",
+      "ctaProducts": "Voir tout le catalogue"
+    }
+  },
+  "produits": {
+    "meta": {
+      "title": "Nos produits — Bières, snacks, lotto, essentiels | Dépanneur Nobert",
+      "description": "Catalogue complet du Dépanneur Nobert à {ville} : bières (microbrasseries et grandes marques), snacks, lotto, essentiels du quotidien. Service local depuis {anneeFondation}.",
+      "ogTitle": "Le catalogue du Dépanneur Nobert à {ville}",
+      "ogDescription": "Bières, snacks, lotto, essentiels — tout pour le quotidien du voisinage."
+    },
+    "hero": {
+      "eyebrow": "Notre catalogue",
+      "title": "Nos produits, pour tout votre quotidien",
+      "subtitle": "Tout ce qu'il vous faut, à deux pas. Bières du coin, snacks, lotto, essentiels — choisissez votre rayon.",
+      "anchorLabel": "Aller à un rayon",
+      "imageAlt": "Vue générale des rayons du Dépanneur Nobert : bières, snacks, lotto, essentiels"
+    },
+    "categoriesNav": {
+      "ariaLabel": "Naviguer dans les rayons du catalogue",
+      "items": {
+        "bieres": "Bières",
+        "snacks": "Snacks",
+        "lotto": "Lotto",
+        "essentiels": "Essentiels"
+      },
+      "scrollHint": "Faites défiler pour parcourir le rayon."
+    },
+    "galerie": {
+      "sectionsLabel": "Rayons du catalogue",
+      "bieres": {
+        "anchorId": "bieres",
+        "title": "Bières du coin et grandes marques",
+        "subtitle": "Microbrasseries québécoises et classiques bien frais. Sélection renouvelée selon la saison.",
+        "note": "Vente de boissons alcoolisées encadrée par la SAQ. Permis affiché en magasin. Vente interdite aux personnes mineures."
+      },
+      "snacks": {
+        "anchorId": "snacks",
+        "title": "Snacks froids, snacks chauds",
+        "subtitle": "Petites faims, gâteries du soir, croustilles, chocolats — la bonne idée pour la pause."
+      },
+      "lotto": {
+        "anchorId": "lotto",
+        "title": "Lotto Québec et gratteux",
+        "subtitle": "Tous les billets Loto-Québec, gratteux et validations. Tirages affichés à la caisse."
+      },
+      "essentiels": {
+        "anchorId": "essentiels",
+        "title": "Les essentiels du quotidien",
+        "subtitle": "Pain, lait, café, papier, café à emporter — ce qu'on oublie sur le chemin du retour.",
+        "note": "Sélection ajustée selon la saison et le voisinage. Une demande spéciale ? Demandez à Nobert."
+      },
+      "productCardLabel": "Produit",
+      "imageAltTemplateBieres": "{marque} {type}, format {format}, microbrasserie {origine}",
+      "imageAltTemplateSnacks": "{marque} {produit}, format {format}",
+      "imageAltTemplateLotto": "Billet Loto-Québec — {jeu}",
+      "imageAltTemplateEssentiels": "{marque} {produit}, format {format}",
+      "outOfStockLabel": "Temporairement indisponible",
+      "askInStore": "Renseignez-vous en magasin"
+    },
+    "faq": {
+      "title": "Vos questions sur nos produits",
+      "subtitle": "Les questions les plus fréquentes du voisinage.",
+      "items": {
+        "commandeSpeciale": {
+          "question": "Faites-vous des commandes spéciales ?",
+          "answer": "Souvent, oui. Demandez à Nobert directement en magasin ou par téléphone au {telephone} — il vous dit en deux minutes si la commande est possible."
+        },
+        "commandeTelephone": {
+          "question": "Acceptez-vous les commandes par téléphone ?",
+          "answer": "Oui, pour les habitué·es du voisinage. Appelez-nous au {telephone}, on prépare l'ordre et vous passez chercher quand vous pouvez."
+        },
+        "permisBiere": {
+          "question": "Avez-vous le permis pour vendre de la bière ?",
+          "answer": "Oui, le permis SAQ est affiché en magasin. La vente de boissons alcoolisées est interdite aux personnes mineures, conformément à la loi québécoise."
+        }
+      }
+    },
+    "crossSell": {
+      "title": "Promotions actives cette semaine",
+      "subtitle": "Profitez des rabais avant la fin de la circulaire.",
+      "ctaPromotions": "Voir les promotions"
+    }
+  },
+  "contact": {
+    "meta": {
+      "title": "Adresse, horaires, téléphone — Dépanneur Nobert {ville}",
+      "description": "Trouvez le Dépanneur Nobert : adresse à {ville}, horaires d'ouverture, téléphone et carte Google. Ouvert tous les jours pour le voisinage.",
+      "ogTitle": "Nous joindre — Dépanneur Nobert",
+      "ogDescription": "Adresse, horaires et téléphone du Dépanneur Nobert à {ville}."
+    },
+    "hero": {
+      "eyebrow": "Pour passer nous voir",
+      "title": "Nous joindre, nous trouver",
+      "subtitle": "L'adresse, le téléphone et les horaires — bien gros, parce qu'on tient au confort de lecture.",
+      "addressDisplay": "{adresseLigne}, {ville}",
+      "phoneDisplay": "{telephone}",
+      "phoneAria": "Appeler le Dépanneur Nobert au {telephone}",
+      "ctaCall": "Appeler",
+      "ctaMap": "Voir sur la carte"
+    },
+    "coordonnees": {
+      "title": "Coordonnées et horaires",
+      "subtitle": "Toutes les façons de nous joindre, du lundi au dimanche.",
+      "addressLabel": "Adresse",
+      "addressLine": "{adresseLigne}, {ville} (Québec) {codePostal}",
+      "phoneLabel": "Téléphone",
+      "phoneValue": "{telephone}",
+      "emailLabel": "Courriel",
+      "emailValue": "{email}",
+      "hoursLabel": "Horaires d'ouverture",
+      "hoursTableCaption": "Horaires régulières de la semaine",
+      "hoursColumnDay": "Jour",
+      "hoursColumnHours": "Heures",
+      "specialClosuresTitle": "Fermetures exceptionnelles",
+      "specialClosuresNote": "Les fermetures pour jours fériés sont annoncées en magasin et sur la page d'accueil au moins 7 jours à l'avance."
+    },
+    "maps": {
+      "title": "Nous trouver sur la carte",
+      "subtitle": "La carte est chargée depuis Google Maps (États-Unis) après votre consentement.",
+      "placeholderTitle": "Carte interactive (Google Maps)",
+      "placeholderBody": "Pour afficher la carte, nous chargeons Google Maps. Cela implique un transfert de données vers les serveurs de Google aux États-Unis.",
+      "ctaLoad": "Charger la carte (Google Maps — États-Unis)",
+      "ctaCancel": "Garder la carte hors ligne",
+      "consentNote": "En chargeant la carte, vous acceptez le transfert de votre adresse IP vers les États-Unis (cf. politique de confidentialité).",
+      "fallbackTitle": "Notre adresse",
+      "fallbackBody": "Si vous préférez ne pas charger la carte, voici l'adresse exacte : {adresseLigne}, {ville} (Québec) {codePostal}.",
+      "imageAlt": "Aperçu statique de la carte du quartier de {ville} indiquant le Dépanneur Nobert"
+    },
+    "form": {
+      "title": "Une question ? Écrivez-nous",
+      "subtitle": "Nous lisons chaque message. Réponse en 24 à 48 heures, du lundi au samedi.",
+      "labelName": "Votre nom",
+      "labelEmail": "Votre courriel",
+      "labelPhone": "Téléphone (facultatif)",
+      "labelMessage": "Votre message",
+      "labelConsent": "J'accepte que mon nom, mon courriel et mon message soient utilisés pour traiter ma demande, conformément à la politique de confidentialité.",
+      "consentNote": "Conservation 24 mois après la dernière interaction. Vous pouvez demander la suppression à tout moment ({rppEmail}).",
+      "submit": "Envoyer mon message",
+      "submitting": "Envoi en cours…",
+      "successTitle": "Message bien reçu",
+      "successMessage": "Merci, nous vous reviendrons rapidement. Bonne journée du voisinage.",
+      "errorMessage": "Le message n'a pas pu partir. Réessayez ou appelez-nous au {telephone}."
+    },
+    "rpp": {
+      "title": "Vos droits, votre tranquillité",
+      "body": "Vos renseignements personnels sont protégés par la Loi 25 du Québec. Vous pouvez consulter, rectifier ou faire supprimer vos données en écrivant au responsable de la protection des renseignements personnels :",
+      "rppName": "M. Nobert Tremblay",
+      "rppRole": "Propriétaire et Responsable de la protection des renseignements personnels (Loi 25, art. 3.1)",
+      "rppEmail": "{rppEmail}",
+      "linkPrivacy": "Lire notre politique de confidentialité",
+      "incidentNote": "En cas d'incident de confidentialité, écrivez à {rppEmail} : nous suivons un processus de notification conforme à l'art. 3.5 de la Loi 25."
+    }
+  },
+  "legal": {
+    "privacy": {
+      "meta": {
+        "title": "Politique de confidentialité (Loi 25) — Dépanneur Nobert",
+        "description": "Politique de confidentialité du Dépanneur Nobert conforme à la Loi 25 du Québec : données collectées, finalités, rétention, droits, RPP."
+      },
+      "title": "Politique de confidentialité",
+      "lastUpdate": "Dernière mise à jour : {dateMaj}",
+      "intro": "Le Dépanneur Nobert inc. (ci-après « nous », « notre » ou « le Dépanneur Nobert ») accorde une importance fondamentale à la protection de vos renseignements personnels. La présente politique vous explique, en langage clair, quelles données nous collectons, pourquoi, combien de temps nous les conservons, avec qui elles sont partagées et comment exercer vos droits prévus par la Loi sur la protection des renseignements personnels dans le secteur privé du Québec (Loi 25).",
+      "rppTitle": "1. Responsable de la protection des renseignements personnels",
+      "rppBody": "Conformément à l'article 3.1 de la Loi 25, le Dépanneur Nobert a désigné un responsable de la protection des renseignements personnels (RPP). Pour toute question relative à la présente politique, à vos données ou à l'exercice de vos droits, contactez :",
+      "rppName": "M. Nobert Tremblay",
+      "rppRole": "Propriétaire et Responsable de la protection des renseignements personnels",
+      "rppEmail": "{rppEmail}",
+      "rppAddress": "{adresseLigne}, {ville} (Québec) {codePostal}",
+      "dataTitle": "2. Renseignements personnels collectés",
+      "dataIntro": "Nous collectons uniquement les renseignements nécessaires aux finalités décrites ci-dessous :",
+      "dataItems": {
+        "newsletter": {
+          "label": "Inscription à la circulaire",
+          "fields": "Adresse courriel.",
+          "purpose": "Vous envoyer la circulaire hebdomadaire des promotions.",
+          "retention": "12 mois après votre dernière interaction (clic, ouverture)."
+        },
+        "contact": {
+          "label": "Formulaire de contact",
+          "fields": "Nom, adresse courriel, téléphone (facultatif), contenu du message.",
+          "purpose": "Traiter votre demande et y répondre.",
+          "retention": "24 mois après la dernière interaction."
+        },
+        "phoneOrder": {
+          "label": "Commandes téléphoniques",
+          "fields": "Prénom, numéro de téléphone, contenu de la commande.",
+          "purpose": "Préparer votre commande et vous recontacter si nécessaire.",
+          "retention": "6 mois après la dernière commande."
+        },
+        "analytics": {
+          "label": "Mesure d'audience (avec consentement)",
+          "fields": "Adresse IP tronquée, pages consultées, type d'appareil, source de visite.",
+          "purpose": "Comprendre la fréquentation du site et l'améliorer.",
+          "retention": "30 jours pour les cookies analytics."
+        },
+        "cookiesEssentials": {
+          "label": "Témoins essentiels",
+          "fields": "Préférences de consentement, langue choisie.",
+          "purpose": "Faire fonctionner le site (langue, choix témoins).",
+          "retention": "Session ou 12 mois selon le témoin (détails dans la bannière)."
+        }
+      },
+      "purposesTitle": "3. Finalités et fondement légal",
+      "purposesBody": "Vos renseignements sont traités pour des finalités précises, légitimes et limitées à ce qui est nécessaire. Aucun renseignement personnel n'est utilisé à des fins de profilage automatisé, de revente ou de partage avec des tiers à des fins de marketing.",
+      "consentTitle": "4. Consentement",
+      "consentBody": "Votre consentement est explicite, libre, éclairé et révocable à tout moment. Pour les témoins non essentiels (statistiques, carte interactive), vous donnez votre accord via la bannière de consentement, qui propose Accepter, Refuser ou Personnaliser avec une parité visuelle stricte. Aucune case n'est pré-cochée.",
+      "thirdPartiesTitle": "5. Sous-traitants et partage des données",
+      "thirdPartiesIntro": "Nous faisons appel à des fournisseurs de services pour faire fonctionner le site. Ces sous-traitants sont liés par contrat à la confidentialité et à la sécurité des données :",
+      "thirdPartiesItems": {
+        "vercel": {
+          "name": "Vercel Inc.",
+          "service": "Hébergement du site",
+          "country": "États-Unis",
+          "purpose": "Servir les pages du site avec performance et sécurité."
+        },
+        "googleAnalytics": {
+          "name": "Google LLC (Analytics)",
+          "service": "Mesure d'audience anonymisée",
+          "country": "États-Unis",
+          "purpose": "Statistiques de fréquentation (IP tronquée, pseudonymisation, opt-in obligatoire)."
+        },
+        "googleMaps": {
+          "name": "Google LLC (Maps)",
+          "service": "Carte interactive",
+          "country": "États-Unis",
+          "purpose": "Afficher la carte du quartier sur la page Contact, après consentement."
+        },
+        "resend": {
+          "name": "Resend Inc.",
+          "service": "Envoi de courriels transactionnels",
+          "country": "États-Unis",
+          "purpose": "Envoyer la circulaire et les confirmations de formulaires."
+        }
+      },
+      "transferTitle": "6. Transferts hors Québec",
+      "transferBody": "Certains renseignements peuvent être transférés vers les États-Unis (Vercel, Google, Resend). Nous nous assurons que ces transferts s'accompagnent de garanties contractuelles appropriées (clauses standard, encryption en transit et au repos). Vous êtes informé·e de ces transferts avant tout traitement non essentiel.",
+      "rightsTitle": "7. Vos droits",
+      "rightsIntro": "La Loi 25 vous accorde plusieurs droits que vous pouvez exercer en tout temps en écrivant au RPP :",
+      "rightsItems": {
+        "access": "Droit d'accès : obtenir la liste de vos renseignements détenus.",
+        "rectification": "Droit de rectification : corriger une donnée inexacte.",
+        "deletion": "Droit de suppression : demander l'effacement de vos données.",
+        "portability": "Droit à la portabilité : recevoir vos données dans un format lisible par machine.",
+        "withdraw": "Droit de retrait du consentement : à tout moment, pour les traitements non essentiels.",
+        "complaint": "Droit de plainte auprès de la Commission d'accès à l'information du Québec (cai.gouv.qc.ca).",
+        "deindex": "Droit au déréférencement : demander la cessation de la diffusion d'un renseignement personnel."
+      },
+      "rightsResponseTime": "Nous répondons à toute demande dans un délai maximal de 30 jours, conformément à la Loi 25.",
+      "incidentTitle": "8. Incident de confidentialité",
+      "incidentBody": "En cas d'incident de confidentialité présentant un risque sérieux de préjudice, le Dépanneur Nobert applique une procédure de notification conformément à l'article 3.5 de la Loi 25 : tenue d'un registre, évaluation du risque, notification à la Commission d'accès à l'information et aux personnes concernées dans les meilleurs délais. Pour signaler un incident, écrivez à {rppEmail}.",
+      "securityTitle": "9. Mesures de sécurité",
+      "securityBody": "Nous appliquons des mesures techniques et organisationnelles raisonnables : chiffrement TLS sur toutes les pages, en-têtes de sécurité (HSTS, CSP), accès restreint aux données, formulaires protégés contre le pourriel, mise à jour régulière des dépendances logicielles.",
+      "minorsTitle": "10. Mineurs",
+      "minorsBody": "Le site n'est pas destiné aux enfants de moins de 14 ans. Aucune collecte volontaire n'est effectuée auprès des mineurs. Si un parent ou tuteur constate une collecte involontaire, il peut écrire à {rppEmail} pour suppression immédiate.",
+      "updatesTitle": "11. Mises à jour de la politique",
+      "updatesBody": "Cette politique peut être mise à jour pour refléter des changements légaux ou opérationnels. La date de dernière mise à jour figure en haut de la page. En cas de changement majeur, une notification visible sera affichée sur le site pendant 30 jours.",
+      "contactTitle": "12. Pour nous joindre",
+      "contactBody": "Pour toute question relative à vos données, contactez le RPP à {rppEmail}, ou par courrier postal à : Dépanneur Nobert inc. — RPP, {adresseLigne}, {ville} (Québec) {codePostal}, Canada."
+    },
+    "notice": {
+      "meta": {
+        "title": "Mentions légales — Dépanneur Nobert",
+        "description": "Mentions légales du Dépanneur Nobert : dénomination sociale, NEQ, adresse, contact, hébergeur. Informations légales de l'entreprise."
+      },
+      "title": "Mentions légales",
+      "lastUpdate": "Dernière mise à jour : {dateMaj}",
+      "intro": "Les présentes mentions légales informent les visiteurs et utilisateurs du site depanneur-nobert.ca de l'identité de l'éditeur, de l'hébergeur et des conditions d'utilisation du site.",
+      "editorTitle": "1. Éditeur du site",
+      "editorBody": "Le site depanneur-nobert.ca est édité par :",
+      "editorName": "Dépanneur Nobert inc.",
+      "editorNeqLabel": "Numéro d'entreprise du Québec (NEQ)",
+      "editorNeqValue": "{NEQ}",
+      "editorAddressLabel": "Siège social",
+      "editorAddressValue": "{adresseLigne}, {ville} (Québec) {codePostal}, Canada",
+      "editorPhoneLabel": "Téléphone",
+      "editorPhoneValue": "{telephone}",
+      "editorEmailLabel": "Courriel",
+      "editorEmailValue": "{email}",
+      "editorRepresentativeLabel": "Responsable de la publication",
+      "editorRepresentativeValue": "M. Nobert Tremblay, propriétaire",
+      "hostingTitle": "2. Hébergement",
+      "hostingBody": "Le site est hébergé par Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis. Les données de service circulent entre le Canada et les États-Unis. Pour plus d'informations sur les transferts hors Québec, consultez notre politique de confidentialité.",
+      "ipTitle": "3. Propriété intellectuelle",
+      "ipBody": "L'ensemble des contenus du site (textes, photographies, logo, marques, mises en page) est la propriété du Dépanneur Nobert inc. ou de ses partenaires, et est protégé par le droit d'auteur et le droit des marques. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est interdite.",
+      "linksTitle": "4. Liens externes",
+      "linksBody": "Le site peut contenir des liens vers des sites tiers. Le Dépanneur Nobert inc. n'exerce aucun contrôle sur le contenu de ces sites et décline toute responsabilité quant à leur usage. La consultation de sites tiers se fait sous la seule responsabilité de l'internaute.",
+      "liabilityTitle": "5. Limitation de responsabilité",
+      "liabilityBody": "Le Dépanneur Nobert inc. met tout en œuvre pour assurer l'exactitude et l'actualisation des informations diffusées. Toutefois, aucune garantie n'est donnée quant à l'absence d'erreurs ou à la disponibilité ininterrompue du site. La responsabilité de l'éditeur ne saurait être engagée en cas de dommage direct ou indirect résultant de l'utilisation du site.",
+      "applicableLawTitle": "6. Droit applicable",
+      "applicableLawBody": "Les présentes mentions sont soumises au droit du Québec et au droit canadien applicable. Tout litige relatif au site sera porté devant les tribunaux compétents du district judiciaire de Québec.",
+      "alcoholNoticeTitle": "7. Vente de boissons alcoolisées",
+      "alcoholNoticeBody": "La vente de boissons alcoolisées est encadrée par la Régie des alcools, des courses et des jeux du Québec. Le permis de vente est affiché en magasin. La vente est strictement interdite aux personnes mineures.",
+      "contactTitle": "8. Contact",
+      "contactBody": "Pour toute question relative aux présentes mentions ou au site, écrivez à {email} ou appelez le {telephone}."
+    }
+  }
+}

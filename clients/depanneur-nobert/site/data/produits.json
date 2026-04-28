@@ -1,0 +1,123 @@
+[
+  {
+    "id": "biere-blonde-quebec-6x341",
+    "category": "bieres",
+    "name": {
+      "fr": "Bière blonde du Québec",
+      "en": "Quebec blonde lager"
+    },
+    "marque": "Microbrasserie locale",
+    "format": "6 × 341 ml",
+    "origine": "Québec",
+    "imageAlt": {
+      "fr": "Pack de six bières blondes microbrasserie du Québec",
+      "en": "Six-pack Quebec blonde lager from a local craft brewery"
+    }
+  },
+  {
+    "id": "biere-rousse-quebec-4x473",
+    "category": "bieres",
+    "name": {
+      "fr": "Bière rousse du Québec",
+      "en": "Quebec amber ale"
+    },
+    "marque": "Microbrasserie locale",
+    "format": "4 × 473 ml",
+    "origine": "Québec",
+    "imageAlt": {
+      "fr": "Pack de quatre bières rousses microbrasserie du Québec, canettes 473 ml",
+      "en": "Four-pack Quebec amber ale from a local craft brewery, 473 ml cans"
+    }
+  },
+  {
+    "id": "snack-croustilles-200g",
+    "category": "snacks",
+    "name": {
+      "fr": "Croustilles classiques",
+      "en": "Classic chips"
+    },
+    "marque": "Marque générique",
+    "format": "200 g",
+    "imageAlt": {
+      "fr": "Sac de croustilles classiques 200 g",
+      "en": "200 g bag of classic chips"
+    }
+  },
+  {
+    "id": "snack-chocolat-tablette",
+    "category": "snacks",
+    "name": {
+      "fr": "Tablette de chocolat",
+      "en": "Chocolate bar"
+    },
+    "marque": "Marque générique",
+    "format": "100 g",
+    "imageAlt": {
+      "fr": "Tablette de chocolat noir 100 g",
+      "en": "100 g dark chocolate bar"
+    }
+  },
+  {
+    "id": "lotto-billet-loto-quebec",
+    "category": "lotto",
+    "name": {
+      "fr": "Billets Loto-Québec",
+      "en": "Loto-Québec tickets"
+    },
+    "imageAlt": {
+      "fr": "Billet Loto-Québec disponible au Dépanneur Nobert",
+      "en": "Loto-Québec ticket available at Dépanneur Nobert"
+    }
+  },
+  {
+    "id": "lotto-gratteux",
+    "category": "lotto",
+    "name": {
+      "fr": "Gratteux Loto-Québec",
+      "en": "Loto-Québec scratch cards"
+    },
+    "imageAlt": {
+      "fr": "Gratteux Loto-Québec disponibles à la caisse",
+      "en": "Loto-Québec scratch cards available at the counter"
+    }
+  },
+  {
+    "id": "essentiels-pain-tranche",
+    "category": "essentiels",
+    "name": {
+      "fr": "Pain tranché",
+      "en": "Sliced bread"
+    },
+    "format": "675 g",
+    "imageAlt": {
+      "fr": "Miche de pain tranché 675 g",
+      "en": "675 g sliced bread loaf"
+    }
+  },
+  {
+    "id": "essentiels-lait-2pct",
+    "category": "essentiels",
+    "name": {
+      "fr": "Lait 2%",
+      "en": "2% milk"
+    },
+    "format": "2 L",
+    "imageAlt": {
+      "fr": "Carton de lait 2% format 2 L",
+      "en": "2 L carton of 2% milk"
+    }
+  },
+  {
+    "id": "essentiels-cafe-emporter",
+    "category": "essentiels",
+    "name": {
+      "fr": "Café à emporter",
+      "en": "Takeaway coffee"
+    },
+    "format": "12 oz / 16 oz",
+    "imageAlt": {
+      "fr": "Tasse à café à emporter, formats 12 et 16 onces",
+      "en": "Takeaway coffee cup, 12 and 16 oz formats"
+    }
+  }
+]
