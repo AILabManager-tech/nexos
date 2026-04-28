@@ -93,14 +93,25 @@ class TestConvergerBlocking:
 
 
 class TestConvergerCoverage:
-    def test_low_coverage_iterates_first_then_aborts(self):
-        """Coverage < 0.7 on first iter → ITERATE (allow preflight).
+    def test_low_coverage_aborts_immediately(self):
+        """Coverage < 0.7 → ABORT_LOW_COVERAGE on any iteration.
 
-        Two consecutive low-coverage iterations → ABORT_LOW_COVERAGE.
+        Historical note: an earlier draft of this test (written 2026-03-04 in
+        nexos_v.3.0 commit 49dd0f0) asserted iter-1 tolerance ("ITERATE on
+        first iter to allow preflight"). That tolerance was never implemented
+        in the Converger code (initial commit fc7ccdc of soic_v3 on
+        2026-03-19, 15 days later, shipped the unconditional ABORT at
+        converger.py:80-82). Commit c1ea513 explicitly noted this as a
+        pre-existing unrelated failure.
+
+        Design rationale validated in chantier mode B SESSION_03.5: preflight
+        tooling now runs upstream of the Converger loop (phases.py:131-138),
+        so a low-coverage signal at this point indicates a structural problem,
+        not a missing preflight — abort is the correct decision.
         """
         conv = Converger(phase="ph5-qa", max_iter=4)
         # 1 PASS + 3 NOT_EXECUTED → coverage = 1/4 = 0.25
-        report1 = _make_report(
+        report = _make_report(
             [
                 _gate("W-01", "D1", GateStatus.PASS, 10.0),
                 _gate("W-08", "D5", GateStatus.NOT_EXECUTED, 0.0),
@@ -108,20 +119,14 @@ class TestConvergerCoverage:
                 _gate("W-11", "D6", GateStatus.NOT_EXECUTED, 0.0),
             ]
         )
-        assert report1.coverage < 0.7
-        decision1 = conv.decide(report1, iteration=1)
-        assert decision1 == Decision.ITERATE  # First iter: allow retry
+        assert report.coverage < 0.7
 
-        # Same low coverage on second iter → ABORT
-        report2 = _make_report(
-            [
-                _gate("W-01", "D1", GateStatus.PASS, 10.0),
-                _gate("W-08", "D5", GateStatus.NOT_EXECUTED, 0.0),
-                _gate("W-10", "D6", GateStatus.NOT_EXECUTED, 0.0),
-                _gate("W-11", "D6", GateStatus.NOT_EXECUTED, 0.0),
-            ]
-        )
-        decision2 = conv.decide(report2, iteration=2)
+        # Iter 1: aborts immediately on low coverage
+        decision1 = Converger(phase="ph5-qa", max_iter=4).decide(report, iteration=1)
+        assert decision1 == Decision.ABORT_LOW_COVERAGE
+
+        # Iter 2: same outcome — coverage is unconditional
+        decision2 = conv.decide(report, iteration=2)
         assert decision2 == Decision.ABORT_LOW_COVERAGE
 
 

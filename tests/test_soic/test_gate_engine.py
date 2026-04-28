@@ -20,18 +20,24 @@ class TestPhaseGateMapping:
         gates = get_phase_gates("ph4-build")
         assert len(gates) == 7
 
-    def test_ph0_discovery_has_4_gates(self):
-        """ph0-discovery (PHASE_EARLY) should have 4 gates."""
+    def test_ph0_discovery_has_9_gates(self):
+        """ph0-discovery (PHASE_EARLY) should have 9 gates (PE-01..PE-09).
+
+        Initially 4 gates (PE-01..PE-04 covering D1+D2). SESSION_02 of chantier
+        mode B added 5 more (PE-05..PE-09) to extend dimensional coverage to
+        D3, D5, D6, D7, D9. See soic_v3 commit 28fbc33.
+        """
         gates = get_phase_gates("ph0-discovery")
-        assert len(gates) == 4
+        assert len(gates) == 9
 
     def test_early_phases_same_gates(self):
-        """ph0-ph3 should all use PHASE_EARLY gates."""
+        """ph0-ph3 should all use PHASE_EARLY gates (9 gates post-SESSION_02)."""
+        expected_ids = {f"PE-{i:02d}" for i in range(1, 10)}  # PE-01..PE-09
         for phase in ["ph0-discovery", "ph1-strategy", "ph2-design", "ph3-content"]:
             gates = get_phase_gates(phase)
-            assert len(gates) == 4
+            assert len(gates) == 9
             gate_ids = {g.gate_id for g in gates}
-            assert gate_ids == {"PE-01", "PE-02", "PE-03", "PE-04"}
+            assert gate_ids == expected_ids
 
 
 class TestGateEngineInit:
@@ -57,10 +63,10 @@ class TestGateIds:
         assert expected == gate_ids
 
     def test_phase_early_gate_ids(self):
-        """Verify expected early phase gate IDs."""
+        """Verify expected early phase gate IDs (9 gates post-SESSION_02)."""
         gates = get_phase_gates("ph0-discovery")
         gate_ids = {g.gate_id for g in gates}
-        expected = {"PE-01", "PE-02", "PE-03", "PE-04"}
+        expected = {f"PE-{i:02d}" for i in range(1, 10)}  # PE-01..PE-09
         assert expected == gate_ids
 
     def test_no_duplicate_gate_ids(self):
