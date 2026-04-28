@@ -37,14 +37,23 @@ def _format_color_directive(color_overrides: dict[str, str]) -> str:
     return "\n".join(lines)
 
 
-def _format_mode_intake_directive(brief: dict | None, phase: str) -> str | None:
-    """Résume mission.intake et impose les règles de travail liées au mode."""
+def _format_mode_intake_directive(
+    brief: dict | None,
+    phase: str,
+    mode_override: str | None = None,
+) -> str | None:
+    """Résume mission.intake et impose les règles de travail liées au mode.
+
+    Le `mode_override` (passé par la commande CLI via `build_phase_prompt`) est
+    prioritaire sur le mode déclaré dans le brief : la commande CLI est la
+    source de vérité, le brief n'est qu'une suggestion.
+    """
     if not brief:
         return None
 
     mission = brief.get("mission", {}) if isinstance(brief.get("mission"), dict) else {}
     intake = mission.get("intake", {}) if isinstance(mission.get("intake"), dict) else {}
-    mode = mission.get("mode") or brief.get("_meta", {}).get("mode")
+    mode = mode_override or mission.get("mode") or brief.get("_meta", {}).get("mode")
     if not intake and not mode:
         return None
 
@@ -212,8 +221,16 @@ def build_phase_prompt(
     site_type: str = "vitrine",
     target_sections: list[str] | None = None,
     color_overrides: dict[str, str] | None = None,
+    mode: str | None = None,
 ) -> str:
-    """Construit le prompt pour une phase avec contexte cumulatif."""
+    """Construit le prompt pour une phase avec contexte cumulatif.
+
+    Le paramètre `mode` reflète la commande CLI invoquée (`create` / `audit` /
+    `modify` / `content` / `analyze`). S'il est fourni, il est la source de
+    vérité pour le cadrage injecté dans le prompt et passe outre tout `mode`
+    obsolète présent dans le brief client. S'il est `None`, le mode est lu
+    depuis le brief (rétrocompatibilité avec les appels directs sans CLI).
+    """
     parts = []
 
     # 1. Agent directive
@@ -292,8 +309,8 @@ def build_phase_prompt(
     parts.append(f"Le brief client est dans {brief_path}. Lis-le.")
     if brief_path.exists():
         try:
-            brief_data = load_runtime_brief(brief_path)
-            intake_directive = _format_mode_intake_directive(brief_data, phase)
+            brief_data = load_runtime_brief(brief_path, mode=mode)
+            intake_directive = _format_mode_intake_directive(brief_data, phase, mode_override=mode)
             if intake_directive:
                 parts.append(intake_directive)
         except Exception:

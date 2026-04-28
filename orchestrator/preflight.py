@@ -233,6 +233,7 @@ class RerunContext:
     timestamp: str
     stack: str = "nextjs"
     site_type: str = "vitrine"
+    mode: str | None = None
 
     def rerun(self, phase: str, feedback: str, iteration: int) -> bool:
         """Re-execute the phase with SOIC feedback injected.
@@ -249,7 +250,11 @@ class RerunContext:
             run_preflight_tooling(self.client_dir, self.url)
 
         rerun_prompt = build_phase_prompt(
-            phase, self.client_dir, stack=self.stack, site_type=self.site_type
+            phase,
+            self.client_dir,
+            stack=self.stack,
+            site_type=self.site_type,
+            mode=self.mode,
         )
         rerun_prompt += f"\n\n# SOIC FEEDBACK — Iteration {iteration + 1}\n{feedback}"
         rerun_log = LOGS_DIR / f"{self.timestamp}_{phase}_iter{iteration + 1}.log"

@@ -197,7 +197,8 @@ def run_pipeline(
         _stack = pipeline_cfg.stack if pipeline_cfg else "nextjs"
         _site_type = pipeline_cfg.site_type if pipeline_cfg else "vitrine"
 
-        # Construire le prompt
+        # Construire le prompt — la commande CLI (`mode`) est la source de
+        # vérité pour le cadrage; elle prime sur tout `mode` présent dans le brief.
         prompt = build_phase_prompt(
             phase,
             client_dir,
@@ -205,6 +206,7 @@ def run_pipeline(
             site_type=_site_type,
             target_sections=pipeline_cfg.target_sections if pipeline_cfg else None,
             color_overrides=pipeline_cfg.color_overrides if pipeline_cfg else None,
+            mode=mode,
         )
         log_path = LOGS_DIR / f"{timestamp}_{phase}.log"
 
@@ -326,6 +328,7 @@ def run_pipeline(
                 timestamp=timestamp,
                 stack=_stack,
                 site_type=_site_type,
+                mode=mode,
             )
 
             def _on_iteration(iteration: int, result) -> None:
