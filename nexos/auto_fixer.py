@@ -34,6 +34,34 @@ except ImportError:
 
 TEMPLATES_DIR = Path(__file__).parent.parent / "templates"
 
+
+def _resolve_app_root(site_dir: Path) -> Path:
+    """Racine du Next.js App Router : `<site>/app/` (convention NEXOS) ou `<site>/src/app/` (legacy).
+
+    Préfère la racine si elle existe pour ne pas créer un `src/` orphelin parallèle.
+    """
+    root_app = site_dir / "app"
+    if root_app.exists():
+        return root_app
+    return site_dir / "src" / "app"
+
+
+def _resolve_components_dir(site_dir: Path) -> Path:
+    """Dossier components : `<site>/components/` ou `<site>/src/components/` selon la convention détectée.
+
+    La convention est calquée sur celle du dossier `app/` pour rester cohérente avec le tsconfig
+    (`@/...` pointe vers la racine si `app/` est à la racine, sinon vers `src/`).
+    """
+    if (site_dir / "app").exists():
+        return site_dir / "components"
+    return site_dir / "src" / "components"
+
+
+def _import_root(site_dir: Path) -> Path:
+    """Racine de résolution du chemin `@/...` dans tsconfig (`<site>/` ou `<site>/src/`)."""
+    return site_dir if (site_dir / "app").exists() else site_dir / "src"
+
+
 REQUIRED_HEADERS = {
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
@@ -94,7 +122,7 @@ def _fix_cookie_consent(site_dir: Path, report: FixReport) -> None:
     3. Lire le layout.tsx principal (locale ou racine)
     4. Si <CookieConsent pas dans le layout → ajouter import + composant
     """
-    components_dir = site_dir / "src" / "components"
+    components_dir = _resolve_components_dir(site_dir)
 
     # 1. Chercher un fichier cookie consent existant et résoudre son import path
     consent_file: Path | None = None
@@ -112,12 +140,13 @@ def _fix_cookie_consent(site_dir: Path, report: FixReport) -> None:
         components_dir.mkdir(parents=True, exist_ok=True)
         consent_file = components_dir / "cookie-consent.tsx"
         shutil.copy2(template_src, consent_file)
-        logger.info("cookie-consent.tsx copied to src/components/")
+        logger.info("cookie-consent.tsx copied to %s", components_dir)
 
     # 3. Trouver le layout.tsx principal
+    app_root = _resolve_app_root(site_dir)
     layout_candidates = [
-        site_dir / "src" / "app" / "[locale]" / "layout.tsx",
-        site_dir / "src" / "app" / "layout.tsx",
+        app_root / "[locale]" / "layout.tsx",
+        app_root / "layout.tsx",
     ]
     layout_path = None
     for candidate in layout_candidates:
@@ -135,8 +164,9 @@ def _fix_cookie_consent(site_dir: Path, report: FixReport) -> None:
         return
 
     # 5. Construire l'import path basé sur le fichier réel trouvé
-    # Ex: src/components/legal/CookieConsent.tsx → @/components/legal/CookieConsent
-    relative = consent_file.relative_to(site_dir / "src")
+    # Ex: components/legal/CookieConsent.tsx → @/components/legal/CookieConsent
+    # `@/` pointe vers la racine du code (site_dir ou site_dir/src) selon la convention détectée.
+    relative = consent_file.relative_to(_import_root(site_dir))
     import_path = "@/" + str(relative).replace(".tsx", "").replace(".ts", "")
     import_line = f'import {{ CookieConsent }} from "{import_path}";\n'
 
@@ -278,10 +308,11 @@ def _fix_next_config(site_dir: Path, report: FixReport) -> None:
 
 def _fix_privacy_page(site_dir: Path, brief: dict[str, Any], report: FixReport) -> None:
     """Génère la page politique-confidentialite si absente."""
-    # Chercher dans les variantes de chemins
+    app_root = _resolve_app_root(site_dir)
+    # Chercher dans les variantes de chemins (i18n d'abord, racine ensuite)
     target_dirs = [
-        site_dir / "src" / "app" / "[locale]" / "politique-confidentialite",
-        site_dir / "src" / "app" / "politique-confidentialite",
+        app_root / "[locale]" / "politique-confidentialite",
+        app_root / "politique-confidentialite",
     ]
 
     for target_dir in target_dirs:
@@ -293,11 +324,11 @@ def _fix_privacy_page(site_dir: Path, brief: dict[str, Any], report: FixReport) 
         return
 
     # Déterminer le répertoire cible (préférer la structure i18n)
-    locale_app = site_dir / "src" / "app" / "[locale]"
+    locale_app = app_root / "[locale]"
     if locale_app.exists():
         target_dir = locale_app / "politique-confidentialite"
     else:
-        target_dir = site_dir / "src" / "app" / "politique-confidentialite"
+        target_dir = app_root / "politique-confidentialite"
 
     target_dir.mkdir(parents=True, exist_ok=True)
 
@@ -352,9 +383,10 @@ def _fix_privacy_page(site_dir: Path, brief: dict[str, Any], report: FixReport) 
 
 def _fix_legal_page(site_dir: Path, brief: dict[str, Any], report: FixReport) -> None:
     """Génère la page mentions-legales si absente."""
+    app_root = _resolve_app_root(site_dir)
     target_dirs = [
-        site_dir / "src" / "app" / "[locale]" / "mentions-legales",
-        site_dir / "src" / "app" / "mentions-legales",
+        app_root / "[locale]" / "mentions-legales",
+        app_root / "mentions-legales",
     ]
 
     for target_dir in target_dirs:
@@ -365,11 +397,11 @@ def _fix_legal_page(site_dir: Path, brief: dict[str, Any], report: FixReport) ->
     if not template_path.exists():
         return
 
-    locale_app = site_dir / "src" / "app" / "[locale]"
+    locale_app = app_root / "[locale]"
     if locale_app.exists():
         target_dir = locale_app / "mentions-legales"
     else:
-        target_dir = site_dir / "src" / "app" / "mentions-legales"
+        target_dir = app_root / "mentions-legales"
 
     target_dir.mkdir(parents=True, exist_ok=True)
 

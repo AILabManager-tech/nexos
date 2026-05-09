@@ -26,6 +26,7 @@ _SCAN_SCRIPTS: list[tuple[str, str, int]] = [
     ("a11y-scan.sh", "a11y.json", 60),
     ("headers-scan.sh", "headers.json", 30),
     ("ssl-scan.sh", "ssl.json", 30),
+    ("osiris-scan.sh", "osiris.json", 60),
 ]
 
 _PREFLIGHT_TOTAL_TIMEOUT = 300  # 5 minutes
@@ -186,21 +187,25 @@ def run_preflight(site_dir: Path, client_dir: Path) -> dict[str, Path]:
             except Exception as e:
                 say(f"[yellow]  ⚠ {script_name} error: {e}[/]")
 
-        # 5. Deps scan (doesn't need running server)
+        # 5. Deps scan (doesn't need running server) — writes stdout to deps.json
         deps_script = TOOLS_DIR / "deps-scan.sh"
         if deps_script.exists():
             try:
-                subprocess.run(
-                    ["bash", str(deps_script), str(site_dir), str(client_dir)],
+                proc = subprocess.run(
+                    ["bash", str(deps_script), str(site_dir)],
                     cwd=str(NEXOS_ROOT),
                     timeout=30,
                     capture_output=True,
                     text=True,
                 )
                 deps_out = tooling_dir / "deps.json"
-                if deps_out.exists():
+                if proc.stdout and proc.stdout.strip():
+                    deps_out.write_text(proc.stdout, encoding="utf-8")
+                if deps_out.exists() and deps_out.stat().st_size > 0:
                     results["deps-scan.sh"] = deps_out
                     say("[green]  ✓ deps-scan.sh → deps.json[/]")
+                else:
+                    say("[yellow]  ⚠ deps-scan.sh ran but no output[/]")
             except Exception as e:
                 say(f"[yellow]  ⚠ deps-scan.sh error: {e}[/]")
 

@@ -16,6 +16,7 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -235,12 +236,12 @@ export function CookieConsent() {
         {/* ── Lien politique ── */}
         <p className="mt-3 text-xs text-gray-500 text-center">
           Pour en savoir plus, consultez notre{" "}
-          <a
+          <Link
             href="/politique-confidentialite"
             className="underline hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             politique de confidentialite
-          </a>
+          </Link>
           .
         </p>
       </div>
