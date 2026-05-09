@@ -1,0 +1,65 @@
+[
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-08T14:58:47",
+    "phase": "ph4-build",
+    "agent": "soic",
+    "details": {
+      "mu": 10.0,
+      "threshold": 8.0,
+      "iterations": 2
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-08T14:58:47",
+    "phase": "ph5-qa",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-08T14:58:47",
+    "agent": "auto_fixer"
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-05-08T14:58:51",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "privacy_page",
+      "target": "politique-confidentialite"
+    }
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-05-08T14:58:51",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "legal_page",
+      "target": "mentions-legales"
+    }
+  },
+  {
+    "event": "phase_fail",
+    "timestamp": "2026-05-08T15:02:05",
+    "phase": "ph5-qa",
+    "agent": "orchestrator",
+    "details": {
+      "returncode": 1
+    }
+  },
+  {
+    "event": "pipeline_end",
+    "timestamp": "2026-05-08T15:02:05",
+    "agent": "orchestrator",
+    "details": {
+      "gates": 5,
+      "mode": "create"
+    }
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-08T22:00:11",
+    "agent": "auto_fixer"
+  }
+]

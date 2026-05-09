@@ -1,0 +1,18 @@
+{
+  "legalName": "Dépanneur Nobert inc.",
+  "city": "[ville]",
+  "streetAddress": "À préciser au kickoff",
+  "postalCode": "À préciser au kickoff",
+  "country": "CA",
+  "region": "QC",
+  "phone": "À préciser au kickoff",
+  "email": "info@depanneur-nobert.ca",
+  "rppName": "Nobert Tremblay",
+  "rppEmail": "nobert@depanneur-nobert.ca",
+  "rppTitle": "Propriétaire et Responsable de la protection des renseignements personnels",
+  "neq": "À préciser au kickoff",
+  "geo": {
+    "latitude": 46.8139,
+    "longitude": -71.208
+  }
+}

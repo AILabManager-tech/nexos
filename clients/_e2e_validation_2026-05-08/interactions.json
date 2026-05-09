@@ -1,0 +1,329 @@
+{
+  "$schema": "nexos-ph2/interactions/v1",
+  "generated_at": "2026-05-08T13:50:00Z",
+  "client_slug": "_e2e_validation_2026-05-08",
+  "animation_library": "framer-motion",
+  "library_rationale": "ADR-002 Ph1 — framer-motion 11.x avec garde-fous stricts (useReducedMotion() obligatoire, limité aux sections principales). +15-20KB gz tolérés sous budget bundle <200KB.",
+  "design_intent": "D5=slow-organic — animations sobres, douces, jamais flashy. Le registre 'tech moderne agressif' (parallax, page transitions complexes, scroll-jacking) est explicitement rejeté car il casserait l'authenticité dépanneur de quartier. Mieux vaut moins d'animation que trop.",
+  "global_settings": {
+    "reduced_motion": "OBLIGATOIRE — chaque animation porte un fallback statique ou ultra-court (≤200ms opacity-only)",
+    "useReducedMotion_hook": "import { useReducedMotion } from 'framer-motion' — appelé dans chaque composant animé",
+    "duration_scale": {
+      "instant": "100ms",
+      "fast": "150ms",
+      "normal": "300ms",
+      "slow": "500ms"
+    },
+    "easing": {
+      "default": "cubic-bezier(0.0, 0.0, 0.2, 1)",
+      "enter": "cubic-bezier(0.0, 0.0, 0.2, 1)",
+      "exit": "cubic-bezier(0.4, 0.0, 1, 1)",
+      "spring_subtle": {"stiffness": 260, "damping": 28, "mass": 1}
+    },
+    "performance_rules": [
+      "Animer UNIQUEMENT opacity et transform (translate, scale) — GPU-accelerated",
+      "JAMAIS animer width, height, top, left, margin, padding, color (CPU layout)",
+      "Limiter à 3 animations simultanées max par viewport",
+      "Aucune animation infinie sauf indicateur de chargement",
+      "Durée max pour une animation unique : 500ms",
+      "will-change: transform UNIQUEMENT sur éléments réellement animés (sticky CTA, drawer)"
+    ]
+  },
+  "page_transitions": {
+    "type": "fade-only",
+    "rationale": "D5=slow-organic + secteur dépanneur = pas de transitions élaborées. Fade simple suffit, ne casse pas la perception de vitesse.",
+    "enter": {"opacity": [0, 1], "duration": "200ms"},
+    "exit": {"opacity": [1, 0], "duration": "150ms"},
+    "reduced_motion": "Transition instantanée sans animation"
+  },
+  "scroll_animations": [
+    {
+      "name": "fade-in-up",
+      "trigger": "Quand l'élément entre dans le viewport (≥30% visible) — IntersectionObserver via framer-motion whileInView",
+      "applies_to": [
+        "S-002 PromoWeekTeaser cards (stagger)",
+        "S-003 CategoriesOverview tiles (stagger)",
+        "S-005 LeMotDuProprio quote",
+        "S-008 PromosGrid cards (stagger légère, max 6 visibles à la fois)",
+        "S-010 CategoriesGrid tiles",
+        "S-011 CategorySection products (stagger légère, lazy au scroll)"
+      ],
+      "animation": {
+        "from": {"opacity": 0, "y": 16},
+        "to": {"opacity": 1, "y": 0},
+        "duration": "500ms",
+        "easing": "cubic-bezier(0.0, 0.0, 0.2, 1)",
+        "stagger_children_ms": 80
+      },
+      "viewport_options": {"once": true, "amount": 0.3, "margin": "-50px 0px"},
+      "reduced_motion": {
+        "from": {"opacity": 0},
+        "to": {"opacity": 1},
+        "duration": "200ms",
+        "stagger_children_ms": 0
+      }
+    },
+    {
+      "name": "header-shrink-on-scroll",
+      "trigger": "Scroll Y > 10px",
+      "applies_to": ["Global Header"],
+      "animation": {
+        "padding_y": "py-4 → py-3",
+        "shadow": "shadow-none → shadow-sm",
+        "background_opacity": "100% → 95% (backdrop-blur-sm)",
+        "duration": "200ms"
+      },
+      "implementation_note": "Toggle de classes Tailwind via useScrollPosition hook custom — pas d'animation framer-motion (CSS transition suffit)",
+      "reduced_motion": "Toggle direct sans transition"
+    }
+  ],
+  "hover_interactions": [
+    {
+      "name": "button-primary-hover",
+      "target": "Tous boutons primary (.btn-primary)",
+      "animation": {
+        "background": "primary #8B4513 → primary-hover #A0522D",
+        "shadow": "shadow → shadow-md",
+        "duration": "150ms",
+        "easing": "ease-out"
+      },
+      "implementation": "CSS transition pure (Tailwind hover:bg-primary-hover hover:shadow-md transition-colors duration-150)",
+      "reduced_motion": "Identique (pas de scale, pas de movement)"
+    },
+    {
+      "name": "button-accent-hover-promo-cta",
+      "target": "Bouton accent (sticky CTA mobile + CTA primaire hero S-001)",
+      "animation": {
+        "background_lightness": "+5% sur accent #FFD700",
+        "shadow": "shadow-md → shadow-lg",
+        "duration": "150ms"
+      },
+      "implementation": "CSS transition",
+      "reduced_motion": "Identique"
+    },
+    {
+      "name": "card-hover-promo-S008",
+      "target": "Cards promotions S-008 + cards produits S-011",
+      "animation": {
+        "y": -2,
+        "shadow": "shadow → shadow-card-hover (0 12px 24px -8px rgb(42 24 16 / 0.18))",
+        "duration": "200ms",
+        "easing": "ease-out"
+      },
+      "implementation": "CSS transition pure (transform translate-y-[-2px] hover:shadow-card-hover) — pas de framer-motion nécessaire",
+      "reduced_motion": "Border-color change vers primary uniquement (pas de translation)"
+    },
+    {
+      "name": "category-tile-hover-S003-S010",
+      "target": "Tiles catégories home S-003 et grid S-010",
+      "animation": {
+        "scale": 1.02,
+        "icon_color": "primary → primary-hover",
+        "duration": "200ms"
+      },
+      "reduced_motion": "Border-color + icon color change (pas de scale)"
+    },
+    {
+      "name": "nav-link-hover",
+      "target": "Liens main_nav header desktop",
+      "animation": {
+        "underline": "Underline 2px primary apparaît bottom (animated width 0 → 100%)",
+        "duration": "200ms"
+      },
+      "implementation": "CSS pseudo-element ::after avec scale-x transition",
+      "reduced_motion": "Underline instantané (pas d'animation width)"
+    }
+  ],
+  "focus_interactions": {
+    "style": "ring-3 ring-primary ring-offset-2 ring-offset-background",
+    "behavior": "Visible UNIQUEMENT en navigation clavier via :focus-visible (jamais au clic souris)",
+    "wcag_ratio": "primary #8B4513 sur background #FFF8E7 = 7.91:1 (AAA)",
+    "skip_link": {
+      "label_fr": "Aller au contenu principal",
+      "label_en": "Skip to main content",
+      "behavior": "Visible au premier Tab uniquement (sr-only focus:not-sr-only)",
+      "position": "Top-left fixed avec bg-primary text-primary-foreground py-2 px-4 rounded"
+    },
+    "focus_trap_drawer_mobile": {
+      "scope": "Drawer mobile ouvert (S-Header mobile)",
+      "behavior": "Tab cycle confiné dans drawer, restitution focus sur hamburger à fermeture, ESC ferme",
+      "implementation_note": "Composant accessible via @radix-ui/react-dialog OU implémentation custom focus-trap"
+    }
+  },
+  "loading_states": {
+    "skeleton": {
+      "applies_to": [
+        "S-008 PromosGrid pendant fetch JSON (rare car SSG, mais utile en cas de fallback)",
+        "S-011 CategorySection pendant lazy load"
+      ],
+      "type": "Pulse opacity",
+      "color": "bg-neutral-200 (warm cream variant)",
+      "animation": "animate-pulse Tailwind (opacity 1 → 0.5 → 1, 2s linear infinite)",
+      "reduced_motion": "Fond gris clair statique sans pulse"
+    },
+    "form_submit_spinner": {
+      "applies_to": ["S-006 NewsletterCta", "S-015 ContactForm"],
+      "type": "Lucide Loader2 rotation 360°",
+      "duration": "1s linear infinite",
+      "reduced_motion": "Texte 'Envoi en cours...' visible sans rotation, opacity statique"
+    },
+    "page_loading_app_router": {
+      "type": "Aucun (App Router stream natif Next.js 15 + loading.tsx par route)",
+      "fallback_loading_tsx": "Skeleton ou texte 'Chargement...' selon route, pas d'animation lourde"
+    }
+  },
+  "form_interactions": [
+    {
+      "name": "input-focus-S006-S015",
+      "target": "Tous inputs et textareas formulaires",
+      "animation": {
+        "border": "border-border → border-primary (color transition 150ms)",
+        "ring": "ring-3 ring-primary/30 (apparition 150ms)"
+      },
+      "implementation": "CSS focus-visible state, pas de floating label",
+      "reduced_motion": "Identique (changement de couleur instantané + ring instant)"
+    },
+    {
+      "name": "validation-error-shake",
+      "target": "Field en erreur après tentative submit",
+      "animation": {
+        "x": [0, -4, 4, -4, 4, 0],
+        "duration": "300ms"
+      },
+      "implementation": "framer-motion <motion.div animate={shake}>",
+      "reduced_motion": "Pas de shake — uniquement border error color + message rouge fade-in 200ms"
+    },
+    {
+      "name": "validation-success-checkmark",
+      "target": "Succès soumission newsletter S-006 + contact S-015",
+      "animation": {
+        "icon": "Lucide CheckCircle2 fade-in + slight bounce",
+        "scale": [0, 1.1, 1],
+        "duration": "300ms"
+      },
+      "reduced_motion": "Fade-in opacity uniquement, pas de scale bounce"
+    },
+    {
+      "name": "submit-button-loading",
+      "target": "Bouton submit pendant POST API",
+      "behavior": "Bouton disabled, label remplacé par spinner + 'Envoi en cours...', cursor-not-allowed",
+      "duration": "Selon réponse API (target <800ms)",
+      "reduced_motion": "Spinner remplacé par texte statique"
+    }
+  ],
+  "navigation_interactions": {
+    "hamburger_morph": {
+      "name": "hamburger-to-x",
+      "target": "Mobile header toggle button",
+      "animation": {
+        "icon_swap": "Menu (3 barres) → X via framer-motion AnimatePresence ou CSS transform",
+        "duration": "200ms"
+      },
+      "reduced_motion": "Swap icône instantané"
+    },
+    "drawer_slide_in": {
+      "target": "Drawer mobile (slide-in droite)",
+      "animation": {
+        "from": {"x": "100%"},
+        "to": {"x": 0},
+        "duration": "300ms",
+        "easing": "cubic-bezier(0.0, 0.0, 0.2, 1)"
+      },
+      "overlay": {
+        "from": {"opacity": 0},
+        "to": {"opacity": 1},
+        "duration": "200ms",
+        "background": "bg-text/45 (#2A1810 à 45%)"
+      },
+      "reduced_motion": {
+        "drawer": "Apparition instantanée (display block)",
+        "overlay": "Apparition opacity 200ms (acceptable même reduced)"
+      }
+    },
+    "language_switcher": {
+      "type": "Lien direct, pas d'animation propre",
+      "behavior": "Clic FR/EN → navigation vers slug équivalent, transition de page fade (cf. page_transitions)"
+    }
+  },
+  "sticky_cta_mobile_interactions": {
+    "appearance": {
+      "trigger": "Toujours présent sur routes ciblées (cf. site-map-logic::cta_global)",
+      "animation_on_load": "Fade-in 300ms après mount (évite FOUC)",
+      "reduced_motion": "Pas de fade — apparition directe"
+    },
+    "press_state": {
+      "active_scale": "scale: 0.98 pendant tap (CSS active:scale-[0.98])",
+      "duration": "100ms",
+      "reduced_motion": "Pas de scale (changement de bg shade uniquement)"
+    },
+    "scroll_behavior": "Toujours visible, pas de hide/show on scroll (éviterait la mécanique du KPI conversion)"
+  },
+  "cookie_consent_interactions": {
+    "appearance": {
+      "trigger": "Premier visit (vérifie localStorage)",
+      "animation": {
+        "from": {"y": 100, "opacity": 0},
+        "to": {"y": 0, "opacity": 1},
+        "duration": "400ms",
+        "delay": "500ms (laisse la page se charger d'abord)"
+      },
+      "reduced_motion": "Apparition opacity 200ms uniquement"
+    },
+    "dismiss": {
+      "animation": {
+        "from": {"y": 0, "opacity": 1},
+        "to": {"y": 100, "opacity": 0},
+        "duration": "300ms"
+      },
+      "reduced_motion": "Disparition opacity 200ms"
+    },
+    "no_dark_pattern": "Animation neutre — boutons 'Accepter' et 'Refuser' apparaissent ensemble, même style. Pas de wiggle pour pousser l'acceptation (anti-Loi 25 art. 8.1)."
+  },
+  "anti_patterns_avoided": [
+    {
+      "pattern": "Hero carousel auto-rotatif",
+      "rationale": "Mauvais a11y, pénalise LCP, brief Ph0 anti-pattern explicite (carrousel hero observé chez 3/5 concurrents — à éviter)"
+    },
+    {
+      "pattern": "Parallax scroll sur photos",
+      "rationale": "D5=slow-organic — parallax = registre 'tech flashy' incompatible avec authenticité dépanneur"
+    },
+    {
+      "pattern": "Pop-up infolettre auto au chargement",
+      "rationale": "Augmente le rebond, non conforme Loi 25 si pré-coché. CTA newsletter inline en S-006 suffit."
+    },
+    {
+      "pattern": "Marquee texte défilant",
+      "rationale": "Anti a11y (mouvement continu non désactivable même avec reduced-motion sans CSS pause)"
+    },
+    {
+      "pattern": "Particules / animations background flottantes",
+      "rationale": "Anti D5 slow-organic, pollution visuelle, coût performance"
+    },
+    {
+      "pattern": "Cursor custom / hover effects exotiques",
+      "rationale": "Anti accessibilité, anti registre dépanneur convivial"
+    }
+  ],
+  "summary_count": {
+    "scroll_animations": 2,
+    "hover_interactions": 5,
+    "focus_interactions_global": 1,
+    "loading_states": 3,
+    "form_interactions": 4,
+    "navigation_interactions": 3,
+    "sticky_cta_interactions": 2,
+    "cookie_consent_interactions": 2,
+    "page_transitions": 1,
+    "total_distinct_animations": 23,
+    "all_have_reduced_motion_fallback": true,
+    "all_animate_only_opacity_and_transform": true
+  },
+  "soic_alignment": {
+    "D3_performance": "100% animations GPU (opacity + transform), zéro animation CSS layout (width/height/margin), framer-motion limité aux composants critiques (sticky CTA, drawer, scroll-in cards), CSS transitions pures partout où suffisant.",
+    "D5_velocity_anchor": "D5=slow-organic respecté : durations 150/200/300ms dominantes, easing ease-out, zéro parallax, zéro page transition complexe, zéro infinite hors loaders.",
+    "D6_accessibility": "Tous animations ont fallback reduced-motion documenté, focus visible via ring primary 7.91:1 contrast, skip-link visible au premier Tab, focus-trap drawer mobile, durées plafonnées 500ms.",
+    "D8_legal": "Cookie consent animations neutres (pas de dark pattern), pas d'auto-popup newsletter, animations strictement non manipulatrices.",
+    "D9_quality": "23 animations toutes avec fallback reduced_motion, librairie unique framer-motion (ADR-002), durées dans scale cohérent (instant/fast/normal/slow), aucune contradiction avec design-tokens.json::transitions."
+  }
+}

@@ -1,0 +1,269 @@
+{
+  "$schema": "nexos-ph1/seo-strategy/v1",
+  "generated_at": "2026-05-08T11:45:00Z",
+  "client_slug": "_e2e_validation_2026-05-08",
+  "global_strategy": {
+    "primary_keyword": "dépanneur [ville]",
+    "secondary_keywords": [
+      "dépanneur ouvert 24h [ville]",
+      "bière [ville]",
+      "loto Québec [ville]",
+      "épicerie de quartier [ville]",
+      "dépanneur ouvert dimanche [ville]"
+    ],
+    "long_tail_keywords": [
+      "dépanneur près de moi [ville]",
+      "snack froid chaud [ville]",
+      "loterie lotto [ville]",
+      "boissons gazeuses dépanneur [ville]",
+      "dépanneur livraison [ville]",
+      "dépanneur ouvert tard [ville]",
+      "promotions dépanneur [ville] cette semaine"
+    ],
+    "keyword_difficulty_range": "low (DR 5-25) sur la longue traîne géo-locale ; medium-low (DR 25-40) sur 'dépanneur [ville]' selon densité concurrentielle de la ville",
+    "target_search_intent": "transactional (visite physique) + informational (horaires, promo, dispo produit) + navigational (adresse, téléphone)",
+    "geographic_focus": "[ville à confirmer kickoff] + quartier voisinage (rayon 1km) — Québec / Canada",
+    "ville_slot_warning": "Tous les keywords contiennent le slot [ville] qui doit être substitué au kickoff. Sans cette donnée, le SEO local est inopérant."
+  },
+  "pages_seo": [
+    {
+      "page": "accueil",
+      "route": "/",
+      "primary_keyword": "dépanneur [ville]",
+      "secondary_keywords": ["dépanneur ouvert", "épicerie de quartier [ville]"],
+      "title_tag_fr": "Dépanneur Nobert | Le dépanneur de [ville]",
+      "title_tag_fr_chars": 47,
+      "title_tag_en": "Dépanneur Nobert | Convenience store in [city]",
+      "title_tag_en_chars": 49,
+      "meta_desc_fr": "Votre dépanneur de quartier à [ville]. Bières, loto, snacks, dépannage — promotions chaque semaine. Passez nous voir, on vous attend.",
+      "meta_desc_fr_chars": 134,
+      "meta_desc_en": "Your local convenience store in [city]. Beer, lottery, snacks, essentials — fresh deals every week. Come see us!",
+      "meta_desc_en_chars": 113,
+      "h1_fr": "Le dépanneur de [ville]",
+      "h1_en": "[City]'s neighborhood convenience store",
+      "structured_data": ["Organization", "WebSite", "LocalBusiness", "ConvenienceStore", "OpeningHoursSpecification"],
+      "internal_links_to": ["/promotions", "/produits", "/contact"],
+      "canonical": "https://depanneur-nobert.ca/",
+      "alternates": {
+        "fr": "https://depanneur-nobert.ca/",
+        "en": "https://depanneur-nobert.ca/en",
+        "x-default": "https://depanneur-nobert.ca/"
+      }
+    },
+    {
+      "page": "promotions",
+      "route": "/promotions",
+      "primary_keyword": "promotions dépanneur [ville] cette semaine",
+      "secondary_keywords": ["spéciaux bière [ville]", "loto Québec [ville] promotion"],
+      "title_tag_fr": "Promotions de la semaine | Dépanneur Nobert [ville]",
+      "title_tag_fr_chars": 53,
+      "title_tag_en": "Weekly Deals | Dépanneur Nobert [city]",
+      "title_tag_en_chars": 39,
+      "meta_desc_fr": "Découvrez les promotions de cette semaine au Dépanneur Nobert : bières, snacks, lotto, dépannage. Spéciaux mis à jour chaque lundi.",
+      "meta_desc_fr_chars": 137,
+      "meta_desc_en": "Discover this week's deals at Dépanneur Nobert: beer, snacks, lottery, essentials. Specials updated every Monday.",
+      "meta_desc_en_chars": 116,
+      "h1_fr": "Les promotions de cette semaine",
+      "h1_en": "This week's deals",
+      "structured_data": ["BreadcrumbList", "ItemList", "Offer"],
+      "internal_links_to": ["/produits", "/contact"],
+      "canonical": "https://depanneur-nobert.ca/promotions",
+      "alternates": {
+        "fr": "https://depanneur-nobert.ca/promotions",
+        "en": "https://depanneur-nobert.ca/en/promotions",
+        "x-default": "https://depanneur-nobert.ca/promotions"
+      },
+      "freshness_strategy": "Page mise à jour chaque lundi via JSON commit ; lastModified servi à Google Search Console pour signal de fraîcheur."
+    },
+    {
+      "page": "produits",
+      "route": "/produits",
+      "primary_keyword": "bière loto snack [ville]",
+      "secondary_keywords": ["produits dépanneur [ville]", "bière froide dépanneur [ville]"],
+      "title_tag_fr": "Nos produits | Bières, snacks, loto — Dépanneur Nobert",
+      "title_tag_fr_chars": 56,
+      "title_tag_en": "Our Products | Beer, Snacks, Lottery — Dépanneur Nobert",
+      "title_tag_en_chars": 56,
+      "meta_desc_fr": "Bières, boissons, snacks froids et chauds, loto Québec, dépannage et glace. Le catalogue du Dépanneur Nobert à [ville].",
+      "meta_desc_fr_chars": 122,
+      "meta_desc_en": "Beer, drinks, hot and cold snacks, Quebec lottery, essentials and ice. Dépanneur Nobert's catalog in [city].",
+      "meta_desc_en_chars": 110,
+      "h1_fr": "Tous nos produits, par catégorie",
+      "h1_en": "Our products, by category",
+      "structured_data": ["BreadcrumbList", "ItemList", "OfferCatalog"],
+      "internal_links_to": ["/promotions", "/contact"],
+      "canonical": "https://depanneur-nobert.ca/produits",
+      "alternates": {
+        "fr": "https://depanneur-nobert.ca/produits",
+        "en": "https://depanneur-nobert.ca/en/products",
+        "x-default": "https://depanneur-nobert.ca/produits"
+      }
+    },
+    {
+      "page": "contact",
+      "route": "/contact",
+      "primary_keyword": "dépanneur [ville] adresse téléphone",
+      "secondary_keywords": ["dépanneur Nobert horaires", "dépanneur ouvert [ville]"],
+      "title_tag_fr": "Contact, adresse et horaires | Dépanneur Nobert",
+      "title_tag_fr_chars": 47,
+      "title_tag_en": "Contact, Address & Hours | Dépanneur Nobert",
+      "title_tag_en_chars": 44,
+      "meta_desc_fr": "Trouvez le Dépanneur Nobert à [ville] : adresse, téléphone, horaires d'ouverture. Appelez ou passez nous voir, on vous accueille.",
+      "meta_desc_fr_chars": 132,
+      "meta_desc_en": "Find Dépanneur Nobert in [city]: address, phone, opening hours. Call us or drop by — we're happy to see you.",
+      "meta_desc_en_chars": 110,
+      "h1_fr": "Nous trouver et nous joindre",
+      "h1_en": "Find us and reach out",
+      "structured_data": ["BreadcrumbList", "LocalBusiness", "OpeningHoursSpecification", "GeoCoordinates", "ContactPoint"],
+      "internal_links_to": ["/promotions"],
+      "canonical": "https://depanneur-nobert.ca/contact",
+      "alternates": {
+        "fr": "https://depanneur-nobert.ca/contact",
+        "en": "https://depanneur-nobert.ca/en/contact",
+        "x-default": "https://depanneur-nobert.ca/contact"
+      }
+    },
+    {
+      "page": "politique-confidentialite",
+      "route": "/politique-confidentialite",
+      "primary_keyword": "politique confidentialité dépanneur Nobert",
+      "secondary_keywords": ["loi 25 dépanneur", "RPP Nobert Tremblay"],
+      "title_tag_fr": "Politique de confidentialité | Dépanneur Nobert",
+      "title_tag_fr_chars": 48,
+      "title_tag_en": "Privacy Policy | Dépanneur Nobert",
+      "title_tag_en_chars": 33,
+      "meta_desc_fr": "Politique de confidentialité du Dépanneur Nobert conforme à la Loi 25 du Québec. RPP : Nobert Tremblay.",
+      "meta_desc_fr_chars": 105,
+      "meta_desc_en": "Dépanneur Nobert's privacy policy compliant with Quebec's Law 25. Privacy Officer: Nobert Tremblay.",
+      "meta_desc_en_chars": 99,
+      "h1_fr": "Politique de confidentialité",
+      "h1_en": "Privacy policy",
+      "structured_data": ["BreadcrumbList"],
+      "internal_links_to": ["/contact"],
+      "canonical": "https://depanneur-nobert.ca/politique-confidentialite",
+      "alternates": {
+        "fr": "https://depanneur-nobert.ca/politique-confidentialite",
+        "en": "https://depanneur-nobert.ca/en/privacy-policy",
+        "x-default": "https://depanneur-nobert.ca/politique-confidentialite"
+      }
+    },
+    {
+      "page": "mentions-legales",
+      "route": "/mentions-legales",
+      "primary_keyword": "mentions légales dépanneur Nobert",
+      "secondary_keywords": ["NEQ Dépanneur Nobert inc.", "Dépanneur Nobert Québec"],
+      "title_tag_fr": "Mentions légales | Dépanneur Nobert",
+      "title_tag_fr_chars": 36,
+      "title_tag_en": "Legal Mentions | Dépanneur Nobert",
+      "title_tag_en_chars": 33,
+      "meta_desc_fr": "Mentions légales du Dépanneur Nobert inc. : dénomination sociale, NEQ, hébergeur, contact.",
+      "meta_desc_fr_chars": 92,
+      "meta_desc_en": "Legal mentions of Dépanneur Nobert inc.: legal name, NEQ, hosting, contact.",
+      "meta_desc_en_chars": 78,
+      "h1_fr": "Mentions légales",
+      "h1_en": "Legal mentions",
+      "structured_data": ["BreadcrumbList"],
+      "internal_links_to": ["/contact"],
+      "canonical": "https://depanneur-nobert.ca/mentions-legales",
+      "alternates": {
+        "fr": "https://depanneur-nobert.ca/mentions-legales",
+        "en": "https://depanneur-nobert.ca/en/legal-mentions",
+        "x-default": "https://depanneur-nobert.ca/mentions-legales"
+      }
+    }
+  ],
+  "structured_data_plan": {
+    "site_wide": ["Organization", "WebSite", "BreadcrumbList"],
+    "per_page": {
+      "/": ["LocalBusiness", "ConvenienceStore", "OpeningHoursSpecification", "GeoCoordinates", "PostalAddress"],
+      "/promotions": ["ItemList", "Offer", "BreadcrumbList"],
+      "/produits": ["ItemList", "OfferCatalog", "BreadcrumbList"],
+      "/contact": ["LocalBusiness", "ContactPoint", "OpeningHoursSpecification", "GeoCoordinates", "BreadcrumbList"],
+      "/politique-confidentialite": ["BreadcrumbList"],
+      "/mentions-legales": ["BreadcrumbList"]
+    },
+    "json_ld_template_path": "templates/jsonld-localbusiness.json (à créer Ph4 si absent)",
+    "validation": "Test obligatoire avec Google Rich Results Test avant Ph5 deploy",
+    "non_negotiable_for_local_seo": [
+      "LocalBusiness sur toutes les pages",
+      "ConvenienceStore comme @type spécialisé (Schema.org existe : https://schema.org/ConvenienceStore)",
+      "OpeningHoursSpecification avec dayOfWeek + opens + closes",
+      "GeoCoordinates avec latitude + longitude",
+      "PostalAddress avec streetAddress + addressLocality + postalCode + addressCountry"
+    ]
+  },
+  "sitemap_strategy": {
+    "implementation": "Next.js app/sitemap.ts (génération dynamique au build + revalidation)",
+    "changefreq": {
+      "/": "weekly",
+      "/promotions": "weekly",
+      "/produits": "monthly",
+      "/contact": "monthly",
+      "/politique-confidentialite": "yearly",
+      "/mentions-legales": "yearly"
+    },
+    "priority": {
+      "/": 1.0,
+      "/promotions": 0.9,
+      "/produits": 0.8,
+      "/contact": 0.7,
+      "/politique-confidentialite": 0.3,
+      "/mentions-legales": 0.3
+    },
+    "hreflang": {
+      "fr": "https://depanneur-nobert.ca/{path}",
+      "en": "https://depanneur-nobert.ca/en/{path}",
+      "x-default": "https://depanneur-nobert.ca/{path}"
+    }
+  },
+  "technical_seo": {
+    "robots_txt_rules": [
+      "User-agent: *",
+      "Allow: /",
+      "Disallow: /api/",
+      "",
+      "Sitemap: https://depanneur-nobert.ca/sitemap.xml"
+    ],
+    "robots_txt_implementation": "Next.js app/robots.ts",
+    "canonical_strategy": "Self-referencing canonical sur chaque page via generateMetadata()",
+    "hreflang_implementation": "Via generateMetadata().alternates dans chaque page.tsx",
+    "image_seo": {
+      "alt_texts": "Descriptifs FR/EN obligatoires pour toutes images de produits, photos du dépanneur, propriétaire. Exemple : 'Bière artisanale [marque], format 6×355ml, en spécial cette semaine au Dépanneur Nobert' / 'Craft beer [brand], 6×355ml format, on special this week at Dépanneur Nobert'.",
+      "filenames": "kebab-case + descriptifs : nobert-comptoir-2026.jpg, biere-artisanale-promo-S20.jpg",
+      "format": "next/image avec lazy loading, sizes responsives, priority sur hero images",
+      "weight_budget": "≤500ko par photo (SEO + LCP)"
+    },
+    "core_web_vitals_targets": {
+      "LCP_mobile": "<2.5s",
+      "INP": "<200ms",
+      "CLS": "<0.1"
+    },
+    "google_search_console": "À connecter au domaine depanneur-nobert.ca au launch ; soumettre sitemap.xml ; surveiller couverture FR/EN",
+    "google_business_profile": "À créer/réclamer en parallèle du launch — NAP cohérent avec LocalBusiness JSON-LD du site (rule §3.6 pattern P11 même si single location)"
+  },
+  "link_building_suggestions": [
+    "Chambre de commerce locale [ville] — fiche annuaire",
+    "Pages communautaires Facebook quartier — partage régulier des promos hebdo",
+    "Sites de loto Québec partenaires (si applicable selon contrat marchand)",
+    "Annuaires québécois généralistes (Pages Jaunes QC, 411.ca, Bonjour Québec si tourisme)",
+    "Backlinks naturels via mentions presse locale ou journal de quartier"
+  ],
+  "soic_alignment": {
+    "D5_i18n": "Hreflang correct FR/EN/x-default sur toutes les routes.",
+    "D7_seo": "Tous title_tag <60 chars, meta_desc 92-137 chars, H1 unique par page, JSON-LD planifié, 0 cloaking, géo-ancrage local explicite.",
+    "D8_legal": "Aucune technique black-hat. Pages légales indexables (noindex=false) pour transparence Loi 25.",
+    "D9_quality": "Mots-clés pertinents Québec (vocabulaire 'courriel', 'magasiner', 'loto Québec'), pas de keyword stuffing — densité ≤1.5%."
+  },
+  "blocking_risks": [
+    {
+      "risk": "Slot [ville] non résolu",
+      "impact": "SEO local inopérant, JSON-LD LocalBusiness incomplet (PostalAddress.addressLocality vide)",
+      "mitigation": "Kickoff prioritaire avant Ph3 ; sinon Ph3 génère avec placeholder explicite et flag bloquant pour Ph5."
+    },
+    {
+      "risk": "NEQ Dépanneur Nobert inc. inconnu",
+      "impact": "Mentions légales incomplètes (D8_legal partiel)",
+      "mitigation": "Kickoff prioritaire ; templates NEXOS supportent placeholder."
+    }
+  ]
+}

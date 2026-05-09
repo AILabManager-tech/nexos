@@ -1,0 +1,329 @@
+{
+  "$schema": "nexos-ph1/site-map-logic/v1",
+  "generated_at": "2026-05-08T11:40:00Z",
+  "client_slug": "_e2e_validation_2026-05-08",
+  "routes": [
+    {
+      "path_fr": "/",
+      "path_en": "/en",
+      "component": "app/[locale]/page.tsx",
+      "template": "home",
+      "priority": "critical",
+      "seo_title_fr": "Dépanneur Nobert | Le dépanneur de [ville] — promos, bières, loto",
+      "seo_title_en": "Dépanneur Nobert | Your local convenience store in [city]",
+      "estimated_content_blocks": 7,
+      "primary_cta": "Voir les promotions de la semaine",
+      "primary_cta_target": "/promotions"
+    },
+    {
+      "path_fr": "/promotions",
+      "path_en": "/en/promotions",
+      "component": "app/[locale]/promotions/page.tsx",
+      "template": "promotions-week",
+      "priority": "critical",
+      "seo_title_fr": "Promotions de la semaine | Dépanneur Nobert",
+      "seo_title_en": "Weekly Promotions | Dépanneur Nobert",
+      "estimated_content_blocks": 4,
+      "primary_cta": "S'inscrire à l'infolettre",
+      "primary_cta_target": "#newsletter",
+      "data_source": "site/data/promotions.json (édition hebdo par propriétaire — flow MVP)",
+      "freshness": "weekly"
+    },
+    {
+      "path_fr": "/produits",
+      "path_en": "/en/products",
+      "component": "app/[locale]/produits/page.tsx",
+      "template": "catalog-categories",
+      "priority": "high",
+      "seo_title_fr": "Nos produits | Bières, snacks, loto, dépannage — Dépanneur Nobert",
+      "seo_title_en": "Our Products | Beer, Snacks, Lottery, Essentials — Dépanneur Nobert",
+      "estimated_content_blocks": 8,
+      "primary_cta": "Trouver l'adresse",
+      "primary_cta_target": "/contact",
+      "data_source": "site/data/products-categories.json",
+      "categories": ["bieres", "snacks", "boissons", "loto", "depannage", "glace"]
+    },
+    {
+      "path_fr": "/contact",
+      "path_en": "/en/contact",
+      "component": "app/[locale]/contact/page.tsx",
+      "template": "contact",
+      "priority": "high",
+      "seo_title_fr": "Contact et adresse | Dépanneur Nobert [ville]",
+      "seo_title_en": "Contact & Address | Dépanneur Nobert [city]",
+      "estimated_content_blocks": 5,
+      "primary_cta": "Appeler maintenant",
+      "primary_cta_target": "tel:[telephone]"
+    },
+    {
+      "path_fr": "/politique-confidentialite",
+      "path_en": "/en/privacy-policy",
+      "component": "app/[locale]/politique-confidentialite/page.tsx",
+      "template": "legal-static",
+      "priority": "mandatory",
+      "seo_title_fr": "Politique de confidentialité | Dépanneur Nobert",
+      "seo_title_en": "Privacy Policy | Dépanneur Nobert",
+      "estimated_content_blocks": 1,
+      "noindex": false,
+      "rpp_rendered": true
+    },
+    {
+      "path_fr": "/mentions-legales",
+      "path_en": "/en/legal-mentions",
+      "component": "app/[locale]/mentions-legales/page.tsx",
+      "template": "legal-static",
+      "priority": "mandatory",
+      "seo_title_fr": "Mentions légales | Dépanneur Nobert",
+      "seo_title_en": "Legal Mentions | Dépanneur Nobert",
+      "estimated_content_blocks": 1,
+      "noindex": false
+    }
+  ],
+  "hierarchy": {
+    "/": {
+      "depth": 0,
+      "parent": null,
+      "children": ["/promotions", "/produits", "/contact"]
+    },
+    "/promotions": {
+      "depth": 1,
+      "parent": "/",
+      "children": []
+    },
+    "/produits": {
+      "depth": 1,
+      "parent": "/",
+      "children": []
+    },
+    "/contact": {
+      "depth": 1,
+      "parent": "/",
+      "children": []
+    },
+    "/politique-confidentialite": {
+      "depth": 1,
+      "parent": "/",
+      "children": [],
+      "footer_only": true
+    },
+    "/mentions-legales": {
+      "depth": 1,
+      "parent": "/",
+      "children": [],
+      "footer_only": true
+    }
+  },
+  "navigation": {
+    "main_nav": [
+      {
+        "label_fr": "Accueil",
+        "label_en": "Home",
+        "href": "/",
+        "order": 1
+      },
+      {
+        "label_fr": "Promotions",
+        "label_en": "Promotions",
+        "href": "/promotions",
+        "order": 2,
+        "badge_fr": "Cette semaine",
+        "badge_en": "This week"
+      },
+      {
+        "label_fr": "Produits",
+        "label_en": "Products",
+        "href": "/produits",
+        "order": 3
+      },
+      {
+        "label_fr": "Contact",
+        "label_en": "Contact",
+        "href": "/contact",
+        "order": 4
+      }
+    ],
+    "main_nav_count": 4,
+    "main_nav_count_max": 7,
+    "language_switcher": {
+      "type": "inline",
+      "position": "header_right",
+      "labels": {
+        "fr": "FR",
+        "en": "EN"
+      }
+    },
+    "footer_nav": {
+      "columns": [
+        {
+          "title_fr": "Le dépanneur",
+          "title_en": "The store",
+          "links": [
+            { "label_fr": "Promotions", "label_en": "Promotions", "href": "/promotions" },
+            { "label_fr": "Nos produits", "label_en": "Our products", "href": "/produits" },
+            { "label_fr": "Contact et adresse", "label_en": "Contact & address", "href": "/contact" }
+          ]
+        },
+        {
+          "title_fr": "Coordonnées",
+          "title_en": "Contact info",
+          "links": [
+            { "label_fr": "[Adresse — TBD kickoff]", "label_en": "[Address — TBD]", "href": "/contact#adresse" },
+            { "label_fr": "Téléphone : [TBD]", "label_en": "Phone: [TBD]", "href": "tel:[telephone]" },
+            { "label_fr": "info@depanneur-nobert.ca", "label_en": "info@depanneur-nobert.ca", "href": "mailto:info@depanneur-nobert.ca" }
+          ]
+        },
+        {
+          "title_fr": "Légal",
+          "title_en": "Legal",
+          "links": [
+            { "label_fr": "Politique de confidentialité", "label_en": "Privacy policy", "href": "/politique-confidentialite" },
+            { "label_fr": "Mentions légales", "label_en": "Legal mentions", "href": "/mentions-legales" },
+            { "label_fr": "RPP : Nobert Tremblay", "label_en": "Privacy Officer: Nobert Tremblay", "href": "mailto:nobert@depanneur-nobert.ca" }
+          ]
+        }
+      ]
+    },
+    "breadcrumbs": {
+      "rule": "Auto-générés depuis hierarchy à partir de depth ≥ 1, masqués sur depth=0 (home). Schema.org BreadcrumbList JSON-LD attaché.",
+      "templates_with_breadcrumbs": ["promotions-week", "catalog-categories", "contact", "legal-static"],
+      "separator": "›"
+    },
+    "cta_global": {
+      "type": "sticky_mobile_only",
+      "label_fr": "Voir les promotions de la semaine",
+      "label_en": "See this week's deals",
+      "href": "/promotions",
+      "visible_on": ["/", "/produits", "/contact"],
+      "hidden_on": ["/promotions", "/politique-confidentialite", "/mentions-legales"],
+      "min_touch_target_px": 48,
+      "differenciator": "P11 ph0 — sticky CTA mobile absent dans 5/5 concurrents directs"
+    }
+  },
+  "data_flow": {
+    "forms": [
+      {
+        "id": "newsletter",
+        "name": "Inscription infolettre",
+        "located_on": ["/promotions", "/", "footer"],
+        "fields": [
+          { "name": "email", "type": "email", "required": true, "label_fr": "Votre courriel", "label_en": "Your email" },
+          { "name": "consent", "type": "checkbox", "required": true, "default_checked": false }
+        ],
+        "consent_text_fr": "J'accepte de recevoir l'infolettre hebdomadaire des promotions du Dépanneur Nobert. Je peux me désinscrire à tout moment via le lien en pied de chaque courriel. Mon adresse est conservée 12 mois maximum après ma dernière interaction (Loi 25, art. 3.2).",
+        "consent_text_en": "I agree to receive the weekly promotions newsletter from Dépanneur Nobert. I can unsubscribe at any time via the link at the bottom of each email. My address is kept for a maximum of 12 months after my last interaction (Quebec Law 25, art. 3.2).",
+        "data_retention": "12 mois après dernière interaction (alignée brief.legal.retention)",
+        "submission_action": "API route /api/newsletter (server-side, jamais en clair côté client)",
+        "rate_limit": "5 soumissions / IP / heure (anti-spam)",
+        "loi25_compliant": true
+      },
+      {
+        "id": "contact",
+        "name": "Formulaire de contact",
+        "located_on": ["/contact"],
+        "fields": [
+          { "name": "name", "type": "text", "required": true, "label_fr": "Votre nom", "label_en": "Your name" },
+          { "name": "email_or_phone", "type": "text", "required": true, "label_fr": "Courriel ou téléphone", "label_en": "Email or phone" },
+          { "name": "message", "type": "textarea", "required": true, "label_fr": "Votre message", "label_en": "Your message", "max_length": 1000 },
+          { "name": "consent", "type": "checkbox", "required": true, "default_checked": false }
+        ],
+        "consent_text_fr": "J'accepte que mes coordonnées soient utilisées pour répondre à mon message. Elles sont conservées 6 mois maximum après la dernière interaction puis supprimées (Loi 25). Aucun usage marketing sans consentement séparé.",
+        "consent_text_en": "I agree that my contact details may be used to reply to my message. They are kept for a maximum of 6 months after the last interaction, then deleted (Quebec Law 25). No marketing use without separate consent.",
+        "data_retention": "6 mois après dernière interaction (alignée brief.legal.retention)",
+        "submission_action": "API route /api/contact → courriel info@depanneur-nobert.ca",
+        "rate_limit": "3 soumissions / IP / heure",
+        "honeypot": true,
+        "loi25_compliant": true
+      }
+    ],
+    "tracking_points": [
+      {
+        "name": "pageview",
+        "tool": "Google Analytics 4",
+        "loaded_when": "consent.analytics === 'granted'",
+        "default_state": "denied",
+        "ip_anonymization": true,
+        "loi25_compliant": true
+      },
+      {
+        "name": "cta_promotions_click",
+        "tool": "GA4 event",
+        "loaded_when": "consent.analytics === 'granted'",
+        "purpose": "Mesure conversion KPI primaire"
+      },
+      {
+        "name": "phone_click",
+        "tool": "GA4 event",
+        "loaded_when": "consent.analytics === 'granted'",
+        "purpose": "Mesure conversion CTA secondaire 'Appeler pour une commande'"
+      },
+      {
+        "name": "newsletter_submit",
+        "tool": "GA4 event",
+        "loaded_when": "consent.analytics === 'granted'",
+        "purpose": "Mesure conversion CTA secondaire 'Inscription infolettre'"
+      }
+    ],
+    "cookie_consent": {
+      "default": "essentiels uniquement",
+      "categories": [
+        { "id": "essential", "label_fr": "Essentiels", "label_en": "Essential", "default_active": true, "required": true, "user_choice": false },
+        { "id": "analytics", "label_fr": "Analytique", "label_en": "Analytics", "default_active": false, "required": false, "user_choice": true },
+        { "id": "marketing", "label_fr": "Marketing", "label_en": "Marketing", "default_active": false, "required": false, "user_choice": true }
+      ],
+      "buttons": {
+        "accept_all": { "label_fr": "Tout accepter", "label_en": "Accept all" },
+        "reject_all": { "label_fr": "Refuser", "label_en": "Decline", "visual_weight_equal_to_accept": true },
+        "customize": { "label_fr": "Personnaliser", "label_en": "Customize" }
+      },
+      "loi25_art": "Loi 25 art. 8.1 + 12 (consentement libre, éclairé, granulaire)"
+    }
+  },
+  "internal_linking": {
+    "link_map": [
+      { "from": "/", "to": "/promotions", "anchor_fr": "Voir les promotions de la semaine", "context": "hero CTA primaire" },
+      { "from": "/", "to": "/promotions", "anchor_fr": "Toutes les promos", "context": "section promo-week-teaser" },
+      { "from": "/", "to": "/produits", "anchor_fr": "Voir tous les produits", "context": "section categories-overview" },
+      { "from": "/", "to": "/contact", "anchor_fr": "Trouver l'adresse", "context": "section infos-pratiques" },
+      { "from": "/", "to": "/contact", "anchor_fr": "[Téléphone TBD]", "context": "header tel: link" },
+      { "from": "/promotions", "to": "/produits", "anchor_fr": "Découvrir notre catalogue complet", "context": "fin de page" },
+      { "from": "/promotions", "to": "/contact", "anchor_fr": "Appeler pour réserver", "context": "card promo individuelle" },
+      { "from": "/produits", "to": "/promotions", "anchor_fr": "Spéciaux de la semaine", "context": "header de page" },
+      { "from": "/produits", "to": "/contact", "anchor_fr": "Vérifier la disponibilité", "context": "fin de page" },
+      { "from": "/contact", "to": "/promotions", "anchor_fr": "Voir les promos avant de venir", "context": "fin de page" },
+      { "from": "footer:all", "to": "/politique-confidentialite", "anchor_fr": "Politique de confidentialité", "context": "footer column Légal" },
+      { "from": "footer:all", "to": "/mentions-legales", "anchor_fr": "Mentions légales", "context": "footer column Légal" }
+    ],
+    "hub_pages": ["/", "/promotions"],
+    "hub_pages_rationale": "Home = entrée SEO + brand. /promotions = pivot de conversion (KPI primaire) ET asset SEO hebdo le plus mis à jour.",
+    "orphan_check": {
+      "rule": "Toutes les pages doivent avoir ≥1 lien entrant depuis main_nav OU footer_nav OU link_map.",
+      "validation_status": "PASS",
+      "details": {
+        "/": "ENTRY (main_nav + logo)",
+        "/promotions": "main_nav + sticky CTA + footer + 3 link_map entries",
+        "/produits": "main_nav + footer + 2 link_map entries",
+        "/contact": "main_nav + footer + 3 link_map entries",
+        "/politique-confidentialite": "footer Légal column",
+        "/mentions-legales": "footer Légal column"
+      }
+    },
+    "max_outbound": {
+      "rule": "≤ 30 liens sortants par page (recommandé pour PageRank distribution)",
+      "actual_estimates": {
+        "/": "~22 (header 4 + footer 9 + body ~9)",
+        "/promotions": "~15",
+        "/produits": "~24 (catégories + produits)",
+        "/contact": "~12",
+        "/politique-confidentialite": "~10",
+        "/mentions-legales": "~10"
+      }
+    }
+  },
+  "soic_alignment": {
+    "D1_architecture": "App Router Next.js 15, structure app/[locale]/ valide pour project-bootstrapper Ph4.",
+    "D2_typescript": "Tous composants typables (RouteParams, NavItem, FormFields).",
+    "D5_i18n": "100% des routes mappées FR/EN (slug FR canonical, EN sous /en/).",
+    "D7_seo": "Profondeur max = 1, sitemap.ts généré dynamiquement, hreflang FR/EN/x-default planifié.",
+    "D8_legal": "Formulaires conformes Loi 25 (consent_text explicite, opt-in cookies, RPP visible footer, retention documentée)."
+  }
+}

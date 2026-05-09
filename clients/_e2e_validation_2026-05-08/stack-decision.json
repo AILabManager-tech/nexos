@@ -1,0 +1,251 @@
+{
+  "$schema": "nexos-ph1/stack-decision/v1",
+  "generated_at": "2026-05-08T11:50:00Z",
+  "client_slug": "_e2e_validation_2026-05-08",
+  "stack": {
+    "framework": {
+      "name": "Next.js",
+      "version": "15.x",
+      "router": "App Router",
+      "reason": "Standard NEXOS — SSR/SSG natif, metadata API, sitemap.ts/robots.ts dynamiques, headers de sécurité via vercel.json. Aligné brief.design.stack_imposed.framework='nextjs'."
+    },
+    "language": {
+      "name": "TypeScript",
+      "version": "5.x",
+      "strict_mode": true,
+      "config_overrides": {
+        "noUncheckedIndexedAccess": true,
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "exactOptionalPropertyTypes": true
+      },
+      "reason": "Standard NEXOS — type safety obligatoire, scaffold dépanneur (catalogue produits + promos JSON) gagne fortement à être typé pour éviter les régressions hebdo."
+    },
+    "css": {
+      "name": "Tailwind CSS",
+      "version": "3.4.x",
+      "reason": "Standard NEXOS — utility-first, purge auto, palette warm imposée traduite en design tokens (custom theme.extend.colors). Version 3.4 retenue (vs 4.x) pour stabilité écosystème Next.js 15 + parité avec autres clients NEXOS (table-de-marguerite, beaumont-avocats). Aligné brief.design.stack_imposed.css='tailwind'."
+    },
+    "i18n": {
+      "name": "next-intl",
+      "version": "3.x",
+      "locales": ["fr", "en"],
+      "default_locale": "fr",
+      "routing": "prefix-as-needed (FR sans préfixe, EN sous /en/)",
+      "reason": "Standard NEXOS — intégration App Router native, type-safe namespaces. Aligné brief.design.stack_imposed.i18n='next-intl' + brief.site.languages=['fr','en']."
+    },
+    "testing": {
+      "unit": "Vitest 1.x",
+      "component": "@testing-library/react 16.x",
+      "e2e": "Playwright (optionnel, hors budget MVP solo)",
+      "reason": "Standard NEXOS — Vitest rapide ESM natif. Tests unitaires sur composants critiques (cookie consent, formulaires Loi 25, parsing promotions.json)."
+    },
+    "linting": {
+      "linter": "ESLint",
+      "config": "eslint-config-next + eslint-plugin-jsx-a11y",
+      "formatter": "Prettier 3.x",
+      "reason": "jsx-a11y obligatoire (D6 a11y était point faible secteur — différenciation gratuite identifiée en ph0)."
+    },
+    "deployment": {
+      "provider": "Vercel",
+      "plan_recommandation": "Hobby ou Pro selon volume — MVP solo : Hobby suffit",
+      "reason": "Aligné brief.design.stack_imposed.deploy='vercel' + brief.site.hosting='vercel'. CI/CD natif, preview deploys, headers sécurité via vercel.json, Edge CDN global."
+    },
+    "fonts": {
+      "primary": "Fraunces (Google Fonts OFL)",
+      "secondary": "Inter (Google Fonts OFL)",
+      "loader": "next/font/google",
+      "subsets": ["latin"],
+      "display": "swap",
+      "reason": "Aligné brand-identity.json. next/font self-host les fichiers woff2 = zéro layout shift + zéro requête vers fonts.google.com (Loi 25 ✓)."
+    },
+    "icons": {
+      "library": "lucide-react",
+      "reason": "Standard NEXOS, tree-shakable, line-art aligné D5=slow-organic + accord avec catalogue catégorisé (ph0 §6.5)."
+    }
+  },
+  "optional_additions": [
+    {
+      "name": "Framer Motion",
+      "package": "framer-motion",
+      "version": "11.x",
+      "reason": "Pattern P17 (scroll-triggered animations) recommandé : fade-in léger sections + hover CTA. Anti-pattern P17 : éviter sur 100+ éléments + respecter prefers-reduced-motion.",
+      "impact": "+15-20KB bundle gzipped",
+      "decision": "include",
+      "guardrails": [
+        "Utilisation limitée aux sections principales (hero + 4-5 sections home + cards promos)",
+        "AnimatePresence uniquement sur transitions clés",
+        "useReducedMotion() hook obligatoire pour respecter prefers-reduced-motion (anti-pattern matrix)",
+        "Pas d'animation sur header/footer/CTA sticky (perf-critical paths)"
+      ]
+    },
+    {
+      "name": "React Hook Form + Zod",
+      "package": "react-hook-form + @hookform/resolvers + zod",
+      "reason": "Formulaires Loi 25 (newsletter + contact) avec validation type-safe + messages d'erreur localisés FR/EN.",
+      "impact": "+10-12KB bundle gzipped",
+      "decision": "include",
+      "guardrails": [
+        "Schémas Zod partagés entre client et server (API routes)",
+        "Honeypot field obligatoire (anti-spam contact form)",
+        "Rate limiting via middleware (3-5/IP/heure selon formulaire)"
+      ]
+    },
+    {
+      "name": "next-themes",
+      "decision": "reject",
+      "reason": "Brief + ph0 §6.6 : dark mode skip pour v1 (palette warm imposée incompatible avec dark, secteur n'attend pas)."
+    },
+    {
+      "name": "Sanity / Contentlayer",
+      "decision": "reject_for_mvp",
+      "reason": "MVP solo : édition promos via JSON commit (site/data/promotions.json) suffit. Sanity envisageable en backlog si fréquence d'édition pose un frein opérationnel à Nobert (à ré-évaluer 3 mois post-launch)."
+    }
+  ],
+  "explicitly_rejected": [
+    {
+      "name": "jQuery",
+      "reason": "Obsolète, +90KB, incompatible avec architecture React moderne."
+    },
+    {
+      "name": "styled-components / Emotion runtime",
+      "reason": "Runtime CSS-in-JS — impact perf SSR (Next.js 15 + RSC déconseillent), Tailwind couvre 100% des besoins."
+    },
+    {
+      "name": "Pages Router",
+      "reason": "Legacy — App Router est le standard Next.js 15 et permet metadata API + RSC."
+    },
+    {
+      "name": "Wix / Squarespace / WordPress",
+      "reason": "Stack imposée brief = nextjs ; le gap concurrentiel ph0 (vs WordPress concurrents) repose précisément sur ce choix moderne."
+    },
+    {
+      "name": "Google Tag Manager direct",
+      "reason": "Sans gestion de consentement default='denied' au chargement → non conforme Loi 25. Si GA4 utilisé, charger uniquement après opt-in cookie analytics (cf site-map-logic.json::data_flow.tracking_points)."
+    }
+  ],
+  "security_config": {
+    "next_config_mjs": {
+      "poweredByHeader": false,
+      "reactStrictMode": true,
+      "images": {
+        "formats": ["image/avif", "image/webp"],
+        "remotePatterns": []
+      },
+      "experimental": {
+        "scrollRestoration": true
+      }
+    },
+    "vercel_json_headers": [
+      { "key": "X-Frame-Options", "value": "DENY" },
+      { "key": "X-Content-Type-Options", "value": "nosniff" },
+      { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+      { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
+      { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(self)" },
+      { "key": "Content-Security-Policy", "value": "GENERATED_BY_csp-generator_AGENT_PH4" }
+    ],
+    "csp_strategy": "Nonce-based CSP via middleware (généré par agent csp-generator en Ph4) — strict-dynamic + script-src 'self' 'nonce-X' + img-src 'self' https://maps.googleapis.com (si Google Maps embed) + connect-src 'self' https://www.google-analytics.com (si analytics opt-in)",
+    "rate_limiting": "Middleware Next.js sur /api/newsletter (5/h/IP) + /api/contact (3/h/IP)",
+    "cookies": "Cookie consent via templates/cookie-consent-component.tsx — opt-in strict, default=denied"
+  },
+  "performance_budget": {
+    "LCP_mobile_target": "<2.5s",
+    "INP_target": "<200ms",
+    "CLS_target": "<0.1",
+    "bundle_initial_JS": "<200KB gzipped",
+    "image_max_per_photo": "500KB",
+    "fonts_total_weight": "<150KB (4 fichiers woff2 max : Fraunces 700 + Fraunces 800 + Inter 400 + Inter 600)",
+    "lighthouse_targets": {
+      "performance_mobile": "≥90",
+      "accessibility": "≥95",
+      "best_practices": "≥95",
+      "seo": "100"
+    }
+  },
+  "dependencies_estimate": {
+    "production": [
+      "next",
+      "react",
+      "react-dom",
+      "next-intl",
+      "framer-motion",
+      "lucide-react",
+      "react-hook-form",
+      "@hookform/resolvers",
+      "zod"
+    ],
+    "production_count": 9,
+    "production_count_max": "10 (hors écosystème Next.js)",
+    "dev": [
+      "typescript",
+      "@types/react",
+      "@types/node",
+      "tailwindcss",
+      "postcss",
+      "autoprefixer",
+      "eslint",
+      "eslint-config-next",
+      "eslint-plugin-jsx-a11y",
+      "prettier",
+      "vitest",
+      "@vitejs/plugin-react",
+      "@testing-library/react",
+      "@testing-library/jest-dom",
+      "jsdom"
+    ]
+  },
+  "adr_log": [
+    {
+      "id": "ADR-001",
+      "title": "Tailwind CSS 3.4 retenu vs 4.x",
+      "status": "accepted",
+      "context": "Tailwind 4 disponible mais écosystème Next.js 15 / next-intl / Vercel encore mature majoritairement sur 3.4. Parité avec autres clients NEXOS (table-de-marguerite, beaumont-avocats) facilite maintenance toolchain.",
+      "decision": "Adopter Tailwind 3.4.x ; revoir migration 4.x quand l'écosystème complet sera stabilisé.",
+      "consequences": "Pas de @theme inline ; classes JIT classiques ; aucun blocker fonctionnel.",
+      "alternatives_considered": ["Tailwind 4.x", "vanilla-extract", "CSS Modules"]
+    },
+    {
+      "id": "ADR-002",
+      "title": "Framer Motion inclus malgré +15-20KB",
+      "status": "accepted",
+      "context": "Pattern P17 recommandé + brief D5=slow-organic appelle fade-in subtils. CSS animations pures ne couvriraient pas la complexité useReducedMotion + AnimatePresence proprement.",
+      "decision": "Inclure framer-motion 11.x avec guardrails stricts (limité aux sections principales).",
+      "consequences": "+15-20KB initial mais respect du pattern. Surveiller LCP mobile <2.5s en Ph5.",
+      "alternatives_considered": ["CSS @keyframes pur", "GSAP (lourd, licence)", "Lottie (overkill ici)", "Pas d'animation"]
+    },
+    {
+      "id": "ADR-003",
+      "title": "Promotions hebdo via JSON commit (pas CMS)",
+      "status": "accepted",
+      "context": "MVP solo : Nobert n'a pas de besoin éditorial complexe ; un fichier JSON versionné dans le repo (site/data/promotions.json) édité manuellement (ou via pull request simple) couvre 100% du besoin sans dépendance externe.",
+      "decision": "Édition via JSON commit + revalidation Vercel automatique au push.",
+      "consequences": "Friction si Nobert n'est pas confortable avec git/PR : prévoir doc d'édition simple ou mini-admin Ph6 si besoin émerge.",
+      "alternatives_considered": ["Sanity (overkill MVP)", "Contentlayer (déprécié)", "Notion API (dépendance externe)", "Markdown files via Contentlayer-like maison"]
+    },
+    {
+      "id": "ADR-004",
+      "title": "Pas de dark mode v1",
+      "status": "accepted",
+      "context": "Brief impose palette warm. Ph0 §6.6 confirme : 0/5 sites sectoriels offrent dark mode, secteur ne l'attend pas, palette warm s'accorde mal avec dark.",
+      "decision": "Skip dark mode v1, ne pas inclure next-themes.",
+      "consequences": "Bundle réduit ; à ré-évaluer si feedback utilisateur le demande post-launch.",
+      "alternatives_considered": ["next-themes activé sur palette dark dérivée", "CSS prefers-color-scheme partiel"]
+    },
+    {
+      "id": "ADR-005",
+      "title": "API keys (Google Maps, GA4) côté server uniquement",
+      "status": "accepted",
+      "context": "CLAUDE.md règle absolue : API keys jamais côté client. Google Maps embed = iframe sans key client-side ; GA4 measurement_id en NEXT_PUBLIC_ acceptable car public par design, mais loadé conditionnellement après consentement.",
+      "decision": "Google Maps via iframe public embed (pas Maps JS API) ; GA4 measurement_id en NEXT_PUBLIC_ chargé via consent gate.",
+      "consequences": "Aucune clé sensible exposée ; conformité Loi 25 maintenue."
+    }
+  ],
+  "soic_alignment": {
+    "D1_architecture": "Next.js 15 App Router + structure validée par scaffold-planner.",
+    "D2_typescript": "strict + 4 overrides supplémentaires, 0 any toléré.",
+    "D3_performance": "Bundle initial <200KB, framer-motion encadré, fonts ≤150KB.",
+    "D4_securite": "vercel.json headers complets, poweredByHeader=false, CSP nonce-based, rate limiting API routes.",
+    "D5_i18n": "next-intl FR/EN avec prefix-as-needed.",
+    "D9_qualite": "5 ADR documentés, 9 deps prod (sous plafond 10), eslint-plugin-jsx-a11y obligatoire."
+  }
+}

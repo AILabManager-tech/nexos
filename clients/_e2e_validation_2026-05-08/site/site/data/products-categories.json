@@ -1,0 +1,76 @@
+{
+  "categories": [
+    {
+      "id": "bieres",
+      "name_fr": "Bières",
+      "name_en": "Beer",
+      "description_fr": "Microbrasseries québécoises et grandes marques, toujours froides.",
+      "description_en": "Quebec craft beers and major brands, always cold.",
+      "icon": "Beer",
+      "products": [
+        { "id": "biere-blonde-locale", "name_fr": "Blonde locale", "name_en": "Local lager", "alt_fr": "Bière blonde locale en bouteille", "alt_en": "Local lager in bottle", "image": "/images/products/biere-1.jpg", "priceIndicative": 3.49, "available": true },
+        { "id": "biere-ipa-quebec", "name_fr": "IPA québécoise", "name_en": "Quebec IPA", "alt_fr": "Canette d'IPA québécoise", "alt_en": "Quebec IPA can", "image": "/images/products/biere-2.jpg", "priceIndicative": 4.29, "available": true }
+      ]
+    },
+    {
+      "id": "snacks",
+      "name_fr": "Snacks",
+      "name_en": "Snacks",
+      "description_fr": "Croustilles, chocolats, bonbons et tout ce qui dépanne entre deux repas.",
+      "description_en": "Chips, chocolate, candy and everything that fills the gap between meals.",
+      "icon": "Cookie",
+      "products": [
+        { "id": "chips-classique", "name_fr": "Chips classiques", "name_en": "Classic chips", "alt_fr": "Sac de chips classique", "alt_en": "Classic chips bag", "image": "/images/products/snack-1.jpg", "priceIndicative": 2.49, "available": true },
+        { "id": "chocolat-noir", "name_fr": "Chocolat noir", "name_en": "Dark chocolate", "alt_fr": "Tablette de chocolat noir", "alt_en": "Dark chocolate bar", "image": "/images/products/snack-2.jpg", "priceIndicative": 3.99, "available": true }
+      ]
+    },
+    {
+      "id": "boissons",
+      "name_fr": "Boissons",
+      "name_en": "Drinks",
+      "description_fr": "Boissons gazeuses, jus, eau, café et liqueurs douces.",
+      "description_en": "Sodas, juices, water, coffee and soft drinks.",
+      "icon": "GlassWater",
+      "products": [
+        { "id": "boisson-cola", "name_fr": "Cola 591 ml", "name_en": "Cola 591 ml", "alt_fr": "Bouteille de cola 591 ml", "alt_en": "591 ml cola bottle", "image": "/images/products/boisson-1.jpg", "priceIndicative": 2.79, "available": true },
+        { "id": "eau-source", "name_fr": "Eau de source", "name_en": "Spring water", "alt_fr": "Bouteille d'eau de source", "alt_en": "Spring water bottle", "image": "/images/products/boisson-2.jpg", "priceIndicative": 1.49, "available": true }
+      ]
+    },
+    {
+      "id": "loto",
+      "name_fr": "Loto Québec",
+      "name_en": "Loto-Québec",
+      "description_fr": "Billets de loterie, gratteux et abonnements officiels Loto-Québec.",
+      "description_en": "Lottery tickets, scratchers and official Loto-Québec subscriptions.",
+      "icon": "Ticket",
+      "products": [
+        { "id": "loto-649", "name_fr": "Lotto 6/49", "name_en": "Lotto 6/49", "alt_fr": "Billet Lotto 6/49", "alt_en": "Lotto 6/49 ticket", "image": "/images/products/loto-1.jpg", "priceIndicative": 3.0, "available": true },
+        { "id": "gratteux-7", "name_fr": "Gratteux 7", "name_en": "Scratch 7", "alt_fr": "Billet de gratteux 7", "alt_en": "Scratch 7 ticket", "image": "/images/products/loto-2.jpg", "priceIndicative": 7.0, "available": true }
+      ]
+    },
+    {
+      "id": "depannage",
+      "name_fr": "Dépannage",
+      "name_en": "Essentials",
+      "description_fr": "Pain, lait, œufs, papier de toilette — l'essentiel sans détour.",
+      "description_en": "Bread, milk, eggs, toilet paper — the essentials without the detour.",
+      "icon": "Wrench",
+      "products": [
+        { "id": "pain-tranches", "name_fr": "Pain tranché", "name_en": "Sliced bread", "alt_fr": "Pain tranché classique", "alt_en": "Classic sliced bread", "image": "/images/products/depannage-1.jpg", "priceIndicative": 4.49, "available": true },
+        { "id": "lait-2pc", "name_fr": "Lait 2% (1L)", "name_en": "Milk 2% (1L)", "alt_fr": "Carton de lait 2% 1 litre", "alt_en": "2% milk carton, 1 litre", "image": "/images/products/depannage-2.jpg", "priceIndicative": 3.49, "available": true }
+      ]
+    },
+    {
+      "id": "glace",
+      "name_fr": "Glace",
+      "name_en": "Ice",
+      "description_fr": "Sacs de glace, popsicles et crème glacée pour les chaleurs.",
+      "description_en": "Ice bags, popsicles and ice cream for the warm days.",
+      "icon": "Snowflake",
+      "products": [
+        { "id": "sac-glace-5kg", "name_fr": "Sac de glace 5 kg", "name_en": "Ice bag 5 kg", "alt_fr": "Sac de glace 5 kilos", "alt_en": "5 kg ice bag", "image": "/images/products/glace-1.jpg", "priceIndicative": 4.99, "available": true },
+        { "id": "popsicle-12", "name_fr": "Popsicles 12", "name_en": "12-pack popsicles", "alt_fr": "Boîte de 12 popsicles", "alt_en": "12-pack popsicle box", "image": "/images/products/glace-2.jpg", "priceIndicative": 6.99, "available": true }
+      ]
+    }
+  ]
+}

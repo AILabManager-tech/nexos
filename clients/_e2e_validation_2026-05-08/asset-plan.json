@@ -1,0 +1,279 @@
+{
+  "$schema": "nexos-ph2/asset-plan/v1",
+  "generated_at": "2026-05-08T13:40:00Z",
+  "client_slug": "_e2e_validation_2026-05-08",
+  "logo_strategy": {
+    "logo_provided_in_brief": false,
+    "decision": "Wordmark typographique Fraunces 700/800 — 'Dépanneur Nobert'",
+    "rationale": "brief.design.logo_provided=false + budget solo + cohérence D3=heavy + identité ancrée typo. Pas d'illustration logo custom requise pour MVP.",
+    "implementation": {
+      "desktop_header": "Wordmark inline-flex : 'Dépanneur' en Fraunces 700 + 'Nobert' en Fraunces 800 italic souligné accent #FFD700 sous-jacent (3px)",
+      "mobile_header": "Même wordmark, taille réduite (text-xl sm:text-2xl)",
+      "favicon": "Initiale 'N' Fraunces 800 sur fond accent #FFD700 (cf. favicon spec ci-dessous)"
+    }
+  },
+  "images": {
+    "hero_homepage_S001": {
+      "manifest_id": "S-001",
+      "page": "/",
+      "section": "Hero",
+      "description": "Photo réelle propriétaire Nobert Tremblay devant son dépanneur OU intérieur du dépanneur (boiseries, lumière chaude, mise en valeur conviviale) — non négociable D2 emotional",
+      "source": "client-provided",
+      "source_priority": "Photo provided by Nobert au kickoff (séance photo si nécessaire)",
+      "fallback_plan_b": {
+        "trigger": "Si photo client indisponible au launch",
+        "source": "Stock chaleureux dépanneur QC réel (Unsplash query : 'small corner store quebec', 'convenience store warm light')",
+        "watermark_temporary": "Étiqueter 'photo temporaire' dans alt text + ticket de remplacement S+1 (suivi nexos-changelog.json EventType=BRIEF_GAP)"
+      },
+      "dimensions": {
+        "mobile": "750×563 (aspect 4/3)",
+        "tablet": "1280×720 (aspect 16/9)",
+        "desktop": "1920×823 (aspect 21/9, max-h-[640px])"
+      },
+      "format_priority": ["avif", "webp", "jpg"],
+      "loading": "eager",
+      "fetchpriority": "high",
+      "placeholder": "blur (blurDataURL généré au build via plaiceholder ou next/image automatique)",
+      "alt_text_fr": "Le Dépanneur Nobert — intérieur chaleureux avec boiseries traditionnelles québécoises et lumière dorée",
+      "alt_text_en": "Dépanneur Nobert — warm interior with traditional Quebec wood paneling and golden light",
+      "next_image_sizes": "100vw",
+      "overlay_required": "Oui — bg-text/45 (#2A1810 à 45% opacity) pour assurer contraste texte crème ≥7:1 sur photo"
+    },
+    "owner_portrait_S005": {
+      "manifest_id": "S-005",
+      "page": "/",
+      "section": "LeMotDuProprio",
+      "description": "Portrait individuel Nobert Tremblay, plan poitrine, lumière naturelle chaude, expression conviviale (pas studio glacé)",
+      "source": "client-provided",
+      "fallback_plan_b": {
+        "trigger": "Si portrait client indisponible",
+        "source": "Silhouette avatar warm (illustration générée OU initiale 'N' sur fond accent FFD700)",
+        "constraint": "Jamais de stock photo de personne tierce (anti-pattern fake)"
+      },
+      "dimensions": {
+        "mobile": "180×180",
+        "desktop": "240×240"
+      },
+      "format": "webp",
+      "loading": "lazy",
+      "alt_text_fr": "Nobert Tremblay, propriétaire du Dépanneur Nobert",
+      "alt_text_en": "Nobert Tremblay, owner of Dépanneur Nobert",
+      "crop": "circle (border-radius full)",
+      "border_decorative": "ring-4 ring-accent ring-offset-2 ring-offset-surface (badge accent autour du portrait)"
+    },
+    "promo_card_images_S008": {
+      "manifest_id": "S-008",
+      "page": "/promotions",
+      "section": "PromosGrid",
+      "description": "Photos produit pour chaque promo de la semaine (bières, snack, lotto, dépannage) — édition hebdo via JSON commit (ADR-003)",
+      "source": "client-provided OR unsplash-fallback",
+      "rule_per_promo_object": {
+        "image": "URL relative public/images/promos/{slug}.webp OU Unsplash si client n'a pas fourni",
+        "alt_text_fr": "Auto-rendu depuis promotions.json (champ 'product_name' + 'unit')",
+        "alt_text_en": "Auto-rendu depuis promotions.json (champ 'product_name_en')"
+      },
+      "dimensions": "1024×768 (aspect 4/3)",
+      "format_priority": ["webp", "jpg"],
+      "loading": "lazy (sauf 3 premières si rendues sur teaser home S-002)",
+      "next_image_sizes": "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
+      "default_count_estimate": "6-12 promos par semaine",
+      "kpi_critical": true
+    },
+    "promo_teaser_images_S002": {
+      "manifest_id": "S-002",
+      "page": "/",
+      "section": "PromoWeekTeaser",
+      "description": "3 promos featured affichées sur la home — réutilise les images des 3 premières promos de promotions.json",
+      "source": "Référence partagée avec S-008",
+      "loading": "eager (above-the-fold sur la home dès le scroll initial)",
+      "dimensions_inherit": "Mêmes que S-008"
+    },
+    "product_card_images_S011": {
+      "manifest_id": "S-011",
+      "page": "/produits",
+      "section": "CategorySection (×6)",
+      "description": "Vignettes produits par catégorie (Bières, Snacks, Boissons, Loto, Dépannage, Glace)",
+      "source": "client-provided OR unsplash-fallback",
+      "data_source_link": "site/data/products-categories.json (chaque produit porte image_url + alt_fr + alt_en)",
+      "dimensions": "600×600 (aspect square 1/1)",
+      "format": "webp",
+      "loading": "lazy",
+      "next_image_sizes": "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw",
+      "fallback_per_product": "Si pas d'image client, placeholder Lucide (icône catégorie) sur fond gradient warm — pas de stock photo générique non liée"
+    },
+    "google_maps_embed_S004_S013": {
+      "manifest_id": ["S-004", "S-013"],
+      "type": "iframe-google-maps",
+      "src_template": "https://www.google.com/maps/embed?pb=...{place_id}",
+      "loading": "lazy",
+      "referrerpolicy": "no-referrer-when-downgrade",
+      "title_fr": "Carte vers le Dépanneur Nobert à [ville]",
+      "title_en": "Map to Dépanneur Nobert in [city]",
+      "consent_gating": "Chargé après consentement essentiel (cookies essentiels suffisent — Google Maps embed ne charge pas de tracker analytics)",
+      "loi25_documentation": "Transfert vers États-Unis (Google) documenté dans politique-confidentialite.md, conforme brief.legal.transfer_outside_qc=true"
+    }
+  },
+  "icons": {
+    "library": "lucide-react",
+    "default_size": 24,
+    "default_stroke_width": 2,
+    "color": "currentColor (hérite du parent)",
+    "icon_map": {
+      "categories.bieres": "Beer",
+      "categories.snacks": "Cookie",
+      "categories.boissons": "GlassWater",
+      "categories.loto": "Ticket",
+      "categories.depannage": "Wrench",
+      "categories.glace": "Snowflake",
+      "contact.phone": "Phone",
+      "contact.email": "Mail",
+      "contact.location": "MapPin",
+      "contact.hours": "Clock",
+      "contact.directions": "Navigation",
+      "form.success": "CheckCircle2",
+      "form.error": "AlertCircle",
+      "form.required": "Asterisk",
+      "nav.menu": "Menu",
+      "nav.close": "X",
+      "nav.language": "Globe",
+      "nav.arrow_right": "ArrowRight",
+      "nav.arrow_up": "ArrowUp",
+      "nav.external": "ExternalLink",
+      "ui.check": "Check",
+      "ui.chevron_right": "ChevronRight",
+      "ui.info": "Info",
+      "promo.badge_percent": "Percent",
+      "promo.badge_tag": "Tag",
+      "promo.calendar": "CalendarDays",
+      "social.facebook": "Facebook",
+      "newsletter.send": "Send"
+    },
+    "sizes_by_context": {
+      "default": 24,
+      "buttons": 18,
+      "category_grid_S003_S010": "32 (mobile) / 40 (desktop)",
+      "loto_card_emphasis": 48,
+      "form_inputs": 20
+    }
+  },
+  "favicon_set": {
+    "design_concept": "Initiale 'N' (Fraunces 800) crème sur fond carré accent #FFD700 avec coins arrondis 8px",
+    "files_required": [
+      {"path": "public/favicon.ico", "sizes_in_ico": "16×16, 32×32, 48×48", "format": "ico"},
+      {"path": "public/icon.svg", "size": "any (vectoriel)", "format": "svg", "viewBox": "0 0 32 32"},
+      {"path": "public/apple-icon.png", "size": "180×180", "format": "png", "background": "accent #FFD700"},
+      {"path": "app/icon.tsx", "type": "dynamic", "note": "Next.js metadata API (génération runtime depuis composant React)"},
+      {"path": "app/apple-icon.tsx", "type": "dynamic", "note": "Next.js apple-icon dynamique"}
+    ],
+    "manifest_pwa_optional": {
+      "path": "public/site.webmanifest",
+      "decision": "Skip pour v1 — pas requis pour vitrine sans installation app, à reconsidérer si demande explicite"
+    }
+  },
+  "og_image": {
+    "template": "templates/og-image.template.svg",
+    "dimensions": "1200×630",
+    "format": "png",
+    "generation_strategy": "Next.js metadata API — app/opengraph-image.tsx (dynamique par page)",
+    "per_page_variants": [
+      {
+        "page": "/",
+        "title_fr": "Le dépanneur de [ville]",
+        "subtitle_fr": "Dépanneur Nobert — promos chaque semaine"
+      },
+      {
+        "page": "/promotions",
+        "title_fr": "Promotions de la semaine",
+        "subtitle_fr": "Dépanneur Nobert — bières, snacks, loto, dépannage"
+      },
+      {
+        "page": "/produits",
+        "title_fr": "Nos produits par catégorie",
+        "subtitle_fr": "Dépanneur Nobert"
+      },
+      {
+        "page": "/contact",
+        "title_fr": "Contact et adresse",
+        "subtitle_fr": "Dépanneur Nobert — [ville]"
+      }
+    ],
+    "design_components": {
+      "background": "Gradient warm : #FFF8E7 → #8B4513 (top-left → bottom-right)",
+      "title_typography": "Fraunces 800 — 72px — color #2A1810",
+      "subtitle_typography": "Inter 600 — 36px — color #6B4F3C",
+      "accent_strip": "Bande accent #FFD700 verticale gauche (4% width)",
+      "logo_wordmark": "Wordmark Dépanneur Nobert en bas à droite"
+    },
+    "twitter_card_variant": "summary_large_image (réutilise og:image)"
+  },
+  "decorative_assets": {
+    "section_dividers": {
+      "type": "Soft wavy SVG inline",
+      "color": "border #D4C5A9 ou accent #FFD700",
+      "usage_optional": "Entre sections alternées surface/background si décidé Ph4 — décoratif uniquement, role='presentation' aria-hidden"
+    },
+    "promo_badges": {
+      "type": "SVG inline shapes",
+      "variants": ["circle accent FFD700 -X%", "ribbon -Y$", "starburst 'NOUVEAU'"],
+      "color_constraint": "Toujours fond accent + texte text #2A1810 (jamais texte accent sur fond clair)"
+    },
+    "no_custom_illustrations_v1": "Pas d'illustrations custom Midjourney/DALL-E pour MVP — focus authenticité photographique. À reconsidérer v2 selon retour client."
+  },
+  "optimization_rules": {
+    "format_priority": ["avif", "webp", "jpg"],
+    "quality": 80,
+    "max_width_source": 1920,
+    "lazy_loading": "Toutes images sauf hero S-001 (eager + fetchpriority high) et 3 premières promos teaser S-002",
+    "placeholder": "blur via next/image automatique ou plaiceholder",
+    "responsive_sizes_default": "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
+    "next_image_obligatoire": true,
+    "img_html_brut_interdit": true,
+    "max_weight_per_image": "≤500KB (budget Ph0/Ph1)",
+    "total_image_budget_home": "≤2MB tous formats confondus (au-dessus du WordPress concurrent moyen 3MB+)"
+  },
+  "alt_text_rules": {
+    "language": "FR + EN obligatoires sur toutes les images informatives",
+    "decorative_alt_empty": "alt='' pour images purement décoratives + role='presentation'",
+    "no_redundant_phrasing": "Pas de 'image de...', 'photo de...' — décrire directement le contenu",
+    "seo_keyword_naturel": "Inclure mot-clé géo-local naturellement quand pertinent (ex: 'dépanneur québécois')",
+    "max_length_recommandée": "~125 caractères (lecteurs d'écran)"
+  },
+  "section_manifest_integration": {
+    "rule": "Chaque section avec priority='critical' du manifest a au moins un asset planifié ci-dessus.",
+    "critical_sections_audit": {
+      "S-001 Hero": "✓ hero_homepage_S001 (asset critique non négociable + plan B)",
+      "S-002 PromoWeekTeaser": "✓ promo_teaser_images_S002 (héritage de S-008)",
+      "S-004 InfosPratiques": "✓ google_maps_embed_S004_S013 + icônes Lucide",
+      "S-007 HeroPromoWeek": "✓ pas d'image bg requise (hero compact texte) — typographie + badge accent suffisent",
+      "S-008 PromosGrid": "✓ promo_card_images_S008 (KPI critical)",
+      "S-013 Coordonnees": "✓ google_maps_embed_S004_S013 partagé",
+      "S-014 Horaires": "✓ pas d'image — icône Clock + tableau",
+      "S-015 ContactForm": "✓ pas d'image — icônes Lucide pour états formulaire"
+    }
+  },
+  "kickoff_assets_blocking": [
+    {
+      "asset": "hero_homepage_S001 (photo réelle propriétaire/dépanneur)",
+      "blocking_for_d2_emotional": true,
+      "fallback_plan_b_documented": true,
+      "ticket_followup": "Si plan B utilisé au launch, ticket de remplacement S+1 dans nexos-changelog.json"
+    },
+    {
+      "asset": "owner_portrait_S005",
+      "blocking_for_storytelling": false,
+      "fallback_plan_b_documented": true
+    },
+    {
+      "asset": "Photos produits client (catégories S-011)",
+      "blocking": false,
+      "fallback_plan_b": "Unsplash + placeholder Lucide par produit manquant"
+    }
+  ],
+  "soic_alignment": {
+    "D3_performance": "Format priority avif > webp > jpg, lazy loading sauf hero, sizes attribute, blur placeholder, budget total home ≤2MB.",
+    "D5_i18n": "Alt texts FR+EN obligatoires, og:image variants par page localisable.",
+    "D6_accessibility": "Alt texts descriptifs (jamais 'image de'), role='presentation' sur décoratifs, contraste texte sur photo via overlay obligatoire S-001.",
+    "D7_seo": "OG image dynamique par page, favicon set complet (ico+svg+apple-icon), alt texts SEO-friendly, sitemap inclura images critiques en Ph4.",
+    "D8_legal": "Photos client priorisées (pas d'usage stock photos non libres), Google Maps embed documenté pour transfert US, fonts self-hosted (pas de requête Google externe au runtime images)."
+  }
+}

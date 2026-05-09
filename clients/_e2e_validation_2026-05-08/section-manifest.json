@@ -1,0 +1,479 @@
+{
+  "$schema": "nexos-ph1/section-manifest/v1",
+  "generated_at": "2026-05-08T11:55:00Z",
+  "client_slug": "_e2e_validation_2026-05-08",
+  "total_sections": 17,
+  "sections": [
+    {
+      "id": "S-001",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "Hero",
+      "component_name": "Hero",
+      "component_path": "components/sections/Hero.tsx",
+      "i18n_namespace": "home.hero",
+      "order": 1,
+      "status": "built",
+      "description": "Hero plein largeur — photo réelle propriétaire/dépanneur + H1 nominatif 'Le dépanneur de [ville]' + UVP courte + CTA primaire 'Voir les promotions de la semaine'",
+      "dimensions": [
+        "D1",
+        "D2",
+        "D3",
+        "D5",
+        "D6",
+        "D7"
+      ],
+      "patterns_applied": [
+        "P09",
+        "P13",
+        "P17"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-002",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "PromoWeekTeaser",
+      "component_name": "PromoWeekTeaser",
+      "component_path": "components/sections/PromoWeekTeaser.tsx",
+      "i18n_namespace": "home.promoTeaser",
+      "order": 2,
+      "status": "built",
+      "description": "Teaser des 3 spéciaux du moment + lien 'Toutes les promotions' → /promotions. Renforce le KPI conversion sur la home.",
+      "dimensions": [
+        "D1",
+        "D3",
+        "D7"
+      ],
+      "patterns_applied": [
+        "P02",
+        "P20"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-003",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "CategoriesOverview",
+      "component_name": "CategoriesOverview",
+      "component_path": "components/sections/CategoriesOverview.tsx",
+      "i18n_namespace": "home.categories",
+      "order": 3,
+      "status": "built",
+      "description": "Grille des 6 catégories (Bières, Snacks, Boissons, Loto, Dépannage, Glace) avec icônes Lucide + lien 'Voir tous les produits' → /produits.",
+      "dimensions": [
+        "D1",
+        "D6",
+        "D7"
+      ],
+      "patterns_applied": [
+        "P03",
+        "P20"
+      ],
+      "priority": "high",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-004",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "InfosPratiques",
+      "component_name": "InfosPratiques",
+      "component_path": "components/sections/InfosPratiques.tsx",
+      "i18n_namespace": "home.infosPratiques",
+      "order": 4,
+      "status": "built",
+      "description": "Bloc adresse + horaires + iframe Google Maps + tel: cliquable. Schema.org LocalBusiness + OpeningHoursSpecification.",
+      "dimensions": [
+        "D1",
+        "D7",
+        "D8"
+      ],
+      "patterns_applied": [
+        "P01"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-005",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "LeMotDuProprio",
+      "component_name": "LeMotDuProprio",
+      "component_path": "components/sections/LeMotDuProprio.tsx",
+      "i18n_namespace": "home.motProprio",
+      "order": 5,
+      "status": "built",
+      "description": "Storytelling court — Nobert Tremblay parle à la première personne, ancrage local explicite. Anti-corporate, story-first (P08).",
+      "dimensions": [
+        "D1",
+        "D2",
+        "D3"
+      ],
+      "patterns_applied": [
+        "P08",
+        "P13"
+      ],
+      "priority": "high",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-006",
+      "page": "home",
+      "page_route": "/[locale]",
+      "name": "NewsletterCta",
+      "component_name": "NewsletterCta",
+      "component_path": "components/sections/NewsletterCta.tsx",
+      "i18n_namespace": "home.newsletter",
+      "order": 6,
+      "status": "built",
+      "description": "Formulaire d'inscription infolettre opt-in Loi 25 (RHF + Zod), consentement explicite + texte rétention 12 mois.",
+      "dimensions": [
+        "D1",
+        "D8"
+      ],
+      "patterns_applied": [
+        "P02"
+      ],
+      "priority": "high",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-007",
+      "page": "promotions",
+      "page_route": "/[locale]/promotions",
+      "name": "HeroPromoWeek",
+      "component_name": "HeroPromoWeek",
+      "component_path": "components/sections/HeroPromoWeek.tsx",
+      "i18n_namespace": "promotions.hero",
+      "order": 1,
+      "status": "built",
+      "description": "Hero page promotions — H1 'Les promotions de cette semaine' + dates de validité visibles + intro courte.",
+      "dimensions": [
+        "D1",
+        "D3",
+        "D7"
+      ],
+      "patterns_applied": [
+        "P09"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-008",
+      "page": "promotions",
+      "page_route": "/[locale]/promotions",
+      "name": "PromosGrid",
+      "component_name": "PromosGrid",
+      "component_path": "components/sections/PromosGrid.tsx",
+      "i18n_namespace": "promotions.grid",
+      "order": 2,
+      "status": "built",
+      "description": "Cards promos depuis site/data/promotions.json : image (next/image), titre, prix avant/après, durée. Schema.org ItemList + Offer. Asset critique du KPI conversion.",
+      "dimensions": [
+        "D1",
+        "D3",
+        "D7"
+      ],
+      "patterns_applied": [
+        "P02",
+        "P17",
+        "P20"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-009",
+      "page": "produits",
+      "page_route": "/[locale]/produits",
+      "name": "HeroProduits",
+      "component_name": "HeroProduits",
+      "component_path": "components/sections/HeroProduits.tsx",
+      "i18n_namespace": "produits.hero",
+      "order": 1,
+      "status": "built",
+      "description": "Hero page produits — H1 'Tous nos produits, par catégorie' + nav ancres vers les 6 catégories.",
+      "dimensions": [
+        "D1",
+        "D7"
+      ],
+      "patterns_applied": [
+        "P09"
+      ],
+      "priority": "high",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-010",
+      "page": "produits",
+      "page_route": "/[locale]/produits",
+      "name": "CategoriesGrid",
+      "component_name": "CategoriesGrid",
+      "component_path": "components/sections/CategoriesGrid.tsx",
+      "i18n_namespace": "produits.categoriesGrid",
+      "order": 2,
+      "status": "built",
+      "description": "Vignettes des 6 catégories avec ancres + tags couleurs (P03).",
+      "dimensions": [
+        "D1",
+        "D6"
+      ],
+      "patterns_applied": [
+        "P03"
+      ],
+      "priority": "high",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-011",
+      "page": "produits",
+      "page_route": "/[locale]/produits",
+      "name": "CategorySection",
+      "component_name": "CategorySection",
+      "component_path": "components/sections/CategorySection.tsx",
+      "i18n_namespace": "produits.category",
+      "order": 3,
+      "status": "built",
+      "description": "Composant générique réutilisé 6 fois (Bières, Snacks, Boissons, Loto, Dépannage, Glace). Charge produits depuis JSON, grille images + nom + prix indicatif.",
+      "dimensions": [
+        "D1",
+        "D3",
+        "D7"
+      ],
+      "patterns_applied": [
+        "P20"
+      ],
+      "priority": "high",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-012",
+      "page": "contact",
+      "page_route": "/[locale]/contact",
+      "name": "HeroContact",
+      "component_name": "HeroContact",
+      "component_path": "components/sections/HeroContact.tsx",
+      "i18n_namespace": "contact.hero",
+      "order": 1,
+      "status": "built",
+      "description": "Hero page contact — H1 'Nous trouver et nous joindre' + intro courte conviviale.",
+      "dimensions": [
+        "D1",
+        "D2"
+      ],
+      "patterns_applied": [
+        "P09"
+      ],
+      "priority": "high",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-013",
+      "page": "contact",
+      "page_route": "/[locale]/contact",
+      "name": "Coordonnees",
+      "component_name": "Coordonnees",
+      "component_path": "components/sections/Coordonnees.tsx",
+      "i18n_namespace": "contact.coordonnees",
+      "order": 2,
+      "status": "built",
+      "description": "Adresse complète + iframe Google Maps + tel: + courriel. Schema.org GeoCoordinates + PostalAddress + ContactPoint.",
+      "dimensions": [
+        "D1",
+        "D7",
+        "D8"
+      ],
+      "patterns_applied": [
+        "P01"
+      ],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-014",
+      "page": "contact",
+      "page_route": "/[locale]/contact",
+      "name": "Horaires",
+      "component_name": "Horaires",
+      "component_path": "components/sections/Horaires.tsx",
+      "i18n_namespace": "contact.horaires",
+      "order": 3,
+      "status": "built",
+      "description": "Tableau horaires 7 jours + jours fériés. Schema.org OpeningHoursSpecification.",
+      "dimensions": [
+        "D1",
+        "D7"
+      ],
+      "patterns_applied": [],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-015",
+      "page": "contact",
+      "page_route": "/[locale]/contact",
+      "name": "ContactForm",
+      "component_name": "ContactForm",
+      "component_path": "components/sections/ContactForm.tsx",
+      "i18n_namespace": "contact.form",
+      "order": 4,
+      "status": "built",
+      "description": "Formulaire 4 champs (nom, courriel/téléphone, message, consentement Loi 25) + honeypot + rate limit. POST /api/contact.",
+      "dimensions": [
+        "D1",
+        "D8"
+      ],
+      "patterns_applied": [],
+      "priority": "critical",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-016",
+      "page": "contact",
+      "page_route": "/[locale]/contact",
+      "name": "RppMention",
+      "component_name": "RppMention",
+      "component_path": "components/sections/RppMention.tsx",
+      "i18n_namespace": "contact.rpp",
+      "order": 5,
+      "status": "built",
+      "description": "Mention explicite RPP Nobert Tremblay + courriel rpp + lien vers politique de confidentialité (Loi 25 art. 3.1).",
+      "dimensions": [
+        "D8"
+      ],
+      "patterns_applied": [],
+      "priority": "mandatory",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    },
+    {
+      "id": "S-017",
+      "page": "legal",
+      "page_route": "/[locale]/{politique-confidentialite|mentions-legales}",
+      "name": "LegalContent",
+      "component_name": "LegalContent",
+      "component_path": "components/sections/LegalContent.tsx",
+      "i18n_namespace": "legal.content",
+      "order": 1,
+      "status": "built",
+      "description": "Composant générique de rendu de page légale — consume MD/MDX rendu (templates NEXOS) avec placeholders interpolés (RPP, NEQ, hébergeur, transferts US).",
+      "dimensions": [
+        "D8"
+      ],
+      "patterns_applied": [],
+      "priority": "mandatory",
+      "lifecycle": {
+        "ph1_planned": "2026-05-08T11:55:00Z",
+        "ph2_designed": "2026-05-08T13:50:00Z",
+        "ph3_content_ready": "2026-05-08T15:30:00Z",
+        "ph4_built": "2026-05-08T17:30:00Z",
+        "ph5_audited": null
+      }
+    }
+  ],
+  "updated_at_ph2": "2026-05-08T13:50:00Z",
+  "updated_at_ph3": "2026-05-08T15:30:00Z",
+  "updated_at_ph4": "2026-05-08T17:30:00Z"
+}

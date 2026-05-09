@@ -1,0 +1,50 @@
+{
+  "weekRange": {
+    "from": "2026-05-04",
+    "to": "2026-05-10"
+  },
+  "promotions": [
+    {
+      "id": "promo-2026w19-01",
+      "image": "/images/promotions/promo-1.jpg",
+      "title_fr": "Caisse de bières 24",
+      "title_en": "24-pack of beer",
+      "alt_fr": "Caisse de bières 24 en spécial cette semaine au Dépanneur Nobert",
+      "alt_en": "24-pack beer special this week at Dépanneur Nobert",
+      "priceBefore": 39.99,
+      "priceAfter": 32.99,
+      "unit_fr": "/ caisse",
+      "unit_en": "/ pack",
+      "validFrom": "2026-05-04",
+      "validTo": "2026-05-10"
+    },
+    {
+      "id": "promo-2026w19-02",
+      "image": "/images/promotions/promo-2.jpg",
+      "title_fr": "Sac de chips géant",
+      "title_en": "Family-size chips bag",
+      "alt_fr": "Sac de chips format géant en promotion",
+      "alt_en": "Family-size chips bag on sale",
+      "priceBefore": 5.49,
+      "priceAfter": 3.99,
+      "unit_fr": "/ sac",
+      "unit_en": "/ bag",
+      "validFrom": "2026-05-04",
+      "validTo": "2026-05-10"
+    },
+    {
+      "id": "promo-2026w19-03",
+      "image": "/images/promotions/promo-3.jpg",
+      "title_fr": "Boisson énergisante 4 pour",
+      "title_en": "Energy drink 4-for deal",
+      "alt_fr": "Boisson énergisante 4 pour le prix d'une promotion",
+      "alt_en": "Energy drink 4-for-1 deal",
+      "priceBefore": 14.99,
+      "priceAfter": 9.99,
+      "unit_fr": "/ 4 canettes",
+      "unit_en": "/ 4 cans",
+      "validFrom": "2026-05-04",
+      "validTo": "2026-05-10"
+    }
+  ]
+}

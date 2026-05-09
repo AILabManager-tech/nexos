@@ -1,0 +1,154 @@
+{
+  "_meta": {
+    "generator": "nexos-v3.0",
+    "created_at": "2026-05-08T07:00:00-04:00",
+    "mode": "create",
+    "phase_origin": "E2E validation pipeline nexos create — test jetable"
+  },
+  "client": {
+    "name": "E2E Validation Test (depanneur clone)",
+    "slug": "_e2e_validation_2026-05-08",
+    "legal_name": "Dépanneur Nobert inc.",
+    "sector": "commerce de proximité — dépanneur",
+    "sub_sector": "épicerie de quartier hybride (snack + lotto + bière + service personnalisé)",
+    "sector_id_mapped": "SEC-03",
+    "sector_id_mapped_confidence": 0.5,
+    "sector_notes": "Secteur non couvert directement par les 6 taxonomies NEXOS. Mapping SEC-03 (Restauration) par proximité culturelle (commerce alimentaire de proximité, humain, ancré dans le quartier). Cas test de dégradation du pattern-recommender — confidence abaissée à 0.5 pour refléter l'ambiguïté.",
+    "positioning": "accessible",
+    "size": "solo",
+    "locations": [
+      "À préciser (Québec — ville TBD au kickoff)"
+    ],
+    "personality_hints": {
+      "D1_density": 3,
+      "D2_register": "emotional",
+      "D3_typo_weight": "heavy",
+      "D4_palette": "warm",
+      "D5_velocity": "slow-organic",
+      "D6_structure": "symmetric"
+    },
+    "personality_rationale": "Dépanneur de quartier = convivialité locale (emotional), ton chaleureux (warm), lisibilité immédiate tous âges (heavy type), structure rassurante sans gadget (slow-organic, symmetric). Densité moyenne pour équilibrer catalogue produit et caractère humain du commerce."
+  },
+  "legal": {
+    "company_name": "Dépanneur Nobert inc.",
+    "address": "À préciser au kickoff (siège social — Québec, QC)",
+    "phone": "À préciser au kickoff",
+    "email": "info@depanneur-nobert.ca",
+    "rpp_name": "Nobert Tremblay",
+    "rpp_email": "nobert@depanneur-nobert.ca",
+    "rpp_title": "Propriétaire et Responsable de la protection des renseignements personnels (Loi 25, art. 3.1)",
+    "data_collected": [
+      "courriel",
+      "telephone",
+      "navigation"
+    ],
+    "purposes": [
+      "infolettre",
+      "commandes",
+      "analytics"
+    ],
+    "retention": "Inscription infolettre : 12 mois maximum après dernière interaction (désinscription automatique sinon). Téléphone commandes : supprimé 6 mois après la dernière commande. Cookies analytics : 30 jours max.",
+    "transfer_outside_qc": true,
+    "transfer_countries": [
+      "États-Unis (Google Analytics — IP tronquée, pseudonymisé)",
+      "États-Unis (Google Maps — requête de carte uniquement)"
+    ],
+    "third_parties": [
+      "Google Analytics (mesure audience, opt-in)",
+      "Google Maps (géolocalisation du dépanneur)",
+      "Vercel (hébergement — États-Unis)"
+    ],
+    "cookie_consent": "opt-in",
+    "incident_process": true,
+    "incident_email": "nobert@depanneur-nobert.ca"
+  },
+  "site": {
+    "stack": "nextjs",
+    "type": "vitrine",
+    "pages": [
+      "home",
+      "promotions",
+      "produits",
+      "contact",
+      "politique-confidentialite",
+      "mentions-legales"
+    ],
+    "languages": [
+      "fr",
+      "en"
+    ],
+    "features": [
+      "promotions-semaine",
+      "catalogue-categories",
+      "infos-pratiques-horaires",
+      "carte-google-maps",
+      "inscription-infolettre",
+      "contact-telephone"
+    ],
+    "hosting": "vercel",
+    "domain": "depanneur-nobert.ca"
+  },
+  "context": {
+    "competitors": [
+      "Dépanneurs indépendants de quartier (QC)",
+      "Chaînes : Couche-Tard, Shell Select (non concurrents directs — masse vs proximité)"
+    ],
+    "keywords_seo": [
+      "dépanneur [ville]",
+      "dépanneur ouvert 24h [ville]",
+      "bière [ville]",
+      "loto Québec [ville]",
+      "épicerie de quartier [ville]",
+      "snack froid chaud [ville]"
+    ],
+    "free_text": "Dépanneur de quartier traditionnel québécois, propriétaire solo, positionnement accessible et chaleureux. KPI principal : conversion (visite physique, consultation des promotions hebdo). Clientèle : voisinage immédiat, tous âges, fidélité de proximité. Ton : convivial, local, authentique — anti-corporate. Priorité SEO : ancrage géographique ville + mots-clés dépanneur québécois."
+  },
+  "design": {
+    "palette": "warm — brun boiseries (#8B4513) + jaune doré (#FFD700) + crème accueillant (#FFF8E7)",
+    "typography": "serif chaleureux display (Recoleta ou Fraunces) + sans humaniste body (Inter ou Karla)",
+    "style": "autre",
+    "logo_provided": false,
+    "references": [
+      "S11 Noma (minimalisme chaleureux, story-first)",
+      "S12 Gazzo (anti-polish authenticité)",
+      "S13 Ma'ono (jaune bold + hero photo)",
+      "S14 La Semilla (menu galerie images)"
+    ],
+    "palette_imposed": {
+      "primary": "#8B4513",
+      "primary-hover": "#A0522D",
+      "accent": "#FFD700",
+      "background": "#FFF8E7",
+      "surface": "#FFFFFF",
+      "text": "#2A1810",
+      "text-muted": "#6B4F3C",
+      "border": "#D4C5A9"
+    },
+    "palette_rationale": "Brun chaleureux (boiseries dépanneur traditionnel) + jaune doré (lumière, convivialité) + fond crème (accueillant). Volontairement aucun bleu corporate — rejet du registre technique/froid.",
+    "stack_imposed": {
+      "framework": "nextjs",
+      "css": "tailwind",
+      "i18n": "next-intl",
+      "deploy": "vercel"
+    }
+  },
+  "goals": {
+    "primary_kpi": "conversion",
+    "secondary_kpis": [
+      "seo",
+      "brand"
+    ],
+    "primary_action": "Voir les promotions de la semaine",
+    "secondary_actions": [
+      "Trouver l'adresse",
+      "S'inscrire à l'infolettre",
+      "Appeler pour une commande"
+    ],
+    "seo_priorities": [
+      "dépanneur + [ville]",
+      "ouvert 24h",
+      "bière + [ville]",
+      "loto québec [ville]"
+    ]
+  }
+}

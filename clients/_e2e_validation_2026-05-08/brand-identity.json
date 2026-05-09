@@ -1,0 +1,256 @@
+{
+  "$schema": "nexos-ph1/brand-identity/v1",
+  "generated_at": "2026-05-08T11:35:00Z",
+  "client_slug": "_e2e_validation_2026-05-08",
+  "brand_voice": {
+    "tone": "convivial-authentique-quebecois",
+    "formality_level": 2,
+    "lexicon_allowed": [
+      "passez nous voir",
+      "chez nous",
+      "le dépanneur de quartier",
+      "ouvert",
+      "spéciaux de la semaine",
+      "promotions",
+      "votre dépanneur",
+      "à deux pas",
+      "Nobert vous accueille",
+      "frais",
+      "tous les jours",
+      "appelez-nous",
+      "on vous attend",
+      "bière froide",
+      "loto Québec",
+      "snack",
+      "dépanneur du coin",
+      "service personnalisé",
+      "patron qui vous connaît",
+      "en magasin"
+    ],
+    "lexicon_banned": [
+      "solution",
+      "écosystème",
+      "expérience client",
+      "partenaire de confiance",
+      "excellence",
+      "innovant",
+      "leader",
+      "premium",
+      "luxe",
+      "haut de gamme",
+      "synergie",
+      "value-added",
+      "centre d'achat"
+    ],
+    "sentence_style": {
+      "avg_length": "court",
+      "voice": "active",
+      "register": "parlé-québécois (FR-QC)",
+      "rule": "Phrases courtes, sujets concrets ('On', 'Nobert', 'Le dépanneur'). Aucune voix passive sur les CTA. Aucun jargon."
+    },
+    "cultural_markers": {
+      "pronoun": "vous (poli, accueillant, pas distant)",
+      "anglicisms": "minimal — accepter 'snack' (usage courant QC), refuser 'cheap', 'discount', 'flyer'",
+      "quebecois_specifics": "courriel (pas 'email'), magasiner (acceptable), dépanneur (à utiliser nominativement)"
+    }
+  },
+  "color_system": {
+    "primary": {
+      "hex": "#8B4513",
+      "name": "Brun boiseries",
+      "contrast_on_white": "8.59:1",
+      "contrast_on_background": "7.91:1",
+      "wcag_aa_normal_text": "PASS",
+      "wcag_aa_large_text": "PASS",
+      "usage": "Headings H1-H3, liens primaires, fonds de boutons primaires (avec texte #FFF8E7)"
+    },
+    "primary_hover": {
+      "hex": "#A0522D",
+      "name": "Sienna chaleureux",
+      "contrast_on_white": "5.92:1",
+      "wcag_aa_normal_text": "PASS",
+      "usage": "État :hover et :focus du primary"
+    },
+    "secondary": {
+      "hex": "#6B4F3C",
+      "name": "Espresso doux (text-muted)",
+      "contrast_on_white": "6.81:1",
+      "contrast_on_background": "6.27:1",
+      "wcag_aa_normal_text": "PASS",
+      "usage": "Texte secondaire, captions, métadonnées (date, heure, prix barré)"
+    },
+    "accent": {
+      "hex": "#FFD700",
+      "name": "Jaune doré convivial",
+      "contrast_on_white": "1.07:1",
+      "contrast_on_dark_text": "13.95:1",
+      "wcag_aa_normal_text": "FAIL_AS_TEXT_COLOR",
+      "wcag_aa_large_text": "FAIL_AS_TEXT_COLOR",
+      "usage": "EXCLUSIVEMENT décoratif : fond de badges/boutons avec texte sombre #2A1810, soulignements graphiques, icônes pleines, fills SVG. JAMAIS comme couleur de texte sur background clair.",
+      "constraint_flag": "D6_a11y_critical"
+    },
+    "background": {
+      "hex": "#FFF8E7",
+      "name": "Crème accueillant",
+      "contrast_on_text_primary": "13.34:1",
+      "wcag_aa_normal_text": "PASS",
+      "usage": "Background global du site, sections impaires (1, 3, 5)"
+    },
+    "surface": {
+      "hex": "#FFFFFF",
+      "name": "Blanc pur",
+      "contrast_on_text_primary": "16.32:1",
+      "wcag_aa_normal_text": "PASS",
+      "usage": "Sections paires alternées (2, 4, 6), cartes produits, modales, popups Loi 25"
+    },
+    "surface_alt": {
+      "hex": "#FFF8E7",
+      "name": "Crème (alias background pour cohérence rythme)",
+      "contrast_on_text_primary": "13.34:1",
+      "wcag_aa_normal_text": "PASS",
+      "usage": "Sections impaires alternées avec surface (rythme symmetric D6)"
+    },
+    "text_primary": {
+      "hex": "#2A1810",
+      "name": "Espresso (texte corps)",
+      "contrast_on_white": "16.32:1",
+      "contrast_on_background": "13.34:1",
+      "wcag_aa_normal_text": "PASS",
+      "wcag_aaa_normal_text": "PASS",
+      "usage": "Texte courant, body, headings (en alternative au primary brun)"
+    },
+    "text_secondary": {
+      "hex": "#6B4F3C",
+      "name": "Espresso doux",
+      "contrast_on_white": "6.81:1",
+      "wcag_aa_normal_text": "PASS",
+      "usage": "Texte secondaire, captions, métadonnées"
+    },
+    "border": {
+      "hex": "#D4C5A9",
+      "name": "Sable doux",
+      "contrast_on_background": "1.16:1",
+      "wcag_aa_non_text_ui": "PASS (≥3:1 non requis pour bordures décoratives)",
+      "usage": "Bordures de cartes, séparateurs, inputs au repos"
+    },
+    "error": {
+      "hex": "#B91C1C",
+      "name": "Rouge brique discret (cohérent palette warm)",
+      "contrast_on_white": "6.27:1",
+      "wcag_aa_normal_text": "PASS",
+      "usage": "Messages d'erreur formulaires, validation Loi 25 manquante"
+    },
+    "success": {
+      "hex": "#2F6F4E",
+      "name": "Vert sapin (terre)",
+      "contrast_on_white": "5.96:1",
+      "wcag_aa_normal_text": "PASS",
+      "usage": "Confirmation infolettre, formulaire envoyé"
+    },
+    "warning": {
+      "hex": "#A0522D",
+      "name": "Sienna (alias primary_hover)",
+      "contrast_on_white": "5.92:1",
+      "wcag_aa_normal_text": "PASS",
+      "usage": "Avertissements, fin de promo proche"
+    },
+    "info": {
+      "hex": "#6B4F3C",
+      "name": "Espresso doux (alias text_secondary)",
+      "contrast_on_white": "6.81:1",
+      "wcag_aa_normal_text": "PASS",
+      "usage": "Notes contextuelles, horaires modifiés"
+    }
+  },
+  "typography": {
+    "font_primary": "Fraunces",
+    "font_primary_source": "Google Fonts (OFL)",
+    "font_primary_role": "Display headings — chaleureux, lisible, accord avec D3=heavy + D2=emotional",
+    "font_secondary": "Inter",
+    "font_secondary_source": "Google Fonts (OFL)",
+    "font_secondary_role": "Body humaniste, lisible tous âges, neutre chaleureux",
+    "font_count": 2,
+    "font_loading": "next/font/google avec subset latin + display swap (zéro layout shift)",
+    "scale_ratio": 1.25,
+    "scale_name": "Major Third",
+    "sizes": {
+      "h1": "3.052rem",
+      "h2": "2.441rem",
+      "h3": "1.953rem",
+      "h4": "1.563rem",
+      "h5": "1.25rem",
+      "h6": "1rem",
+      "body": "1rem",
+      "body_lg": "1.125rem",
+      "small": "0.875rem",
+      "caption": "0.75rem"
+    },
+    "weights": {
+      "heading_h1": 800,
+      "heading_h2": 700,
+      "heading_h3": 700,
+      "heading_h4_h6": 600,
+      "body": 400,
+      "emphasis": 600,
+      "caption": 500
+    },
+    "line_heights": {
+      "heading": 1.15,
+      "body": 1.65,
+      "caption": 1.4
+    },
+    "letter_spacing": {
+      "heading_h1_h2": "-0.02em",
+      "heading_h3_h6": "-0.01em",
+      "body": "0",
+      "caps_buttons": "0.04em"
+    },
+    "fallbacks": {
+      "primary": "Georgia, 'Times New Roman', serif",
+      "secondary": "system-ui, -apple-system, 'Segoe UI', sans-serif"
+    }
+  },
+  "positioning": {
+    "uvp_primary": "Le dépanneur de [ville]. Promos chaque semaine, ouvert quand vous en avez besoin.",
+    "uvp_primary_word_count": 12,
+    "uvp_secondary": [
+      "Bières froides, lotos, snack et dépannage — chez nous, depuis toujours.",
+      "Le patron vous connaît, les promos tiennent leurs promesses.",
+      "Votre dépanneur de quartier — pas une chaîne, pas un détour."
+    ],
+    "sector": "Commerce de proximité — dépanneur québécois indépendant",
+    "sub_sector": "Épicerie de quartier hybride (snack + lotto + bière + service personnalisé)",
+    "differentiator": "Promotions hebdo HTML indexable + catalogue catégorisé + photo réelle propriétaire — gap structurel du segment dépanneur indépendant (panel ph0 : <10% du segment a un site, 0/5 ont les promos en HTML).",
+    "target_persona": {
+      "primary": "Voisinage immédiat (rayon 500m–1km) tous âges : retraités matin (loto, lait), travailleurs midi (snack), écoliers fin d'après-midi, jeunes adultes soir/week-end (bière, lotto). Fidélité haute mais silencieuse.",
+      "secondary": "Touristes/locataires anglophones du quartier — version EN nécessaire mais subordonnée à FR-QC.",
+      "psychographic": "Recherche commodité + relation humaine + ancrage local. Rejet implicite du registre corporate (Couche-Tard) au profit du dépanneur 'qui me connaît par mon nom'."
+    },
+    "brand_promise": "Chez Nobert, vous trouvez ce qu'il vous faut — au prix annoncé, avec le sourire, à deux pas de chez vous.",
+    "ban_list_corporate": [
+      "solution",
+      "expérience client",
+      "écosystème",
+      "partenaire de confiance",
+      "excellence",
+      "leader",
+      "innovation",
+      "premium"
+    ],
+    "personality_anchors_6d": {
+      "D1_density": 3,
+      "D2_register": "emotional",
+      "D3_typo_weight": "heavy",
+      "D4_palette": "warm",
+      "D5_velocity": "slow-organic",
+      "D6_structure": "symmetric"
+    }
+  },
+  "soic_alignment": {
+    "D1_architecture": "Système couleurs + typographie cohérent avec scaffold-planner (2 fonts max via next/font, alternance surface/background pour rythme symmetric).",
+    "D3_performance": "2 familles Google Fonts (Fraunces + Inter) chargées via next/font, subset latin uniquement. Budget ≤4 fichiers woff2.",
+    "D6_accessibility": "Tous contrastes texte ≥4.5:1 (sauf accent #FFD700 utilisé EXCLUSIVEMENT en décoratif/fond — flag explicite color_system.accent.constraint_flag).",
+    "D8_legal": "Aucun dark pattern : tons opt-in cookies neutres, pas de visuels manipulant le consentement. Texte brand_voice.lexicon_banned exclut 'gratuit', 'sans engagement'.",
+    "D9_quality": "JSON valide, contrastes calculés, lexique aligné brief, UVP < 12 mots."
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "$schema": "nexos-ph2/responsive-strategy/v1",
+  "generated_at": "2026-05-08T13:30:00Z",
+  "client_slug": "_e2e_validation_2026-05-08",
+  "approach": "mobile-first",
+  "rationale": "Audience voisinage tous âges (retraités, travailleurs, écoliers, jeunes adultes) — 60-70% des consultations attendues sur mobile (vérification ouvert/fermé, promos en boutique, lookup adresse). Mobile-first + touch ≥48px non négociables. Sticky CTA mobile = différenciation directe vs concurrence (P11 ph0).",
+  "breakpoints": {
+    "sm": {"min_width": "640px", "tailwind_prefix": "sm:", "usage": "Tablettes portrait, gros téléphones (iPhone Plus, Pixel XL)"},
+    "md": {"min_width": "768px", "tailwind_prefix": "md:", "usage": "Tablettes paysage (iPad portrait)"},
+    "lg": {"min_width": "1024px", "tailwind_prefix": "lg:", "usage": "Desktop standard, iPad Pro paysage"},
+    "xl": {"min_width": "1280px", "tailwind_prefix": "xl:", "usage": "Grand desktop"},
+    "2xl": {"min_width": "1536px", "tailwind_prefix": "2xl:", "usage": "Ultra-wide (optionnel — container max-w-7xl plafonne déjà)"}
+  },
+  "navigation": {
+    "mobile": {
+      "type": "hamburger-slide-in-drawer",
+      "trigger": "Bouton hamburger top-right, icône Lucide Menu (24px) → X au open",
+      "behavior": "Slide-in depuis la droite, overlay bg-text/45 derrière, animation 300ms ease-out",
+      "items_layout": "Liste verticale full-width, padding py-4 px-6, font-heading H4-size, touch target 56px",
+      "cta_in_drawer": "Bouton primary 'Voir les promotions' full-width au-dessus + tel: cliquable + LanguageSwitcher en bas",
+      "close_methods": ["Bouton X top-right", "Clic sur overlay", "Touche Escape", "Swipe right (optionnel non bloquant)"],
+      "a11y": "focus-trap obligatoire dans drawer ouvert, aria-expanded sur hamburger, role='dialog' aria-modal='true', restitution focus à la fermeture sur le hamburger"
+    },
+    "tablet": {
+      "type": "horizontal-compact",
+      "breakpoint_kicks_in": "md (768px)",
+      "rationale": "4 items main_nav (sous max 7) → tient en horizontal dès md",
+      "items_layout": "Inline-flex gap-6, items font-medium, hover underline 2px primary",
+      "language_switcher": "Inline (FR | EN) avec separator"
+    },
+    "desktop": {
+      "type": "horizontal-sticky-with-shadow-on-scroll",
+      "breakpoint_kicks_in": "lg (1024px)",
+      "behavior": "Sticky top-0, backdrop-blur-sm, shadow apparaît après 10px de scroll",
+      "items_layout": "Inline-flex gap-8, padding py-4, CTA tel: visible à droite",
+      "max_items": 7,
+      "current_items": 4
+    }
+  },
+  "sticky_mobile_cta": {
+    "label_fr": "Voir les promotions de la semaine",
+    "label_en": "See this week's deals",
+    "href": "/promotions",
+    "visible_on": ["/", "/produits", "/contact"],
+    "hidden_on": ["/promotions", "/politique-confidentialite", "/mentions-legales"],
+    "behavior": "Position fixed bottom-0, lg:hidden, bg-accent text-accent-foreground, py-4 px-4, shadow-sticky-cta, safe-area-inset-bottom respecté (iOS notch)",
+    "touch_target_height": "min-h-[48px], CTA effective height 56px (incluant padding)",
+    "differenciator": "P11 ph0 — sticky CTA mobile absent dans 5/5 concurrents directs"
+  },
+  "grid_strategy": {
+    "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "section_padding": "py-12 sm:py-16 lg:py-24",
+    "promos_grid": {
+      "mobile": "grid-cols-1 gap-4",
+      "tablet": "grid-cols-2 gap-6",
+      "desktop": "grid-cols-3 gap-8"
+    },
+    "categories_overview_grid": {
+      "mobile": "grid-cols-2 gap-3",
+      "tablet": "grid-cols-3 gap-4",
+      "desktop": "grid-cols-3 lg:grid-cols-6 gap-6"
+    },
+    "products_in_category_grid": {
+      "mobile": "grid-cols-2 gap-3",
+      "tablet": "grid-cols-3 gap-4",
+      "desktop": "grid-cols-4 gap-6"
+    },
+    "footer_columns": {
+      "mobile": "grid-cols-1 gap-8 (stack ou accordéons optionnels)",
+      "tablet": "grid-cols-2 gap-8",
+      "desktop": "grid-cols-3 gap-12"
+    },
+    "infos_pratiques_split": {
+      "mobile": "grid-cols-1 gap-6 (infos puis map)",
+      "tablet": "grid-cols-2 gap-6",
+      "desktop": "grid-cols-[2fr_3fr] gap-8"
+    },
+    "content_widths": {
+      "prose_blocks": "max-w-prose (65ch)",
+      "full_sections": "max-w-7xl",
+      "hero_text": "max-w-3xl",
+      "form_contact": "max-w-xl",
+      "form_newsletter_inline": "max-w-2xl"
+    }
+  },
+  "typography_scaling": {
+    "h1": "text-3xl sm:text-4xl lg:text-5xl xl:text-6xl",
+    "h1_compact_pages_promos_produits_contact": "text-3xl sm:text-4xl lg:text-5xl",
+    "h2": "text-2xl sm:text-3xl lg:text-4xl",
+    "h3": "text-xl sm:text-2xl lg:text-3xl",
+    "h4": "text-lg sm:text-xl",
+    "body_lg_uvp_subtitles": "text-base sm:text-lg lg:text-xl",
+    "body": "text-base",
+    "small_meta_dates": "text-sm",
+    "caption_legal": "text-xs sm:text-sm"
+  },
+  "image_strategy": {
+    "hero_homepage_S001": {
+      "mobile": "aspect-[4/3], object-cover object-center",
+      "tablet": "aspect-[16/9], object-cover",
+      "desktop": "aspect-[21/9] avec max-h-[640px], object-cover",
+      "next_image_sizes": "(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw",
+      "loading": "eager",
+      "fetchpriority": "high",
+      "placeholder": "blur"
+    },
+    "promo_card_image_S008": {
+      "all_breakpoints": "aspect-[4/3]",
+      "next_image_sizes": "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
+      "loading": "lazy (sauf 3 premières si above-the-fold sur la home teaser S-002)"
+    },
+    "category_icon_S003_S010": {
+      "all_breakpoints": "Icône Lucide 32px mobile, 40px desktop (composants ne sont pas next/image)"
+    },
+    "product_card_image_S011": {
+      "all_breakpoints": "aspect-square (1/1)",
+      "next_image_sizes": "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw",
+      "loading": "lazy"
+    },
+    "owner_portrait_S005": {
+      "all_breakpoints": "aspect-square (1/1) avec border-radius full",
+      "size_fixed": "240×240 desktop, 180×180 mobile",
+      "next_image_sizes": "240px",
+      "loading": "lazy"
+    },
+    "google_maps_iframe_S004_S013": {
+      "mobile": "aspect-[4/3]",
+      "tablet": "aspect-[16/9]",
+      "desktop": "aspect-[16/10]",
+      "loading": "lazy (loading='lazy' attribute), referrerpolicy='no-referrer-when-downgrade'"
+    },
+    "format_priority": ["avif", "webp", "jpg"],
+    "quality": 80,
+    "max_image_weight": "≤500KB par photo (budget Ph0/Ph1 maintenu)"
+  },
+  "touch_targets": {
+    "min_size": "48×48px (12×12 Tailwind = h-12 w-12)",
+    "spacing": "Minimum 8px entre cibles tactiles (gap-2)",
+    "applies_to": [
+      "Boutons primaires/secondaires",
+      "Liens nav header + drawer",
+      "Sticky CTA mobile (≥56px effective)",
+      "Icônes interactives (toggle drawer, language switch, social)",
+      "Anchors ancrage produits",
+      "Boutons cookie consent (3 boutons poids visuel équivalent)",
+      "Sélecteur langue FR/EN"
+    ],
+    "exception_documented": "Liens inline dans prose body autorisés à 24px line-height (WCAG 2.5.5 AAA non requis pour AA)"
+  },
+  "form_strategy": {
+    "newsletter_S006": {
+      "mobile": "Stack vertical : input full-width, bouton full-width, checkbox dessous (label long en text-sm)",
+      "tablet": "Input + bouton inline (input flex-1, bouton min-w-[140px]), checkbox dessous",
+      "desktop": "Input + bouton inline max-w-2xl center, checkbox dessous full-width"
+    },
+    "contact_S015": {
+      "mobile": "Stack vertical, inputs full-width, py-3 (touch ≥48px)",
+      "tablet": "Form max-w-md center, padding py-3",
+      "desktop": "Form max-w-xl center, labels visible (pas de floating label pour lisibilité aînés)"
+    },
+    "input_min_height": "h-12 (48px) — accessibilité touch",
+    "label_strategy": "Labels visibles persistants (pas floating placeholder) — meilleure UX aînés et lecteurs d'écran",
+    "error_display": "Sous le champ avec aria-describedby, couleur error #B91C1C + icône Lucide AlertCircle"
+  },
+  "content_adaptation": {
+    "tables_horaires_S014": "Mobile : list-stack (jour : heure). Tablet+ : tableau 2 colonnes max-w-md center.",
+    "long_text_motProprio_S005": "Mobile : full text affiché (storytelling court 80-120 mots, pas de truncation).",
+    "footer_3_cols": "Mobile : stack vertical (ou accordéons collapsed par défaut sur sub-1024px si décidé Ph4 — ADR léger).",
+    "anchors_nav_produits_S009": "Mobile : chips wrap-grid 2 colonnes. Tablet+ : inline-row.",
+    "sticky_header_height": "Mobile : 64px. Desktop : 80px. scroll-mt-{header_height} sur sections avec ancres."
+  },
+  "language_switcher": {
+    "type": "inline-toggle FR | EN",
+    "mobile": "Dans le drawer, en bas avec separator. Touch target ≥48px, deux boutons distincts.",
+    "tablet_desktop": "Inline header right, format 'FR | EN' avec aria-label, lien vers le path EN équivalent (slug-aware)",
+    "active_state": "Lien actif en font-semibold + souligné 2px primary"
+  },
+  "testing_checklist": {
+    "devices_must_pass": [
+      "iPhone SE (375×667) — pire-cas mobile",
+      "iPhone 14 (390×844)",
+      "iPad Mini (768×1024)",
+      "iPad Pro (1024×1366)",
+      "Desktop standard (1280×800)",
+      "Desktop wide (1920×1080)"
+    ],
+    "orientation": "Portrait ET paysage validés sur iPad",
+    "zoom": "Layout fonctionnel jusqu'à 200% zoom (pas de scroll horizontal, pas de troncation critique)",
+    "no_horizontal_scroll": "Aucune page ne doit avoir de scroll horizontal sur mobile",
+    "lighthouse_mobile_target": "Performance ≥ 90, A11y ≥ 95, BP ≥ 95, SEO 100"
+  },
+  "no_horizontal_scroll_audit": {
+    "rule": "overflow-x-hidden sur body, max-w-full sur tous les containers, photos contraintes par aspect ratio",
+    "validation_step_ph4": "Visual regression test sur 375px width via Playwright (point de chute Ph4)"
+  },
+  "soic_alignment": {
+    "D1_architecture": "Grilles cohérentes avec wireframes.json (S-001→S-017), container max-w-7xl global, section padding scaling 12/16/24.",
+    "D3_performance": "Images responsive avec sizes attribute, lazy loading sauf hero S-001 (eager + fetchpriority high), aspects ratio fixés (zéro CLS), iframe Maps lazy.",
+    "D6_accessibility": "Touch targets ≥48px partout, focus-trap drawer mobile, language switcher accessible, zoom 200% testable, no horizontal scroll, labels persistants formulaires.",
+    "D9_quality": "Cohérence mobile/tablet/desktop documentée par section critique, devices testing list explicite, Lighthouse targets fixés."
+  }
+}
