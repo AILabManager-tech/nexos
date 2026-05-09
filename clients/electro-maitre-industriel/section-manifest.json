@@ -12,16 +12,22 @@
       "component_name": "Hero",
       "i18n_namespace": "home.hero",
       "order": 1,
-      "status": "modified",
+      "status": "audited",
       "description": "Hero asymétrique 3/5 + 2/5 (D6=asymmetric-strong). Stat block débordant (22 ans · 24/7), eyebrow accent or avec icône Zap. Bande oblique décorative or à opacité 8 % (D4=industrial cohérent). Palette dark teal + noir (P12).",
-      "dimensions": ["D1", "D3", "D5", "D6"],
+      "dimensions": [
+        "D1",
+        "D3",
+        "D5",
+        "D6"
+      ],
       "priority": "critical",
       "pattern_applied": "P12",
       "modified_in": "phase-F-electro-maitre",
       "modified_at": "2026-04-16T17:45:00-04:00",
       "lifecycle": {
         "ph1_planned": "2026-04-16T17:30:00-04:00",
-        "ph4_built": "2026-04-16T17:45:00-04:00"
+        "ph4_built": "2026-04-16T17:45:00-04:00",
+        "ph5_audited": "2026-05-07T07:30:00-04:00"
       }
     },
     {
@@ -32,16 +38,21 @@
       "component_name": "ServicesOverview",
       "i18n_namespace": "home.services",
       "order": 2,
-      "status": "modified",
+      "status": "audited",
       "description": "Grid 4 colonnes (industriel, automatisation, maintenance, urgence 24/7). Cards sans rounded (mécanique), bordure top primary 2px, icônes accent or. Applique P12 palette.",
-      "dimensions": ["D1", "D3", "D6"],
+      "dimensions": [
+        "D1",
+        "D3",
+        "D6"
+      ],
       "priority": "high",
       "pattern_applied": "P12",
       "modified_in": "phase-F-electro-maitre",
       "modified_at": "2026-04-16T17:45:00-04:00",
       "lifecycle": {
         "ph1_planned": "2026-04-16T17:30:00-04:00",
-        "ph4_built": "2026-04-16T17:45:00-04:00"
+        "ph4_built": "2026-04-16T17:45:00-04:00",
+        "ph5_audited": "2026-05-07T07:30:00-04:00"
       }
     },
     {
@@ -52,17 +63,24 @@
       "component_name": "ProjectsGallery",
       "i18n_namespace": "home.projects",
       "order": 3,
-      "status": "modified",
+      "status": "audited",
       "description": "Galerie 6 cartes projets — grayscale par défaut, révélés en couleur au hover/focus (P06). CSS pur (filter + transition 400 ms), prefers-reduced-motion respecté via globals.css. Overlay accent or 5 % au hover = micro-signature P12. Cartes cliquables (ancre, aria-label).",
-      "dimensions": ["D1", "D2", "D5"],
+      "dimensions": [
+        "D1",
+        "D2",
+        "D5"
+      ],
       "priority": "critical",
       "pattern_applied": "P06",
-      "patterns_secondary": ["P12"],
+      "patterns_secondary": [
+        "P12"
+      ],
       "modified_in": "phase-F-electro-maitre",
       "modified_at": "2026-04-16T17:45:00-04:00",
       "lifecycle": {
         "ph1_planned": "2026-04-16T17:30:00-04:00",
-        "ph4_built": "2026-04-16T17:45:00-04:00"
+        "ph4_built": "2026-04-16T17:45:00-04:00",
+        "ph5_audited": "2026-05-07T07:30:00-04:00"
       }
     },
     {
@@ -73,16 +91,20 @@
       "component_name": "ContactCta",
       "i18n_namespace": "home.contactCta",
       "order": 4,
-      "status": "modified",
+      "status": "audited",
       "description": "CTA final avec trust_line (RBQ, CMEQ, assurance 5 M$) — signaux P16 légers. Bordure gauche accent or (asymétrie légère). Applique P12 palette. P02 (social proof adjacente) non appliqué en Phase F — backlog phase ultérieure.",
-      "dimensions": ["D1", "D3"],
+      "dimensions": [
+        "D1",
+        "D3"
+      ],
       "priority": "high",
       "pattern_applied": "P12",
       "modified_in": "phase-F-electro-maitre",
       "modified_at": "2026-04-16T17:45:00-04:00",
       "lifecycle": {
         "ph1_planned": "2026-04-16T17:30:00-04:00",
-        "ph4_built": "2026-04-16T17:45:00-04:00"
+        "ph4_built": "2026-04-16T17:45:00-04:00",
+        "ph5_audited": "2026-05-07T07:30:00-04:00"
       }
     },
     {
@@ -93,12 +115,18 @@
       "component_name": "PrivacyPolicyPage",
       "i18n_namespace": "legal.privacy",
       "order": 1,
-      "status": "planned",
+      "status": "audited",
       "description": "Politique de confidentialité Loi 25 (RPP Jean-Pierre Morin, données entreprise, rétention 7 ans Revenu Québec)",
-      "dimensions": ["D8"],
+      "dimensions": [
+        "D8"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T17:30:00-04:00", "ph4_built": "2026-04-16T17:45:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T17:30:00-04:00",
+        "ph4_built": "2026-04-16T17:45:00-04:00",
+        "ph5_audited": "2026-05-07T07:30:00-04:00"
+      }
     },
     {
       "id": "S-102",
@@ -108,12 +136,18 @@
       "component_name": "LegalMentionsPage",
       "i18n_namespace": "legal.mentions",
       "order": 1,
-      "status": "planned",
+      "status": "audited",
       "description": "Mentions légales (NEQ, siège social Montréal-Est, hébergeur Vercel)",
-      "dimensions": ["D8"],
+      "dimensions": [
+        "D8"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T17:30:00-04:00", "ph4_built": "2026-04-16T17:45:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T17:30:00-04:00",
+        "ph4_built": "2026-04-16T17:45:00-04:00",
+        "ph5_audited": "2026-05-07T07:30:00-04:00"
+      }
     },
     {
       "id": "S-201",
@@ -123,14 +157,21 @@
       "component_name": "Header",
       "i18n_namespace": "layout.header",
       "order": 0,
-      "status": "modified",
+      "status": "audited",
       "description": "Header sticky avec nav (Accueil, Services, Projets, Contact) + sélecteur langue + CTA compact. Palette dark teal P12. Skip link accent or (visibilité AAA).",
-      "dimensions": ["D1", "D2"],
+      "dimensions": [
+        "D1",
+        "D2"
+      ],
       "priority": "critical",
       "pattern_applied": "P12",
       "modified_in": "phase-F-electro-maitre",
       "modified_at": "2026-04-16T17:45:00-04:00",
-      "lifecycle": { "ph1_planned": "2026-04-16T17:30:00-04:00", "ph4_built": "2026-04-16T17:45:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T17:30:00-04:00",
+        "ph4_built": "2026-04-16T17:45:00-04:00",
+        "ph5_audited": "2026-05-07T07:30:00-04:00"
+      }
     },
     {
       "id": "S-202",
@@ -140,14 +181,21 @@
       "component_name": "Footer",
       "i18n_namespace": "layout.footer",
       "order": 99,
-      "status": "modified",
+      "status": "audited",
       "description": "Footer avec NAP, liens légaux, copyright. Palette P12. Liens en accent or.",
-      "dimensions": ["D1", "D8"],
+      "dimensions": [
+        "D1",
+        "D8"
+      ],
       "priority": "critical",
       "pattern_applied": "P12",
       "modified_in": "phase-F-electro-maitre",
       "modified_at": "2026-04-16T17:45:00-04:00",
-      "lifecycle": { "ph1_planned": "2026-04-16T17:30:00-04:00", "ph4_built": "2026-04-16T17:45:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T17:30:00-04:00",
+        "ph4_built": "2026-04-16T17:45:00-04:00",
+        "ph5_audited": "2026-05-07T07:30:00-04:00"
+      }
     }
   ]
 }

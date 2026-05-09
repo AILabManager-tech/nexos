@@ -1,6 +1,11 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 
+/**
+ * Footer — NAP (nom, adresse, téléphone), liens légaux Loi 25 (politique-confidentialite,
+ * mentions-legales) et copyright dynamique. I18n : `layout.footer.*`. Liens légaux en
+ * accent or (signal premium P12).
+ */
 export function Footer() {
   const t = useTranslations('layout.footer');
   const year = new Date().getFullYear();

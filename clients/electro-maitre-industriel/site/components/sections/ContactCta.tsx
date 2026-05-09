@@ -1,6 +1,11 @@
 import { useTranslations } from 'next-intl';
 import { AlertTriangle } from 'lucide-react';
 
+/**
+ * CTA final avec trust line (RBQ, CMEQ, assurance 5 M$) — signaux P16 légers.
+ * Bordure gauche accent or (asymétrie). I18n : `home.contactCta.*` (email, phone, trust_line).
+ * `mailto:` et `tel:` construits depuis les valeurs i18n.
+ */
 export function ContactCta() {
   const t = useTranslations('home.contactCta');
 

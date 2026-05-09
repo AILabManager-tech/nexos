@@ -1,69 +1,62 @@
-{
-  "$schema": "nexos/changelog/v1",
-  "client_slug": "vertex-pmo",
-  "events": [
-    {
-      "type": "CLIENT_SCAFFOLDED",
-      "at": "2026-04-16T21:45:00-04:00",
-      "phase": "chantier-H option-A",
-      "origin": "PHASE_H_DEMO_VERTEX_PMO.md",
-      "details": "Scaffold minimal Next.js 15 + TS strict + Tailwind 3.4 + next-intl 3.25 pour démo industrialisation chantier knowledge (démo 3/5 lot F-J). Même méthodologie que phases E/F/G : palette cold SaaS enterprise (slate-900 + cyan-600) dès le scaffold (D4=cold canonique), typographie Inter + Space Grotesk + JetBrains Mono. Sections SEC-04 spécifiques : Hero (StoryBrand + demo interactive), ProblemSolution, HowItWorks, CTA. Pas de ChefStory/MenuGallery/Reservation (SEC-03 héritages copie-scaffold, non importés depuis page.tsx)."
-    },
-    {
-      "type": "PATTERN_APPLIED",
-      "at": "2026-04-16T22:15:00-04:00",
-      "phase": "chantier-H vertex-pmo",
-      "pattern_id": "P10",
-      "section_id": "S-002",
-      "details": "Démo interactive DANS le hero : InteractiveDemo component créé, intégré à la grid 2-cols du Hero (ref S17 Monday.com monday.com). Kanban animé useReducer + setInterval 3500ms, 6 cartes cyclant sur 3 colonnes (À planifier / En cours / Livré). Tailwind keyframes (kanban-advance, kpi-count) — pas de Framer Motion → bundle léger. Anti-patterns évités (pattern-matrix.json P10) : pas de JS lourd (composant ~6 Ko gzip), données fictives (noms de clients CPL/FDV/BH/NRN/CNC/SSR), démo représentative du produit réel (Kanban + marge par projet = fonctionnalité cœur). role='img' + aria-label traduit FR/EN. prefers-reduced-motion honoré (animation arrêtée). Cleanup setInterval au démontage."
-    },
-    {
-      "type": "PATTERN_APPLIED",
-      "at": "2026-04-16T22:15:00-04:00",
-      "phase": "chantier-H vertex-pmo",
-      "pattern_id": "P19",
-      "section_id": "S-001,S-003,S-004,S-005",
-      "details": "StoryBrand messaging appliqué sur l'ensemble de la home (ref S19 Bop Design bopdesign.com + S18 Productive.io angle profitabilité). Structure complète : Hero (question client-héros 'Combien vous coûtent vos projets, vraiment ?') → ProblemSolution (problème reconnu + stat OPEX Québec 33%) → HowItWorks (plan 3 étapes Connecter/Visualiser/Agir — pas 10) → CTA (résultat attendu +12% marge + CTA démo + trust line anti-friction). Anti-patterns évités (pattern-matrix.json P19) : client-héros (pas Vertex-héros), plan 3 étapes (pas 10), résultat concret (+12% avec référence case study Productive.io, pas 'satisfaction garantie')."
-    },
-    {
-      "type": "SECTION_LIFECYCLE",
-      "at": "2026-04-16T22:15:00-04:00",
-      "phase": "chantier-H vertex-pmo",
-      "section_id": "S-001",
-      "event": "created",
-      "details": "Hero StoryBrand + intègre S-002 InteractiveDemo. pattern_applied=P19."
-    },
-    {
-      "type": "SECTION_LIFECYCLE",
-      "at": "2026-04-16T22:15:00-04:00",
-      "phase": "chantier-H vertex-pmo",
-      "section_id": "S-002",
-      "event": "created",
-      "details": "InteractiveDemo sub-component Hero. pattern_applied=P10."
-    },
-    {
-      "type": "SECTION_LIFECYCLE",
-      "at": "2026-04-16T22:15:00-04:00",
-      "phase": "chantier-H vertex-pmo",
-      "section_id": "S-003",
-      "event": "created",
-      "details": "ProblemSolution. pattern_applied=P19 (étape problème reconnu)."
-    },
-    {
-      "type": "SECTION_LIFECYCLE",
-      "at": "2026-04-16T22:15:00-04:00",
-      "phase": "chantier-H vertex-pmo",
-      "section_id": "S-004",
-      "event": "created",
-      "details": "HowItWorks. pattern_applied=P19 (étape plan clair 3 steps)."
-    },
-    {
-      "type": "SECTION_LIFECYCLE",
-      "at": "2026-04-16T22:15:00-04:00",
-      "phase": "chantier-H vertex-pmo",
-      "section_id": "S-005",
-      "event": "created",
-      "details": "CTA. pattern_applied=P19 (étape appel à l'action finale)."
+[
+  {
+    "event": "pipeline_start",
+    "timestamp": "2026-05-07T07:38:19",
+    "agent": "orchestrator",
+    "details": {
+      "mode": "audit",
+      "phases": [
+        "ph5-qa"
+      ]
     }
-  ]
-}
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-07T07:38:19",
+    "phase": "ph5-qa",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-07T07:38:19",
+    "agent": "auto_fixer"
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-05-07T07:38:23",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "privacy_page",
+      "target": "politique-confidentialite"
+    }
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-05-07T07:38:23",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "legal_page",
+      "target": "mentions-legales"
+    }
+  },
+  {
+    "event": "soic_gate_fail",
+    "timestamp": "2026-05-07T07:55:49",
+    "phase": "ph5-qa",
+    "agent": "soic",
+    "details": {
+      "mu": 7.9106995884773665,
+      "threshold": 8.5,
+      "iterations": 3
+    }
+  },
+  {
+    "event": "pipeline_end",
+    "timestamp": "2026-05-07T07:55:49",
+    "agent": "orchestrator",
+    "details": {
+      "gates": 1,
+      "mode": "audit"
+    }
+  }
+]

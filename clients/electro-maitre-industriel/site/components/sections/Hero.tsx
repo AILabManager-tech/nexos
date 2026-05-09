@@ -1,6 +1,13 @@
 import { useTranslations } from 'next-intl';
 import { Zap } from 'lucide-react';
 
+/**
+ * Hero asymétrique 3/5 + 2/5 (D6=asymmetric-strong) avec stat block (22 ans / 24 7) débordant
+ * et bande oblique décorative or à 8 % d'opacité. Applique la palette P12 (dark teal + or).
+ *
+ * I18n : `home.hero` (eyebrow, title, subtitle, cta_primary, cta_secondary, stat_years,
+ * stat_availability). Aucune image (placeholder typographique côté droit, à remplacer).
+ */
 export function Hero() {
   const t = useTranslations('home.hero');
 

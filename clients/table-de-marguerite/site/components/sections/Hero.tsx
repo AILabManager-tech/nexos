@@ -1,6 +1,14 @@
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
+/**
+ * Hero éditorial — S-001 (page home, ordre 1, pattern P09).
+ *
+ * Grid 12 colonnes 7/5 avec figure nature morte 4:5 décalée verticalement
+ * (D6_structure=asymmetric-soft). Display Playfair 900 + ligne italique
+ * primary wine pour contraste typographique (D3_typo_weight=contrasted).
+ * Eyebrow utilise text-accent-deep (#6B4F1F, ratio 7.06:1 AAA après Iter 3).
+ */
 export function Hero() {
   const t = useTranslations('home.hero');
 

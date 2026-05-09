@@ -10,6 +10,11 @@ const ICONS: Record<ServiceKey, LucideIcon> = {
   emergency: Phone
 };
 
+/**
+ * Grid 4 colonnes (industrial / automation / maintenance / emergency).
+ * Cards sans rounded (mécanique), bordure top primary 2px, icônes accent or.
+ * I18n : `home.services.items.<key>.{title,description}`.
+ */
 export function ServicesOverview() {
   const t = useTranslations('home.services');
   const keys: ServiceKey[] = ['industrial', 'automation', 'maintenance', 'emergency'];

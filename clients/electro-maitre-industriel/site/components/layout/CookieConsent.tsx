@@ -12,6 +12,12 @@ type Consent = {
   updated_at: string;
 };
 
+/**
+ * Bandeau de consentement Loi 25 (art. 8.1) — opt-in, persistance localStorage
+ * (`emi_cookie_consent_v1`). Boutons « Refuser » et « Accepter » d'égale visibilité.
+ * Catégories essentiels (toujours actifs) / analytics / marketing. Le composant
+ * disparaît après choix ; pour réouvrir il faut purger la clé localStorage.
+ */
 export function CookieConsent() {
   const t = useTranslations('cookies');
   const [visible, setVisible] = useState(false);

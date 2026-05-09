@@ -1,6 +1,13 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 
+/**
+ * Footer global — S-202 (présent sur toutes les pages).
+ *
+ * Bloc 3 colonnes : NAP (nom-adresse-téléphone) + heures d'ouverture / vide /
+ * liens légaux (politique de confidentialité + mentions légales — Loi 25
+ * obligatoire D8). Copyright dynamique en bas.
+ */
 export function Footer() {
   const t = useTranslations('layout.footer');
   const year = new Date().getFullYear();

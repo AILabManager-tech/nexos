@@ -1,53 +1,42 @@
-{
-  "$schema": "nexos/changelog/v1",
-  "client_slug": "table-de-marguerite",
-  "events": [
-    {
-      "type": "CLIENT_SCAFFOLDED",
-      "at": "2026-04-16T20:40:00-04:00",
-      "phase": "chantier-G option-A",
-      "origin": "PHASE_G_DEMO_TABLE_MARGUERITE.md",
-      "details": "Scaffold minimal Next.js 15 + TS strict + Tailwind + next-intl pour démo industrialisation chantier knowledge (démo 3/6). Même méthodologie que phases E/F : palette warm wine/ocre/crème dès le scaffold (D4=warm canonique), pas d'étape intermédiaire. .gitignore : passage de table-de-marguerite de la liste 'separate repos' vers les clients matérialisés."
-    },
-    {
-      "type": "PATTERN_APPLIED",
-      "at": "2026-04-16T21:00:00-04:00",
-      "phase": "chantier-G table-marguerite",
-      "pattern_id": "P08",
-      "section_id": "S-002",
-      "details": "Story-first design : ChefStory component créé, placé ENTRE Hero et MenuGallery. 3 paragraphes éditoriaux (parcours Marguerite + philosophie producteurs + citation 'On ne cuisine pas des produits. On cuisine des gens.'). Portrait photo décalé verticalement (-mt-12) pour asymétrie douce. Signature cheffe sous la narrative. Ref S15 Fiola (fioladc.com). Anti-patterns évités : pas de corporate-speak, photo authentique (SVG placeholder + TODO(client) documenté), copy < 300 mots (pas de longueur sans substance)."
-    },
-    {
-      "type": "PATTERN_APPLIED",
-      "at": "2026-04-16T21:00:00-04:00",
-      "phase": "chantier-G table-marguerite",
-      "pattern_id": "P20",
-      "section_id": "S-003",
-      "details": "Menu galerie d'images : MenuGallery component créé, remplace tout modèle 'menu PDF' ou 'menu liste texte'. 9 plats en 3 catégories (entrées/plats/desserts). aspect-[4/5] vertical éditorial. next/image avec sizes précis (28vw desktop / 45vw tablet / 90vw mobile). Alt-text bilingue descriptif par plat (9 entrées FR + 9 EN). Terroir par plat (producteur nommé). 9 SVG placeholders < 3 Ko chacun. Ref S14 La Semilla (lasemillanyc.com). Anti-patterns évités : pas de PDF téléchargeable, alt-text par plat (SEO + a11y), poids image contrôlé."
-    },
-    {
-      "type": "SECTION_LIFECYCLE",
-      "at": "2026-04-16T21:00:00-04:00",
-      "phase": "chantier-G table-marguerite",
-      "section_id": "S-002",
-      "event": "created",
-      "details": "Nouvelle section ChefStory. pattern_applied = P08."
-    },
-    {
-      "type": "SECTION_LIFECYCLE",
-      "at": "2026-04-16T21:00:00-04:00",
-      "phase": "chantier-G table-marguerite",
-      "section_id": "S-003",
-      "event": "created",
-      "details": "Nouvelle section MenuGallery. pattern_applied = P20. Hiérarchie home : Hero → ChefStory → MenuGallery → Reservation (story-first avant menu)."
-    },
-    {
-      "type": "SECTION_LIFECYCLE",
-      "at": "2026-04-16T21:00:00-04:00",
-      "phase": "chantier-G table-marguerite",
-      "section_id": "S-004",
-      "event": "created",
-      "details": "Section Reservation (remplace ContactCta). CTA phone + email (pas OpenTable / plateforme). Placée APRÈS le menu — capitalise sur l'investissement P08 + appétit P20."
+[
+  {
+    "event": "pipeline_start",
+    "timestamp": "2026-05-07T07:18:19",
+    "agent": "orchestrator",
+    "details": {
+      "mode": "audit",
+      "phases": [
+        "ph5-qa"
+      ]
     }
-  ]
-}
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-07T07:18:19",
+    "phase": "ph5-qa",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-07T07:18:19",
+    "agent": "auto_fixer"
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-05-07T07:18:23",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "privacy_page",
+      "target": "politique-confidentialite"
+    }
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-05-07T07:18:23",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "legal_page",
+      "target": "mentions-legales"
+    }
+  }
+]

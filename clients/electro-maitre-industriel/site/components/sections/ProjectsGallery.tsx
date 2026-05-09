@@ -25,6 +25,14 @@ const PROJECT_KEYS: ProjectKey[] = [
   'automation'
 ];
 
+/**
+ * Galerie 6 projets — grayscale par défaut, révélés en couleur au hover/focus (Pattern P06).
+ * Transitions CSS pures (`filter` + `transition` 400 ms), `prefers-reduced-motion` géré dans
+ * `globals.css`. Overlay accent or 5 % au hover = micro-signature P12.
+ *
+ * @remarks Limitation actuelle : chaque carte pointe vers `#project-<key>` mais aucune ancre
+ * cible n'existe encore (cf. ph5-qa-report.md §6.1, WCAG 2.4.1, 6 erreurs pa11y).
+ */
 export function ProjectsGallery() {
   const t = useTranslations('home.projects');
 

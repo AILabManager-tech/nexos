@@ -3,6 +3,11 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
 
+/**
+ * Header sticky (z-40) — nav (Accueil/Services/Projets/Contact) + sélecteur langue + CTA compact.
+ * Palette P12 (dark teal). Le sélecteur de langue préserve le pathname courant via
+ * `usePathname()` de `next-intl`. Skip-link défini dans `app/[locale]/layout.tsx`.
+ */
 export function Header() {
   const t = useTranslations('layout.header');
   const locale = useLocale();

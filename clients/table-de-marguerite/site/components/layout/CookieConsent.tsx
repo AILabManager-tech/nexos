@@ -12,6 +12,15 @@ type Consent = {
   updated_at: string;
 };
 
+/**
+ * Bandeau de consentement cookies (Loi 25 Québec — opt-in obligatoire).
+ *
+ * Apparaît si `localStorage[tdm_cookie_consent_v1]` est absent. Deux boutons
+ * de visibilité équivalente : "Refuser tout" et "Accepter tout" (la Loi 25
+ * art. 8.1 exige que le refus soit aussi simple que l'acceptation). Aucun
+ * cookie tiers n'est posé tant que l'utilisateur n'a pas choisi — seul le
+ * cookie next-intl `NEXT_LOCALE` (essentiel) est actif par défaut.
+ */
 export function CookieConsent() {
   const t = useTranslations('cookies');
   const [visible, setVisible] = useState(false);

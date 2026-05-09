@@ -12,9 +12,13 @@
       "component_name": "Hero",
       "i18n_namespace": "home.hero",
       "order": 1,
-      "status": "modified",
+      "status": "audited",
       "description": "Hero pleine largeur H1 + sous-titre + CTA principal + photo humaine (next/image priority LCP, alt descriptif thérapeute+patiente, overlay AA)",
-      "dimensions": ["D1", "D3", "D5"],
+      "dimensions": [
+        "D1",
+        "D3",
+        "D5"
+      ],
       "priority": "critical",
       "pattern_applied": "P04",
       "modified_in": "phase-E-pilot",
@@ -24,7 +28,7 @@
         "ph2_designed": null,
         "ph3_content_ready": null,
         "ph4_built": "2026-04-16T14:00:00-04:00",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-07T06:35:00-04:00"
       }
     },
     {
@@ -35,14 +39,19 @@
       "component_name": "ServicesOverview",
       "i18n_namespace": "home.services",
       "order": 2,
-      "status": "planned",
+      "status": "audited",
       "description": "Aperçu 3 services : physiothérapie, ostéopathie, massothérapie",
-      "dimensions": ["D1", "D3", "D6"],
+      "dimensions": [
+        "D1",
+        "D3",
+        "D6"
+      ],
       "priority": "high",
       "pattern_applied": null,
       "lifecycle": {
         "ph1_planned": "2026-04-16T14:00:00-04:00",
-        "ph4_built": "2026-04-16T14:00:00-04:00"
+        "ph4_built": "2026-04-16T14:00:00-04:00",
+        "ph5_audited": "2026-05-07T06:35:00-04:00"
       }
     },
     {
@@ -53,9 +62,12 @@
       "component_name": "TestimonialsAdjacentCta",
       "i18n_namespace": "home.testimonialsCta",
       "order": 3,
-      "status": "modified",
+      "status": "audited",
       "description": "Section finale avec 3 témoignages patient·es adjacents au CTA de prise de RDV (proximity = même viewport). Remplace la section ContactCta simple par le pattern P02 (mesuré +2× leads chez Bloor Jane).",
-      "dimensions": ["D1", "D3"],
+      "dimensions": [
+        "D1",
+        "D3"
+      ],
       "priority": "critical",
       "pattern_applied": "P02",
       "modified_in": "phase-E-pilot",
@@ -63,7 +75,8 @@
       "previous_component": "ContactCta (supprimé conceptuellement, fichier legacy conservé)",
       "lifecycle": {
         "ph1_planned": "2026-04-16T14:00:00-04:00",
-        "ph4_built": "2026-04-16T14:00:00-04:00"
+        "ph4_built": "2026-04-16T14:00:00-04:00",
+        "ph5_audited": "2026-05-07T06:35:00-04:00"
       }
     },
     {
@@ -74,12 +87,18 @@
       "component_name": "PrivacyPolicyPage",
       "i18n_namespace": "legal.privacy",
       "order": 1,
-      "status": "planned",
+      "status": "audited",
       "description": "Politique de confidentialité Loi 25 (RPP, données, finalités, rétention)",
-      "dimensions": ["D8"],
+      "dimensions": [
+        "D8"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T14:00:00-04:00", "ph4_built": "2026-04-16T14:00:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T14:00:00-04:00",
+        "ph4_built": "2026-04-16T14:00:00-04:00",
+        "ph5_audited": "2026-05-07T06:35:00-04:00"
+      }
     },
     {
       "id": "S-102",
@@ -89,12 +108,18 @@
       "component_name": "LegalMentionsPage",
       "i18n_namespace": "legal.mentions",
       "order": 1,
-      "status": "planned",
+      "status": "audited",
       "description": "Mentions légales (NEQ, adresse, hébergeur)",
-      "dimensions": ["D8"],
+      "dimensions": [
+        "D8"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T14:00:00-04:00", "ph4_built": "2026-04-16T14:00:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T14:00:00-04:00",
+        "ph4_built": "2026-04-16T14:00:00-04:00",
+        "ph5_audited": "2026-05-07T06:35:00-04:00"
+      }
     },
     {
       "id": "S-201",
@@ -104,12 +129,19 @@
       "component_name": "Header",
       "i18n_namespace": "layout.header",
       "order": 0,
-      "status": "planned",
+      "status": "audited",
       "description": "Header responsive avec navigation + sélecteur de langue + CTA mini",
-      "dimensions": ["D1", "D2"],
+      "dimensions": [
+        "D1",
+        "D2"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T14:00:00-04:00", "ph4_built": "2026-04-16T14:00:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T14:00:00-04:00",
+        "ph4_built": "2026-04-16T14:00:00-04:00",
+        "ph5_audited": "2026-05-07T06:35:00-04:00"
+      }
     },
     {
       "id": "S-202",
@@ -119,12 +151,19 @@
       "component_name": "Footer",
       "i18n_namespace": "layout.footer",
       "order": 99,
-      "status": "planned",
+      "status": "audited",
       "description": "Footer avec liens légaux (politique, mentions), NAP, copyright",
-      "dimensions": ["D1", "D8"],
+      "dimensions": [
+        "D1",
+        "D8"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T14:00:00-04:00", "ph4_built": "2026-04-16T14:00:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T14:00:00-04:00",
+        "ph4_built": "2026-04-16T14:00:00-04:00",
+        "ph5_audited": "2026-05-07T06:35:00-04:00"
+      }
     }
   ]
 }

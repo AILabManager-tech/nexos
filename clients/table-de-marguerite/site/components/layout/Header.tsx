@@ -3,6 +3,14 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
 
+/**
+ * Header global sticky — S-201 (présent sur toutes les pages).
+ *
+ * Nav principale (Accueil / Histoire / Menu / Réservation) + sélecteur de
+ * langue FR↔EN cross-route (next-intl) + CTA "Réserver" compact côté droit.
+ * Bordure burgundy primary-100 pour signature warm. Skip link au focus géré
+ * par le layout `app/[locale]/layout.tsx` pour conformité a11y D6.
+ */
 export function Header() {
   const t = useTranslations('layout.header');
   const locale = useLocale();

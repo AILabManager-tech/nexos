@@ -1,6 +1,14 @@
 import { useTranslations } from 'next-intl';
 import { Phone, Mail } from 'lucide-react';
 
+/**
+ * CTA réservation — S-004 (page home, ordre 4).
+ *
+ * Placée APRÈS le menu (P08 + P20 capitalisent sur l'investissement narratif
+ * cheffe + appétit visuel galerie). Deux CTA primaires : tel: et mailto: —
+ * volontairement pas de plateforme de réservation tierce (positionnement
+ * premium artisanal). Trust line affiche les heures d'ouverture.
+ */
 export function Reservation() {
   const t = useTranslations('home.reservation');
 

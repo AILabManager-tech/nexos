@@ -12,16 +12,22 @@
       "component_name": "Hero",
       "i18n_namespace": "home.hero",
       "order": 1,
-      "status": "modified",
+      "status": "audited",
       "description": "Hero éditorial grid 12-col 7/5. Display Playfair 900 + ligne italique primary wine pour contraste (D3=contrasted). Figure nature morte 4:5 décalée verticalement (D6=asymmetric-soft).",
-      "dimensions": ["D1", "D3", "D5", "D6"],
+      "dimensions": [
+        "D1",
+        "D3",
+        "D5",
+        "D6"
+      ],
       "priority": "critical",
       "pattern_applied": "P09",
       "modified_in": "phase-G-table-marguerite",
       "modified_at": "2026-04-16T21:00:00-04:00",
       "lifecycle": {
         "ph1_planned": "2026-04-16T20:40:00-04:00",
-        "ph4_built": "2026-04-16T21:00:00-04:00"
+        "ph4_built": "2026-04-16T21:00:00-04:00",
+        "ph5_audited": "2026-05-07T11:30:00-04:00"
       }
     },
     {
@@ -32,16 +38,20 @@
       "component_name": "ChefStory",
       "i18n_namespace": "home.chefStory",
       "order": 2,
-      "status": "created",
+      "status": "audited",
       "description": "Story-first narrative cheffe : portrait décalé + 2 paragraphes parcours/philosophie + citation italique primary + signature. Placée AVANT le menu = investissement émotionnel en premier (P08). Ref S15 Fiola.",
-      "dimensions": ["D1", "D3"],
+      "dimensions": [
+        "D1",
+        "D3"
+      ],
       "priority": "critical",
       "pattern_applied": "P08",
       "modified_in": "phase-G-table-marguerite",
       "modified_at": "2026-04-16T21:00:00-04:00",
       "lifecycle": {
         "ph1_planned": "2026-04-16T20:40:00-04:00",
-        "ph4_built": "2026-04-16T21:00:00-04:00"
+        "ph4_built": "2026-04-16T21:00:00-04:00",
+        "ph5_audited": "2026-05-07T11:30:00-04:00"
       }
     },
     {
@@ -52,16 +62,22 @@
       "component_name": "MenuGallery",
       "i18n_namespace": "home.menu",
       "order": 3,
-      "status": "created",
+      "status": "audited",
       "description": "Menu en galerie d'images aspect 4:5 (P20). 9 plats en 3 catégories (entrées/plats/desserts). Nom + description + terroir par plat. Alt descriptifs bilingues. Pas de PDF fallback. Ref S14 La Semilla.",
-      "dimensions": ["D1", "D2", "D5", "D6"],
+      "dimensions": [
+        "D1",
+        "D2",
+        "D5",
+        "D6"
+      ],
       "priority": "critical",
       "pattern_applied": "P20",
       "modified_in": "phase-G-table-marguerite",
       "modified_at": "2026-04-16T21:00:00-04:00",
       "lifecycle": {
         "ph1_planned": "2026-04-16T20:40:00-04:00",
-        "ph4_built": "2026-04-16T21:00:00-04:00"
+        "ph4_built": "2026-04-16T21:00:00-04:00",
+        "ph5_audited": "2026-05-07T11:30:00-04:00"
       }
     },
     {
@@ -72,14 +88,18 @@
       "component_name": "Reservation",
       "i18n_namespace": "home.reservation",
       "order": 4,
-      "status": "created",
+      "status": "audited",
       "description": "CTA réservation final (placé APRÈS le menu, capitalise sur l'investissement narratif P08 + appétit visuel P20). Phone + email, pas de plateforme. Trust_line avec heures d'ouverture.",
-      "dimensions": ["D1", "D3"],
+      "dimensions": [
+        "D1",
+        "D3"
+      ],
       "priority": "high",
       "pattern_applied": null,
       "lifecycle": {
         "ph1_planned": "2026-04-16T20:40:00-04:00",
-        "ph4_built": "2026-04-16T21:00:00-04:00"
+        "ph4_built": "2026-04-16T21:00:00-04:00",
+        "ph5_audited": "2026-05-07T11:30:00-04:00"
       }
     },
     {
@@ -90,12 +110,18 @@
       "component_name": "PrivacyPolicyPage",
       "i18n_namespace": "legal.privacy",
       "order": 1,
-      "status": "planned",
+      "status": "audited",
       "description": "Politique de confidentialité Loi 25. Spécificité : allergènes = donnée sensible, rétention limitée au service + destruction après. RPP = cheffe Marguerite Lefebvre.",
-      "dimensions": ["D8"],
+      "dimensions": [
+        "D8"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T20:40:00-04:00", "ph4_built": "2026-04-16T21:00:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T20:40:00-04:00",
+        "ph4_built": "2026-04-16T21:00:00-04:00",
+        "ph5_audited": "2026-05-07T11:30:00-04:00"
+      }
     },
     {
       "id": "S-102",
@@ -105,12 +131,18 @@
       "component_name": "LegalMentionsPage",
       "i18n_namespace": "legal.mentions",
       "order": 1,
-      "status": "planned",
+      "status": "audited",
       "description": "Mentions légales (NEQ, siège social rue Saint-Vallier Québec, hébergeur Vercel)",
-      "dimensions": ["D8"],
+      "dimensions": [
+        "D8"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T20:40:00-04:00", "ph4_built": "2026-04-16T21:00:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T20:40:00-04:00",
+        "ph4_built": "2026-04-16T21:00:00-04:00",
+        "ph5_audited": "2026-05-07T11:30:00-04:00"
+      }
     },
     {
       "id": "S-201",
@@ -120,12 +152,19 @@
       "component_name": "Header",
       "i18n_namespace": "layout.header",
       "order": 0,
-      "status": "planned",
+      "status": "audited",
       "description": "Header sticky avec nav (Accueil, L'histoire, Menu, Réservation) + sélecteur langue + CTA Réserver compact. Palette warm wine. Skip link accent or.",
-      "dimensions": ["D1", "D2"],
+      "dimensions": [
+        "D1",
+        "D2"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T20:40:00-04:00", "ph4_built": "2026-04-16T21:00:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T20:40:00-04:00",
+        "ph4_built": "2026-04-16T21:00:00-04:00",
+        "ph5_audited": "2026-05-07T11:30:00-04:00"
+      }
     },
     {
       "id": "S-202",
@@ -135,12 +174,19 @@
       "component_name": "Footer",
       "i18n_namespace": "layout.footer",
       "order": 99,
-      "status": "planned",
+      "status": "audited",
       "description": "Footer avec NAP, hours, liens légaux, copyright.",
-      "dimensions": ["D1", "D8"],
+      "dimensions": [
+        "D1",
+        "D8"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T20:40:00-04:00", "ph4_built": "2026-04-16T21:00:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T20:40:00-04:00",
+        "ph4_built": "2026-04-16T21:00:00-04:00",
+        "ph5_audited": "2026-05-07T11:30:00-04:00"
+      }
     }
   ]
 }

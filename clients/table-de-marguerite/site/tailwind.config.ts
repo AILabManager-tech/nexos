@@ -2,8 +2,12 @@ import type { Config } from 'tailwindcss';
 
 // Palette warm éditorial-bistronomique (SEC-03 premium) — D4_palette=warm canonique
 // table-de-marguerite. Vin burgundy primaire + ocre doré accent + crème surface.
-// Contraste WCAG AA vérifié : text-ink (#2B2420) sur bg-surface (#FAF6F0) = 15.8:1 AAA,
-// text-surface (#FAF6F0) sur bg-primary (#6D2E3F) = 9.7:1 AAA.
+// Contraste WCAG AA vérifié :
+//   text-ink (#2B2420) sur bg-surface (#FAF6F0)        = 15.8:1 AAA
+//   text-surface (#FAF6F0) sur bg-primary (#6D2E3F)    =  9.7:1 AAA
+//   text-accent-deep (#6B4F1F) sur bg-surface (#FAF6F0)=  7.06:1 AAA
+//   text-accent-deep (#6B4F1F) sur bg-surface-alt (#F3EDE3) = 6.54:1 AA+
+// Iter 3 ph5 fix : accent.deep passé de #A0803A (3.46:1 FAIL AA) à #6B4F1F (PASS AA/AAA).
 const config: Config = {
   content: [
     './app/**/*.{ts,tsx}',
@@ -28,7 +32,7 @@ const config: Config = {
         accent: {
           DEFAULT: '#C89F4B',
           soft: '#E8D0A0',
-          deep: '#A0803A'
+          deep: '#6B4F1F'
         },
         surface: {
           DEFAULT: '#FAF6F0',

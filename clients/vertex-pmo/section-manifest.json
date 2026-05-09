@@ -12,16 +12,21 @@
       "component_name": "Hero",
       "i18n_namespace": "home.hero",
       "order": 1,
-      "status": "created",
+      "status": "audited",
       "description": "Hero StoryBrand (P19 ref S19 Bop Design). Eyebrow + H1 question frame (profitabilité) + subtitle bénéfice + 2 CTAs + trust line. Intègre S-002 InteractiveDemo (P10) dans le fold à droite — la démo EST dans le hero (ref S17 Monday.com), pas un screenshot.",
-      "dimensions": ["D1", "D3", "D5"],
+      "dimensions": [
+        "D1",
+        "D3",
+        "D5"
+      ],
       "priority": "critical",
       "pattern_applied": "P19",
       "modified_in": "phase-H-vertex-pmo",
       "modified_at": "2026-04-16T22:15:00-04:00",
       "lifecycle": {
         "ph1_planned": "2026-04-16T21:45:00-04:00",
-        "ph4_built": "2026-04-16T22:15:00-04:00"
+        "ph4_built": "2026-04-16T22:15:00-04:00",
+        "ph5_audited": "2026-05-07T07:55:00-04:00"
       }
     },
     {
@@ -32,16 +37,21 @@
       "component_name": "InteractiveDemo",
       "i18n_namespace": "home.demo",
       "order": 1.5,
-      "status": "created",
+      "status": "audited",
       "description": "Démo interactive Kanban dans le hero (P10 ref S17 Monday.com). Client component avec useReducer + setInterval 3500ms. 6 cartes cycliques sur 3 colonnes (À planifier / En cours / Livré). KPIs animés sous les colonnes. role='img' + aria-label. prefers-reduced-motion honoré (animation arrêtée, pas seulement ralentie). Pas de dépendance Framer Motion — Tailwind keyframes + CSS transitions.",
-      "dimensions": ["D1", "D2", "D5"],
+      "dimensions": [
+        "D1",
+        "D2",
+        "D5"
+      ],
       "priority": "critical",
       "pattern_applied": "P10",
       "modified_in": "phase-H-vertex-pmo",
       "modified_at": "2026-04-16T22:15:00-04:00",
       "lifecycle": {
         "ph1_planned": "2026-04-16T21:45:00-04:00",
-        "ph4_built": "2026-04-16T22:15:00-04:00"
+        "ph4_built": "2026-04-16T22:15:00-04:00",
+        "ph5_audited": "2026-05-07T07:55:00-04:00"
       }
     },
     {
@@ -52,16 +62,20 @@
       "component_name": "ProblemSolution",
       "i18n_namespace": "home.problem",
       "order": 2,
-      "status": "created",
+      "status": "audited",
       "description": "StoryBrand étape 'Problème reconnu' (P19). Le client se reconnaît AVANT la solution. Stat 33% projets services perdants (étude OPEX Québec 2025). 3 modes d'échec : heures non facturées / dépassement invisible / client toxique persistant. Layout deux colonnes : sticky proof stat à gauche + 3 cards à droite.",
-      "dimensions": ["D1", "D3"],
+      "dimensions": [
+        "D1",
+        "D3"
+      ],
       "priority": "critical",
       "pattern_applied": "P19",
       "modified_in": "phase-H-vertex-pmo",
       "modified_at": "2026-04-16T22:15:00-04:00",
       "lifecycle": {
         "ph1_planned": "2026-04-16T21:45:00-04:00",
-        "ph4_built": "2026-04-16T22:15:00-04:00"
+        "ph4_built": "2026-04-16T22:15:00-04:00",
+        "ph5_audited": "2026-05-07T07:55:00-04:00"
       }
     },
     {
@@ -72,16 +86,20 @@
       "component_name": "HowItWorks",
       "i18n_namespace": "home.howItWorks",
       "order": 3,
-      "status": "created",
+      "status": "audited",
       "description": "StoryBrand étape 'Plan clair' (P19). 3 étapes (Connecter → Visualiser → Agir), pas 10 (anti-pattern P19 listé dans pattern-matrix.json). Flèches visuelles entre les cards. Clôture avec card résultat : +12% marge moyenne sur projets tracés (ref S18 Productive.io). Grid md:grid-cols-3.",
-      "dimensions": ["D1", "D3"],
+      "dimensions": [
+        "D1",
+        "D3"
+      ],
       "priority": "critical",
       "pattern_applied": "P19",
       "modified_in": "phase-H-vertex-pmo",
       "modified_at": "2026-04-16T22:15:00-04:00",
       "lifecycle": {
         "ph1_planned": "2026-04-16T21:45:00-04:00",
-        "ph4_built": "2026-04-16T22:15:00-04:00"
+        "ph4_built": "2026-04-16T22:15:00-04:00",
+        "ph5_audited": "2026-05-07T07:55:00-04:00"
       }
     },
     {
@@ -92,16 +110,20 @@
       "component_name": "CTA",
       "i18n_namespace": "home.cta",
       "order": 4,
-      "status": "created",
+      "status": "audited",
       "description": "StoryBrand étape 'Appel à l'action' (P19). Dernière section home. 2 CTAs : primaire (démo via mailto) + secondaire (parler à un humain). Trust line anti-friction : essai gratuit 14 j + sans carte de crédit + support humain FR/EN.",
-      "dimensions": ["D1", "D3"],
+      "dimensions": [
+        "D1",
+        "D3"
+      ],
       "priority": "critical",
       "pattern_applied": "P19",
       "modified_in": "phase-H-vertex-pmo",
       "modified_at": "2026-04-16T22:15:00-04:00",
       "lifecycle": {
         "ph1_planned": "2026-04-16T21:45:00-04:00",
-        "ph4_built": "2026-04-16T22:15:00-04:00"
+        "ph4_built": "2026-04-16T22:15:00-04:00",
+        "ph5_audited": "2026-05-07T07:55:00-04:00"
       }
     },
     {
@@ -112,12 +134,18 @@
       "component_name": "PrivacyPolicyPage",
       "i18n_namespace": "legal.privacy",
       "order": 1,
-      "status": "created",
+      "status": "audited",
       "description": "Politique de confidentialité Loi 25. Spécificités SaaS B2B : transfert hors QC documenté (Vercel USA web + AWS ca-central-1 données), RPP = Marie Chen Chef sécurité. Rétention client+90j post-résiliation (fenêtre export), logs 12 mois, agrégats anonymisés indéfini.",
-      "dimensions": ["D8"],
+      "dimensions": [
+        "D8"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T21:45:00-04:00", "ph4_built": "2026-04-16T22:15:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T21:45:00-04:00",
+        "ph4_built": "2026-04-16T22:15:00-04:00",
+        "ph5_audited": "2026-05-07T07:55:00-04:00"
+      }
     },
     {
       "id": "S-102",
@@ -127,12 +155,18 @@
       "component_name": "LegalMentionsPage",
       "i18n_namespace": "legal.mentions",
       "order": 1,
-      "status": "created",
+      "status": "audited",
       "description": "Mentions légales (NEQ 1179042311, siège social 1470 Peel Montréal, hébergeurs Vercel USA + AWS ca-central-1).",
-      "dimensions": ["D8"],
+      "dimensions": [
+        "D8"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T21:45:00-04:00", "ph4_built": "2026-04-16T22:15:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T21:45:00-04:00",
+        "ph4_built": "2026-04-16T22:15:00-04:00",
+        "ph5_audited": "2026-05-07T07:55:00-04:00"
+      }
     },
     {
       "id": "S-201",
@@ -142,12 +176,19 @@
       "component_name": "Header",
       "i18n_namespace": "layout.header",
       "order": 0,
-      "status": "created",
+      "status": "audited",
       "description": "Header sticky avec logo Vertex.PMO + nav anchors (Démo, Le problème, Comment ça marche) + sélecteur langue + CTA Voir la démo. Palette cold SaaS dark (bg-surface/90 backdrop-blur, accent cyan-600). Skip link accessible.",
-      "dimensions": ["D1", "D2"],
+      "dimensions": [
+        "D1",
+        "D2"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T21:45:00-04:00", "ph4_built": "2026-04-16T22:15:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T21:45:00-04:00",
+        "ph4_built": "2026-04-16T22:15:00-04:00",
+        "ph5_audited": "2026-05-07T07:55:00-04:00"
+      }
     },
     {
       "id": "S-202",
@@ -157,12 +198,19 @@
       "component_name": "Footer",
       "i18n_namespace": "layout.footer",
       "order": 99,
-      "status": "created",
+      "status": "audited",
       "description": "Footer avec logo + tagline + NAP (Peel/Montréal) + hours + liens légaux + copyright. Palette surface-alt sur fond sombre.",
-      "dimensions": ["D1", "D8"],
+      "dimensions": [
+        "D1",
+        "D8"
+      ],
       "priority": "critical",
       "pattern_applied": null,
-      "lifecycle": { "ph1_planned": "2026-04-16T21:45:00-04:00", "ph4_built": "2026-04-16T22:15:00-04:00" }
+      "lifecycle": {
+        "ph1_planned": "2026-04-16T21:45:00-04:00",
+        "ph4_built": "2026-04-16T22:15:00-04:00",
+        "ph5_audited": "2026-05-07T07:55:00-04:00"
+      }
     }
   ]
 }
