@@ -2,6 +2,17 @@ type Window = { count: number; resetAt: number };
 
 const buckets = new Map<string, Window>();
 
+/**
+ * In-memory fixed-window rate limiter (process-local).
+ *
+ * Used by `/api/contact` (3 req/h) and `/api/newsletter` (5 req/h) keyed on
+ * the requester IP. Resets automatically once the current window expires.
+ *
+ * @param key - Bucket key (typically `route:ip`).
+ * @param limit - Maximum number of allowed requests inside the window.
+ * @param windowMs - Window duration in milliseconds.
+ * @returns `{allowed, remaining, resetAt}` — `allowed=false` when the bucket is full.
+ */
 export function rateLimit(
   key: string,
   limit: number,

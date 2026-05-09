@@ -61,5 +61,91 @@
     "event": "autofix_start",
     "timestamp": "2026-05-08T22:00:11",
     "agent": "auto_fixer"
+  },
+  {
+    "event": "pipeline_start",
+    "timestamp": "2026-05-09T02:03:10",
+    "agent": "orchestrator",
+    "details": {
+      "mode": "audit",
+      "phases": [
+        "ph5-qa"
+      ]
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-09T02:03:10",
+    "phase": "ph5-qa",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-09T02:03:10",
+    "agent": "auto_fixer"
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-09T06:00:00",
+    "phase": "ph5",
+    "details": {
+      "agents": 23,
+      "mode": "audit"
+    }
+  },
+  {
+    "event": "tooling_run",
+    "timestamp": "2026-05-09T06:03:00",
+    "tools": [
+      "lighthouse",
+      "pa11y",
+      "curl",
+      "npm-audit",
+      "ssl"
+    ],
+    "results": {
+      "perf": 0.76,
+      "a11y_lh": 1.0,
+      "best_practices": 1.0,
+      "seo": 0.92,
+      "pa11y_errors": 1,
+      "npm_high_critical": 0,
+      "npm_moderate": 8
+    }
+  },
+  {
+    "event": "manifest_audit",
+    "timestamp": "2026-05-09T06:30:00",
+    "total_sections": 17,
+    "audited": 17,
+    "missing": 0
+  },
+  {
+    "event": "soic_score",
+    "timestamp": "2026-05-09T06:30:00",
+    "phase": "ph5",
+    "mu": 6.79,
+    "dimensions": {
+      "D1": 9.0,
+      "D2": 6.0,
+      "D3": 2.0,
+      "D4": 7.5,
+      "D5": 5.0,
+      "D6": 7.5,
+      "D7": 6.5,
+      "D8": 9.5,
+      "D9": 7.0
+    },
+    "verdict": "NO_DEPLOY",
+    "threshold": 8.5
+  },
+  {
+    "event": "phase_end",
+    "timestamp": "2026-05-09T06:30:00",
+    "phase": "ph5",
+    "verdict": "NO_DEPLOY",
+    "mu": 6.79,
+    "client_status": "test_jetable_archived",
+    "report": "ph5-qa-report.md"
   }
 ]

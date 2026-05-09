@@ -13,7 +13,7 @@
       "component_path": "components/sections/Hero.tsx",
       "i18n_namespace": "home.hero",
       "order": 1,
-      "status": "built",
+      "status": "audited",
       "description": "Hero plein largeur — photo réelle propriétaire/dépanneur + H1 nominatif 'Le dépanneur de [ville]' + UVP courte + CTA primaire 'Voir les promotions de la semaine'",
       "dimensions": [
         "D1",
@@ -34,7 +34,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -46,7 +46,7 @@
       "component_path": "components/sections/PromoWeekTeaser.tsx",
       "i18n_namespace": "home.promoTeaser",
       "order": 2,
-      "status": "built",
+      "status": "audited",
       "description": "Teaser des 3 spéciaux du moment + lien 'Toutes les promotions' → /promotions. Renforce le KPI conversion sur la home.",
       "dimensions": [
         "D1",
@@ -63,7 +63,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -75,7 +75,7 @@
       "component_path": "components/sections/CategoriesOverview.tsx",
       "i18n_namespace": "home.categories",
       "order": 3,
-      "status": "built",
+      "status": "audited",
       "description": "Grille des 6 catégories (Bières, Snacks, Boissons, Loto, Dépannage, Glace) avec icônes Lucide + lien 'Voir tous les produits' → /produits.",
       "dimensions": [
         "D1",
@@ -92,7 +92,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -104,7 +104,7 @@
       "component_path": "components/sections/InfosPratiques.tsx",
       "i18n_namespace": "home.infosPratiques",
       "order": 4,
-      "status": "built",
+      "status": "audited",
       "description": "Bloc adresse + horaires + iframe Google Maps + tel: cliquable. Schema.org LocalBusiness + OpeningHoursSpecification.",
       "dimensions": [
         "D1",
@@ -120,7 +120,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -132,7 +132,7 @@
       "component_path": "components/sections/LeMotDuProprio.tsx",
       "i18n_namespace": "home.motProprio",
       "order": 5,
-      "status": "built",
+      "status": "audited",
       "description": "Storytelling court — Nobert Tremblay parle à la première personne, ancrage local explicite. Anti-corporate, story-first (P08).",
       "dimensions": [
         "D1",
@@ -149,7 +149,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -161,7 +161,7 @@
       "component_path": "components/sections/NewsletterCta.tsx",
       "i18n_namespace": "home.newsletter",
       "order": 6,
-      "status": "built",
+      "status": "audited",
       "description": "Formulaire d'inscription infolettre opt-in Loi 25 (RHF + Zod), consentement explicite + texte rétention 12 mois.",
       "dimensions": [
         "D1",
@@ -176,7 +176,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -188,7 +188,7 @@
       "component_path": "components/sections/HeroPromoWeek.tsx",
       "i18n_namespace": "promotions.hero",
       "order": 1,
-      "status": "built",
+      "status": "audited",
       "description": "Hero page promotions — H1 'Les promotions de cette semaine' + dates de validité visibles + intro courte.",
       "dimensions": [
         "D1",
@@ -204,7 +204,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -216,7 +216,7 @@
       "component_path": "components/sections/PromosGrid.tsx",
       "i18n_namespace": "promotions.grid",
       "order": 2,
-      "status": "built",
+      "status": "audited",
       "description": "Cards promos depuis site/data/promotions.json : image (next/image), titre, prix avant/après, durée. Schema.org ItemList + Offer. Asset critique du KPI conversion.",
       "dimensions": [
         "D1",
@@ -234,7 +234,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -246,7 +246,7 @@
       "component_path": "components/sections/HeroProduits.tsx",
       "i18n_namespace": "produits.hero",
       "order": 1,
-      "status": "built",
+      "status": "audited",
       "description": "Hero page produits — H1 'Tous nos produits, par catégorie' + nav ancres vers les 6 catégories.",
       "dimensions": [
         "D1",
@@ -261,7 +261,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -273,7 +273,7 @@
       "component_path": "components/sections/CategoriesGrid.tsx",
       "i18n_namespace": "produits.categoriesGrid",
       "order": 2,
-      "status": "built",
+      "status": "audited",
       "description": "Vignettes des 6 catégories avec ancres + tags couleurs (P03).",
       "dimensions": [
         "D1",
@@ -288,7 +288,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -300,7 +300,7 @@
       "component_path": "components/sections/CategorySection.tsx",
       "i18n_namespace": "produits.category",
       "order": 3,
-      "status": "built",
+      "status": "audited",
       "description": "Composant générique réutilisé 6 fois (Bières, Snacks, Boissons, Loto, Dépannage, Glace). Charge produits depuis JSON, grille images + nom + prix indicatif.",
       "dimensions": [
         "D1",
@@ -316,7 +316,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -328,7 +328,7 @@
       "component_path": "components/sections/HeroContact.tsx",
       "i18n_namespace": "contact.hero",
       "order": 1,
-      "status": "built",
+      "status": "audited",
       "description": "Hero page contact — H1 'Nous trouver et nous joindre' + intro courte conviviale.",
       "dimensions": [
         "D1",
@@ -343,7 +343,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -355,7 +355,7 @@
       "component_path": "components/sections/Coordonnees.tsx",
       "i18n_namespace": "contact.coordonnees",
       "order": 2,
-      "status": "built",
+      "status": "audited",
       "description": "Adresse complète + iframe Google Maps + tel: + courriel. Schema.org GeoCoordinates + PostalAddress + ContactPoint.",
       "dimensions": [
         "D1",
@@ -371,7 +371,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -383,7 +383,7 @@
       "component_path": "components/sections/Horaires.tsx",
       "i18n_namespace": "contact.horaires",
       "order": 3,
-      "status": "built",
+      "status": "audited",
       "description": "Tableau horaires 7 jours + jours fériés. Schema.org OpeningHoursSpecification.",
       "dimensions": [
         "D1",
@@ -396,7 +396,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -408,7 +408,7 @@
       "component_path": "components/sections/ContactForm.tsx",
       "i18n_namespace": "contact.form",
       "order": 4,
-      "status": "built",
+      "status": "audited",
       "description": "Formulaire 4 champs (nom, courriel/téléphone, message, consentement Loi 25) + honeypot + rate limit. POST /api/contact.",
       "dimensions": [
         "D1",
@@ -421,7 +421,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -433,7 +433,7 @@
       "component_path": "components/sections/RppMention.tsx",
       "i18n_namespace": "contact.rpp",
       "order": 5,
-      "status": "built",
+      "status": "audited",
       "description": "Mention explicite RPP Nobert Tremblay + courriel rpp + lien vers politique de confidentialité (Loi 25 art. 3.1).",
       "dimensions": [
         "D8"
@@ -445,7 +445,7 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     },
     {
@@ -457,7 +457,7 @@
       "component_path": "components/sections/LegalContent.tsx",
       "i18n_namespace": "legal.content",
       "order": 1,
-      "status": "built",
+      "status": "audited",
       "description": "Composant générique de rendu de page légale — consume MD/MDX rendu (templates NEXOS) avec placeholders interpolés (RPP, NEQ, hébergeur, transferts US).",
       "dimensions": [
         "D8"
@@ -469,11 +469,12 @@
         "ph2_designed": "2026-05-08T13:50:00Z",
         "ph3_content_ready": "2026-05-08T15:30:00Z",
         "ph4_built": "2026-05-08T17:30:00Z",
-        "ph5_audited": null
+        "ph5_audited": "2026-05-09T06:30:00Z"
       }
     }
   ],
   "updated_at_ph2": "2026-05-08T13:50:00Z",
   "updated_at_ph3": "2026-05-08T15:30:00Z",
-  "updated_at_ph4": "2026-05-08T17:30:00Z"
+  "updated_at_ph4": "2026-05-08T17:30:00Z",
+  "updated_at_ph5": "2026-05-09T06:30:00Z"
 }
