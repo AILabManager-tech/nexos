@@ -41,11 +41,13 @@ def test_submodules_are_importable() -> None:
     import importlib
 
     for submodule in (
+        "orchestrator.banner",
         "orchestrator.brief",
         "orchestrator.cli_args",
         "orchestrator.cli_runner",
         "orchestrator.converge",
         "orchestrator.gates",
+        "orchestrator.gates_persistence",
         "orchestrator.knowledge",
         "orchestrator.main",
         "orchestrator.phases",

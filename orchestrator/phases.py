@@ -387,9 +387,12 @@ def run_pipeline(
                     say(f"[red]  Raison: {loop.abort_reason}[/]")
                 break
 
-    # Sauvegarder l'historique des gates (enrichi avec convergence)
-    gates_path = client_dir / "soic-gates.json"
-    gates_path.write_text(json.dumps(gate_history, indent=2), encoding="utf-8")
+    # Persiste l'historique des gates en mergeant sur la clé `phase` pour ne
+    # pas écraser les entrées des phases non réexécutées par un mode partiel
+    # (audit/modify/content). Cf. BUG_NEXOS_SOIC_GATES_OVERWRITE (A-005).
+    from .gates_persistence import save_gate_history
+
+    save_gate_history(client_dir / "soic-gates.json", gate_history)
 
     if _HAS_CHANGELOG:
         from nexos.changelog import EventType, log_event
