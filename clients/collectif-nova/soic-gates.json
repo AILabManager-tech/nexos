@@ -1,41 +1,12 @@
-{
-  "_meta": {
-    "version": "1.0",
-    "created_at": "2026-04-17T22:45:00-04:00",
-    "client": "collectif-nova",
-    "profile": "web-nextjs",
-    "note": "Baseline empty (scaffold phase J) — gates to populate post-build validation"
-  },
-  "phases": {
-    "ph0-discovery": {
-      "gate_threshold": 5.5,
-      "gate_name": "SOIC μ ≥ 5.5 (TEMP HACK ph0 d'après audit)",
-      "runs": []
-    },
-    "ph1-strategy": {
-      "gate_threshold": 8.0,
-      "gate_name": "SOIC μ ≥ 8.0",
-      "runs": []
-    },
-    "ph2-design": {
-      "gate_threshold": 8.0,
-      "gate_name": "SOIC μ ≥ 8.0",
-      "runs": []
-    },
-    "ph3-content": {
-      "gate_threshold": 8.0,
-      "gate_name": "SOIC μ ≥ 8.0",
-      "runs": []
-    },
-    "ph4-build": {
-      "gate_threshold": "BUILD PASS",
-      "gate_name": "npm build + tsc + audit clean",
-      "runs": []
-    },
-    "ph5-qa": {
-      "gate_threshold": 8.5,
-      "gate_name": "SOIC μ ≥ 8.5",
-      "runs": []
-    }
+[
+  {
+    "phase": "ph5-qa",
+    "mu": 8.048971193415639,
+    "threshold": 8.5,
+    "converged": false,
+    "iterations": 3,
+    "decision": "ABORT_PLATEAU",
+    "abort_reason": "",
+    "timestamp": "2026-05-07T06:58:18.613859"
   }
-}
+]

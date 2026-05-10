@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "event": "pipeline_start",
+    "timestamp": "2026-05-07T06:41:54",
+    "agent": "orchestrator",
+    "details": {
+      "mode": "audit",
+      "phases": [
+        "ph5-qa"
+      ]
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-07T06:41:54",
+    "phase": "ph5-qa",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-07T06:41:54",
+    "agent": "auto_fixer"
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-05-07T06:41:58",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "privacy_page",
+      "target": "politique-confidentialite"
+    }
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-05-07T06:41:58",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "legal_page",
+      "target": "mentions-legales"
+    }
+  },
+  {
+    "event": "soic_gate_fail",
+    "timestamp": "2026-05-07T06:58:18",
+    "phase": "ph5-qa",
+    "agent": "soic",
+    "details": {
+      "mu": 8.048971193415639,
+      "threshold": 8.5,
+      "iterations": 3
+    }
+  },
+  {
+    "event": "pipeline_end",
+    "timestamp": "2026-05-07T06:58:18",
+    "agent": "orchestrator",
+    "details": {
+      "gates": 1,
+      "mode": "audit"
+    }
+  }
+]
