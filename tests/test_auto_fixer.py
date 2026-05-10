@@ -12,8 +12,9 @@ from nexos.auto_fixer import (
     _fix_next_config,
     _fix_privacy_page,
     _fix_vercel_headers,
-    _inline_md,
-    _markdown_to_html,
+    _generate_legal_page_tsx,
+    _inline_md_jsx,
+    _markdown_to_jsx_children,
     auto_fix,
 )
 
@@ -217,22 +218,77 @@ class TestFixLegalPages:
         assert report.privacy_page_added is False
 
 
-class TestMarkdownToHtml:
+class TestMarkdownToJsx:
     def test_heading(self):
-        assert "<h1>" in _markdown_to_html("# Title")
-        assert "<h2>" in _markdown_to_html("## Sub")
-        assert "<h3>" in _markdown_to_html("### Sub2")
+        assert "<h1>" in _markdown_to_jsx_children("# Title")
+        assert "<h2>" in _markdown_to_jsx_children("## Sub")
+        assert "<h3>" in _markdown_to_jsx_children("### Sub2")
 
     def test_list(self):
-        html = _markdown_to_html("- item 1\n- item 2")
-        assert "<ul>" in html
-        assert "<li>item 1</li>" in html
+        jsx = _markdown_to_jsx_children("- item 1\n- item 2")
+        assert "<ul>" in jsx
+        assert "<li>item 1</li>" in jsx
+        assert "</ul>" in jsx
 
     def test_bold(self):
-        assert "<strong>bold</strong>" in _inline_md("**bold**")
+        assert "<strong>bold</strong>" in _inline_md_jsx("**bold**")
 
     def test_italic(self):
-        assert "<em>italic</em>" in _inline_md("*italic*")
+        assert "<em>italic</em>" in _inline_md_jsx("*italic*")
+
+    def test_paragraph(self):
+        jsx = _markdown_to_jsx_children("Just a paragraph.")
+        assert "<p>Just a paragraph.</p>" in jsx
+
+    def test_jsx_special_chars_escaped(self):
+        """Les caractères qui casseraient la syntaxe JSX (`<`, `>`, `{`, `}`,
+        `&`) doivent être échappés en HTML entities, sinon le fichier produit
+        ne compile pas."""
+        jsx = _inline_md_jsx("a < b > c & d {x} {y}")
+        assert "<" not in jsx.replace("&lt;", "")
+        assert ">" not in jsx.replace("&gt;", "")
+        assert "{" not in jsx.replace("&#123;", "")
+        assert "}" not in jsx.replace("&#125;", "")
+        assert "&amp;" in jsx
+
+    def test_bold_with_special_chars_inside(self):
+        """L'escape doit s'appliquer avant la conversion bold, pour que les
+        tags JSX ne soient pas eux-mêmes échappés."""
+        jsx = _inline_md_jsx("**a < b**")
+        assert "<strong>a &lt; b</strong>" in jsx
+
+
+class TestGenerateLegalPageTsx:
+    def test_no_dangerously_set_inner_html(self):
+        """Régression A-006 niveau 3 : le générateur ne doit JAMAIS émettre
+        `dangerouslySetInnerHTML` (viol CLAUDE.md règle XSS)."""
+        page = _generate_legal_page_tsx("# Politique\n\nDu texte.", "Politique")
+        assert "dangerouslySetInnerHTML" not in page
+
+    def test_xss_payload_neutralized(self):
+        """Si un brief client contient un payload XSS, le tag <script> doit
+        être échappé en entities HTML, pas rendu comme un élément exécutable."""
+        page = _generate_legal_page_tsx(
+            "# Page\n\n<script>alert('xss')</script>",
+            "Page",
+        )
+        assert "<script>alert" not in page
+        assert "&lt;script&gt;" in page
+
+    def test_jsx_braces_escaped(self):
+        """Un `{...}` dans le contenu textuel ne doit pas être interprété
+        comme expression JSX."""
+        page = _generate_legal_page_tsx("# T\n\nVoir {COMPANY}.", "T")
+        assert "Voir &#123;COMPANY&#125;." in page
+
+    def test_metadata_title_quotes_escaped(self):
+        page = _generate_legal_page_tsx("# T", 'Title with "quotes"')
+        assert 'title: "Title with \\"quotes\\""' in page
+
+    def test_includes_article_wrapper(self):
+        page = _generate_legal_page_tsx("# T", "T")
+        assert '<article className="prose prose-gray max-w-none">' in page
+        assert "</article>" in page
 
 
 class TestAutoFix:

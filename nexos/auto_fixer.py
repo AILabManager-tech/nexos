@@ -434,84 +434,107 @@ def _fix_legal_page(site_dir: Path, brief: dict[str, Any], report: FixReport) ->
 
 
 def _generate_legal_page_tsx(markdown_content: str, title: str) -> str:
-    """Génère un page.tsx Next.js qui rend du contenu légal en HTML statique."""
-    # Convertir le markdown en HTML basique (headings, paragraphes, listes)
-    html = _markdown_to_html(markdown_content)
-    # Échapper les backticks et ${} pour le template literal
-    html = html.replace("\\", "\\\\").replace("`", "\\`").replace("${", "\\${")
+    """Génère un page.tsx Next.js qui rend du contenu légal en JSX natif.
+
+    Le markdown source est parsé côté Python et converti directement en JSX
+    (h1/h2/h3, p, ul/li, strong, em). Aucune utilisation de
+    `dangerouslySetInnerHTML` — React échappe automatiquement les contenus
+    textuels, ce qui élimine le risque XSS si le brief client contient des
+    chaînes contrôlées par un attaquant. Cf. CLAUDE.md règle XSS et
+    BUG_NEXOS_PH5_AUTO_FIXER (chantier mode B A-006 niveau 3).
+    """
+    jsx_body = _markdown_to_jsx_children(markdown_content)
+    title_escaped = title.replace("\\", "\\\\").replace('"', '\\"')
 
     return f"""import type {{ Metadata }} from "next";
 
 export const metadata: Metadata = {{
-  title: "{title}",
+  title: "{title_escaped}",
 }};
 
 export default function Page() {{
   return (
     <main className="max-w-3xl mx-auto px-4 py-12">
-      <article
-        className="prose prose-gray max-w-none"
-        dangerouslySetInnerHTML={{{{
-          __html: `{html}`,
-        }}}}
-      />
+      <article className="prose prose-gray max-w-none">
+{jsx_body}
+      </article>
     </main>
   );
 }}
 """
 
 
-def _markdown_to_html(md: str) -> str:
-    """Conversion markdown simplifiée → HTML (headings, listes, paragraphes, bold)."""
+_JSX_TEXT_ESCAPES = (
+    ("&", "&amp;"),
+    ("<", "&lt;"),
+    (">", "&gt;"),
+    ("{", "&#123;"),
+    ("}", "&#125;"),
+)
+
+
+def _escape_jsx_text(text: str) -> str:
+    """Échappe les caractères qui casseraient la syntaxe JSX dans du contenu textuel.
+
+    `<` et `>` seraient interprétés comme tags ; `{` et `}` comme expressions ;
+    `&` est échappé en premier pour ne pas double-escaper les entities suivantes.
+    React rend ces HTML entities décodées à l'affichage.
+    """
+    for src, dst in _JSX_TEXT_ESCAPES:
+        text = text.replace(src, dst)
+    return text
+
+
+def _inline_md_jsx(text: str) -> str:
+    """Échappe le contenu textuel pour JSX puis convertit `**bold**` et `*italic*`
+    en tags JSX (`<strong>`, `<em>`). Les tags injectés sont sûrs car ils ne
+    contiennent jamais d'entités contrôlées par l'utilisateur."""
+    text = _escape_jsx_text(text)
+    text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
+    text = re.sub(r"\*(.+?)\*", r"<em>\1</em>", text)
+    return text
+
+
+def _markdown_to_jsx_children(md: str, indent: str = "        ") -> str:
+    """Convertit le markdown en lignes JSX prêtes à être insérées comme enfants
+    d'un `<article>`. Supporte headings, paragraphes, listes non ordonnées et
+    inline bold/italic. Indentation par défaut alignée sur le template
+    `_generate_legal_page_tsx`."""
     lines = md.split("\n")
-    html_lines: list[str] = []
+    jsx_lines: list[str] = []
     in_list = False
+
+    def _close_list() -> None:
+        nonlocal in_list
+        if in_list:
+            jsx_lines.append(f"{indent}</ul>")
+            in_list = False
 
     for line in lines:
         stripped = line.strip()
 
-        # Headings
         if stripped.startswith("## "):
-            if in_list:
-                html_lines.append("</ul>")
-                in_list = False
-            html_lines.append(f"<h2>{_inline_md(stripped[3:])}</h2>")
+            _close_list()
+            jsx_lines.append(f"{indent}<h2>{_inline_md_jsx(stripped[3:])}</h2>")
         elif stripped.startswith("### "):
-            if in_list:
-                html_lines.append("</ul>")
-                in_list = False
-            html_lines.append(f"<h3>{_inline_md(stripped[4:])}</h3>")
+            _close_list()
+            jsx_lines.append(f"{indent}<h3>{_inline_md_jsx(stripped[4:])}</h3>")
         elif stripped.startswith("# "):
-            if in_list:
-                html_lines.append("</ul>")
-                in_list = False
-            html_lines.append(f"<h1>{_inline_md(stripped[2:])}</h1>")
+            _close_list()
+            jsx_lines.append(f"{indent}<h1>{_inline_md_jsx(stripped[2:])}</h1>")
         elif stripped.startswith("- "):
             if not in_list:
-                html_lines.append("<ul>")
+                jsx_lines.append(f"{indent}<ul>")
                 in_list = True
-            html_lines.append(f"<li>{_inline_md(stripped[2:])}</li>")
+            jsx_lines.append(f"{indent}  <li>{_inline_md_jsx(stripped[2:])}</li>")
         elif stripped == "":
-            if in_list:
-                html_lines.append("</ul>")
-                in_list = False
+            _close_list()
         else:
-            if in_list:
-                html_lines.append("</ul>")
-                in_list = False
-            html_lines.append(f"<p>{_inline_md(stripped)}</p>")
+            _close_list()
+            jsx_lines.append(f"{indent}<p>{_inline_md_jsx(stripped)}</p>")
 
-    if in_list:
-        html_lines.append("</ul>")
-
-    return "\n".join(html_lines)
-
-
-def _inline_md(text: str) -> str:
-    """Convertit **bold** et *italic* en HTML inline."""
-    text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
-    text = re.sub(r"\*(.+?)\*", r"<em>\1</em>", text)
-    return text
+    _close_list()
+    return "\n".join(jsx_lines)
 
 
 # ── Fonction principale ───────────────────────────────────────────────
