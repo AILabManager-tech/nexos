@@ -45,6 +45,8 @@ RUN pip install --upgrade pip setuptools wheel
 
 # Copier le reste du code
 COPY . .
+RUN rm -f soic
+COPY --from=soic_src / /app/soic
 
 # Installer NEXOS en editable avec tous les extras sauf dev
 # (dev contient mypy/ruff/pytest : pas utiles en runtime)
