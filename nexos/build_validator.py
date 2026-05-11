@@ -50,6 +50,11 @@ class BuildResult:
     audit_criticals: int = 0
     missing_files: list[str] = field(default_factory=list)
     headers_ok: bool = False
+    # Item 2 chantier 4 : présence + exécution des tests unit (mode WARNING en
+    # v4.3.x, bloquant FAIL en v4.4.0 quand les agents ph4 produiront des
+    # tests systématiquement).
+    tests_count: int = 0
+    tests_run_ok: bool = True  # True par défaut (pas exécuté = pas un fail)
     overall_pass: bool = False
 
 
@@ -195,6 +200,65 @@ def _check_vercel_headers(site_dir: Path) -> bool:
         return False
 
 
+def _count_test_files(site_dir: Path) -> int:
+    """Item 2 chantier 4 : compte les fichiers de tests unit présents.
+
+    Cherche `*.test.{ts,tsx,js,jsx}` et `*.spec.{ts,tsx,js,jsx}` dans
+    `tests/`, `app/`, `components/`, `lib/`, et leurs variantes `src/`.
+    Exclut `node_modules/` et `.next/`.
+    """
+    patterns = (
+        "*.test.ts",
+        "*.test.tsx",
+        "*.test.js",
+        "*.test.jsx",
+        "*.spec.ts",
+        "*.spec.tsx",
+        "*.spec.js",
+        "*.spec.jsx",
+    )
+    excluded = {"node_modules", ".next", ".git", "__pycache__"}
+    count = 0
+    for pattern in patterns:
+        for path in site_dir.rglob(pattern):
+            if not any(part in excluded for part in path.parts):
+                count += 1
+    return count
+
+
+def _run_tests(site_dir: Path) -> bool:
+    """Item 2 chantier 4 : exécute la suite de tests si elle existe.
+
+    Lance `npm test -- --run` (vitest single-pass). Retourne True si exit 0.
+    Retourne True aussi si aucun test n'est trouvé (pas un fail, juste
+    "rien à exécuter").
+    """
+    package_json = site_dir / "package.json"
+    if not package_json.exists():
+        return True
+
+    try:
+        data = json.loads(package_json.read_text())
+        scripts = data.get("scripts", {})
+        if "test" not in scripts:
+            return True
+    except (json.JSONDecodeError, OSError):
+        return True
+
+    try:
+        # SAFE: static argv. shell=False.
+        result = subprocess.run(
+            ["npm", "test", "--", "--run"],
+            cwd=site_dir,
+            capture_output=True,
+            text=True,
+            timeout=180,
+        )
+        return result.returncode == 0
+    except (subprocess.TimeoutExpired, OSError):
+        return False
+
+
 # ── Fonction principale ───────────────────────────────────────────────
 
 
@@ -228,14 +292,28 @@ def validate_build(site_dir: Path) -> BuildResult:
     # 6. Headers sécurité dans vercel.json
     result.headers_ok = _check_vercel_headers(site_dir)
 
+    # 7. Item 2 chantier 4 : tests présents + exécutés (WARNING en v4.3.x,
+    # FAIL en v4.4.0 quand les agents produiront systématiquement des tests).
+    logger.info("Build validation: tests presence + run")
+    result.tests_count = _count_test_files(site_dir)
+    if result.tests_count > 0:
+        result.tests_run_ok = _run_tests(site_dir)
+    else:
+        # Pas de tests = WARNING (logged dans format_build_report) mais pas
+        # un FAIL pour éviter de casser tous les pipelines actuels.
+        result.tests_run_ok = True
+
     # Décision globale
     # Note: tsc_ok est non-bloquant si build_ok est vrai (erreurs TSC dans
-    # les tests ne bloquent pas le build Next.js qui ne compile que src/app/)
+    # les tests ne bloquent pas le build Next.js qui ne compile que app/).
+    # Note: tests_count == 0 émet un WARNING mais ne bloque pas — transition
+    # douce avant v4.4.0 où l'absence de tests sera FAIL.
     result.overall_pass = (
         result.npm_install_ok
         and result.build_ok
         and result.audit_criticals == 0
         and result.headers_ok
+        and result.tests_run_ok  # bloque si tests présents ET échouent
     )
 
     return result
@@ -247,6 +325,18 @@ def format_build_report(result: BuildResult) -> str:
     def icon(ok: bool) -> str:
         return "+" if ok else "-"
 
+    # Item 2 chantier 4 : icône WARN si tests absents (transition douce v4.3.x)
+    tests_icon = (
+        "+"
+        if result.tests_run_ok and result.tests_count > 0
+        else ("!" if result.tests_count == 0 else "-")
+    )
+    tests_label = (
+        f"{result.tests_count} tests"
+        if result.tests_count > 0
+        else "0 tests (WARNING — bloquant en v4.4.0)"
+    )
+
     lines = [
         "NEXOS v4.0 — Build Validation Report",
         "=" * 45,
@@ -256,6 +346,7 @@ def format_build_report(result: BuildResult) -> str:
         f"  [{icon(result.audit_criticals == 0)}] npm audit (HIGH:{result.audit_highs} CRITICAL:{result.audit_criticals})",
         f"  [{icon(len(result.missing_files) == 0)}] Fichiers critiques ({len(result.missing_files)} manquants)",
         f"  [{icon(result.headers_ok)}] Headers sécurité vercel.json",
+        f"  [{tests_icon}] Tests unit : {tests_label}",
         "=" * 45,
     ]
 
