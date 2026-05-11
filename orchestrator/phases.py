@@ -243,6 +243,21 @@ def run_pipeline(
                 )
             break
 
+        # A-002 fix : avant d'évaluer les SOIC gates ph4-build, attendre la
+        # quiescence filesystem (aucun fichier modifié dans site/ pendant
+        # idle_seconds consécutives). Évite la race condition observée sur
+        # Nobert 2026-04-28 (gate W-14 FAIL sur état intermédiaire, alors que
+        # l'état final passait toutes les regex).
+        if phase == "ph4-build" and site_dir is not None:
+            from .ph4_sync import wait_for_ph4_sync
+
+            ph4_sync_ok = wait_for_ph4_sync(site_dir)
+            if not ph4_sync_ok:
+                say(
+                    "[yellow]⚠ ph4-build : quiescence filesystem non atteinte "
+                    "dans le délai (120s) — éval anyway[/]"
+                )
+
         # Quality gate with convergence loop
         phase_thresholds = profile.config.phase_thresholds
         if phase in phase_thresholds or phase == "ph4-build":
