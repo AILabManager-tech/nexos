@@ -410,6 +410,11 @@ def run_pipeline(
 
     save_gate_history(client_dir / "soic-gates.json", gate_history)
 
+    # Item 3 chantier 4 : reconciliation Ph4 ↔ Ph5 — détecter si Ph4 ment.
+    from .reconciliation import run_reconciliation_step
+
+    run_reconciliation_step(client_dir, say=say, has_changelog=_HAS_CHANGELOG)
+
     if _HAS_CHANGELOG:
         from nexos.changelog import EventType, log_event
 
