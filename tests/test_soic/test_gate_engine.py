@@ -10,10 +10,11 @@ from soic.gate_engine import GateEngine
 
 
 class TestPhaseGateMapping:
-    def test_ph5_qa_has_17_gates(self):
-        """ph5-qa (WEB_FULL) should have exactly 17 gates."""
+    def test_ph5_qa_has_18_gates(self):
+        """ph5-qa (WEB_FULL) should have exactly 18 gates.
+        W-18 CumulativeLayoutShiftGate ajoutée chantier 4 Item 1."""
         gates = get_phase_gates("ph5-qa")
-        assert len(gates) == 17
+        assert len(gates) == 18
 
     def test_ph4_build_has_7_gates(self):
         """ph4-build (WEB_BUILD) should have a subset of gates."""
@@ -44,7 +45,8 @@ class TestGateEngineInit:
     def test_engine_loads_gates(self):
         """GateEngine should load gates for the given phase."""
         engine = GateEngine(phase="ph5-qa", client_dir="/tmp/test-client")
-        assert len(engine.gates) == 17
+        # 18 gates depuis chantier 4 Item 1 (W-18 CumulativeLayoutShift ajoutée).
+        assert len(engine.gates) == 18
 
     def test_engine_unknown_phase_raises(self):
         """Unknown phase should raise ValueError."""
@@ -59,7 +61,8 @@ class TestGateIds:
         """Verify expected web gate IDs are present in ph5-qa."""
         gates = get_phase_gates("ph5-qa")
         gate_ids = {g.gate_id for g in gates}
-        expected = {f"W-{i:02d}" for i in range(1, 18)}  # W-01 to W-17
+        # W-01..W-18 (chantier 4 Item 1 a ajouté W-18 CumulativeLayoutShift).
+        expected = {f"W-{i:02d}" for i in range(1, 19)}
         assert expected == gate_ids
 
     def test_phase_early_gate_ids(self):
