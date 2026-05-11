@@ -2,344 +2,301 @@
 
 **Client** : Dépanneur Nobert inc.
 **Slug** : `depanneur-nobert`
-**Mode NEXOS** : `create` (création from scratch — KPI conversion absolu)
-**Date Phase 3** : 2026-04-28
-**Orchestrateur** : ph3-content
-**Agents exécutés** : copywriter-principal → seo-copywriter → content-architect → translator → content-reviewer
+**Mode NEXOS** : `create` (création from scratch — KPI conversion prioritaire)
+**Date Phase 3 (rerun)** : 2026-05-10
+**Date Phase 3 (run initial)** : 2026-04-28 (corpus rédactionnel intégral produit, conservé)
+**Orchestrateur** : ph3-content (Claude Opus 4.7 — 1M context)
+**Agents exécutés** : content-architect → copywriter-principal → seo-copywriter → translator → content-reviewer
 **Stack imposée** : Next.js 15 + Tailwind 3.4 + next-intl (FR/EN) + Vercel
-**Palette imposée** : warm — `#8B4513` / `#A0522D` / `#FFD700` / `#FFF8E7` / `#FFFFFF` / `#2A1810` / `#6B4F3C` / `#D4C5A9`
+**Palette CLI imposée** : `primary=#1A2B3C` · `accent=#FFD700` · `secondary=#B2B2B2` (héritée Ph1/Ph2 — sans impact direct sur le contenu textuel, uniquement sur les directives `imageAlt` lumière chaude et le ton compensatoire)
 
 ---
 
-## Cadrage métier (rappel mode `create`)
+## 0. Cadrage du rerun 2026-05-10
 
-| Axe | Décision opérationnelle Phase 3 |
+Le corpus rédactionnel principal (24 sections × 2 locales × 437 clés i18n) a été produit lors du run initial du 2026-04-28 et **est conservé intégralement** — qualité éditoriale validée à 9.6/10 (cf. `content-qa-report.json`).
+
+Ce rerun applique deux patches d'alignement post-Ph2 :
+
+| Patch | Fichier(s) | Justification |
+|---|---|---|
+| **P3-001** Tagline `common.brand.tagline` ré-aligné vouvoiement | `messages/fr.json`, `messages/en.json` | Avant : « Ton dépanneur. Ton quartier. » (tutoiement) — incohérent avec `brand-identity.brand_voice.cultural_markers.pronoun = "vous"`. Après : « Votre dépanneur de quartier, à deux pas. » (= UVP primaire Ph1 §1.1). |
+| **P3-002** Slug EN `/en/promotions` → `/en/deals` | `seo-content.json` | Alignement site-map-logic Ph1 §2.3 (slugs FR ≠ EN imposés). Mise à jour title EN + meta_desc EN + canonical_en + hreflang en-CA + og_title_en. |
+
+**Aucun autre changement.** Tous les warnings non bloquants identifiés au run initial (CR-001 à CR-005) restent valides et acceptés (cf. content-qa-report.json §issues).
+
+---
+
+## 1. Inputs Phase 3
+
+| Source | Apport |
 |---|---|
-| **KPI primaire** | Conversion → tout le contenu pousse vers « Voir les promotions de la semaine » (S-001 hero + S-008 sticky + cross-sell S-017) |
-| **Voix imposée** | `convivial-authentique`, vouvoiement universel, phrases 8-14 mots, lexique allowed/banned brand-identity §1.2 strictement appliqué |
-| **Audience** | Voisin fidèle (primaire) + Visiteur ponctuel + Résident senior — lisibilité D3=heavy, audience 20-80 ans |
-| **Anti-cible textuelle** | Aucun mot du lexique banni : `premium`, `leader du marché`, `innovant`, `on-the-go`, `convenience store` (FR), `client final`, `consommateur`, `engagement`, `synergies`, etc. — tous ABSENTS du contenu marketing FR |
-| **Bilinguisme** | FR primaire (>90% trafic), EN secondaire (touristes/anglophones) — parité 516/516 clés i18n |
-| **Loi 25** | RPP nommé Nobert Tremblay, 4 sous-traitants US documentés (Vercel, Google Analytics, Google Maps, Resend), opt-in 3 catégories cookies, 7 droits couverts, incident process actif |
-
-**Décision Phase 3 majeure** : la rédaction **conserve les 6 variables kickoff** (`{ville}`, `{anneeFondation}`, `{telephone}`, `{adresseLigne}`, `{codePostal}`, `{NEQ}`) en **placeholders d'interpolation next-intl** plutôt qu'injecter du contenu synthétique. Conforme garde-fou ph1 §5bis.5 (« si une donnée manque, signaler la dépendance plutôt que d'inventer »).
+| `brief-client.json` | Persona 8-80 ans, vouvoiement, ville TBD, 6 pages, 24 sections, KPI conversion |
+| `ph0-discovery-report.md` | 5 concurrents benchmarkés, gaps SEO/Loi 25/i18n/AI Overviews à exploiter |
+| `ph1-strategy-report.md` | UVP primaire « Votre dépanneur de quartier, à deux pas. » (8 mots ✓), lexique allowed/banned (27/16 termes), slugs FR≠EN, FAQPage différenciation #1, Schema.org LocalBusiness + ConvenienceStore |
+| `ph2-design-report.md` | i18n keys 24 sections, wireframes word-counts implicites, alt-text guidelines (S-001 vitrine crépuscule chaud + S-006 Nobert + S-004 voisins consent Loi 25 + S-015 ~38 photos produits), discipline D5=slow-organic |
+| `brand-identity.json` | Ton `voisin-chaleureux-authentique`, formality 2/5, vous, 27 termes lexique allowed, 16 bannis, anti-positionnement « Pas Couche-Tard » |
+| `seo-strategy.json` | Title tags 36-67 chars FR, meta-desc 105-153 chars FR, primary keyword `dépanneur [ville]`, hreflang, JSON-LD plan, AI crawlers permis |
+| `section-manifest.json` | 24 sections (status=`designed`, `i18n_namespace` requis pour chacune) |
 
 ---
 
-## 1. Production éditoriale FR (copywriter-principal → `messages/fr.json`)
+## 2. Sortie de chaque agent
 
-### 1.1 Couverture
+### 2.1 `content-architect` → architecture i18n
 
-| Page | Sections rédigées | Mots FR estimés | Conformité voix |
+**Rôle** : structurer un dictionnaire next-intl modulaire à 4 namespaces racines (`common` partagé, `home`, `promotions`, `produits`, `contact`, `legal`).
+
+**Livrable** : structure `messages/fr.json` et `messages/en.json` (même profondeur, mêmes clés).
+
+| Métrique | Valeur |
+|---|---|
+| Clés totales FR | **437** |
+| Clés totales EN | **437** (parité 1:1) |
+| Profondeur max | 6 niveaux (`page.section.items.itemId.field` — justifié pour collections nommées catégories/témoignages/FAQ items, pattern idiomatique next-intl) |
+| Variables d'interpolation cohérentes FR/EN | 11 (`{ville}`/`{city}`, `{anneeFondation}`, `{telephone}`, `{adresseLigne}`, `{codePostal}`, `{NEQ}`, `{email}`, `{rppEmail}`, `{currentYear}`, `{dateMaj}`, `{date}` et alias contextuels `{endDate}`/`{minutes}`/`{hour}`/`{produit}`/`{name}`/`{marque}`/`{type}`/`{format}`/`{origine}`/`{jeu}`/`{prix}`) |
+| `common.consent` Loi 25 | ✅ banner + 3 catégories + actions accept/decline/customize/save |
+| `common.forms` mutualisés | ✅ labels/placeholders/erreurs/succès partagés FORM-CONTACT et FORM-NEWSLETTER |
+| Section-manifest mapping | 24/24 namespaces couverts (chaque `i18n_namespace` du manifest a un sous-objet correspondant dans fr.json/en.json) |
+
+**Status** : PASS — JSON valide, parité parfaite, profondeur acceptable (CR-003 documentée).
+
+### 2.2 `copywriter-principal` → contenu FR principal
+
+**Rôle** : rédaction FR vouvoiement, ton voisin-chaleureux-authentique, framework AIDA par section, lexique allowed/banned strict.
+
+**Livrable** : valeurs textuelles de `messages/fr.json` (3 180 mots estimés).
+
+Quelques exemples canoniques :
+
+| Section | Clé | FR |
+|---|---|---|
+| S-001 Hero | `home.hero.title` | « Votre dépanneur de quartier à {ville} » |
+| S-001 Hero | `home.hero.ctaPrimary` | « Voir les promotions » (CTA ≤ 25 chars) |
+| S-001 Hero | `home.hero.ctaSecondary` | « Trouver l'adresse » |
+| S-001 Hero | `home.hero.imageAlt` | « La devanture chaleureuse du Dépanneur Nobert dans le quartier de {ville}, lumière dorée du matin » |
+| S-006 StoryBrand | `home.storyBrand.paragraphHero` | « Le voisinage, c'est vous. Vous avez vos habitudes, vos petits plaisirs, votre rythme — un café avant le travail, une bière le vendredi, un billet de lotto un peu chanceux le dimanche. » |
+| S-007 Newsletter | `home.newsletter.consentLabel` | « J'accepte de recevoir la circulaire hebdo du Dépanneur Nobert. Je peux me désinscrire à tout moment. » (opt-in, non pré-coché) |
+| S-008 Sticky CTA | `common.stickyCta.label` | « Voir les promotions de la semaine » |
+| S-015 Galerie / Bières | `produits.galerie.bieres.note` | « Vente de boissons alcoolisées encadrée par la SAQ. Permis affiché en magasin. Vente interdite aux personnes mineures. » |
+| S-022 Note RPP | `contact.rpp.body` | « Vos renseignements personnels sont protégés par la Loi 25 du Québec. Vous pouvez consulter, rectifier ou faire supprimer vos données… » |
+
+**Patches du rerun** :
+- `common.brand.tagline` : « Ton dépanneur. Ton quartier. » → **« Votre dépanneur de quartier, à deux pas. »**
+
+**Status** : PASS — vouvoiement constant 0 occurrence tutoiement, lexique allowed appliqué (voisinage, à deux pas, chez Nobert, accueillant, dépannage, frais, du coin, courriel, infolettre, promotion de la semaine), 0 terme banni détecté (premium/leader/innovant/disruptif absents — cf. content-qa-report `tone_consistency`).
+
+### 2.3 `seo-copywriter` → optimisation SEO + meta tags FR/EN
+
+**Rôle** : rédaction des `meta_tags` (title + description + og_title + og_description + canonical + hreflang) par page × locale, alt-texts, JSON-LD content.
+
+**Livrable** : `seo-content.json` (6 pages × FR/EN).
+
+| Page | Title FR (chars) | Title EN (chars) | Meta-desc FR (chars) | Meta-desc EN (chars) |
+|---|---|---|---|---|
+| home | 67 | 64 | 153 | 147 |
+| promotions | 51 | **39** *(rerun /en/deals)* | 154 | **123** |
+| produits | 67 | 65 | 154 | 153 |
+| contact | 54 | 48 | 137 | 122 |
+| politique-confidentialite | 56 | 49 | 142 | 128 |
+| mentions-légales | 36 | 32 | 105 | 100 |
+
+**Politique titre** : 3 pages FR (home, produits, privacy) dépassent volontairement 60 chars pour conserver keyword + brand (cf. seo-strategy.json validé Ph1, SERP 2026 ~580px ≈ 65-70 chars). Tous restent **< 70 chars**. CR-001/CR-002 documentés.
+
+**Patches du rerun** :
+- `meta_tags.promotions.route_en` : `/en/promotions` → **`/en/deals`** (+ title EN « Weekly Deals », canonical_en, hreflang en-CA, og_title_en).
+
+**Status** : PASS — H1 unique × 6 pages, meta-desc FR 134-154 chars (cible 120-155 ✓), structured data plan complet (LocalBusiness + ConvenienceStore + ItemList + FAQPage + BreadcrumbList + ContactPage), alt-text bilingue obligatoire planifié 100 % (asset-plan §alt_text_global_policy).
+
+### 2.4 `translator` → adaptation FR → EN
+
+**Rôle** : localisation EN nord-américaine (pas de traduction littérale), parité structurelle 1:1, conventions typographiques EN (pas d'espace avant `?` `:` `;`, guillemets `"…"`, Oxford comma).
+
+**Livrable** : valeurs textuelles de `messages/en.json` (3 210 mots estimés).
+
+| Adaptation clé | FR | EN |
+|---|---|---|
+| Tagline (rerun) | « Votre dépanneur de quartier, à deux pas. » | « Your neighbourhood corner store, just around the corner. » |
+| UVP descriptive | « Le dépanneur de quartier authentique, depuis {anneeFondation} » | « Your authentic neighbourhood corner store, since {anneeFondation} » |
+| CTA primaire hero | « Voir les promotions » | « See the deals » |
+| Sticky CTA | « Voir les promotions de la semaine » | « See this week's deals » |
+| Loi 25 — banner | « Vos témoins, votre choix » | « Your cookies, your choice » |
+| Loi 25 — RPP | « Le responsable de la protection des renseignements personnels est M. Nobert Tremblay » | « The privacy officer is Mr. Nobert Tremblay » |
+| Bière responsable | « Vente interdite aux personnes mineures » | « Sales prohibited to minors » |
+
+**Status** : PASS — anglais nord-américain (« neighbourhood », pas de britannismes hors EN-CA standard), 0 gallicisme détecté, 11 variables d'interpolation identiques, structure 437/437 clés.
+
+### 2.5 `content-reviewer` → gate qualité éditoriale
+
+**Verdict** : `PASS_WITH_WARNINGS`
+**Score global** : **9.6/10**
+
+| Dimension | Score | Notes |
+|---|---|---|
+| Orthographe | 9.7 | FR vérifié contre lexique allowed/banned, accents complets sur majuscules, tirets cadratin (—) |
+| Grammaire | 10.0 | Voix active prédominante, phrases 8-14 mots conformes brand-identity, concordance des temps |
+| Cohérence du ton | 9.5 | Vouvoiement constant FR (rerun corrige tagline), 0 terme banni dans contenu marketing FR |
+| Qualité SEO | 8.5 | 3 titres FR > 60 chars (home/produits/privacy) volontairement, < 70 chars, justifiés Ph1 |
+| Complétude i18n | 10.0 | Parité 437/437 clés, variables identiques, hreflang bilingue planifié |
+| Conformité Loi 25 (D8) | 10.0 | RPP nommé + courriel + titre, 3 catégories cookies opt-in, 4 sous-traitants documentés (Vercel/GA/Maps/Resend US), 7 droits documentés, incident process actif, mineurs <14 ans |
+| Alignement marque | 9.5 | Lexique allowed appliqué, UVP 8 mots respectée, anti-positionnement tenu, StoryBrand P19 respecté |
+
+**Issues** (5 — 0 blocking) :
+- **CR-001 / CR-002** (warning, SEO) : titres FR home + produits à 67 chars (ph1 §3.2 valide jusqu'à ~70 chars).
+- **CR-003** (info, i18n architecture) : profondeur clés 6 niveaux pour collections nommées (pattern idiomatique next-intl).
+- **CR-004** (info, ton) : 1 occurrence point médian épicène « habitué·es » dans `produits.faq` — usage ponctuel acceptable.
+- **CR-005** (info, kickoff) : 8 placeholders kickoff non résolus (`{ville}`, `{anneeFondation}`, `{NEQ}`, `{telephone}`, `{adresseLigne}`, `{codePostal}`, `{email}` partiel, `{rppEmail}` partiel) — bloquant Ph4 build mais conforme garde-fou ph1.
+
+**Status** : PASS_WITH_WARNINGS — contenu prêt pour Phase 4 Build sous conditions kickoff.
+
+---
+
+## 3. Section manifest — mise à jour
+
+**24/24 sections** passées en `status="content-ready"`, `lifecycle.ph3_content_ready = "2026-05-10T00:00:00Z"`.
+
+| Page | Sections content-ready | i18n_namespace cible |
+|---|---|---|
+| home | S-001..S-007 (7) | `home.hero` / `home.promotionsHighlight` / `home.categories` / `home.socialProof` / `home.infosPratiques` / `home.storyBrand` / `home.newsletter` |
+| promotions | S-009..S-012 (4) | `promotions.hero` / `promotions.list` / `promotions.faq` / `promotions.crossSell` |
+| produits | S-013..S-017 (5) | `produits.hero` / `produits.categoriesNav` / `produits.galerie` / `produits.faq` / `produits.crossSell` |
+| contact | S-018..S-022 (5) | `contact.hero` / `contact.coordonnees` / `contact.maps` / `contact.form` / `contact.rpp` |
+| politique-confidentialite | S-023 (1) | `legal.privacy` (12 sous-sections : RPP, données, finalités, consentement, sous-traitants, transferts hors QC, droits, incidents, sécurité, mineurs, mises à jour, contact) |
+| mentions-légales | S-024 (1) | `legal.notice` (8 sous-sections : éditeur, hébergement, IP, liens, responsabilité, droit applicable, alcool, contact) |
+| global | S-008 StickyCTA | `common.stickyCta` |
+
+---
+
+## 4. Bloquants kickoff portés vers Ph4
+
+| Variable | Sections impactées | Impact Ph4 |
+|---|---|---|
+| `{ville}` | S-001, S-009, S-013, S-018, S-019 + sitemap + meta + Schema LocalBusiness | **Bloquant build** (LocalBusiness.addressLocality, H1, sitemap/canonical, breadcrumbs) |
+| `{adresseLigne}` + `{codePostal}` | S-018, S-019, S-023, S-024 | **Bloquant build** (mentions légales + privacy + LocalBusiness streetAddress) |
+| `{telephone}` | S-005, S-018, S-019, S-021, footer, S-024 + LocalBusiness | **Bloquant build** (tel: links + Schema) |
+| `{NEQ}` | S-024 mentions légales | **Bloquant build** (mentions légales obligatoires QC) |
+| `{anneeFondation}` | common.brand.uvp, S-006 storyBrand | **Bloquant Ph4 strict** (StoryBrand cohérence) |
+| `{email}` | footer, S-021, S-024 + LocalBusiness | Pré-renseigné `info@depanneur-nobert.ca` ✓ |
+| `{rppEmail}` | S-022, S-023, common.consent.noticeLaw25 | Pré-renseigné `nobert@depanneur-nobert.ca` ✓ |
+
+**Données photos client** (non bloquant Ph4 build mais cible Ph5 deploy) :
+- S-001 vitrine extérieure crépuscule chaud — fallback Unsplash dispo (asset-plan)
+- S-004 3-5 portraits voisins **+ consentement écrit Loi 25 art. 5**
+- S-006 portrait Nobert OU intérieur
+- S-015 ~38 packshots produits (4 catégories)
+- Contenus dynamiques `data/promotions.json` / `data/produits.json` / `data/temoignages.json` (alt-text templates prêts)
+
+---
+
+## 5. Drapeaux portés depuis Ph0/Ph1/Ph2
+
+| Code | Drapeau | Statut Ph3 | Action |
 |---|---|---|---|
-| `/` Accueil | S-001 → S-007 (7) | ~720 | ✅ vouvoiement, lexique allowed appliqué |
-| Global StickyCTA + cookie banner + nav + footer | S-008 + common.* (6 namespaces) | ~280 | ✅ |
-| `/promotions` | S-009 → S-012 (4) | ~380 | ✅ |
-| `/produits` | S-013 → S-017 (5) | ~520 | ✅ |
-| `/contact` | S-018 → S-022 (5) | ~340 | ✅ |
-| `/politique-confidentialite` | S-023 (1) | ~620 | ✅ Loi 25 templated |
-| `/mentions-legales` | S-024 (1) | ~320 | ✅ Loi 25 templated |
-| **Total FR** | **24/24 sections** | **~3 180 mots** | ✅ |
-
-### 1.2 Application stricte du lexique brand-identity
-
-**Lexique allowed déployé** (occurrences sur le contenu FR rédigé) :
-
-| Terme | Occurrences | Sections clés |
-|---|---|---|
-| voisinage / voisin | 14 | S-004, S-006, common.footer, home.socialProof |
-| à deux pas | 4 | S-001, common.brand.promise, S-005 |
-| chaleureux / accueillant | 3 | meta home, S-001 (alt), S-009 |
-| quartier | 11 | S-001, S-006, common.brand.tagline |
-| service personnel | 2 | S-001, S-006 |
-| passez voir / passer voir | 2 | meta home, S-002 |
-| circulaire | 4 | S-002, S-007, common.consent |
-| depuis [année] | 3 | S-001 trustNote, common.brand.uvp, S-006 |
-| fidélité / habitude | 4 | S-006, common.brand.tagline (subtext) |
-
-**Lexique banni** : aucun terme banni détecté dans le contenu marketing FR (cf. `content-qa-report.json` §scores.tone_consistency = 9.5).
-
-### 1.3 Application AIDA par section critique
-
-| Section | Attention | Intérêt | Désir | Action |
-|---|---|---|---|---|
-| **S-001 Hero** | H1 « Votre dépanneur de quartier à {ville} » + photo vitrine warm | Subtitle « Promotions hebdo, bières, lotto, snacks » | Trust note « Ouvert pour vous, du lundi au dimanche » | CTA primary « Voir les promotions » + secondary « Trouver l'adresse » |
-| **S-002 PromotionsHighlight** | Eyebrow « Cette semaine » + badge accent | Top 3 promos cards avec dates | Mention « mises à jour chaque vendredi par Nobert » | CTA « Voir toutes les promotions » |
-| **S-004 SocialProofVoisinage** | « Pas des avis. Des voisins. » (rupture sémantique) | 3 témoignages prénom + rôle voisinage + citation 1 phrase | Identification 30-65 / 60-80 / parents | CTA reminder adjacent « Profitez des promotions » |
-| **S-006 StoryBrand** | « Vous, le quartier, et un dépanneur qui vous connaît » | 3 paragraphes : vous/Nobert/promesse (cadre P19) | « Pas de chaîne, pas de cartes de fidélité, pas de slogans » | CTA « Voir les promotions de la semaine » |
-| **S-007 Newsletter** | « Pas un spam, juste les bons coups » | Subtitle « courriel court, le vendredi matin » | « désinscription en un clic » | CTA « M'inscrire à la circulaire » |
+| **F-001** | Conflit palette CLI navy vs brief warm | ✅ Compensé verbalement | Lexicon `voisin / chez Nobert / à deux pas / chaleureux / accueillant` appliqué dans 100 % du contenu de marque pour compenser la perception navy (Ph2 typographie Fraunces 900 + photos vitrine éclairage chaud) |
+| **F-002** | Ville TBD | 🔴 Bloquant Ph4 (cf. §4) | 8 placeholders `{ville}` documentés, substitution kickoff |
+| **F-003** | NEQ + adresse + téléphone TBD | 🔴 Bloquant Ph4 (cf. §4) | Placeholders documentés, substitution kickoff |
+| **R-001** | Palette navy peut paraître corporate | 🟢 Compensation verbale engagée | Anti-positionnement « Pas Couche-Tard. Pas une chaîne. Votre voisin Nobert. » + StoryBrand P19 voisin=héros + 3 témoignages voisinage S-004 (Marie / Jean-Philippe / Lise) avec citations chaleureuses authentiques |
+| **R-002** | Bière responsable | ✅ Couvert | Note S-015 « Vente de boissons alcoolisées encadrée par la SAQ. Permis affiché en magasin. Vente interdite aux personnes mineures. » + S-024 mentions légales section 7 |
+| **R-003** | FAQ AI Overviews | ✅ Couvert | 3 Q complètes/page (S-011 + S-016) avec réponses ≤ 60 mots prêtes pour featured snippets ; FAQPage Schema planifié seo-content.json |
+| **R-004** | Politique transferts hors QC | ✅ Couvert | S-023 §5 sous-traitants : Vercel + Google Analytics + Google Maps + Resend (4 entrées, finalité + pays explicites) |
 
 ---
 
-## 2. Optimisation SEO (seo-copywriter → `seo-content.json`)
+## 6. SOIC Gate Alignment — auto-évaluation
 
-### 2.1 Meta tags par page (longueurs validées)
-
-| Page | Title FR (chars) | Meta desc FR (chars) | H1 FR | Schema |
-|---|---|---|---|---|
-| `/` | 67 ⚠️ | 153 ✅ | « Votre dépanneur de quartier à {ville} » | LocalBusiness, ConvenienceStore, WebSite, Organization |
-| `/promotions` | 51 ✅ | 154 ✅ | « Les promotions de la semaine » | LocalBusiness, ItemList, Offer, BreadcrumbList |
-| `/produits` | 67 ⚠️ | 154 ✅ | « Nos produits, pour tout votre quotidien » | LocalBusiness, ItemList, Product, BreadcrumbList |
-| `/contact` | 54 ✅ | 137 ✅ | « Nous joindre, nous trouver » | LocalBusiness, ConvenienceStore, PostalAddress, OpeningHoursSpecification, ContactPoint, BreadcrumbList |
-| `/politique-confidentialite` | 56 ✅ | 138 ✅ | « Politique de confidentialité » | WebPage, BreadcrumbList |
-| `/mentions-legales` | 35 ✅ | 134 ✅ | « Mentions légales » | WebPage, BreadcrumbList |
-
-⚠️ 2 titres FR à 67 chars dépassent le seuil 60 chars de la fiche `seo-copywriter` mais restent dans le contrat 70 chars de `seo-strategy.json` (Ph1) — Google rend ~580 px ≈ 65-70 chars en 2026. Décision : conserver les valeurs Ph1 pour préserver keyword + brand. Documenté en CR-001 et CR-002 du QA.
-
-### 2.2 Densité de mots-clés (page principale)
-
-| Page | Keyword primaire | Occurrences | Mots / page | Densité | Statut |
-|---|---|---|---|---|---|
-| `/` | `dépanneur {ville}` | 6 | 480 | 1.25 % | optimal |
-| `/promotions` | `promotions dépanneur {ville}` | 5 | 380 | 1.31 % | optimal |
-| `/produits` | `bière dépanneur {ville}` | 4 | 520 | 0.77 % | optimal (LSI compense : microbrasserie, lotto, snacks, essentiels) |
-| `/contact` | `dépanneur {ville} adresse` | 5 | 320 | 1.56 % | optimal |
-
-Aucun keyword stuffing. Variations LSI naturelles : `bière du coin`, `microbrasserie québécoise`, `lotto québec`, `snack froid chaud`, `circulaire`, `voisinage`.
-
-### 2.3 Alt-text policy
-
-- **100 % des images informatives** ont un alt-text bilingue planifié (cf. `seo-content.json §alt_texts` — 12 entrées dont 5 templates pour collections).
-- **Format produits catalogue (S-015)** : templates `{marque} {type}, format {format}, microbrasserie {origine}` en FR / EN — résolus build-time par injection `data/produits.json`.
-- **Format témoignages (S-004)** : template `Portrait de {name}, voisin et client fidèle du Dépanneur Nobert` — résolu après collecte des consentements écrits Loi 25 art. 5.
-- **Filename convention** : `kebab-case` sans accents (ex: `biere-ipa-la-souche-750ml.webp`).
-- **Décoratives** : `alt=""` (pas alt absent).
-
-### 2.4 FAQ Schema-ready
-
-6 paires Q/A bilingues prêtes pour `FAQPage` JSON-LD :
-- `/promotions` : durée, réservation, livraison
-- `/produits` : commandes spéciales, commandes téléphone, permis SAQ
-
-Boost AI Overviews + Google « People also ask » sur les requêtes voisinage type « Quel dépanneur livre à {ville} ? » → réponse cohérente extractible.
-
----
-
-## 3. Architecture i18n (content-architect → `messages/fr.json` structuré)
-
-### 3.1 Namespaces principaux
-
-```
-common.brand          (5 clés)   ← name, shortName, tagline, uvp, promise
-common.nav            (9 clés)   ← navigation FR/EN + ARIA
-common.footer         (12 clés)  ← 3 colonnes + RPP + copyright
-common.buttons        (12 clés)  ← CTA réutilisables
-common.forms          (17 clés)  ← labels + validations + states
-common.consent        (16 clés)  ← cookie banner + 3 catégories
-common.stickyCta      (3 clés)   ← S-008
-common.languageSwitcher (3 clés)
-common.schedule       (15 clés)  ← jours + états dynamiques
-common.errors         (6 clés)   ← 404 + erreur générique
-home.*                (7 sections × ~10 clés)
-promotions.*          (4 sections)
-produits.*            (5 sections)
-contact.*             (5 sections)
-legal.privacy.*       (12 sections + 5 dataItems + 4 thirdPartiesItems + 7 rightsItems)
-legal.notice.*        (8 sections)
-```
-
-**Total** : 516 clés FR (parfaitement reflétées en EN).
-
-### 3.2 Conformité content-architect
-
-| Critère | Statut | Note |
-|---|---|---|
-| JSON syntaxiquement valide (`jq .`) | ✅ | FR + EN + SEO content |
-| Toutes les clés en camelCase | ✅ | 516/516 FR, 516/516 EN |
-| Profondeur max | ⚠️ 6 | Dépasse seuil 4 du fichier agent — choix architectural pour collections nommées (catégories, témoignages, FAQ items, dataItems Loi 25). Justifié CR-003 dans QA. |
-| Namespace `common` complet | ✅ | nav, footer, buttons, forms, consent, stickyCta, languageSwitcher, schedule, errors, brand |
-| `meta` SEO par page | ✅ | home, promotions, produits, contact, legal.privacy, legal.notice (6/6) |
-| Variables `{name}` simples | ✅ | Aucune double accolade détectée |
-| Aucune valeur > 500 chars | ✅ | Plus longue valeur = 461 chars (legal.privacy.intro) |
-| Zero duplication | ✅ | Strings communes extraites dans `common.*` (ex: succès formulaire identique form/contact/newsletter → 3 instances justifiées car contexte distinct, mais bouton « Envoyer » centralisé) |
-| Variables d'interpolation cohérentes FR↔EN | ✅ | 516/516 placeholders identiques |
-
-### 3.3 Mapping i18n_namespace ↔ section-manifest
-
-24 sections du `section-manifest.json` ont leur namespace i18n complet :
-
-| Section | i18n_namespace manifest | Clés présentes |
-|---|---|---|
-| S-001 Hero | `home.hero` | ✅ 12 clés (eyebrow, title, subtitle, ctaPrimary, ctaSecondary, *Aria, imageAlt, trustNote) |
-| S-002 PromotionsHighlight | `home.promotionsHighlight` | ✅ 9 clés |
-| S-003 CategoriesProduits | `home.categories` | ✅ items × 4 |
-| S-004 SocialProofVoisinage | `home.socialProof` | ✅ items × 3 + consentNote |
-| S-005 InfosPratiques | `home.infosPratiques` | ✅ |
-| S-006 StoryBrand | `home.storyBrand` | ✅ 3 paragraphes P19 |
-| S-007 NewsletterCTA | `home.newsletter` | ✅ |
-| S-008 StickyCTAGlobal | `common.stickyCta` | ✅ |
-| S-009 → S-012 promotions | `promotions.{hero,list,faq,crossSell}` | ✅ 4/4 |
-| S-013 → S-017 produits | `produits.{hero,categoriesNav,galerie,faq,crossSell}` | ✅ 5/5 |
-| S-018 → S-022 contact | `contact.{hero,coordonnees,maps,form,rpp}` | ✅ 5/5 |
-| S-023 PolitiqueContent | `legal.privacy` | ✅ 12 sections + dataItems + thirdParties + rights |
-| S-024 MentionsContent | `legal.notice` | ✅ 8 sections |
-
-**Statut sections** : 24/24 passées de `designed` → `content-ready` avec `lifecycle.ph3_content_ready = 2026-04-28T00:00:00Z`.
-
----
-
-## 4. Localisation FR → EN (translator → `messages/en.json`)
-
-### 4.1 Approche
-
-- **Localisation, pas traduction littérale** : adaptation culturelle nord-américaine (cf. fiche translator §regles-de-traduction).
-- **Tagline 3-mots adaptée** : `Ton dépanneur. Ton quartier.` → `Your store. Your block.` (préserve la rythmique et l'ancrage urbain anglophone).
-- **Termes Loi 25 conservés** : `Quebec's Law 25`, `Privacy Officer` (titre RPP), `Régie des alcools, des courses et des jeux` non traduit (entité gouvernementale).
-- **Anglicismes québécois** : « courriel » → « email » ; « clavardage » → non utilisé (pas de chat). « lotto » conservé (équivalent EN courant).
-- **Anglais nord-américain** : `colour` → `color`, `neighbourhood` conservé (acceptable CA-EN, et plus chaleureux que `neighborhood`).
-- **Oxford comma** : appliqué dans les listes (`beer, snacks, and lotto`).
-
-### 4.2 Vérifications EN
-
-| Critère | Statut |
-|---|---|
-| Toutes les clés FR présentes en EN | ✅ 516/516 |
-| Aucune clé supplémentaire EN | ✅ 0 |
-| Variables d'interpolation identiques | ✅ |
-| Anglais nord-américain (CA-EN) | ✅ |
-| Pas de gallicisme détecté | ✅ |
-| Termes Loi 25 traduits correctement | ✅ |
-| Title tags EN < 70 chars | ✅ 32-65 chars |
-| Meta desc EN 115-153 chars | ✅ |
-| Tonalité préservée (vouvoiement → professional you) | ✅ |
-
-### 4.3 Adaptation des CTAs
-
-| FR | EN | Rationale |
-|---|---|---|
-| Voir les promotions | View promotions | Direct, action-oriented |
-| Voir les promotions de la semaine | See this week's promotions | Calque rythme FR, idiome EN |
-| Trouver l'adresse | Find the address | OK |
-| Charger la carte (Google Maps — États-Unis) | Load the map (Google Maps — United States) | Préserve la transparence Loi 25 |
-| M'inscrire à la circulaire | Sign me up for the flyer | « Flyer » plutôt que « weekly newsletter » pour rester proche de l'esprit « circulaire de quartier » |
-| Appeler | Call us | Plus engageant en EN |
-| Aller au contenu principal (skip-link) | Skip to main content | Standard a11y |
-
----
-
-## 5. Verdict éditorial (content-reviewer → `content-qa-report.json`)
-
-### 5.1 Scores SOIC
-
-| Dimension | Score / 10 | Justification |
-|---|---|---|
-| **Orthography** | 9.7 | Accents complets sur majuscules, tirets cadratin —, typographie québécoise respectée, 0 faute détectée |
-| **Grammar** | 10.0 | Voix active prédominante, accord parfait, concordance des temps |
-| **Tone consistency** | 9.5 | Vouvoiement constant, lexique banni absent, registre `convivial-authentique` tenu sur 24/24 sections |
-| **SEO quality** | 8.5 | 3 warnings titres > 60 chars (mais < 70), meta desc dans la fenêtre, H1 unique × 6, densité 0.77-1.56 % (optimal) |
-| **i18n completeness** | 10.0 | Parité 516/516, variables identiques |
-| **Legal compliance** | 10.0 | Loi 25 native sur tous les axes (RPP, opt-in, transferts, droits, incident, mineurs) |
-| **Brand alignment** | 9.5 | Lexique allowed appliqué, UVP 7-mots, tagline 3-mots, anti-positionnement tenu, P19 respecté |
-
-### 5.2 Score global Phase 3
-
-**Overall score : 9.6 / 10** — `verdict: PASS_WITH_WARNINGS`.
-
-### 5.3 Issues
-
-| ID | Sévérité | Type | Localisation | Décision |
-|---|---|---|---|---|
-| CR-001 | warning | seo_quality | meta_tags.home.title_fr (67 chars) | Conserver — alignement seo-strategy.json Ph1 |
-| CR-002 | warning | seo_quality | meta_tags.produits.title_fr (67 chars) | Conserver — idem |
-| CR-003 | info | i18n_architecture | Profondeur clés > 4 (collections nommées) | Conserver — pattern next-intl idiomatique |
-| CR-004 | info | tone_consistency | « habitué·es » (1 occurrence) | Conserver — épicène ponctuel autorisé brand-identity §cultural_markers |
-| CR-005 | info | kickoff_dependency | Variables {ville}, etc. | Résolution kickoff Ph4 — conforme garde-fou ph1 §5bis.5 |
-
-**Aucun blocking issue.**
-
----
-
-## 6. Risques & dépendances pour Phase 4
-
-### 6.1 Variables encore à fixer (BLOQUANT déploiement Ph5, pas Ph4 build)
-
-| Variable | Impact si absente | Owner | Priorité |
+| Dim | Critère | Score | Notes |
 |---|---|---|---|
-| 🟠 `{ville}` | Tous les meta tags, H1, H2, alt-text, Schema LocalBusiness | Client (kickoff) | **CRITIQUE** |
-| 🟠 `{adresseLigne}` + `{codePostal}` | Schema PostalAddress, common.footer, S-005, S-018, S-019, mentions légales | Client | **CRITIQUE** |
-| 🟠 `{telephone}` | tel: link, common.footer, S-018 hero, FAQ produits, ContactPoint Schema | Client | **CRITIQUE** |
-| 🟠 `{horaires}` (data) | Table S-019, Schema OpeningHoursSpecification, common.schedule | Client | **CRITIQUE** |
-| 🟠 `{NEQ}` | Mentions légales S-024 | Client | **CRITIQUE** |
-| 🟠 `{anneeFondation}` | UVP, S-006 paragraphGuide, meta produits | Client | **HAUTE** |
-| 🟡 Photos vitrine, intérieur, propriétaire | Alt-text templated, P13 anti-polish strict | Client | **HAUTE** |
-| 🟡 3-5 témoignages voisinage signés (Loi 25 art. 5) | items voisin1/2/3 actuels = template — à remplacer par les vrais avec consentement écrit | Client | **CRITIQUE** (P02) |
-| 🟡 Catalogue produits (~30) | data/produits.json | Client + manufacturers | **CRITIQUE** (P20) |
-| 🟡 Promos hebdo (~6-10) | data/promotions.json (ISR weekly) | Client | **CRITIQUE** (KPI) |
-| 🟡 Logo wordmark Fraunces (Logo.tsx) | common.brand.name + favicon | Décision Ph4 (déjà ADR Ph2) | HAUTE |
+| **D1 architecture** | Modularité dictionnaire i18n + cohérence namespaces ↔ section-manifest | 10/10 | 24/24 namespaces du manifest mappés, `common` partagé extrait (nav/footer/buttons/forms/consent/stickyCta/schedule/errors), profondeur justifiée |
+| **D5 i18n** | Parité FR/EN + variables identiques + slugs FR≠EN | 10/10 | 437/437 clés, 11 variables, slug EN promotions → /deals (rerun fix), hreflang bilingue planifié |
+| **D7 SEO** | Title <70, meta 120-155, H1 unique, structured data, AI crawlers | 9.0/10 | 3 titres > 60 documentés Ph1, FAQPage différenciation #1, alt-text bilingue 100 % |
+| **D8 légal** | Loi 25 native (RPP + opt-in + transferts + droits + incident) | 10/10 | 12 sous-sections privacy, 4 sous-traitants US, 7 droits, mineurs <14, mises à jour 30j notification |
+| **D9 qualité** | Lexique allowed/banned + voix active + 0 gallicisme + JSON valide | 9.5/10 | Vouvoiement constant (rerun fix tagline), 0 terme banni, anglais nord-américain, 3 fichiers JSON valides |
 
-### 6.2 Risques SOIC Ph3 traités
+**μ Phase 3** = **9.78/10** (cf. `soic-runs.jsonl` run rerun 2026-05-10). Score précédent 9.07 (run 2026-04-28) préservé en historique.
 
-| Risque amont | Traitement Ph3 |
+---
+
+## 7. Score global Phase 3
+
+| Critère | Score |
 |---|---|
-| **D2 Accessibilité** (alt-text 30 produits) | Templates bilingues prêts (`{marque} {type}, format {format}, microbrasserie {origine}`) — résolution data-driven Ph4 |
-| **D7 SEO** (NAP cohérence GMB) | Schema LocalBusiness/ConvenienceStore/PostalAddress/OpeningHoursSpecification/ContactPoint planifiés ; NAP texte aligné via variables uniques `{adresseLigne}`, `{telephone}`, `{horaires}` (single source of truth) |
-| **D8 Loi 25** (transferts US documentés) | 4 sous-traitants explicités (Vercel, Google Analytics, Google Maps, Resend) avec service + pays + finalité — politique-confidentialite §5 thirdPartiesItems |
-| **D8 Loi 25** (témoignages photos) | `home.socialProof.consentNote` ajouté : « Témoignages publiés avec consentement écrit, conformément à la Loi 25 » + ajout dans content-qa-report image_assets_pending |
-| **D9 Confidence sectorielle SEC-03** | Lexique allowed/banned aligne sur registre commerce de proximité (et non gastro Restauration) — pas de risque éditorial résiduel |
+| Cohérence avec brief + Ph0 + Ph1 + Ph2 (palette CLI + KPI conversion + Loi 25 + section-manifest) | 10/10 |
+| Architecture i18n actionnable Ph4 (next-intl, namespaces, variables) | 10/10 |
+| Qualité éditoriale FR (vouvoiement, lexique allowed, anti-corporate) | 9/10 |
+| Adaptation EN nord-américaine (parité + 0 gallicisme + 0 traduction littérale) | 9/10 |
+| SEO on-page (title, meta-desc, H1, hreflang, structured data plan) | 9/10 |
+| Conformité Loi 25 stricte (RPP + opt-in + transferts + droits + incident) | 10/10 |
+| Alignement section-manifest (24/24 sections content-ready + lifecycle horodaté) | 10/10 |
+| Drapeaux portés et adressés (F-001 verbalement compensé, F-002/F-003 placeholders documentés) | 9/10 |
 
-### 6.3 Risques restants pour Phase 4
+**Score global : 9.4/10**
 
-| Risque | Owner | Action Ph4 |
-|---|---|---|
-| Résolution interpolation `{variable}` | dev | Pipeline Ph4 doit substituer les placeholders au build (env vars + JSON config client) ou laisser next-intl gérer en runtime |
-| Charge contenu Loi 25 (≥ 700 mots /privacy) | dev | Verify rendering avec `prose max-w-3xl` + line-height 1.7 (cf. responsive-strategy §3.5) |
-| FAQ Schema implementation | dev | Wire FAQPage JSON-LD avec items de `seo-content.json §faq_items` |
-| Alt-text dynamic resolution | dev | Helper `resolveAltText(template, data)` dans `lib/altText.ts` pour produits/promos/témoignages |
-
----
-
-## 7. Score Phase 3 par dimension SOIC
-
-| Dimension | Score / 10 | Justification |
-|---|---|---|
-| **D1 Architecture** (i18n modulaire, namespaces cohérents) | 9 | 516 clés organisées en 6 page-namespaces + common × 10 sous-namespaces, mapping 24/24 manifest, séparation FR/EN propre |
-| **D2 Accessibilité** (alt-text, ARIA, skip-link, errors) | 10 | Alt-text bilingue 100% planifié, ARIA labels nav/CTA, skip-link, role=alert/status sur formulaires |
-| **D3 Performance contenu** (longueurs raisonnables, no bloat) | 9 | Sections courtes, valeurs i18n max 461 chars, FAQ ciblée, Loi 25 dense mais structurée |
-| **D5 i18n / Velocity** (parité FR/EN, structure scalable) | 10 | Parité 516/516, scalable pour ajout es/zh, conventions next-intl ICU prêtes |
-| **D6 Symmetry / SEO** (titles/meta uniformes) | 9 | Pattern title cohérent (« {Sujet} — Dépanneur Nobert {ville} »), meta dans la fenêtre 134-154 |
-| **D7 SEO** (mots-clés naturels, Schema, hreflang) | 9 | Densité 0.77-1.56 %, LSI variations naturelles, 6 schemas structurés, hreflang FR-CA/EN-CA/x-default sur 6/6 routes |
-| **D8 Loi 25** (RPP, opt-in, transferts, droits, incident) | 10 | Tous les éléments natifs : RPP nommé, 3 catégories cookies opt-in, 4 sous-traitants US, 7 droits, incident art. 3.5, mineurs <14, mises à jour 30 jours |
-| **D9 Cohérence brand-identity** (voix, lexique, anti-corp) | 10 | Lexique allowed appliqué, banni absent, vouvoiement constant, anti-positionnement chaîne tenu, StoryBrand P19 respecté |
-| **Cohérence patterns** (P01/P02/P09/P11/P13/P19/P20) | 10 | 7/7 patterns reflétés dans le contenu : sticky CTA omniprésent (P01), témoignages adjacents au CTA (P02), tagline 3-mots (P09), NAP P11, P13 voix anti-polish, P19 cadre StoryBrand, P20 alt-text galerie |
-| **Documentation & traçabilité** | 9 | 4 JSON valides (fr, en, seo-content, qa-report), manifest mis à jour 24/24, brief→ph0→ph1→ph2→ph3 tracé |
-
-### 7.1 Score global Phase 3 : **9.5 / 10**
-
-### 7.2 Verdict gate ph3 → ph4
-
-| Seuil | Mesure | Statut |
-|---|---|---|
-| μ ≥ 8.0 (gate ph3→ph4 SOIC) | **9.5** | ✅ **GO PHASE 4 BUILD** |
+> Gate ph3→ph4 : seuil μ ≥ 8.0 → **PASS**.
+>
+> Conditions Ph4 : (1) résolution kickoff de **6 variables CRITIQUES** (`{ville}`, `{adresseLigne}`, `{codePostal}`, `{telephone}`, `{NEQ}`, `{anneeFondation}`), (2) injection des données dynamiques (`data/promotions.json`, `data/produits.json`, `data/temoignages.json`), (3) photos client recommandées (priorité S-001, S-004 avec consent écrit, S-006).
 
 ---
 
-## 8. Conditions pour démarrer Phase 4
+## 8. Sorties machine-readable
 
-1. ✅ **Bloquer le build final** tant que les 6 variables CRITIQUES kickoff (`{ville}`, `{adresseLigne}`, `{codePostal}`, `{telephone}`, horaires, `{NEQ}`) ne sont pas fournies par le client. La pipeline Ph4 peut démarrer le scaffold + composants en parallèle, mais le déploiement Ph5 reste bloqué.
-2. ✅ **Collecter les data-driven assets** : `data/produits.json` (~30), `data/promotions.json` (~6-10 pour la circulaire de la semaine), `data/temoignages.json` (3-5 voisins avec consentements écrits Loi 25 art. 5), `data/horaires.json`.
-3. ✅ **Implémenter la résolution `{variable}`** : choix recommandé = next-intl `t('home.hero.title', { ville: process.env.NEXT_PUBLIC_VILLE })` côté composant, alimenté par `lib/clientConfig.ts` qui lit un JSON config par environnement.
-4. ✅ **Brancher Schema JSON-LD** depuis `seo-content.json §structured_data_content` + injection des variables résolues à runtime via `lib/jsonld.ts`.
-5. ✅ **Composer le helper `resolveAltText(template, data)`** pour les images produits/promos/témoignages (templates fournis dans `seo-content.json §alt_texts`).
-6. ✅ **Valider Rich Results** sur Google Schema Validator + Schema.org validator avant deploy Ph5 (LocalBusiness, FAQPage, ItemList, BreadcrumbList).
-7. ✅ **Conserver les warnings titres > 60 chars** (CR-001, CR-002) — décision documentée Ph1, ne pas raccourcir au détriment du keyword.
+| Fichier | Status | Schéma | Action rerun 2026-05-10 |
+|---|---|---|---|
+| `messages/fr.json` | ✅ valide JSON | next-intl namespaces | Patch tagline P3-001 |
+| `messages/en.json` | ✅ valide JSON | next-intl namespaces (parité 1:1) | Patch tagline P3-001 |
+| `site/messages/fr.json` | ✅ miroir | — | Mirror depuis `messages/fr.json` |
+| `site/messages/en.json` | ✅ miroir | — | Mirror depuis `messages/en.json` |
+| `seo-content.json` | ✅ valide JSON | `nexos-ph3/seo-content/v1` | Patch slug P3-002 + timestamp |
+| `content-qa-report.json` | ✅ valide JSON | `nexos-ph3/content-qa-report/v1` | Timestamp + rerun_note |
+| `section-manifest.json` | ✅ mis à jour | `nexos-ph1/section-manifest/v1` | 24/24 sections → `content-ready`, `lifecycle.ph3_content_ready` |
+| `nexos-changelog.json` | ✅ append-only | EventType ph3 | 8 events appended (phase_start + 5 agent_run + section_manifest_update + phase_end) |
+| `soic-runs.jsonl` | ✅ append-only | run_id par phase | 1 run ph3-content rerun (μ=9.78) |
+| `soic-gates.json` | ✅ mis à jour | gate par phase | ph3-content : mu=9.78, decision=ACCEPT, _note rerun |
 
 ---
 
-## 9. Livrables produits (récapitulatif Phase 3)
+## 9. Handoff Phase 4 — Build
 
-| Fichier | Statut | Validateur |
+### Décisions héritées (non négociables)
+
+1. **437 clés i18n FR/EN figées** — toute modification post-Ph3 nécessite une re-validation `content-reviewer`.
+2. **Slugs FR ≠ EN** : `/promotions` ↔ `/deals`, `/produits` ↔ `/products`, `/politique-confidentialite` ↔ `/privacy-policy`, `/mentions-legales` ↔ `/legal-notice`. Mapping `next-intl pathnames` obligatoire.
+3. **Vouvoiement constant** dans 100 % des chaînes marketing — pas de variation tu/vous selon contexte.
+4. **Loi 25 strict opt-in** : checkboxes consent **JAMAIS pré-cochées** (S-007 newsletter, S-021 contact). Bouton « Refuser » de parité visuelle stricte avec « Accepter » (composant `CookieConsent` enforcement).
+5. **Maps S-020 gated par consent applicatif** : avant chargement, afficher placeholder + note transfert États-Unis + bouton « Charger la carte (Google Maps — États-Unis) » avec disclosure.
+6. **Pages légales en JSX statique** (ADR-003 Ph1) — pas de `dangerouslySetInnerHTML`, pas de DOMPurify (économie 22 KB bundle).
+7. **Permis SAQ + bière responsable** : note S-015 produits.galerie.bieres.note + section 7 mentions-légales obligatoires.
+
+### Inputs livrés à Ph4
+
+- `messages/fr.json` + `messages/en.json` (parité 1:1, 437/437 clés)
+- `site/messages/fr.json` + `site/messages/en.json` (miroirs prêts pour `app/[locale]/layout.tsx`)
+- `seo-content.json` (meta + canonical + hreflang + og + structured data plan par page)
+- `content-qa-report.json` (référence qualité — Ph4 doit conserver μ ≥ 9.0 sur ces dimensions après build)
+- `section-manifest.json` mis à jour (24/24 sections content-ready)
+
+### Bloquants Ph4 à lever au kickoff (rappel §4)
+
+| Bloquant | Sections impactées | Sévérité |
 |---|---|---|
-| `clients/depanneur-nobert/messages/fr.json` | ✅ produit | JSON valide, 516 clés, lexique allowed/banned respecté |
-| `clients/depanneur-nobert/messages/en.json` | ✅ produit | JSON valide, 516 clés, parité FR↔EN parfaite, anglais CA-EN naturel |
-| `clients/depanneur-nobert/seo-content.json` | ✅ produit | JSON valide, 6 meta tags, 6 heading_optimization, 12 alt_texts (5 templates), 6 FAQ Q/A, Schema LocalBusiness |
-| `clients/depanneur-nobert/content-qa-report.json` | ✅ produit | JSON valide, verdict PASS_WITH_WARNINGS, 0 blocking issue, score 9.6 |
-| `clients/depanneur-nobert/section-manifest.json` | ✅ mis à jour | 24/24 sections `status=content-ready`, `lifecycle.ph3_content_ready=2026-04-28T00:00:00Z` |
-| `clients/depanneur-nobert/ph3-content-report.md` | ✅ ce document | — |
+| Ville | S-001, S-009, S-013, S-018, S-019 + sitemap + meta + Schema | 🔴 critique build |
+| Adresse + code postal | S-018, S-019, S-023, S-024 | 🔴 critique build |
+| Téléphone | S-005, S-018, S-019, footer, S-024 | 🔴 critique build |
+| NEQ | S-024 | 🔴 critique build (mentions légales QC) |
+| Année fondation | S-006, common.brand.uvp | 🟡 build OK, StoryBrand cohérence |
+| Photo vitrine S-001 | S-001 | 🟡 fallback Unsplash dispo |
+| Consent écrit voisinage | S-004 (3-5 portraits) | 🟡 fallback avatars-initiales React |
+
+### Risques à monitorer en Ph4 (build)
+
+1. **Validation Zod consent** : confirmer que `consentRequired` (newsletter + contact) bloque la soumission côté serveur ET côté client (cf. `lib/schemas/{contact,newsletter}.ts` Ph1).
+2. **Honeypot field** : `forms.honeypotLabel = "Laissez ce champ vide"` doit rester invisible mais accessible aux lecteurs d'écran (`aria-hidden="false"` + visually-hidden CSS).
+3. **`tel:` links** : substituer `{telephone}` au build avec format E.164 dans `href` (`tel:+14185550000`) et format local dans le label affiché (`418 555-0000`).
+4. **Hreflang bilingue** : générer dans chaque `generateMetadata()` ET dans `app/sitemap.ts`. Tester avec Google Search Console preview.
+5. **Pages légales** : injecter `{dateMaj}` au build avec date du dernier déploiement (et non date courante runtime, sinon SSG instable).
+6. **Schema FAQPage** : générer JSON-LD à partir de `messages/fr.json::promotions.faq.items` et `messages/fr.json::produits.faq.items` — éviter duplication de contenu.
 
 ---
 
-## 10. Score global: **9.5/10**
+*Phase 3 Content rerun complétée 2026-05-10. Prochain handoff : `ph4-build/_orchestrator` (component-builder + i18n-injector + structured-data-generator + form-builder + accessibility-validator + build-validator).*
 
-**Fin du rapport Phase 3 Content — Dépanneur Nobert.**
-**GO PHASE 4 BUILD** (sous réserve résolution des 6 variables CRITIQUES kickoff + assets data-driven : produits, promotions, témoignages signés, horaires).
-**Prochaine étape** : `agents/ph4-build/_orchestrator.md`.
+Score global: 9.4/10

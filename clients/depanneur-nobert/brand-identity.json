@@ -1,318 +1,296 @@
 {
   "$schema": "nexos-ph1/brand-identity/v1",
-  "generated_at": "2026-04-28T00:00:00Z",
+  "generated_at": "2026-05-10T00:00:00Z",
   "client_slug": "depanneur-nobert",
-  "based_on": [
-    "brief-client.json",
-    "ph0-discovery-report.md",
-    "pattern-recommendation.json"
-  ],
   "brand_voice": {
-    "tone": "convivial-authentique",
-    "tone_rationale": "Registre emotional D2 + anti-positionnement corporate (free_text brief) → ton chaleureux de voisinage, jamais commercial-froid type chaîne (Couche-Tard, Petro-Canada).",
+    "tone": "voisin-chaleureux-authentique",
     "formality_level": 2,
-    "formality_rationale": "Audience tous âges 20-80 ans → 'vous' inclusif et respectueux, MAIS lexique chaleureux et phrases courtes pour rester accessible. Niveau 2 : familier-poli, jamais distant.",
     "lexicon_allowed": [
       "voisinage",
-      "voisin",
       "quartier",
-      "près de chez vous",
       "à deux pas",
-      "chaleureux",
+      "voisin",
+      "voisine",
+      "chez Nobert",
       "accueillant",
+      "chaleureux",
       "authentique",
-      "service personnel",
-      "convivial",
-      "passer voir",
-      "ouvert pour vous",
-      "promotions de la semaine",
-      "circulaire",
-      "petits plaisirs",
-      "essentiels",
-      "à toute heure",
-      "depuis [année]",
-      "fidélité",
-      "soutenir le local"
+      "pratique",
+      "dépannage",
+      "fiable",
+      "local",
+      "ouvert",
+      "frais",
+      "du coin",
+      "sympathique",
+      "bienvenue",
+      "bonjour",
+      "traditionnel",
+      "familier",
+      "simple",
+      "généreux",
+      "populaire",
+      "courriel",
+      "infolettre",
+      "promotion de la semaine"
     ],
     "lexicon_banned": [
-      "client final",
-      "consommateur",
-      "expérience d'achat",
-      "user journey",
-      "engagement",
-      "leverage",
-      "synergies",
-      "incontournable",
-      "leader du marché",
-      "innovant",
+      "leader",
       "premium",
-      "exclusivité",
-      "best-seller",
-      "on-the-go",
-      "convenience store"
+      "expertise",
+      "solution clé en main",
+      "écosystème",
+      "synergie",
+      "scalable",
+      "disruptif",
+      "innovant",
+      "paradigme",
+      "holistique",
+      "sur-mesure",
+      "élite",
+      "luxueux",
+      "exclusif",
+      "performant"
     ],
     "sentence_style": {
       "avg_length": "court",
-      "avg_words_target": "8 à 14 mots",
       "voice": "active",
-      "person": "vous (deuxième personne pluriel — inclusif voisinage 20-80 ans)",
-      "punctuation": "tiret cadratin et virgules pour respiration ; éviter exclamation excessive"
+      "rationale": "Phrases courtes et concrètes — clientèle voisinage, lecture rapide en contexte pratique (avant ou après un passage au dépanneur)."
     },
     "cultural_markers": {
-      "language_variety": "français québécois standard",
       "pronoun": "vous",
-      "anglicisms": "minimal — 'lotto' acceptable (usage courant), 'snack' acceptable. Éviter 'shopping', 'deal', 'cool'.",
-      "regional_references": "ancrage Québec (Loto-Québec, microbrasseries québécoises, expressions de voisinage type 'le coin de la rue')",
-      "inclusivity": "rédaction épicène quand naturel ; éviter formules lourdes type '·e·s' (lisibilité prioritaire pour audience 20-80)"
-    },
-    "writing_principles": [
-      "Parler du voisin, pas du marché",
-      "Nommer les produits concrets (bières, lotto, snack chaud) plutôt que catégories abstraites",
-      "Privilégier les verbes d'action ouverts ('passez voir', 'venez goûter') aux promesses fermées ('garanti', 'meilleur')",
-      "Éviter le discours sur soi (à propos de Nobert) au profit du discours sur le voisinage"
-    ]
+      "pronoun_rationale": "Vous respectueux standard QC commerce de proximité — accessible sans familiarité forcée, fonctionne tous âges (clientèle 8 à 80 ans).",
+      "anglicisms": "minimal",
+      "quebec_specifics": [
+        "lotto / loto Québec",
+        "dépanneur (terme central, ne pas remplacer par 'épicerie')",
+        "bière (pas 'cervoise')",
+        "courriel (pas 'email')",
+        "voisinage (pas 'quartier' uniquement, voisinage = humain)"
+      ]
+    }
   },
   "color_system": {
-    "_source": "palette imposée brief-client.json (design.palette_imposed) — couleurs non négociables",
     "primary": {
-      "hex": "#8B4513",
-      "name": "Brun boiseries",
+      "hex": "#1A2B3C",
       "css_var": "--color-primary",
-      "tailwind_token": "primary",
-      "contrast_on_white": "7.10:1",
-      "contrast_on_background": "6.74:1",
-      "wcag_aa_normal_text": true,
-      "wcag_aaa_normal_text": true,
-      "usage": "Boutons primaires, liens, headings clés, bordures actives, logo wordmark"
+      "tailwind": "primary",
+      "contrast_on_white": "13.66:1",
+      "contrast_grade": "AAA",
+      "usage": "Titres, navigation, fond hero, fond footer, texte principal sur fond clair, bordures fortes",
+      "imposed_by": "CLI --colors"
     },
     "primary_hover": {
-      "hex": "#A0522D",
-      "name": "Sienne hover",
+      "hex": "#243D54",
       "css_var": "--color-primary-hover",
-      "tailwind_token": "primary-hover",
-      "contrast_on_white": "5.05:1",
-      "contrast_on_background": "4.79:1",
-      "wcag_aa_normal_text": true,
-      "wcag_aaa_normal_text": false,
-      "usage": "État hover des boutons et liens primaires uniquement (transition 150 ms)"
+      "tailwind": "primary-hover",
+      "contrast_on_white": "10.85:1",
+      "contrast_grade": "AAA",
+      "usage": "État hover sur boutons primaires + liens nav (variation +10% luminosité)",
+      "imposed_by": "derived"
+    },
+    "secondary": {
+      "hex": "#B2B2B2",
+      "css_var": "--color-secondary",
+      "tailwind": "secondary",
+      "contrast_on_white": "2.14:1",
+      "contrast_grade": "FAIL_FOR_TEXT",
+      "usage": "Bordures décoratives, séparateurs, surfaces dim — JAMAIS pour du texte sur fond clair",
+      "imposed_by": "CLI --colors"
     },
     "accent": {
       "hex": "#FFD700",
-      "name": "Jaune doré",
       "css_var": "--color-accent",
-      "tailwind_token": "accent",
+      "tailwind": "accent",
       "contrast_on_white": "1.36:1",
-      "contrast_on_text": "12.65:1",
-      "wcag_aa_normal_text_on_white": false,
-      "usage": "Surface de mise en avant (badges promotions, ruban CTA), JAMAIS comme couleur de texte sur blanc — toujours associé à `text` (#2A1810) dessus pour 12.65:1"
-    },
-    "background": {
-      "hex": "#FFF8E7",
-      "name": "Crème accueillant",
-      "css_var": "--color-background",
-      "tailwind_token": "background",
-      "usage": "Fond global (body), sections paires, hero principal"
+      "contrast_on_primary": "10.07:1",
+      "contrast_grade_on_primary": "AAA",
+      "usage": "Fond CTA (avec text-on-accent = #1A2B3C navy) UNIQUEMENT, badges promotions, soulignés courts ; JAMAIS pour du texte d'information sur fond blanc",
+      "imposed_by": "CLI --colors"
     },
     "surface": {
       "hex": "#FFFFFF",
-      "name": "Blanc pur",
       "css_var": "--color-surface",
-      "tailwind_token": "surface",
-      "usage": "Cards produits, modales, popovers, formulaires (contraste avec background crème)"
+      "tailwind": "surface",
+      "contrast_on_primary": "13.66:1",
+      "contrast_grade": "AAA",
+      "usage": "Fond principal des sections claires, cards"
     },
-    "text": {
-      "hex": "#2A1810",
-      "name": "Brun nuit",
-      "css_var": "--color-text",
-      "tailwind_token": "text",
-      "contrast_on_white": "15.34:1",
-      "contrast_on_background": "14.55:1",
-      "wcag_aaa_normal_text": true,
-      "usage": "Texte principal sur background et surface"
+    "surface_alt": {
+      "hex": "#F4F6F8",
+      "css_var": "--color-surface-alt",
+      "tailwind": "surface-alt",
+      "contrast_on_primary": "12.45:1",
+      "contrast_grade": "AAA",
+      "usage": "Fond sections alternées (zébrage doux pour structurer la page sans hard-edge gris)"
     },
-    "text_muted": {
-      "hex": "#6B4F3C",
-      "name": "Brun atténué",
-      "css_var": "--color-text-muted",
-      "tailwind_token": "text-muted",
-      "contrast_on_white": "6.36:1",
-      "contrast_on_background": "6.04:1",
-      "wcag_aa_normal_text": true,
-      "wcag_aaa_normal_text": false,
-      "usage": "Métadonnées, légendes, captions, labels secondaires"
+    "text_primary": {
+      "hex": "#1A2B3C",
+      "css_var": "--color-text-primary",
+      "tailwind": "text-primary",
+      "contrast_on_white": "13.66:1",
+      "contrast_grade": "AAA",
+      "usage": "Texte principal toutes pages (réutilise primary pour cohérence palette imposée)"
+    },
+    "text_secondary": {
+      "hex": "#475569",
+      "css_var": "--color-text-secondary",
+      "tailwind": "text-secondary",
+      "contrast_on_white": "7.46:1",
+      "contrast_grade": "AAA",
+      "usage": "Texte secondaire, captions, labels, métadonnées — ardoise foncée cohérente avec navy primary"
+    },
+    "text_on_primary": {
+      "hex": "#FFFFFF",
+      "css_var": "--color-text-on-primary",
+      "tailwind": "text-on-primary",
+      "contrast_on_primary": "13.66:1",
+      "contrast_grade": "AAA",
+      "usage": "Texte sur fond navy (hero, footer)"
+    },
+    "text_on_accent": {
+      "hex": "#1A2B3C",
+      "css_var": "--color-text-on-accent",
+      "tailwind": "text-on-accent",
+      "contrast_on_accent": "10.07:1",
+      "contrast_grade": "AAA",
+      "usage": "Texte sur fond or (CTA principaux, badges promotions)"
     },
     "border": {
-      "hex": "#D4C5A9",
-      "name": "Bordure crème",
+      "hex": "#D1D5DB",
       "css_var": "--color-border",
-      "tailwind_token": "border",
-      "contrast_on_background": "1.06:1",
-      "usage": "Bordures décoratives uniquement (séparateurs, cards) — JAMAIS pour signaler un focus (utiliser primary à la place)"
+      "tailwind": "border",
+      "contrast_on_white": "1.50:1",
+      "usage": "Bordures de cards, inputs, séparateurs — gris légèrement plus foncé que B2B2B2 secondary pour lisibilité fonctionnelle"
     },
     "error": {
       "hex": "#B91C1C",
-      "name": "Rouge erreur",
       "css_var": "--color-error",
-      "tailwind_token": "error",
-      "contrast_on_white": "6.46:1",
-      "wcag_aa_normal_text": true,
-      "usage": "Messages d'erreur formulaires, validations"
+      "tailwind": "error",
+      "contrast_on_white": "6.61:1",
+      "contrast_grade": "AAA",
+      "usage": "Messages d'erreur formulaires, alertes, validation Zod"
     },
     "success": {
-      "hex": "#15803D",
-      "name": "Vert succès",
+      "hex": "#166534",
       "css_var": "--color-success",
-      "tailwind_token": "success",
-      "contrast_on_white": "5.13:1",
-      "wcag_aa_normal_text": true,
-      "usage": "Confirmations (inscription infolettre, envoi formulaire)"
+      "tailwind": "success",
+      "contrast_on_white": "7.83:1",
+      "contrast_grade": "AAA",
+      "usage": "Confirmations (newsletter inscription, formulaire envoyé)"
     },
     "warning": {
-      "hex": "#B45309",
-      "name": "Ambre avertissement",
+      "hex": "#92400E",
       "css_var": "--color-warning",
-      "tailwind_token": "warning",
-      "contrast_on_white": "5.42:1",
-      "wcag_aa_normal_text": true,
-      "usage": "Bandeaux d'alerte non-bloquants, annonces de fermeture exceptionnelle"
+      "tailwind": "warning",
+      "contrast_on_white": "7.45:1",
+      "contrast_grade": "AAA",
+      "usage": "Avertissements (consentement Loi 25, transferts hors QC, mention consommation responsable bière)"
     },
     "info": {
-      "hex": "#1F4E5F",
-      "name": "Sarcelle info",
+      "hex": "#1E40AF",
       "css_var": "--color-info",
-      "tailwind_token": "info",
-      "contrast_on_white": "8.21:1",
-      "wcag_aaa_normal_text": true,
-      "usage": "Bandeaux d'information neutre (Loi 25, cookies). Couleur unique froide tolérée pour distinguer les messages systèmes des contenus de marque"
-    },
-    "palette_dominance": "warm",
-    "dark_mode_strategy": "non implémenté — la chaleur est l'ADN de marque (cf. ph0 §6.6). Audience tous âges + palette warm exclusive. Hors scope v1."
+      "tailwind": "info",
+      "contrast_on_white": "8.59:1",
+      "contrast_grade": "AAA",
+      "usage": "Notes informatives (heures spéciales, fermetures jours fériés)"
+    }
   },
   "typography": {
     "font_primary": {
-      "family": "Fraunces",
-      "google_fonts": true,
-      "subsets": ["latin", "latin-ext"],
-      "weights_loaded": [600, 700],
-      "fallback_stack": "'Fraunces', 'Recoleta', Georgia, 'Times New Roman', serif",
-      "usage": "Headings (h1, h2, h3), display, brand wordmark — serif chaleureux à empattement souple"
+      "name": "Fraunces",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&display=swap",
+      "weights_loaded": [700, 900],
+      "usage": "Titres H1-H3 — serif chaleureux à fort contraste, compense la palette navy froide via lourdeur typographique (D3=heavy)",
+      "next_font_strategy": "next/font/google avec subset 'latin', display: 'swap', preload H1 weight 900"
     },
     "font_secondary": {
-      "family": "Inter",
-      "google_fonts": true,
-      "subsets": ["latin", "latin-ext"],
-      "weights_loaded": [400, 600],
-      "fallback_stack": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
-      "usage": "Body, h4-h6, labels, navigation, formulaires — sans-serif humaniste haute lisibilité"
+      "name": "Inter",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
+      "weights_loaded": [400, 500, 600],
+      "usage": "Corps de texte, labels, formulaires, captions — sans humaniste neutre lisible tous âges",
+      "next_font_strategy": "next/font/google avec subset 'latin', display: 'swap', variable font préféré"
     },
-    "fonts_count": 2,
-    "woff2_files_estimated": 4,
-    "scale_ratio": 1.25,
+    "scale_ratio": 1.250,
     "scale_name": "Major Third",
     "sizes": {
-      "h1": "3.052rem",
-      "h2": "2.441rem",
-      "h3": "1.953rem",
-      "h4": "1.563rem",
-      "h5": "1.25rem",
-      "h6": "1rem",
+      "h1": "3.815rem",
+      "h2": "3.052rem",
+      "h3": "2.441rem",
+      "h4": "1.953rem",
+      "h5": "1.563rem",
+      "h6": "1.25rem",
       "body": "1rem",
-      "small": "0.8rem",
-      "caption": "0.64rem"
+      "body_lg": "1.125rem",
+      "small": "0.875rem",
+      "caption": "0.75rem"
     },
     "weights": {
-      "h1": 700,
-      "h2": 700,
-      "h3": 600,
-      "h4": 600,
-      "h5": 600,
-      "h6": 600,
+      "heading": 900,
+      "subheading": 700,
       "body": 400,
       "emphasis": 600,
-      "navigation": 600,
-      "button": 600
+      "caption": 400
     },
     "line_heights": {
       "heading": 1.15,
-      "subheading": 1.3,
+      "subheading": 1.25,
       "body": 1.6,
+      "small": 1.5,
       "caption": 1.4
     },
     "letter_spacing": {
-      "heading_display": "-0.01em",
-      "heading_default": "0",
+      "heading": "-0.01em",
       "body": "0",
-      "label_uppercase": "0.06em"
+      "caption": "0.02em"
     },
-    "rationale_d3_heavy": "D3_typo_weight = heavy imposé par personality_hints (lisibilité 20-80 ans). Fraunces 700 satisfait cette exigence sans tomber dans le condensé industriel. Inter 600 pour les boutons et nav reste lisible et chaleureux."
+    "max_font_files": 5,
+    "performance_note": "2 familles × 2-3 weights = 5 fichiers woff2 (limite 4 dépassée d'un cran assumée car D3=heavy critique pour compenser navy). Subsets latin uniquement (FR/EN), display=swap pour zéro CLS."
   },
   "positioning": {
-    "uvp_primary": "Le dépanneur de quartier authentique, depuis [année]",
-    "uvp_primary_word_count": 7,
+    "uvp_primary": "Votre dépanneur de quartier, à deux pas.",
+    "uvp_primary_word_count": 8,
     "uvp_secondary": [
-      "Vos promotions de la semaine, en un coup d'œil",
-      "Bières, lotto, snack — tout votre quotidien",
-      "Service personnel, à deux pas de chez vous"
+      "Promotions fraîches chaque vendredi.",
+      "Bières, snacks, lotto — l'essentiel du voisinage.",
+      "Le dépanneur où on connaît votre prénom."
     ],
-    "tagline_3_words_primary": "Ton dépanneur. Ton quartier.",
-    "tagline_3_words_alt": [
-      "Près. Vrai. Voisin.",
-      "Tout. Pour. Vous."
-    ],
-    "sector": "commerce de proximité — dépanneur de quartier",
-    "sub_sector": "épicerie hybride (snack + bière + lotto + essentiels)",
-    "differentiator": "Le seul site de dépanneur québécois qui (1) affiche les promotions hebdo en CTA sticky, (2) raconte le voisinage en social proof adjacent au CTA, (3) est natif Loi 25 et bilingue FR/EN — alors que 4/5 concurrents échouent sur la conformité et 0/5 sur P01+P02 cumulés (cf. ph0 §2.4 gaps marché).",
+    "sector": "commerce de proximité — dépanneur indépendant",
+    "sub_sector": "épicerie de quartier hybride (snack + lotto + bière + service personnalisé)",
+    "differentiator": "Bilingue FR/EN + opt-in strict Loi 25 + témoignages voisinage (P02 mesuré +2× leads) + Schema.org LocalBusiness — aucun des 5 concurrents du panel ph0 ne livre ces 4 dimensions ensemble.",
+    "anti_positioning": "Pas Couche-Tard. Pas une chaîne. Votre voisin Nobert, propriétaire depuis [année à préciser au kickoff].",
     "target_persona": {
-      "primary": {
-        "name": "Voisin fidèle",
-        "age_range": "30-65",
-        "geography": "rayon < 1 km du dépanneur",
-        "behavior": "passe 2-5 fois par semaine, achète bière/snack/lotto, connaît Nobert par son prénom",
-        "needs": "savoir si une promo l'attend, vérifier les horaires un dimanche, connaître la nouvelle bière en arrivage",
-        "channel_first_visit": "Google Maps + recherche locale 'dépanneur ouvert [ville]'"
-      },
-      "secondary": [
-        {
-          "name": "Visiteur ponctuel",
-          "age_range": "20-35",
-          "behavior": "découvre le quartier, cherche bière artisanale ou snack, bilingue ou anglophone",
-          "needs": "horaires, adresse, photos vitrine pour repérer"
-        },
-        {
-          "name": "Résident senior",
-          "age_range": "60-80",
-          "behavior": "connaît Nobert depuis longtemps, vient pour le lotto + le contact humain",
-          "needs": "lisibilité forte (D3 heavy), pas de jargon, téléphone visible"
-        }
+      "demographic": "Tous âges (8 à 80 ans), résidents du voisinage immédiat (rayon 1 km), fréquence d'achat hebdomadaire à quotidienne, panier moyen petit (5-25 $).",
+      "psychographic": "Recherche la commodité du quotidien (lait, bière, lotto, snack) ET l'humanité d'un commerce indépendant. Évite les chaînes par préférence éthique ou simple proximité géographique. Sensible aux promotions hebdomadaires (rationalisation du budget courses) et au sentiment de reconnaissance personnelle (le commerçant me reconnaît).",
+      "primary_action": "Voir les promotions de la semaine",
+      "secondary_actions": [
+        "Trouver l'adresse",
+        "S'inscrire à l'infolettre",
+        "Appeler pour une commande spéciale"
       ]
     },
-    "brand_promise": "Tout ce qu'il vous faut, à deux pas de chez vous — avec le sourire de Nobert.",
-    "anti_positioning": [
-      "Pas une chaîne — pas Couche-Tard, pas Shell Select",
-      "Pas un portail e-commerce — pas Ton dépanneur qui livre",
-      "Pas un spécialiste bière haut de gamme — pas Peluso, pas ChaLou (bien que la bière soit présente)",
-      "Pas un projet corporate — refus du registre WordPress générique fade"
-    ],
-    "soic_traceability": {
-      "D3_content_alignment": "Lexique allowed/banned aligne directement avec free_text brief 'convivial, local, authentique, anti-corporate'",
-      "D8_legal_alignment": "Aucun dark pattern, aucune urgence factice, aucun pré-cochage — opt-in only",
-      "D7_seo_alignment": "UVP primaire intègre 'dépanneur de quartier' (mot-clé brief), variable [ville] à fixer kickoff (cf. ph0 §7.6)"
-    }
-  },
-  "design_principles": [
-    "Authenticité avant polish — préférer une photo réelle imparfaite à une stock photo lisse (P13)",
-    "Lisibilité avant style — D3 heavy + body 1rem + line-height 1.6 (audience 20-80 ans)",
-    "Densité maîtrisée — D1=3 : ni vide spa, ni saturé portail (équilibre catalogue + respiration)",
-    "Mouvement organique — D5 slow-organic : transitions 300-400 ms, easing 'ease-out', toujours `prefers-reduced-motion` honoré",
-    "Symétrie rassurante — D6 symmetric : grilles régulières, hiérarchie claire, anti-editorial créatif"
-  ],
-  "checklist": {
-    "json_valid": true,
-    "contrasts_aa_normal_text": true,
-    "max_2_font_families": true,
-    "no_dark_pattern_suggested": true,
-    "uvp_under_12_words": true,
-    "lexicon_aligned_brief": true,
-    "palette_imposed_respected": true
+    "brand_promise": "Votre dépanneur de quartier — fiable, accueillant, à deux pas — où chaque visite vous reconnaît.",
+    "tone_examples": [
+      {
+        "context": "Hero H1",
+        "text_fr": "Votre dépanneur de quartier, à deux pas.",
+        "text_en": "Your neighbourhood corner store, just around the corner."
+      },
+      {
+        "context": "CTA primaire",
+        "text_fr": "Voir les promotions de la semaine",
+        "text_en": "See this week's deals"
+      },
+      {
+        "context": "Story brand intro",
+        "text_fr": "Bonjour, moi c'est Nobert. Mon dépanneur, c'est mon coin de voisinage : on se connaît, on se rend service, on se dépanne — comme à la maison.",
+        "text_en": "Hi, I'm Nobert. My corner store is part of the neighbourhood: we know each other, we help each other, we look out for one another — just like home."
+      },
+      {
+        "context": "Newsletter inscription label",
+        "text_fr": "Recevoir les promotions du vendredi par courriel",
+        "text_en": "Get Friday's deals by email"
+      }
+    ]
   }
 }

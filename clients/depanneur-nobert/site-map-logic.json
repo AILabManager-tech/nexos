@@ -1,369 +1,306 @@
 {
   "$schema": "nexos-ph1/site-map-logic/v1",
-  "generated_at": "2026-04-28T00:00:00Z",
+  "generated_at": "2026-05-10T00:00:00Z",
   "client_slug": "depanneur-nobert",
-  "based_on": [
-    "brief-client.json",
-    "ph0-discovery-report.md",
-    "pattern-recommendation.json",
-    "brand-identity.json"
-  ],
-  "site_meta": {
-    "default_locale": "fr",
+  "i18n": {
     "locales": ["fr", "en"],
-    "max_depth": 1,
-    "router": "Next.js 15 App Router",
-    "i18n_strategy": "Path-based locales (next-intl) — `/fr/...` et `/en/...` (default `fr` redirige sans préfixe via middleware)"
+    "default_locale": "fr",
+    "library": "next-intl",
+    "routing_strategy": "path-prefix (e.g. /fr/promotions, /en/deals)",
+    "x_default_redirect": "fr"
   },
   "routes": [
     {
-      "id": "R-HOME",
       "path_fr": "/",
-      "path_en": "/en",
+      "path_en": "/",
       "component": "app/[locale]/page.tsx",
       "template": "home",
       "priority": "critical",
       "depth": 0,
-      "seo_title_fr": "Dépanneur Nobert — Le dépanneur de quartier authentique de [ville]",
-      "seo_title_en": "Dépanneur Nobert — Authentic Neighbourhood Convenience Store in [city]",
-      "estimated_content_blocks": 8,
-      "linked_section_ids": ["S-001", "S-002", "S-003", "S-004", "S-005", "S-006", "S-007", "S-008"]
+      "seo_title_fr": "Dépanneur Nobert | Votre dépanneur de quartier à [ville]",
+      "seo_title_en": "Dépanneur Nobert | Your neighbourhood corner store in [city]",
+      "estimated_content_blocks": 7,
+      "sections_ids": ["S-001", "S-002", "S-003", "S-004", "S-005", "S-006", "S-007"]
     },
     {
-      "id": "R-PROMOTIONS",
       "path_fr": "/promotions",
-      "path_en": "/en/promotions",
+      "path_en": "/deals",
       "component": "app/[locale]/promotions/page.tsx",
-      "template": "promotions-list",
+      "template": "promotions",
       "priority": "critical",
       "depth": 1,
-      "seo_title_fr": "Promotions de la semaine — Dépanneur Nobert [ville]",
-      "seo_title_en": "Weekly Promotions — Dépanneur Nobert [city]",
+      "seo_title_fr": "Promotions de la semaine | Dépanneur Nobert",
+      "seo_title_en": "Weekly deals | Dépanneur Nobert",
       "estimated_content_blocks": 4,
-      "linked_section_ids": ["S-009", "S-010", "S-011", "S-012"]
+      "sections_ids": ["S-009", "S-010", "S-011", "S-012"],
+      "rendering": "ISR weekly (revalidate 604800s, regen vendredi 00h)"
     },
     {
-      "id": "R-PRODUITS",
       "path_fr": "/produits",
-      "path_en": "/en/products",
+      "path_en": "/products",
       "component": "app/[locale]/produits/page.tsx",
-      "template": "catalog-grid",
+      "template": "products",
       "priority": "high",
       "depth": 1,
-      "seo_title_fr": "Nos produits — Bières, snacks, lotto, essentiels | Dépanneur Nobert",
-      "seo_title_en": "Our Products — Beer, Snacks, Lotto, Essentials | Dépanneur Nobert",
+      "seo_title_fr": "Produits & catalogue | Dépanneur Nobert",
+      "seo_title_en": "Products & catalogue | Dépanneur Nobert",
       "estimated_content_blocks": 5,
-      "linked_section_ids": ["S-013", "S-014", "S-015", "S-016", "S-017"]
+      "sections_ids": ["S-013", "S-014", "S-015", "S-016", "S-017"]
     },
     {
-      "id": "R-CONTACT",
       "path_fr": "/contact",
-      "path_en": "/en/contact",
+      "path_en": "/contact",
       "component": "app/[locale]/contact/page.tsx",
-      "template": "contact-local",
+      "template": "contact",
       "priority": "critical",
       "depth": 1,
-      "seo_title_fr": "Contact — Adresse, horaires, téléphone | Dépanneur Nobert [ville]",
-      "seo_title_en": "Contact — Address, Hours, Phone | Dépanneur Nobert [city]",
+      "seo_title_fr": "Contact, adresse & horaires | Dépanneur Nobert",
+      "seo_title_en": "Contact, address & hours | Dépanneur Nobert",
       "estimated_content_blocks": 5,
-      "linked_section_ids": ["S-018", "S-019", "S-020", "S-021", "S-022"]
+      "sections_ids": ["S-018", "S-019", "S-020", "S-021", "S-022"]
     },
     {
-      "id": "R-PRIVACY",
       "path_fr": "/politique-confidentialite",
-      "path_en": "/en/privacy-policy",
+      "path_en": "/privacy-policy",
       "component": "app/[locale]/politique-confidentialite/page.tsx",
       "template": "legal-doc",
-      "priority": "medium",
+      "priority": "critical",
       "depth": 1,
-      "seo_title_fr": "Politique de confidentialité (Loi 25) — Dépanneur Nobert",
-      "seo_title_en": "Privacy Policy (Law 25) — Dépanneur Nobert",
+      "seo_title_fr": "Politique de confidentialité (Loi 25) | Dépanneur Nobert",
+      "seo_title_en": "Privacy policy (Law 25) | Dépanneur Nobert",
       "estimated_content_blocks": 1,
-      "linked_section_ids": ["S-023"]
+      "sections_ids": ["S-023"]
     },
     {
-      "id": "R-LEGAL",
       "path_fr": "/mentions-legales",
-      "path_en": "/en/legal-notice",
+      "path_en": "/legal-notice",
       "component": "app/[locale]/mentions-legales/page.tsx",
       "template": "legal-doc",
-      "priority": "medium",
+      "priority": "critical",
       "depth": 1,
-      "seo_title_fr": "Mentions légales — Dépanneur Nobert",
-      "seo_title_en": "Legal Notice — Dépanneur Nobert",
+      "seo_title_fr": "Mentions légales | Dépanneur Nobert",
+      "seo_title_en": "Legal notice | Dépanneur Nobert",
       "estimated_content_blocks": 1,
-      "linked_section_ids": ["S-024"]
+      "sections_ids": ["S-024"]
     },
     {
-      "id": "R-NOTFOUND",
-      "path_fr": "/[...not-found]",
-      "path_en": "/en/[...not-found]",
+      "path_fr": "/_not-found",
+      "path_en": "/_not-found",
       "component": "app/[locale]/not-found.tsx",
-      "template": "not-found",
+      "template": "404",
       "priority": "low",
-      "depth": 0,
-      "seo_title_fr": "Page introuvable — Dépanneur Nobert",
-      "seo_title_en": "Page Not Found — Dépanneur Nobert",
-      "estimated_content_blocks": 1,
-      "linked_section_ids": []
+      "depth": 1,
+      "seo_title_fr": "Page introuvable | Dépanneur Nobert",
+      "seo_title_en": "Page not found | Dépanneur Nobert",
+      "estimated_content_blocks": 1
     }
   ],
   "hierarchy": {
-    "root": "R-HOME",
-    "tree": {
-      "R-HOME": {
-        "depth": 0,
-        "parent": null,
-        "children": ["R-PROMOTIONS", "R-PRODUITS", "R-CONTACT"]
-      },
-      "R-PROMOTIONS": {
-        "depth": 1,
-        "parent": "R-HOME",
-        "children": []
-      },
-      "R-PRODUITS": {
-        "depth": 1,
-        "parent": "R-HOME",
-        "children": []
-      },
-      "R-CONTACT": {
-        "depth": 1,
-        "parent": "R-HOME",
-        "children": []
-      },
-      "R-PRIVACY": {
-        "depth": 1,
-        "parent": "R-HOME",
-        "children": []
-      },
-      "R-LEGAL": {
-        "depth": 1,
-        "parent": "R-HOME",
-        "children": []
-      }
+    "root": {
+      "path": "/",
+      "depth": 0,
+      "children": [
+        "/promotions",
+        "/produits",
+        "/contact",
+        "/politique-confidentialite",
+        "/mentions-legales"
+      ]
     },
-    "max_clicks_to_any_key_page": 1,
-    "rule": "Profondeur max 3 respectée (max observé: 1)"
+    "max_depth": 1,
+    "max_clicks_to_any_page": 1,
+    "rationale": "Site vitrine plat (6 pages publiques). Profondeur 1 garantit règle '3 clics max' avec marge de sécurité. Aucun sous-niveau prévu (pas de pages produit individuelles, catégories ancrées dans S-014 avec sticky sub-header)."
   },
   "navigation": {
     "main_nav": [
-      { "label_fr": "Accueil", "label_en": "Home", "route_id": "R-HOME", "order": 1 },
-      { "label_fr": "Promotions", "label_en": "Promotions", "route_id": "R-PROMOTIONS", "order": 2, "highlight": true, "rationale": "Highlight visuel (ruban accent) — le KPI conversion impose la priorité absolue de cet item" },
-      { "label_fr": "Produits", "label_en": "Products", "route_id": "R-PRODUITS", "order": 3 },
-      { "label_fr": "Contact", "label_en": "Contact", "route_id": "R-CONTACT", "order": 4 }
+      {
+        "label_fr": "Accueil",
+        "label_en": "Home",
+        "href_fr": "/",
+        "href_en": "/",
+        "char_count_fr": 7
+      },
+      {
+        "label_fr": "Promotions",
+        "label_en": "Deals",
+        "href_fr": "/promotions",
+        "href_en": "/deals",
+        "char_count_fr": 10,
+        "highlight": true,
+        "highlight_rationale": "CTA primaire du brief — visuellement marqué (badge accent or)"
+      },
+      {
+        "label_fr": "Produits",
+        "label_en": "Products",
+        "href_fr": "/produits",
+        "href_en": "/products",
+        "char_count_fr": 8
+      },
+      {
+        "label_fr": "Contact",
+        "label_en": "Contact",
+        "href_fr": "/contact",
+        "href_en": "/contact",
+        "char_count_fr": 7
+      }
     ],
     "main_nav_count": 4,
-    "main_nav_max_chars_label": 10,
+    "main_nav_max_chars": 10,
     "language_switcher": {
-      "type": "inline",
       "position": "header_right",
       "labels": ["FR", "EN"],
-      "preserves_path": true
+      "preserves_route": true,
+      "implementation": "next-intl Link avec mapping pathnames"
     },
-    "footer_nav": {
-      "columns": [
-        {
-          "title_fr": "Naviguer",
-          "title_en": "Navigate",
-          "links": [
-            { "label_fr": "Accueil", "label_en": "Home", "route_id": "R-HOME" },
-            { "label_fr": "Promotions de la semaine", "label_en": "Weekly Promotions", "route_id": "R-PROMOTIONS" },
-            { "label_fr": "Nos produits", "label_en": "Our Products", "route_id": "R-PRODUITS" },
-            { "label_fr": "Nous joindre", "label_en": "Contact", "route_id": "R-CONTACT" }
-          ]
-        },
-        {
-          "title_fr": "Infos pratiques",
-          "title_en": "Practical Info",
-          "links": [
-            { "label_fr": "Adresse", "label_en": "Address", "anchor": "#adresse", "route_id": "R-CONTACT" },
-            { "label_fr": "Horaires", "label_en": "Hours", "anchor": "#horaires", "route_id": "R-CONTACT" },
-            { "label_fr": "Téléphone", "label_en": "Phone", "type": "tel" }
-          ]
-        },
-        {
-          "title_fr": "Légal",
-          "title_en": "Legal",
-          "links": [
-            { "label_fr": "Politique de confidentialité", "label_en": "Privacy Policy", "route_id": "R-PRIVACY" },
-            { "label_fr": "Mentions légales", "label_en": "Legal Notice", "route_id": "R-LEGAL" },
-            { "label_fr": "Loi 25 — Vos droits", "label_en": "Law 25 — Your Rights", "anchor": "#droits", "route_id": "R-PRIVACY" }
-          ]
-        }
-      ],
-      "copyright_text_fr": "© [année] Dépanneur Nobert inc. Tous droits réservés.",
-      "copyright_text_en": "© [year] Dépanneur Nobert inc. All rights reserved."
-    },
+    "footer_nav": [
+      {
+        "column_label_fr": "Le dépanneur",
+        "column_label_en": "The store",
+        "links": [
+          { "label_fr": "Promotions", "label_en": "Deals", "href_fr": "/promotions", "href_en": "/deals" },
+          { "label_fr": "Produits", "label_en": "Products", "href_fr": "/produits", "href_en": "/products" },
+          { "label_fr": "Contact", "label_en": "Contact", "href_fr": "/contact", "href_en": "/contact" }
+        ]
+      },
+      {
+        "column_label_fr": "Infos pratiques",
+        "column_label_en": "Useful info",
+        "links": [
+          { "label_fr": "Adresse & horaires", "label_en": "Address & hours", "href_fr": "/contact#horaires", "href_en": "/contact#hours" },
+          { "label_fr": "Téléphone", "label_en": "Phone", "href_fr": "tel:[à préciser kickoff]", "href_en": "tel:[à préciser kickoff]" },
+          { "label_fr": "Infolettre", "label_en": "Newsletter", "href_fr": "/#newsletter", "href_en": "/#newsletter" }
+        ]
+      },
+      {
+        "column_label_fr": "Légal (Loi 25)",
+        "column_label_en": "Legal (Law 25)",
+        "links": [
+          { "label_fr": "Politique de confidentialité", "label_en": "Privacy policy", "href_fr": "/politique-confidentialite", "href_en": "/privacy-policy" },
+          { "label_fr": "Mentions légales", "label_en": "Legal notice", "href_fr": "/mentions-legales", "href_en": "/legal-notice" },
+          { "label_fr": "Gérer mes cookies", "label_en": "Manage cookies", "href_fr": "#cookie-manage", "href_en": "#cookie-manage", "client_action": "openConsentManager" }
+        ]
+      }
+    ],
     "breadcrumbs": {
-      "enabled": false,
-      "rationale": "Site plat (depth max 1) — breadcrumbs redondants avec la nav principale. Activer si futurs sous-secteurs (ex: /produits/bieres) en v2."
+      "show_on": ["/produits", "/promotions", "/contact", "/politique-confidentialite", "/mentions-legales"],
+      "show_on_home": false,
+      "rationale": "Profondeur 1 — breadcrumb 'Accueil > Page' utile pour SEO + accessibilité même en site plat"
     },
     "cta_global": {
-      "primary": {
-        "label_fr": "Voir les promotions",
-        "label_en": "See promotions",
-        "route_id": "R-PROMOTIONS",
-        "pattern": "P01 sticky CTA persistant",
-        "behavior": "Visible sur toutes les pages sauf /promotions ; bottom-right desktop, bottom full-width mobile",
-        "rationale": "KPI conversion principal — accessible à tout instant durant la session"
+      "id": "S-008",
+      "type": "sticky",
+      "label_fr": "Voir les promotions",
+      "label_en": "See deals",
+      "href_fr": "/promotions",
+      "href_en": "/deals",
+      "show_on_pages": ["/", "/produits", "/contact"],
+      "hide_on_pages": ["/promotions", "/politique-confidentialite", "/mentions-legales"],
+      "position": {
+        "desktop": "bottom-right",
+        "mobile": "bottom-full-width"
       },
-      "secondary_phone": {
-        "type": "tel",
-        "label_fr": "Appeler",
-        "label_en": "Call",
-        "value": "[telephone]",
-        "rationale": "CTA secondaire (commande téléphone — KPI secondaire) — visible header desktop + sticky mobile"
-      }
+      "rationale": "P01 — KPI conversion principal du brief. Caché sur /promotions (déjà sur la cible)."
     }
   },
   "data_flow": {
     "forms": [
       {
         "id": "FORM-NEWSLETTER",
-        "name_fr": "Inscription infolettre promotions",
-        "name_en": "Promotions newsletter signup",
-        "location_routes": ["R-HOME", "R-PROMOTIONS"],
+        "section_id": "S-007",
+        "name_fr": "Inscription infolettre",
+        "name_en": "Newsletter signup",
         "fields": [
-          { "name": "email", "type": "email", "required": true, "label_fr": "Votre courriel", "label_en": "Your email", "validation": "RFC 5322" }
+          { "name": "email", "type": "email", "required": true, "label_fr": "Votre courriel", "label_en": "Your email" },
+          { "name": "consent", "type": "checkbox", "required": true, "default_checked": false, "label_fr": "J'accepte de recevoir l'infolettre Dépanneur Nobert (promotions hebdomadaires).", "label_en": "I agree to receive the Dépanneur Nobert newsletter (weekly deals)." }
         ],
-        "consent_text_fr": "J'accepte de recevoir l'infolettre hebdomadaire des promotions de Dépanneur Nobert. Je peux me désinscrire à tout moment via le lien en bas de chaque courriel. Mes données sont conservées 12 mois maximum après ma dernière interaction (Loi 25). Pour toute question : nobert@depanneur-nobert.ca.",
-        "consent_text_en": "I consent to receive the weekly promotions newsletter from Dépanneur Nobert. I can unsubscribe at any time via the link at the bottom of each email. My data is kept for a maximum of 12 months after my last interaction (Law 25). Questions: nobert@depanneur-nobert.ca.",
-        "consent_required": true,
-        "consent_pre_checked": false,
-        "data_retention_months": 12,
-        "submission_action": {
-          "type": "api_route",
-          "endpoint": "/api/newsletter/subscribe",
-          "method": "POST",
-          "rate_limit": "5 requests / IP / 10 minutes",
-          "captcha": "Cloudflare Turnstile (à activer si abuse)"
-        },
-        "post_submission": {
-          "success_message_fr": "Merci ! Vous recevrez les promotions de la semaine dès vendredi.",
-          "success_message_en": "Thank you! You'll receive the weekly promotions every Friday.",
-          "error_message_fr": "Désolé, l'inscription a échoué. Réessayez dans un instant ou écrivez à nobert@depanneur-nobert.ca.",
-          "error_message_en": "Sorry, signup failed. Please try again shortly or email nobert@depanneur-nobert.ca."
-        }
+        "honeypot": true,
+        "rate_limit": "1 soumission / IP / 5 min",
+        "consent_text_fr": "En cliquant 'M'inscrire', vous consentez librement à recevoir notre infolettre. Vous pouvez vous désinscrire à tout moment via le lien dans chaque courriel ou en écrivant à nobert@depanneur-nobert.ca.",
+        "consent_text_en": "By clicking 'Sign up', you freely consent to receive our newsletter. You can unsubscribe anytime via the link in each email or by writing to nobert@depanneur-nobert.ca.",
+        "data_retention": "12 mois maximum après dernière interaction (désinscription automatique sinon).",
+        "submission_action": "POST /api/newsletter (server route, validation Zod, append courriel + timestamp + IP hashée)",
+        "third_party_sent_to": "Aucun (stockage interne uniquement à ce stade — Mailchimp/SendGrid à valider en Ph4)",
+        "loi25_compliant": true,
+        "loi25_articles_aligned": ["8.1 (consentement libre, éclairé, spécifique)", "12 (finalité explicite)", "23 (droit de retrait)"]
       },
       {
         "id": "FORM-CONTACT",
+        "section_id": "S-021",
         "name_fr": "Formulaire de contact",
         "name_en": "Contact form",
-        "location_routes": ["R-CONTACT"],
         "fields": [
-          { "name": "name", "type": "text", "required": true, "label_fr": "Nom", "label_en": "Name", "max_length": 80 },
-          { "name": "email", "type": "email", "required": true, "label_fr": "Courriel", "label_en": "Email" },
+          { "name": "name", "type": "text", "required": true, "label_fr": "Votre nom", "label_en": "Your name" },
+          { "name": "email", "type": "email", "required": true, "label_fr": "Votre courriel", "label_en": "Your email" },
           { "name": "phone", "type": "tel", "required": false, "label_fr": "Téléphone (optionnel)", "label_en": "Phone (optional)" },
-          { "name": "message", "type": "textarea", "required": true, "label_fr": "Votre message", "label_en": "Your message", "max_length": 2000 },
-          { "name": "honeypot", "type": "hidden", "purpose": "anti-spam — ignored if filled" }
+          { "name": "message", "type": "textarea", "required": true, "min_length": 10, "max_length": 2000, "label_fr": "Votre message", "label_en": "Your message" },
+          { "name": "consent", "type": "checkbox", "required": true, "default_checked": false, "label_fr": "J'accepte que Dépanneur Nobert utilise mes coordonnées pour me répondre.", "label_en": "I agree that Dépanneur Nobert uses my contact details to reply." }
         ],
-        "consent_text_fr": "J'autorise Dépanneur Nobert à utiliser mes coordonnées pour répondre à mon message. Mon courriel et mon nom sont conservés au maximum 24 mois après le dernier échange. Pour exercer mes droits (accès, rectification, suppression), je contacte le RPP : nobert@depanneur-nobert.ca (Loi 25, art. 3.1).",
-        "consent_text_en": "I authorize Dépanneur Nobert to use my contact information to reply to my message. My email and name are kept for a maximum of 24 months after the last exchange. To exercise my rights (access, rectification, deletion), I contact the privacy officer: nobert@depanneur-nobert.ca (Law 25, s. 3.1).",
-        "consent_required": true,
-        "consent_pre_checked": false,
-        "data_retention_months": 24,
-        "submission_action": {
-          "type": "api_route",
-          "endpoint": "/api/contact/send",
-          "method": "POST",
-          "delivery": "email vers nobert@depanneur-nobert.ca",
-          "rate_limit": "3 requests / IP / 30 minutes"
-        },
-        "post_submission": {
-          "success_message_fr": "Merci ! Nobert vous répondra par courriel sous peu.",
-          "success_message_en": "Thank you! Nobert will reply by email shortly.",
-          "error_message_fr": "L'envoi a échoué. Réessayez ou appelez directement le [telephone].",
-          "error_message_en": "Sending failed. Please retry or call [telephone] directly."
-        }
+        "honeypot": true,
+        "rate_limit": "3 soumissions / IP / heure",
+        "consent_text_fr": "Vos données (nom, courriel, téléphone si fourni, message) sont utilisées exclusivement pour répondre à votre demande. Conservation 6 mois après réponse, puis suppression. Responsable : Nobert Tremblay (RPP), nobert@depanneur-nobert.ca.",
+        "consent_text_en": "Your data (name, email, phone if provided, message) is used solely to reply to your request. Retained for 6 months after reply, then deleted. Officer: Nobert Tremblay (privacy officer), nobert@depanneur-nobert.ca.",
+        "data_retention": "6 mois après envoi de la réponse, puis suppression automatique",
+        "submission_action": "POST /api/contact (server route, validation Zod, envoi courriel SMTP vers nobert@depanneur-nobert.ca)",
+        "third_party_sent_to": "Aucun tiers — courriel direct boîte propriétaire",
+        "loi25_compliant": true,
+        "loi25_articles_aligned": ["8.1", "12", "23", "3.5 (notification incident)"]
       }
     ],
     "tracking_points": [
       {
-        "id": "TRK-PV",
-        "event": "pageview",
-        "trigger": "page load",
-        "consent_required": true,
-        "consent_category": "analytics",
-        "service": "Google Analytics 4 (IP tronquée, anonymizeIp)",
-        "loi_25_basis": "Consentement explicite opt-in via cookie banner"
+        "name": "pageview",
+        "trigger": "navigation",
+        "tool": "Google Analytics 4 (consent-aware, anonymizeIp, IP truncation)",
+        "consent_required": "analytics",
+        "loi25_note": "Désactivé tant que cookie consent analytics = false. IP tronquée + pseudonymisé."
       },
       {
-        "id": "TRK-CTA-PROMOS",
-        "event": "click_cta_promotions",
-        "trigger": "click sur sticky CTA 'Voir les promotions'",
-        "consent_required": true,
-        "consent_category": "analytics"
+        "name": "cta_promotions_click",
+        "trigger": "click sur S-001 CTA primaire OU S-008 sticky CTA",
+        "tool": "GA4 event (consent-aware)",
+        "consent_required": "analytics"
       },
       {
-        "id": "TRK-NEWSLETTER",
-        "event": "newsletter_signup",
-        "trigger": "submit success FORM-NEWSLETTER",
-        "consent_required": true,
-        "consent_category": "analytics"
+        "name": "newsletter_submit_success",
+        "trigger": "succès soumission FORM-NEWSLETTER",
+        "tool": "GA4 event (consent-aware)",
+        "consent_required": "analytics"
       },
       {
-        "id": "TRK-CALL",
-        "event": "phone_click",
-        "trigger": "click sur lien tel:",
-        "consent_required": true,
-        "consent_category": "analytics"
+        "name": "phone_click",
+        "trigger": "click sur tel: link (S-005, S-018, S-019, footer)",
+        "tool": "GA4 event (consent-aware)",
+        "consent_required": "analytics"
       },
       {
-        "id": "TRK-MAPS",
-        "event": "maps_engagement",
-        "trigger": "Google Maps embed loaded (after consent)",
-        "consent_required": true,
-        "consent_category": "marketing",
-        "loi_25_basis": "Google Maps = transfert hors QC (US) — consentement explicite requis avant chargement de l'iframe"
+        "name": "maps_load",
+        "trigger": "click bouton 'Charger la carte' S-020",
+        "tool": "événement consentement explicite avant chargement Google Maps iframe",
+        "consent_required": "analytics+marketing (transfert hors QC documenté)"
       }
     ],
-    "cookie_consent": {
-      "type": "opt-in",
-      "default_state": "essentiels actifs uniquement",
-      "categories": [
-        { "id": "essential", "label_fr": "Essentiels", "label_en": "Essential", "always_active": true, "description_fr": "Cookies nécessaires au fonctionnement du site (langue, consentement)." },
-        { "id": "analytics", "label_fr": "Analytique", "label_en": "Analytics", "always_active": false, "description_fr": "Mesure d'audience anonymisée (Google Analytics, IP tronquée). Conservation 30 jours." },
-        { "id": "marketing", "label_fr": "Carte et services tiers", "label_en": "Maps & third-party", "always_active": false, "description_fr": "Permet le chargement de Google Maps (transfert États-Unis)." }
-      ],
-      "buttons": ["Tout accepter", "Tout refuser", "Personnaliser"],
-      "buttons_visual_parity": true,
-      "rpp_link": true
-    }
+    "tracking_loi25_compliance": "Aucun script tiers ne se charge avant consentement opt-in granulaire (CMP composant cookie-consent-component.tsx). Bouton 'Refuser' aussi visible que 'Accepter'."
   },
   "internal_linking": {
     "link_map": [
-      { "from": "R-HOME", "to": "R-PROMOTIONS", "anchor_fr": "Voir les promotions de la semaine", "anchor_en": "See the weekly promotions", "context": "Hero CTA primaire + sticky CTA" },
-      { "from": "R-HOME", "to": "R-PRODUITS", "anchor_fr": "Découvrir nos catégories", "anchor_en": "Explore our categories", "context": "Section CategoriesProduits" },
-      { "from": "R-HOME", "to": "R-CONTACT", "anchor_fr": "Trouver l'adresse", "anchor_en": "Find the address", "context": "Section InfosPratiques" },
-      { "from": "R-PROMOTIONS", "to": "R-PRODUITS", "anchor_fr": "Voir tout le catalogue", "anchor_en": "Browse the full catalog", "context": "Bandeau cross-sell" },
-      { "from": "R-PRODUITS", "to": "R-PROMOTIONS", "anchor_fr": "Promotions actives cette semaine", "anchor_en": "Active promotions this week", "context": "Bandeau cross-sell" },
-      { "from": "R-PRODUITS", "to": "R-CONTACT", "anchor_fr": "Une question sur un produit ?", "anchor_en": "A question about a product?", "context": "Footer de page" },
-      { "from": "R-CONTACT", "to": "R-HOME", "anchor_fr": "Retour à l'accueil", "anchor_en": "Back to home", "context": "Logo header" },
-      { "from": "R-CONTACT", "to": "R-PRIVACY", "anchor_fr": "Lire la politique de confidentialité", "anchor_en": "Read the privacy policy", "context": "Note Loi 25 sous formulaire" },
-      { "from": "R-PRIVACY", "to": "R-CONTACT", "anchor_fr": "Contacter le responsable de la protection des renseignements personnels", "anchor_en": "Contact the privacy officer", "context": "Section RPP" }
+      { "from": "/", "to": "/promotions", "anchor_fr": "Voir les promotions de la semaine", "anchor_en": "See this week's deals", "context": "Hero CTA primaire (S-001) + StickyCTA (S-008)" },
+      { "from": "/", "to": "/produits", "anchor_fr": "Voir tout le catalogue", "anchor_en": "See full catalogue", "context": "S-003 CategoriesProduits (4 cards par catégorie)" },
+      { "from": "/", "to": "/contact", "anchor_fr": "Trouver l'adresse", "anchor_en": "Get the address", "context": "Hero CTA secondaire + S-005 InfosPratiques" },
+      { "from": "/promotions", "to": "/produits", "anchor_fr": "Découvrir tout le catalogue", "anchor_en": "Discover the full catalogue", "context": "S-012 CrossSellProduits" },
+      { "from": "/produits", "to": "/promotions", "anchor_fr": "Promotions actives cette semaine", "anchor_en": "Active deals this week", "context": "S-017 CrossSellPromotions" },
+      { "from": "/contact", "to": "/politique-confidentialite", "anchor_fr": "Vos droits Loi 25", "anchor_en": "Your Law 25 rights", "context": "S-022 ContactNoteRPP" },
+      { "from": "footer (toutes pages)", "to": "/politique-confidentialite", "anchor_fr": "Politique de confidentialité", "anchor_en": "Privacy policy", "context": "Footer column légal" },
+      { "from": "footer (toutes pages)", "to": "/mentions-legales", "anchor_fr": "Mentions légales", "anchor_en": "Legal notice", "context": "Footer column légal" }
     ],
-    "hub_pages": ["R-HOME"],
+    "hub_pages": [
+      { "path": "/", "rationale": "Homepage — pivot vers toutes les autres pages, hub d'autorité SEO" },
+      { "path": "/promotions", "rationale": "KPI conversion principal — toutes les pages internes y pointent (sticky CTA + cross-sell)" }
+    ],
     "orphan_check": {
-      "orphans": [],
-      "rule": "Toutes les routes ont au moins un lien entrant via main_nav, footer_nav, ou link_map"
+      "all_pages_have_inbound_links": true,
+      "verification": "Chaque route est référencée depuis au moins le main_nav ou un cross-sell dédié. Pages légales linkées depuis le footer (omniprésent)."
     },
-    "max_outbound_per_page": 30,
-    "footer_global_links_count": 10
-  },
-  "soic_alignment": {
-    "D1_architecture": "App Router structure : `app/[locale]/<route>/page.tsx` + segment dynamique `[locale]` unique. Pas de sous-dossier inutile.",
-    "D2_typescript": "Tous les composants page typés via `PageProps<{ locale: 'fr' | 'en' }>`. Routes typées via union string.",
-    "D5_i18n": "100% des routes ont leur équivalent EN ; messages dans `messages/fr.json` + `messages/en.json` ; hreflang via generateMetadata().",
-    "D7_seo": "Sitemap dynamique (app/sitemap.ts) couvre les 6 routes × 2 locales = 12 URL ; profondeur max 1 ; metadata par page.",
-    "D8_legal": "2 formulaires avec consentement Loi 25 explicite, opt-in, retention documentée. 5 tracking points conditionnés au cookie consent."
-  },
-  "checklist": {
-    "json_valid": true,
-    "no_orphan_page": true,
-    "max_depth_3": true,
-    "all_routes_fr_en": true,
-    "forms_with_loi25_consent": true,
-    "main_nav_max_7": true,
-    "all_routes_have_template": true
+    "max_outbound_per_page": 25,
+    "internal_linking_density": "Modérée — site vitrine 6 pages, maillage cross-sell explicite entre /promotions ↔ /produits (P01 cycle de conversion)."
   }
 }

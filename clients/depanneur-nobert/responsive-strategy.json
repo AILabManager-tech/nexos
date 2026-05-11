@@ -1,256 +1,249 @@
 {
   "$schema": "nexos-ph2/responsive-strategy/v1",
-  "generated_at": "2026-04-28T00:00:00Z",
+  "generated_at": "2026-05-10T00:00:00Z",
   "client_slug": "depanneur-nobert",
   "based_on": [
-    "wireframes.json",
-    "design-tokens.json",
-    "stack-decision.json (Tailwind 3.4 + Next.js 15)"
+    "wireframes.json (24 sections, mapping S-001..S-024)",
+    "design-tokens.json (typo scale Major Third + spacing)",
+    "ph0 §4.4 (clientele voisinage = trafic mobile dominant)",
+    "brief.context (clientele tous ages 8-80, lisibilite senior critique)"
   ],
+  "_constraints": {
+    "approach": "mobile-first",
+    "min_touch_target_px": 48,
+    "no_horizontal_scroll_mobile": true,
+    "zoom_200_functional": true,
+    "wcag_2_5_8_target_size": "minimum"
+  },
   "approach": "mobile-first",
-  "_rationale": "Audience prioritaire = Voisin fidèle (cf. brand-identity §1.5) qui consulte le site sur mobile dans la rue/à la maison pour vérifier promos et horaires. Le mobile est l'expérience PRIMAIRE, le desktop est secondaire.",
   "breakpoints": {
-    "_base": "0–639px (mobile portrait — base CSS sans préfixe)",
-    "sm": {"min_width": "640px", "tailwind_prefix": "sm:", "usage": "Tablettes portrait, gros téléphones (iPhone 14 Plus paysage)"},
-    "md": {"min_width": "768px", "tailwind_prefix": "md:", "usage": "Tablettes paysage (iPad standard)"},
-    "lg": {"min_width": "1024px", "tailwind_prefix": "lg:", "usage": "Desktop standard, laptop"},
-    "xl": {"min_width": "1280px", "tailwind_prefix": "xl:", "usage": "Grand desktop"},
-    "2xl": {"min_width": "1536px", "tailwind_prefix": "2xl:", "usage": "Ultra-wide (rare — non utilisé sauf catalogue produits)"}
+    "_base_mobile": {"max_width": "639px", "usage": "iPhone SE 375 -> 639px (gros telephones)"},
+    "sm": {"min_width": "640px", "usage": "Tablettes portrait, gros telephones paysage"},
+    "md": {"min_width": "768px", "usage": "Tablettes paysage (iPad)"},
+    "lg": {"min_width": "1024px", "usage": "Desktop standard (laptops)"},
+    "xl": {"min_width": "1280px", "usage": "Grand desktop"},
+    "2xl": {"min_width": "1536px", "usage": "Ultra-wide (rare, max-w-7xl bornee)"}
   },
   "navigation": {
     "mobile": {
-      "type": "hamburger-slide-in-right",
-      "trigger": "Bouton hamburger en haut à droite (Menu icon Lucide, h-12 w-12)",
-      "behavior": "Slide-in depuis la droite (translateX 100% → 0), overlay semi-transparent (bg-text/40) sur le reste",
-      "duration": "300ms cubic-bezier(0.0, 0.0, 0.2, 1)",
-      "close": "Bouton X (h-12 w-12) + clic sur overlay + touche Escape",
-      "items": "Liste verticale full-width — Accueil, Promotions (highlight accent badge), Produits, Contact + Switcher FR/EN en bas + CTA principal 'Voir les promotions' full-width primary",
-      "spacing": "py-4 px-6 par item, gap-2 entre items, font-heading text-xl",
-      "a11y": "focus-trap dans le menu ouvert (lib focus-trap-react ou native), aria-expanded sur trigger, aria-modal='true' sur le panneau, role='dialog'",
-      "scroll_lock": "body.overflow-hidden quand menu ouvert"
+      "type": "hamburger-slide-in-from-right",
+      "trigger": "Bouton hamburger (Lucide Menu icon, 48x48 px touch target) en haut a droite du header",
+      "behavior": "Slide-in depuis la droite (translateX), overlay backdrop semi-transparent (rgba(26,43,60,0.85)) sous le panneau",
+      "close_methods": ["Bouton X (Lucide X icon, 48x48)", "Clic sur overlay backdrop", "Touche Escape", "Swipe-right (optionnel)"],
+      "items_layout": "Liste verticale full-width, padding-y 16px par item (≥48px height assure), separateurs subtle border",
+      "cta_position": "CTA primaire 'Voir les promotions' en bas du panneau, full-width, fond accent",
+      "lang_switcher_position": "Sous les nav items, avant le CTA, deux boutons FR/EN side-by-side",
+      "a11y": [
+        "focus-trap dans le panneau ouvert (lib focus-trap-react ou impl native)",
+        "aria-expanded sur le trigger hamburger",
+        "aria-controls pointe vers l'id du panneau",
+        "aria-modal='true' sur le panneau ouvert",
+        "Premier focus sur le bouton X a l'ouverture",
+        "Restauration du focus sur le hamburger a la fermeture"
+      ]
     },
     "tablet": {
-      "type": "hamburger-slide-in-right",
-      "breakpoint_active": "< lg (1024px)",
-      "note": "Le menu hamburger reste actif jusqu'au desktop pour conserver la simplicité (4 nav items mais switcher langue + CTA promos = 6 zones tactiles, trop dense en horizontal sur 768-1023px)"
+      "type": "hamburger (memes regles que mobile)",
+      "breakpoint_switch": "lg (1024px) — basculement vers desktop horizontal",
+      "rationale": "4 items + LangSwitcher = trop encombre sur tablet portrait. Mieux vaut keep hamburger jusqu'a 1024px."
     },
     "desktop": {
-      "type": "horizontal-sticky",
-      "breakpoint_active": "≥ lg (1024px)",
-      "structure": "Logo wordmark gauche | Nav 4 items centre | Switcher FR/EN + CTA primary droite",
-      "behavior": "Sticky au scroll (top-0 z-40), shadow apparaît au scroll > 10px (transition 200ms)",
-      "max_items": 7,
-      "current_items": 4,
-      "promotions_highlight": "Lien 'Promotions' = bg-accent-subtle px-3 py-1 rounded-full text-text — visuellement distinct des 3 autres liens"
-    }
-  },
-  "global_components_responsive": {
-    "header": {
-      "mobile": "h-16 px-4 — logo réduit + hamburger droite",
-      "tablet": "h-16 px-6 — idem mobile",
-      "desktop": "h-20 px-8 — logo + nav horizontal + CTA"
-    },
-    "footer": {
-      "mobile": "Accordéons par colonne (3 sections collapsées par défaut, première ouverte)",
-      "tablet": "Grid 2 cols",
-      "desktop": "Grid 3 cols + bandeau copyright en bas"
-    },
-    "sticky_cta_S008": {
-      "mobile": "fixed bottom-0 inset-x-0 h-14 bg-primary rounded-none full-width bar (z-45)",
-      "tablet": "fixed bottom-6 right-6 px-6 py-3 bg-primary rounded-full shadow-sticky-cta",
-      "desktop": "fixed bottom-8 right-8 px-7 py-4 bg-primary rounded-full shadow-sticky-cta"
-    },
-    "cookie_banner": {
-      "mobile": "fixed bottom-0 inset-x-0 bg-surface border-t-2 border-info p-4 z-70 — boutons stack vertical",
-      "desktop": "fixed bottom-6 left-6 right-6 max-w-4xl mx-auto rounded-lg shadow-lg — boutons inline"
+      "type": "horizontal-sticky-shrink-on-scroll",
+      "breakpoint": "lg (1024px)",
+      "behavior_default": "Header haut (h-20), logo wordmark + 4 nav links + CTA accent + LangSwitcher",
+      "behavior_scrolled": "Header shrink (h-16), shadow-sm, transition 200ms (Trigger : window.scrollY > 32px)",
+      "max_items_visible": 6,
+      "active_link_indicator": "Underline accent or 2px sous le link de la route courante (next-intl pathname compare)",
+      "promotions_highlight_badge": "Badge accent or 'Cette semaine' a cote du link Promotions (signal visuel KPI primaire)"
     }
   },
   "grid_strategy": {
     "container": {
-      "default": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
-      "prose": "max-w-3xl mx-auto px-4 sm:px-6",
-      "form": "max-w-xl mx-auto px-4"
+      "default": "max-w-7xl mx-auto",
+      "padding_x": "px-4 sm:px-6 lg:px-8",
+      "_rationale": "Padding progressif evite les bords trop colles sur tablet"
     },
-    "promotions_cards_S002_S010": {
-      "mobile": "grid-cols-1 gap-4 (S-002) | grid-cols-2 gap-3 (S-010 dense)",
-      "sm_640": "grid-cols-2 gap-4",
-      "md_768": "grid-cols-2 gap-6",
-      "lg_1024": "grid-cols-3 gap-6 (S-002) | grid-cols-3 gap-6 (S-010)",
-      "xl_1280": "grid-cols-3 (S-002) | grid-cols-4 gap-6 (S-010)"
+    "section_padding_y": {
+      "mobile": "py-12 (48px)",
+      "tablet": "py-16 (64px)",
+      "desktop": "py-20 (80px)"
     },
-    "produits_galerie_S015": {
-      "mobile": "grid-cols-2 gap-3 (cards compactes — image + nom)",
-      "sm_640": "grid-cols-3 gap-4",
-      "lg_1024": "grid-cols-4 gap-4",
-      "xl_1280": "grid-cols-5 gap-4"
+    "cards_grid": {
+      "promotions_homepage_top3": {
+        "mobile": "grid-cols-1 gap-4",
+        "tablet": "grid-cols-2 gap-6",
+        "desktop": "grid-cols-3 gap-6"
+      },
+      "promotions_full_list": {
+        "mobile": "grid-cols-1 gap-4",
+        "tablet": "grid-cols-2 gap-6",
+        "desktop": "grid-cols-3 gap-6"
+      },
+      "categories_4_icons": {
+        "mobile": "grid-cols-2 gap-3",
+        "tablet": "grid-cols-4 gap-4",
+        "desktop": "grid-cols-4 gap-6"
+      },
+      "produits_galerie_per_category": {
+        "mobile": "grid-cols-2 gap-3",
+        "tablet": "grid-cols-3 gap-4",
+        "desktop": "grid-cols-4 gap-4",
+        "xl": "xl:grid-cols-6 gap-4"
+      },
+      "testimonials_voisinage": {
+        "mobile": "flex overflow-x-auto snap-x snap-mandatory gap-4 (carousel scroll natif)",
+        "tablet": "grid-cols-2 gap-6",
+        "desktop": "grid-cols-3 gap-6"
+      }
     },
-    "categories_S003_S012": {
-      "mobile": "grid-cols-2 gap-4",
-      "md_768": "grid-cols-4 gap-4",
-      "lg_1024": "grid-cols-4 gap-6"
-    },
-    "social_proof_S004": {
-      "mobile": "grid-cols-1 gap-6",
-      "md_768": "grid-cols-2 gap-6",
-      "lg_1024": "grid-cols-3 gap-8"
-    },
-    "split_50_50_S005_S019": {
-      "mobile": "grid-cols-1 gap-8 (stack vertical)",
-      "lg_1024": "grid-cols-2 gap-12"
-    },
-    "story_brand_S006": {
-      "mobile": "grid-cols-1 gap-6 (image au-dessus)",
-      "lg_1024": "grid-cols-[2fr_3fr] gap-16 (image gauche 40%, texte 60%)"
-    },
-    "hero_S001": {
-      "mobile": "grid-cols-1 (texte puis image dessous)",
-      "lg_1024": "grid-cols-[3fr_2fr] gap-12 (texte gauche 60%, image droite 40%)"
+    "split_2_cols": {
+      "infos_pratiques": {"mobile": "grid-cols-1", "desktop": "grid-cols-2 gap-12"},
+      "story_brand": {"mobile": "grid-cols-1", "desktop": "grid-cols-2 gap-12 items-center"},
+      "coordonnees_horaires": {"mobile": "grid-cols-1 gap-6", "desktop": "grid-cols-2 gap-12"}
     },
     "content_width": {
-      "text_blocks": "max-w-prose (65ch)",
-      "full_sections": "max-w-7xl",
-      "hero": "full-width (avec padding interne)",
-      "legal_doc_S023_S024": "max-w-3xl"
+      "long_form_legal": "max-w-3xl mx-auto (S-023, S-024)",
+      "form_centered": "max-w-2xl mx-auto (S-021 ContactForm, S-007 Newsletter)",
+      "faq_accordion": "max-w-3xl mx-auto",
+      "section_text_blocks": "max-w-prose (65ch)",
+      "hero_overlay_text": "max-w-2xl (text-only width on hero)"
     }
   },
   "typography_scaling": {
-    "h1_hero": "text-3xl sm:text-4xl lg:text-5xl",
-    "h1_legal": "text-2xl sm:text-3xl lg:text-4xl",
-    "h2_section": "text-2xl sm:text-3xl lg:text-4xl",
-    "h3": "text-xl sm:text-2xl",
+    "_strategy": "Mobile-first avec sm:/lg: pour passer du mobile compact au desktop scale Major Third complet.",
+    "h1": "text-3xl sm:text-4xl lg:text-h1 (3xl=1.875rem -> 4xl=2.25rem -> h1=3.815rem)",
+    "h2": "text-2xl sm:text-3xl lg:text-h2 (2xl=1.5rem -> 3xl=1.875rem -> h2=3.052rem)",
+    "h3": "text-xl sm:text-2xl lg:text-h3 (xl=1.25rem -> 2xl=1.5rem -> h3=2.441rem)",
     "h4": "text-lg sm:text-xl",
-    "body": "text-base",
-    "body_emphasized_S018": "text-lg sm:text-xl lg:text-2xl (adresse + téléphone contact hero — D3 heavy + audience 80)",
-    "small": "text-small",
-    "caption": "text-caption"
+    "body": "text-base (1rem) — minimum 16 px sur tous breakpoints",
+    "body_lg": "text-base lg:text-lg (paragraphes intro, body StoryBrand)",
+    "small": "text-sm",
+    "caption": "text-xs lg:text-sm",
+    "_senior_friendly_overrides": {
+      "contact_address_phone_S018_S019": "text-xl lg:text-2xl (S-018, S-019) — clientele 80 ans, lisibilite critique",
+      "form_labels_S021_S007": "text-base lg:text-lg (visibilite formulaires)",
+      "_zoom_200_check": "Body 16px x 200% = 32px confortable. Touch targets 48px x 200% = 96px (largement OK)."
+    }
   },
   "image_strategy": {
     "hero_S001": {
-      "mobile": "aspect-[4/3] object-cover w-full",
-      "tablet": "aspect-[16/9] object-cover w-full",
-      "desktop": "aspect-[4/3] object-contain max-h-[480px]",
+      "mobile": "aspect-[4/5] object-cover, focal point center (overlay dense pour text)",
+      "tablet": "aspect-[3/2] object-cover",
+      "desktop": "aspect-[21/9] object-cover, min-h-[80vh]",
       "loading": "eager (above-the-fold)",
-      "priority": true,
-      "sizes": "(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 40vw",
-      "fetchpriority": "high"
+      "sizes": "100vw"
     },
-    "promotions_cards_S002_S010": {
-      "aspect_ratio": "aspect-[4/3]",
-      "object_fit": "object-cover",
+    "card_promotions_S002_S010": {
+      "all_breakpoints": "aspect-[16/9] object-cover",
+      "loading": "lazy (sauf top 3 sur S-002 qui peuvent etre eager si visibles above-the-fold)",
+      "sizes": "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+    },
+    "card_produits_S015": {
+      "all_breakpoints": "aspect-square (1:1) object-cover",
       "loading": "lazy",
-      "sizes": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+      "sizes": "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
     },
-    "produits_galerie_S015": {
-      "aspect_ratio": "aspect-square",
-      "object_fit": "object-contain (packshot fond blanc) ou object-cover",
-      "loading": "lazy (intersection observer next/image)",
-      "sizes": "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-    },
-    "social_proof_avatars_S004": {
-      "aspect_ratio": "aspect-square rounded-full",
-      "size_mobile": "w-16 h-16",
-      "size_desktop": "w-20 h-20",
-      "object_fit": "object-cover",
-      "loading": "lazy"
-    },
-    "story_brand_S006": {
-      "mobile": "aspect-[4/3] w-full",
-      "desktop": "aspect-[4/5] max-w-md",
-      "loading": "lazy",
-      "sizes": "(max-width: 1024px) 100vw, 40vw"
-    },
-    "maps_placeholder_S020": {
-      "aspect_ratio_mobile": "aspect-[4/3]",
-      "aspect_ratio_desktop": "aspect-[16/9]",
+    "story_brand_portrait_S006": {
+      "all_breakpoints": "aspect-[4/5] object-cover",
       "loading": "lazy",
       "sizes": "(max-width: 1024px) 100vw, 50vw"
     },
-    "global_rules": {
-      "format_priority": ["avif", "webp", "jpg fallback"],
-      "quality": 80,
-      "next_image_required": true,
-      "blur_placeholder": true,
-      "max_file_size_kb": 200
+    "testimonial_avatar_S004": {
+      "all_breakpoints": "aspect-square rounded-full w-16 h-16 object-cover",
+      "loading": "lazy",
+      "sizes": "64px"
+    },
+    "maps_placeholder_S020": {
+      "mobile": "aspect-[4/3]",
+      "desktop": "aspect-[16/9]",
+      "loading": "lazy",
+      "sizes": "(max-width: 1024px) 100vw, 60vw"
+    },
+    "_global_rules": {
+      "format_priority": ["avif", "webp", "jpg"],
+      "default_quality": 80,
+      "next_image_required": "Toutes les images via next/image (jamais <img>)",
+      "blur_placeholder": "blurDataURL pour images au-dessus du fold (hero, top promos)"
     }
   },
   "touch_targets": {
     "min_size_px": 48,
-    "tailwind_min_class": "min-h-12 min-w-12",
-    "spacing_between_targets": "Minimum 8px (gap-2)",
-    "wcag_reference": "WCAG 2.5.8 Target Size (Minimum) — niveau AA, 24×24px ; on cible 48×48 (AAA + audience senior 60-80)",
+    "tailwind_class": "min-h-[48px] min-w-[48px] (ou h-12 w-12 pour icones seules)",
+    "spacing_between_targets_px": 8,
     "applies_to": [
-      "Boutons primaires/secondaires",
-      "Liens nav header/footer/mobile menu",
-      "Onglets categoriesNav S-014",
-      "Filtres chips S-010",
-      "Accordéons FAQ S-011/S-016",
-      "Inputs formulaires S-007/S-021",
-      "Checkbox consentement",
-      "Maps load button S-020",
-      "Sticky CTA S-008",
-      "Switcher langue",
-      "Hamburger trigger"
+      "Tous boutons (Button.tsx variant primary/accent/ghost)",
+      "Liens de navigation (Header desktop ET mobile)",
+      "Hamburger trigger + close X",
+      "LangSwitcher FR/EN",
+      "tel: links (S-018, S-019)",
+      "Toggles accordion FAQ (S-011, S-016)",
+      "Bouton 'Charger la carte' (S-020)",
+      "Sticky CTA mobile et desktop (S-008)",
+      "Cards cliquables entieres (CategoriesProduits S-003)"
     ],
-    "specific_overrides": {
-      "phone_link_S018": "min-h-14 (target XL pour audience 80 ans) text-2xl",
-      "address_link_S018": "min-h-14 text-xl"
-    }
+    "_compliance": "WCAG 2.5.8 Target Size (Minimum) + iOS HIG 44pt = 44px ; Material Design 48dp. NEXOS = 48px partout."
   },
   "content_adaptation": {
-    "tables_horaires_S005_S019": "<table> structurée — pas de stack vertical (hierarchie jour/heure cruciale). Sur mobile, font-size légèrement réduit + padding compact. Test à 200% zoom obligatoire.",
-    "long_text_S023_S024": "Pas de truncation — texte légal doit être lisible intégralement. Sur mobile, font-size 1rem + line-height 1.7 + padding 16px.",
-    "forms_S007_S021": "Stack vertical sur mobile (label au-dessus). Sur desktop, on garde stack vertical (formulaires courts, plus accessible).",
-    "footer": "Accordéons par colonne sur mobile (premier ouvert), grid 3 cols sur desktop",
-    "filters_chips_S010": "overflow-x-auto + snap-x sur mobile (scroll horizontal). flex justify-center sur desktop.",
-    "categories_anchors_S013": "overflow-x-auto + scroll-snap sur mobile, flex centered sur desktop"
+    "tables_horaires_S019": {
+      "mobile": "table-fixed (jour 40%, heures 60%), text-base, lisible sans scroll horizontal",
+      "desktop": "table-auto, text-lg",
+      "_no_overflow_scroll_needed": "Table 2 colonnes simple — pas besoin d'overflow"
+    },
+    "long_form_legal_S023_S024": {
+      "mobile": "prose prose-sm px-4 (lecture 1 colonne, leading-relaxed)",
+      "tablet": "prose prose-base max-w-2xl mx-auto",
+      "desktop": "prose prose-lg max-w-3xl mx-auto"
+    },
+    "forms_S007_S021": {
+      "mobile": "Stack vertical 100% width, labels au-dessus des inputs",
+      "desktop": "Email + tel sur meme ligne (md:grid-cols-2 gap-4) pour S-021, reste en stack"
+    },
+    "footer": {
+      "mobile": "Stack vertical : 3 colonnes deviennent 3 sections superposees, separees par border-t",
+      "tablet": "grid-cols-2 (Le depanneur + Infos pratiques | Legal Loi 25)",
+      "desktop": "grid-cols-3 gap-8"
+    },
+    "anchor_nav_produits_S014": {
+      "mobile": "Overflow-x-auto, scroll-snap-type-x-mandatory, snap-start sur chaque ancre",
+      "desktop": "Inline justify-center, no-scroll"
+    }
   },
-  "viewport_config": {
-    "meta_viewport": "width=device-width, initial-scale=1, viewport-fit=cover",
-    "no_user_scalable_lock": "INTERDIT — l'utilisateur DOIT pouvoir zoomer (WCAG 1.4.4)",
-    "safe_area_iOS": "padding-bottom: env(safe-area-inset-bottom) sur sticky CTA mobile (S-008) pour iPhone X+ notch"
+  "scroll_behavior": {
+    "smooth_scroll_anchors": "scroll-smooth sur html, scroll-mt-20 lg:scroll-mt-24 (offset header sticky) sur cibles d'ancres",
+    "sticky_header_threshold_px": 32,
+    "sticky_subnav_offset_top": "Header height (16 mobile, 20 desktop)",
+    "back_to_top": "Hidden — pas necessaire sur pages sub-7-sections (pas de scroll long sauf legal)"
   },
   "testing_checklist": {
-    "devices_min": [
-      "iPhone SE 1st gen (375×667)",
-      "iPhone 14 (390×844)",
-      "iPhone 14 Plus (430×932)",
-      "Galaxy S22 (360×780)",
-      "iPad Mini (768×1024)",
-      "iPad Pro 11 (834×1194)",
-      "MacBook 13 (1280×800)",
-      "Desktop FHD (1920×1080)"
+    "devices": [
+      "iPhone SE (375 x 667)",
+      "iPhone 14 Pro (393 x 852)",
+      "iPad portrait (768 x 1024)",
+      "iPad paysage (1024 x 768)",
+      "MacBook 13 (1280 x 800)",
+      "Desktop FHD (1920 x 1080)"
     ],
-    "orientation": "Portrait ET paysage testés pour mobiles + tablettes",
-    "zoom": "Fonctionnel jusqu'à 200% zoom (WCAG 1.4.4) — vérifier S-001, S-021 form, S-019 horaires, S-023 prose",
-    "reduced_motion": "Tester avec prefers-reduced-motion: reduce — toutes animations doivent dégrader proprement",
-    "touch_only": "Tester sans hover state (mobile/tablet) — focus visible doit fonctionner au tap",
-    "keyboard_only": "Toute interaction accessible au clavier (Tab/Shift+Tab/Enter/Escape) — focus trap menu mobile + cookie banner + modale Maps",
-    "screen_readers": "VoiceOver iOS + TalkBack Android + NVDA Windows pour formulaires + sticky CTA + cookie banner"
-  },
-  "performance_budgets_responsive": {
-    "first_load_js_mobile": "< 180 KB (gzip)",
-    "lcp_mobile_3g": "< 2.5 s",
-    "lcp_desktop": "< 1.5 s",
-    "image_total_per_page": "< 1 MB (page promos avec ~12 cards)",
-    "image_per_card": "< 80 KB (webp 80% quality)",
-    "image_hero": "< 200 KB (priority + eager)",
-    "cls_mobile": "< 0.1",
-    "inp_mobile": "< 200 ms"
-  },
-  "tailwind_config_breakpoints_check": {
-    "uses_tailwind_defaults": true,
-    "no_custom_breakpoints_needed": true,
-    "screens_extend_required": false
+    "orientation": "Portrait ET paysage testees pour tablettes",
+    "zoom_levels": ["100%", "150%", "200%"],
+    "browsers": ["Safari iOS", "Chrome Android", "Firefox Desktop", "Safari macOS", "Edge Windows"],
+    "specific_checks": [
+      "Hamburger nav focus-trap fonctionnel au clavier",
+      "Sticky CTA hidden sur /promotions",
+      "Sticky subnav S-014 active state correct",
+      "tel: links cliquables sur mobile, pas de cassure desktop",
+      "Maps placeholder S-020 ne charge PAS l'iframe avant consent",
+      "Cookie consent S-008 pas masque par sticky CTA mobile",
+      "Hero overlay maintient ratio AA sur les zones de texte meme sur image claire"
+    ]
   },
   "checklist": {
-    "json_valid": true,
-    "mobile_first_documented": true,
+    "mobile_first": true,
     "navigation_mobile_desktop_defined": true,
-    "all_24_sections_responsive_mapped": true,
-    "touch_targets_ge_48px": true,
-    "images_sizes_attribute_planned": true,
-    "no_horizontal_scroll_mobile": true,
-    "zoom_200_supported": true,
-    "viewport_user_scalable_unlocked": true
+    "grids_per_content_type": true,
+    "touch_targets_48_min": true,
+    "images_sizes_attribute": true,
+    "no_horizontal_scroll": true,
+    "zoom_200_functional": true,
+    "senior_friendly_overrides": true
   }
 }

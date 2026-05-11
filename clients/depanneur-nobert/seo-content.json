@@ -1,6 +1,7 @@
 {
   "$schema": "nexos-ph3/seo-content/v1",
-  "generated_at": "2026-04-28T00:00:00Z",
+  "generated_at": "2026-05-10T00:00:00Z",
+  "regenerated_reason": "Re-run Phase 3 post-Ph2 design 2026-05-10 — alignement slug EN /promotions→/deals (site-map-logic Ph1) + tagline brand vouvoiement.",
   "client_slug": "depanneur-nobert",
   "based_on": [
     "seo-strategy.json",
@@ -40,24 +41,24 @@
     {
       "page": "promotions",
       "route_fr": "/promotions",
-      "route_en": "/en/promotions",
+      "route_en": "/en/deals",
       "title_fr": "Promotions de la semaine — Dépanneur Nobert {ville}",
-      "title_en": "Weekly Promotions — Dépanneur Nobert {city}",
+      "title_en": "Weekly Deals — Dépanneur Nobert {city}",
       "title_length_fr": 51,
-      "title_length_en": 44,
+      "title_length_en": 39,
       "description_fr": "Découvrez les promotions de la semaine au Dépanneur Nobert de {ville} : bières, snacks, essentiels du quotidien à prix réduits. Mises à jour chaque vendredi.",
-      "description_en": "Discover this week's promotions at Dépanneur Nobert in {city}: beer, snacks, essentials at reduced prices. Updated every Friday.",
+      "description_en": "Discover this week's deals at Dépanneur Nobert in {city}: beer, snacks, essentials at reduced prices. Updated every Friday.",
       "description_length_fr": 154,
-      "description_length_en": 128,
+      "description_length_en": 123,
       "canonical_fr": "https://depanneur-nobert.ca/promotions",
-      "canonical_en": "https://depanneur-nobert.ca/en/promotions",
+      "canonical_en": "https://depanneur-nobert.ca/en/deals",
       "hreflang": {
         "fr-CA": "https://depanneur-nobert.ca/promotions",
-        "en-CA": "https://depanneur-nobert.ca/en/promotions",
+        "en-CA": "https://depanneur-nobert.ca/en/deals",
         "x-default": "https://depanneur-nobert.ca/promotions"
       },
       "og_title_fr": "Promotions de la semaine — Dépanneur Nobert",
-      "og_title_en": "Weekly Promotions — Dépanneur Nobert",
+      "og_title_en": "Weekly Deals — Dépanneur Nobert",
       "og_description_fr": "Bières, snacks et essentiels en promo cette semaine au Dépanneur Nobert de {ville}.",
       "og_description_en": "Beer, snacks and essentials on sale this week at Dépanneur Nobert in {city}.",
       "twitter_card": "summary_large_image"

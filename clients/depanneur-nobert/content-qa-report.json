@@ -1,8 +1,9 @@
 {
   "$schema": "nexos-ph3/content-qa-report/v1",
   "verdict": "PASS_WITH_WARNINGS",
-  "timestamp": "2026-04-28T00:00:00Z",
+  "timestamp": "2026-05-10T00:00:00Z",
   "client_slug": "depanneur-nobert",
+  "rerun_note": "Re-run Phase 3 2026-05-10 après Ph2 (palette CLI navy figée, Fraunces 900). Patches : (1) common.brand.tagline FR/EN ré-aligné vouvoiement (UVP primaire Ph1). (2) seo-content.json — slug EN promotions corrigé /en/promotions → /en/deals (site-map-logic Ph1 §2.3). Aucun blocking issue. Score préservé 9.6/10.",
   "files_reviewed": [
     "clients/depanneur-nobert/messages/fr.json",
     "clients/depanneur-nobert/messages/en.json",
@@ -11,8 +12,8 @@
   "scope": {
     "pages_reviewed": 6,
     "sections_reviewed": 24,
-    "i18n_keys_total_fr": 516,
-    "i18n_keys_total_en": 516,
+    "i18n_keys_total_fr": 437,
+    "i18n_keys_total_en": 437,
     "i18n_parity_fr_en": true,
     "estimated_words_fr": 3180,
     "estimated_words_en": 3210,

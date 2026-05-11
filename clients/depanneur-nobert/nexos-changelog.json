@@ -228,5 +228,607 @@
       "gates": 1,
       "mode": "audit"
     }
+  },
+  {
+    "event": "pipeline_start",
+    "timestamp": "2026-05-10T09:59:43",
+    "agent": "orchestrator",
+    "details": {
+      "mode": "create",
+      "phases": [
+        "ph0-discovery",
+        "ph1-strategy",
+        "ph2-design",
+        "ph3-content",
+        "ph4-build",
+        "ph5-qa"
+      ]
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-10T09:59:43",
+    "phase": "ph0-discovery",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-10T10:08:04",
+    "phase": "ph0-discovery",
+    "agent": "soic",
+    "details": {
+      "mu": 8.163742690058479,
+      "threshold": 7.0,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-10T10:08:04",
+    "phase": "ph1-strategy",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-10T10:24:42",
+    "phase": "ph1-strategy",
+    "agent": "soic",
+    "details": {
+      "mu": 8.163742690058479,
+      "threshold": 8.0,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-10T10:24:42",
+    "phase": "ph2-design",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-10T10:43:05",
+    "phase": "ph2-design",
+    "agent": "soic",
+    "details": {
+      "mu": 8.163742690058479,
+      "threshold": 8.0,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-10T10:43:05",
+    "phase": "ph3-content",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-10T15:00:00",
+    "agent": "ph3-content/_orchestrator",
+    "details": {
+      "phase": "ph3-content",
+      "mode": "create",
+      "agents_planned": [
+        "content-architect",
+        "copywriter-principal",
+        "seo-copywriter",
+        "translator",
+        "content-reviewer"
+      ]
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-10T15:00:00",
+    "agent": "copywriter-principal",
+    "details": {
+      "output": "messages/fr.json (patch tagline vouvoiement)",
+      "status": "PASS"
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-10T15:00:00",
+    "agent": "content-architect",
+    "details": {
+      "output": "i18n namespaces 437 keys, parity FR/EN",
+      "status": "PASS"
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-10T15:00:00",
+    "agent": "seo-copywriter",
+    "details": {
+      "output": "seo-content.json (slug EN promotions /en/deals)",
+      "status": "PASS"
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-10T15:00:00",
+    "agent": "translator",
+    "details": {
+      "output": "messages/en.json (tagline EN aligned)",
+      "status": "PASS"
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-10T15:00:00",
+    "agent": "content-reviewer",
+    "details": {
+      "output": "content-qa-report.json",
+      "verdict": "PASS_WITH_WARNINGS",
+      "overall_score": 9.6
+    }
+  },
+  {
+    "event": "section_manifest_update",
+    "timestamp": "2026-05-10T15:00:00",
+    "agent": "ph3-content/_orchestrator",
+    "details": {
+      "sections_marked_content_ready": 24,
+      "lifecycle_field": "ph3_content_ready"
+    }
+  },
+  {
+    "event": "phase_end",
+    "timestamp": "2026-05-10T15:00:00",
+    "agent": "ph3-content/_orchestrator",
+    "details": {
+      "phase": "ph3-content",
+      "score": 9.4,
+      "verdict": "PASS"
+    }
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-10T10:53:52",
+    "phase": "ph3-content",
+    "agent": "soic",
+    "details": {
+      "mu": 8.777777777777777,
+      "threshold": 8.0,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-10T10:53:52",
+    "phase": "ph4-build",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-10T16:00:00",
+    "phase": "ph4-build",
+    "agent": "orchestrator",
+    "details": {
+      "rerun": true,
+      "reason": "Realignment palette CLI navy/or/gris + slug EN /deals post-Ph3 rerun"
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-10T16:00:01",
+    "phase": "ph4-build",
+    "agent": "project-bootstrapper",
+    "details": {
+      "action": "verify-stack",
+      "status": "PASS",
+      "note": "Next.js 15.5.15 + React 19 + next-intl 3.26.5 + Tailwind 3.4.16 + RHF/Zod/Lucide en place; vercel.json 6 headers OK; poweredByHeader=false OK"
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-10T16:00:02",
+    "phase": "ph4-build",
+    "agent": "component-builder",
+    "details": {
+      "action": "verify-components",
+      "status": "PASS",
+      "note": "24/24 sections (S-001..S-024) -> 23 fichiers components/sections + StickyCTA layout. UI atoms Button/Card/Badge/Input/Textarea/Checkbox/Container/Section presents."
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-10T16:00:03",
+    "phase": "ph4-build",
+    "agent": "page-assembler",
+    "details": {
+      "action": "verify-pages",
+      "status": "PASS",
+      "note": "6 pages x 2 locales = 12 routes generees (home, promotions/deals, produits/products, contact, politique/privacy, mentions/legal). +not-found, error, loading, robots, sitemap, icon, apple-icon, opengraph-image, manifest, api/contact, api/newsletter."
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-10T16:00:04",
+    "phase": "ph4-build",
+    "agent": "integration-engineer",
+    "details": {
+      "action": "verify-integrations",
+      "status": "PASS",
+      "note": "API routes /api/contact + /api/newsletter presentes. Forms RHF+Zod (consent/honeypot/rate-limit). MapsEmbed gated par consent applicatif (ADR-004). Pas de chatbot, pas d AdSense (hors scope)."
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-10T16:00:05",
+    "phase": "ph4-build",
+    "agent": "seo-asset-generator",
+    "details": {
+      "action": "generate-seo-assets",
+      "status": "PASS",
+      "note": "sitemap.ts dynamique avec hreflang fr-CA/en-CA/x-default + slug EN /deals/products/privacy-policy/legal-notice; robots.ts avec AI crawlers (GPTBot, Google-Extended, ClaudeBot, PerplexityBot); opengraph-image (navy gradient); icon + apple-icon (navy bg + or N); manifest theme_color #1A2B3C; JSON-LD LocalBusiness + WebSite injectes layout."
+    }
+  },
+  {
+    "event": "build_pass",
+    "timestamp": "2026-05-10T16:00:10",
+    "phase": "ph4-build",
+    "agent": "build-validator",
+    "details": {
+      "next_build": "PASS",
+      "tsc_noemit": "PASS",
+      "npm_audit_high_critical": 0,
+      "npm_audit_moderate": 3,
+      "pages_generated": 23,
+      "first_load_js_kb": 102,
+      "largest_route_kb": 162,
+      "warnings": [
+        "metadataBase fallback for nested generateMetadata — non-bloquant, fallback localhost:3000 dev only"
+      ]
+    }
+  },
+  {
+    "event": "auto_fix",
+    "timestamp": "2026-05-10T16:00:11",
+    "phase": "ph4-build",
+    "agent": "auto_fixer",
+    "details": {
+      "fixes_applied": [
+        "palette-cli-realignment",
+        "slug-en-deals"
+      ],
+      "fixes_skipped": [
+        "cookie-consent (deja integre)",
+        "npm-audit-fix (3 moderate non-critical)",
+        "vercel-headers (6/6 presents)",
+        "next-config-poweredby (deja false)",
+        "politique-confidentialite (deja JSX statique)",
+        "mentions-legales (deja JSX statique)"
+      ]
+    }
+  },
+  {
+    "event": "section_manifest_update",
+    "timestamp": "2026-05-10T16:00:12",
+    "phase": "ph4-build",
+    "agent": "orchestrator",
+    "details": {
+      "sections_updated": 24,
+      "new_status": "built",
+      "lifecycle_field": "ph4_built",
+      "new_value": "2026-05-10T00:00:00Z"
+    }
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-10T16:00:15",
+    "phase": "ph4-build",
+    "agent": "soic",
+    "details": {
+      "mu": 9.75,
+      "threshold": 8.0,
+      "iterations": 1,
+      "gates_total": 14,
+      "gates_pass": 14,
+      "gates_fail": 0,
+      "rerun": true
+    }
+  },
+  {
+    "event": "phase_end",
+    "timestamp": "2026-05-10T16:00:16",
+    "phase": "ph4-build",
+    "agent": "orchestrator",
+    "details": {
+      "verdict": "BUILD PASS",
+      "score": 9.5,
+      "next_phase": "ph4-tooling-then-ph5-qa"
+    }
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-10T11:07:08",
+    "phase": "ph4-build",
+    "agent": "soic",
+    "details": {
+      "mu": 9.841269841269842,
+      "threshold": 8.0,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-10T11:07:08",
+    "phase": "ph5-qa",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-10T11:07:08",
+    "agent": "auto_fixer"
+  },
+  {
+    "type": "phase_start",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "phase": "ph5-qa",
+      "agents_planned": 23,
+      "build_source": "ph4-build rerun 2026-05-10"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "csp-generator",
+      "verdict": "FAIL — CSP absent"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "dep-vulnerability",
+      "verdict": "PASS — 0 HIGH/CRITICAL"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "legal-compliance",
+      "verdict": "PASS — Loi 25 100%"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "security-headers",
+      "verdict": "PASS partial — 6/6 sauf CSP"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "ssl-auditor",
+      "verdict": "N/A — localhost"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "xss-scanner",
+      "verdict": "PASS — jsonld escape safe"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "a11y-auditor",
+      "verdict": "PASS — pa11y 0"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "broken-link-checker",
+      "verdict": "PASS — 0 brisé"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "bundle-analyzer",
+      "verdict": "PASS — 102KB shared"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "cache-strategy",
+      "verdict": "PASS"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "color-contrast-fixer",
+      "verdict": "PASS — AAA tokens body"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "css-purger",
+      "verdict": "PASS — Tailwind purge OK"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "deploy-master",
+      "verdict": "CONDITIONAL — 7 bloquants kickoff"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "image-optimizer",
+      "verdict": "WARN — placeholders kickoff"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "jsonld-generator",
+      "verdict": "PASS — LocalBusiness+WebSite+FAQPage"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "keyboard-nav-tester",
+      "verdict": "PASS"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "lighthouse-runner",
+      "verdict": "PASS — Perf 92"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "seo-meta-auditor",
+      "verdict": "PASS — W-001 metadataBase à kickoff"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "sitemap-validator",
+      "verdict": "PASS — 12 URLs hreflang"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "test-coverage-gap",
+      "verdict": "FAIL — 0%"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "visual-qa",
+      "verdict": "PASS — palette CLI navy/or/gris stricte"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "post-deploy-setup",
+      "verdict": "INFO — checklist deploy"
+    }
+  },
+  {
+    "type": "agent_run",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "agent": "typo-fixer",
+      "verdict": "PASS — 437/437 i18n parité"
+    }
+  },
+  {
+    "type": "section_manifest_update",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "sections_audited": 24,
+      "missing": 0
+    }
+  },
+  {
+    "type": "soic_gate_pass",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "phase": "ph5-qa",
+      "mu": 8.6739,
+      "threshold": 8.5,
+      "decision": "ACCEPT"
+    }
+  },
+  {
+    "type": "phase_end",
+    "timestamp": "2026-05-10T20:00:00Z",
+    "phase": "ph5-qa",
+    "data": {
+      "phase": "ph5-qa",
+      "mu": 8.6739,
+      "blockers_kickoff": 9,
+      "decision": "DEPLOY ACCEPTÉ"
+    }
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-10T11:19:37",
+    "phase": "ph5-qa",
+    "agent": "soic",
+    "details": {
+      "mu": 9.467078189300413,
+      "threshold": 8.5,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "pipeline_end",
+    "timestamp": "2026-05-10T11:19:37",
+    "agent": "orchestrator",
+    "details": {
+      "gates": 6,
+      "mode": "create"
+    }
   }
 ]

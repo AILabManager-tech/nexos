@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'promotions.meta' });
   const config = getClientConfig();
-  const route = locale === 'fr' ? 'promotions' : 'promotions';
+  const route = locale === 'fr' ? 'promotions' : 'deals';
   return {
     title: t('title', { ville: config.ville, city: config.ville }),
     description: t('description', { ville: config.ville, city: config.ville }),
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       canonical: `${config.baseUrl}/${locale}/${route}`,
       languages: {
         'fr-CA': `${config.baseUrl}/fr/promotions`,
-        'en-CA': `${config.baseUrl}/en/promotions`,
+        'en-CA': `${config.baseUrl}/en/deals`,
         'x-default': `${config.baseUrl}/fr/promotions`,
       },
     },

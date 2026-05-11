@@ -10,7 +10,7 @@ interface Route {
 
 const ROUTES: Route[] = [
   { fr: '', en: '', priority: 1.0, changeFrequency: 'weekly' },
-  { fr: 'promotions', en: 'promotions', priority: 0.9, changeFrequency: 'weekly' },
+  { fr: 'promotions', en: 'deals', priority: 0.9, changeFrequency: 'weekly' },
   { fr: 'produits', en: 'products', priority: 0.7, changeFrequency: 'monthly' },
   { fr: 'contact', en: 'contact', priority: 0.7, changeFrequency: 'yearly' },
   { fr: 'politique-confidentialite', en: 'privacy-policy', priority: 0.3, changeFrequency: 'yearly' },

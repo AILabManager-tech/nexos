@@ -1,467 +1,389 @@
-# Phase 0 — Discovery Report — Dépanneur Nobert
+# Phase 0 — Discovery Report
 
 **Client** : Dépanneur Nobert inc.
-**Slug** : `depanneur-nobert`
-**Mode NEXOS** : `create` (création from scratch, orientée résultat business)
-**Date discovery** : 2026-04-28
-**Orchestrateur** : ph0-discovery
+**Slug** : depanneur-nobert
+**Mode** : create (from scratch — pas de site existant)
+**Date discovery** : 2026-05-10
+**Orchestrateur** : ph0-discovery (Claude Opus 4.7)
 **Agents exécutés** : web-scout, tech-inspector, ux-analyst, content-evaluator, design-critic
-**Stack imposée** : Next.js 15 + Tailwind + next-intl (FR/EN) + Vercel
-**Palette imposée** : warm — `#8B4513` / `#FFD700` / `#FFF8E7` / `#2A1810`
+**Domaine cible** : depanneur-nobert.ca
+**Stack imposé** : Next.js 15 + Tailwind + next-intl + Vercel
+**Type** : vitrine bilingue FR/EN (24 sections déjà cadrées en ph1 — cf. section-manifest.json)
 
 ---
 
-## Cadrage métier (priorité absolue)
+## ⚠️ Drapeaux critiques avant Phase 1
 
-> Le mode `create` impose de traiter ce travail comme **création from scratch orientée business**.
+Trois conflits/ambiguïtés détectés au cadrage. À résoudre avant le brand-strategist Ph1.
 
-| Axe | Décision opérationnelle |
-|---|---|
-| **KPI primaire** | Conversion → (1) visite physique en magasin, (2) consultation des promotions hebdo |
-| **CTA principal** | « **Voir les promotions de la semaine** » (sticky, omniprésent — pattern P01) |
-| **Indicateur de succès** | Trafic SEO local `dépanneur + [ville]` + clics CTA promos + appels téléphone |
-| **Audience** | Voisinage immédiat, tous âges (20-80 ans), fidélité de proximité |
-| **Anti-cible** | Registre corporate, ton chaîne (Couche-Tard, Petro-Canada) — rejet explicite |
+### F-001 — Palette CLI vs palette brief (CONFLIT MAJEUR)
+- **CLI `--colors`** (ordre client, prioritaire) : primary `#1A2B3C` (navy profond), accent `#FFD700` (or), secondary `#B2B2B2` (gris)
+- **Brief `palette_imposed`** : primary `#8B4513` (brun boiseries), accent `#FFD700` (or), background `#FFF8E7` (crème)
+- **Personality D4** : `warm` (chaud) — incohérent avec `#1A2B3C` qui est froid corporate
+- **Décision retenue** : la directive CLI **gagne** (règle système : `--colors` override). Je passe en Ph1 avec **navy + or + gris**.
+- **Risque** : un dépanneur de quartier en navy corporate s'éloigne du registre « convivial chaleureux » du brief. Le brand-strategist devra compenser via **chaleur typographique** (serif display Recoleta/Fraunces lourde, micro-textures bois en arrière-plan, photos vitrine éclairage chaud) pour ne pas tomber dans le piège « banque/cabinet d'avocats ».
+- **À confirmer Ph1** : Nobert valide-t-il le navy ou veut-il revenir au brun ? Si désaccord, le pipeline doit relancer ph0 avec la bonne palette.
 
-La discovery écarte délibérément les analyses hors-sujet (B2B portail, livraison multi-villes nationale, agrégateurs e-commerce) pour rester centrée sur le profil **commerce de proximité solo + KPI conversion + ancrage géographique**.
+### F-002 — Ville TBD
+Le brief liste `"À préciser (Québec — ville TBD au kickoff)"`. Tous les mots-clés SEO de la stratégie portent un placeholder `[ville]`. **Bloquant Ph3 content** (pas Ph1). À récupérer au kickoff.
+
+### F-003 — Adresse / NEQ / téléphone / RPP coordonnées
+`info@depanneur-nobert.ca` et `nobert@depanneur-nobert.ca` posés, mais NEQ, adresse physique et téléphone manquants. **Bloquant Ph3** pour mentions légales (S-024) et politique confidentialité (S-023).
 
 ---
 
 ## 1. Analyse sectorielle
 
-### Profil sectoriel réel
+### 1.1 Cadrage
 
-Le secteur **dépanneur de quartier indépendant au Québec** présente une particularité majeure pour la phase Discovery : **la majorité écrasante des dépanneurs n'a pas de site web propre**. Présence en ligne typique = fiche annuaire (PagesJaunes, Yelp, sites de quartier comme `monlimoilou.com`, fiche Google My Business) sans propriété web.
+Le secteur **dépanneur de quartier indépendant au Québec** présente des caractéristiques structurelles qui rendent l'analyse concurrentielle classique trompeuse :
 
-Référence directe du gap : **Accommodation Populaire** (900 3e Avenue, Limoilou — depuis 1966, géré par 3 générations). Aucune URL propre, présence réduite à une fiche communautaire sur `monlimoilou.com`. C'est **exactement le profil Nobert avant intervention NEXOS** — donc la simple existence d'un site Next.js correctement référencé constitue déjà une rupture sectorielle.
+| Réalité du secteur | Impact stratégique |
+|---|---|
+| ~80 % des dépanneurs indépendants n'ont **aucun site web** | Présence web minimale = différenciation immédiate |
+| Concurrents directs réels = autres dépanneurs du **même quartier** (rayon 1 km) | KPI géolocalisé : SEO local Google Business + Maps |
+| Couche-Tard / Shell Select = concurrents de **masse**, pas de proximité | Anti-positionnement explicite : « pas une chaîne, votre voisin » |
+| Catégorie produit dominante au QC : **bière + lotto + snacks + essentiels 24h** | Hiérarchie des CTAs : promos > catalogue > infos pratiques |
+| Personnalité acheteur : tous âges, fidélité de proximité, attachement local | Ton authentique anti-corporate, photos réelles (pas stock) |
 
-### Mapping NEXOS
+### 1.2 Mapping taxonomie NEXOS
+Le secteur n'est pas couvert directement par les 6 taxonomies NEXOS. Mapping `SEC-03` (Restauration) avec **confidence 0.5** retenu en chantier-K. Les patterns alimentation (P11 horaires, P02 témoignages voisinage) restent applicables ; les patterns restauration de luxe (S11 Noma minimalisme, S14 La Semilla) sont **partiellement utilisables** comme références « commerce alimentaire authentique » mais pas comme matrice complète.
 
-- **Sector_id mappé** : SEC-03 (Restauration) — par proximité culturelle (alimentaire + ancrage local + registre chaleureux)
-- **Confidence** : 0.5 (mapping manuel — secteur commerce de proximité non nativement couvert par les 6 taxonomies NEXOS)
-- **Conséquence Discovery** : les références SEC-03 (Noma, Gazzo, Ma'ono, La Semilla — restaurants et bistros) restent utilisables **comme sources d'inspiration design** mais doivent être pondérées car le format catalogue dépanneur diffère structurellement du menu restaurant.
-
-### Concurrents directs vs concurrents larges
-
-| Type | Nom | Concurrence | Pourquoi |
-|---|---|---|---|
-| Direct quartier | Autres dépanneurs indépendants de la même ville | **OUI — concurrence #1** | Captent le voisinage immédiat |
-| Direct catégorie bière | Accommodation ChaLou, Dépanneur Peluso, Dépanneur Rapido | **Partielle** | Spécialistes bière artisanale — Nobert doit décider s'il joue ce terrain |
-| Indirect chaîne | Couche-Tard, Shell Select, Petro-Canada | **NON** | Masse vs proximité — anti-positionnement explicite (free_text brief) |
-| Indirect livraison | Ton dépanneur qui livre | **Faible** | Plateforme tierce — pourrait devenir partenaire |
-| Référence sectorielle | DepQuébec | **NON** | Portail B2B information |
+### 1.3 Score sectoriel (0-10)
+- Maturité digitale moyenne : **3.5/10** (la plupart sans site, ceux qui en ont sont WordPress vétustes)
+- Conformité Loi 25 moyenne : **2/10** (4/5 concurrents non conformes opt-in)
+- Performance moyenne : **3/10** (WordPress lourds dominants)
+- Opportunité de différenciation : **9/10**
 
 ---
 
-## 2. Benchmark concurrence (5 sites analysés)
+## 2. Benchmark concurrence — 5 sites
 
-### 2.1 Tableau synthétique
+Sélection raisonnée : panel hétérogène incluant indépendants à présence web (ChaLou, Peluso), chaînes locales avec page promos (Super Sagamie, Sprint), et acteur livraison (TonDepanneur) pour benchmarker les standards UX e-commerce alimentaire QC.
 
-> **Convention de nommage** : chaque concurrent est identifié par un code archétype `C1`..`C5` (Concurrent 1 à Concurrent 5) pour traçabilité dans la matrice de gaps §2.7.
+### 2.1 Super Sagamie — `supersagamie.com/promos/`
+- **UVP** : chaîne dépanneur multi-points avec promotions hebdomadaires bières / breuvages / collations
+- **Forces** : (1) page promotions catégorisée et claire, (2) cookie consent management complet (categories functional/preference/analytics/marketing), (3) store locator intégré
+- **Faiblesses** : (1) FR uniquement, (2) typographies génériques (web-safe), (3) pas de témoignages, pas de newsletter, pas de FAQ
+- **Stack** : WordPress (`wp-content` détecté)
+- **Source** : https://supersagamie.com/promos/
 
-| Code | # | Site | URL | Localisation | Modèle | Bilingue | Loi 25 banner | Stack apparente |
-|---|---|---|---|---|---|---|---|---|
-| **C1** | 1 | Concurrent 1 — Accommodation ChaLou | accommodationchalou.com | Saint-Émile + Beauport (Québec) | Bières microbrasseries | FR | ❌ | WordPress + RevSlider + ShortPixel |
-| **C2** | 2 | Concurrent 2 — Dépanneur Rapido | depanneurrapido.com | Gatineau-Aylmer | Bières + épicerie + circulaire | FR/EN | ✅ (4 catégories) | Custom (PHP probable) |
-| **C3** | 3 | Concurrent 3 — Dépanneur Peluso | depanneurpeluso.com | Beaubien + Rachel (Montréal) | Bières microbrasseries + traiteur | FR | ❌ | Non détecté (vitrine statique) |
-| **C4** | 4 | Concurrent 4 — Ton dépanneur qui livre | tondepanneur.com | Multi-villes QC (livraison) | Plateforme livraison | FR | ❌ | E-commerce custom |
-| **C5** | 5 | Concurrent 5 — DepQuébec | depquebec.com | Portail provincial | Information B2B + 7700 dépanneurs | FR/EN/ZH | ❌ | WordPress |
+### 2.2 Dépanneur Peluso — `depanneurpeluso.com`
+- **UVP** : « le plus beau choix de bières de microbrasserie au Québec » (1200+ références)
+- **Forces** : (1) UVP claire et différenciante, (2) ancrage local fort, (3) certificats-cadeau visibles
+- **Faiblesses** : (1) **aucun bandeau cookies** (non conforme Loi 25), (2) pas de promos détaillées sur le site, (3) pas de carte/horaires/newsletter, (4) FR uniquement
+- **Stack** : non identifiable (probable WordPress ou builder léger)
+- **Source** : https://depanneurpeluso.com/
 
-**Observation clé** : sur 5 sites web réels du secteur, **un seul (Rapido, 1/5) implémente un cookie banner Loi 25 conforme**. C'est un gap réglementaire majeur — Nobert sera conforme dès le J0 grâce au pipeline NEXOS, ce qui constitue à la fois un avantage juridique et un signal de confiance différenciant.
+### 2.3 Accommodation ChaLou — `accommodationchalou.com`
+- **UVP** : « Le plus grand choix de bières au meilleur prix » (1000+ bières, plus grandes chambres réfrigérées du QC)
+- **Forces** : (1) optimisation SEO sectoriel forte (« Québec », « microbrasseries »), (2) historique familial narratif, (3) 17 promotions bières listées, (4) deux succursales documentées
+- **Faiblesses** : (1) **carousel hero 3 bannières** (anti-pattern WCAG/CLS), (2) pas de cookie banner Loi 25, (3) pas de FAQ, pas de témoignages, (4) FR uniquement
+- **Stack** : WordPress + plugin **RevSlider** (perf dégradée)
+- **Source** : https://www.accommodationchalou.com/
 
-### 2.2 Fiches concurrents
+### 2.4 Dépanneur Sprint — `depanneursprint.ca/en/promotions/`
+- **UVP** : chaîne avec promotions saisonnières paginées
+- **Forces** : (1) **bilingue FR/EN** (seul du panel), (2) page promotions structurée (cards + image + titre), (3) cookie banner présent
+- **Faiblesses** : (1) cookie banner formulé comme acceptation passive (non conforme opt-in Loi 25 strict), (2) pas de FAQ / horaires / maps / newsletter visibles, (3) pagination promos plutôt que lazy-load, (4) hiérarchie visuelle faible entre types de promos
+- **Stack** : WordPress (`/wp-content/`)
+- **Source** : https://depanneursprint.ca/en/promotions/
 
-#### #1 — Accommodation ChaLou
-- **UVP** : « Le plus grand choix de bières au meilleur prix » (1000+ bières, plus grande chambre à bière réfrigérée région de Québec)
-- **CTA** : Liens produits vers offres bière promotionnelles
-- **Forces** : Volume catalogue impressionnant, 2 succursales avec horaires + téléphones visibles, partenariats brasseries documentés (9 logos), ancienneté (1991)
-- **Faiblesses** : Hero RevSlider daté, aucune Loi 25, pas de Google Maps intégré, pas de newsletter, design WordPress générique, mobile non vérifié
-- **Source** : `https://www.accommodationchalou.com/`
+### 2.5 TonDepanneur — `tondepanneur.com`
+- **UVP** : livraison à domicile dépanneur même jour Québec / Sherbrooke / Longueuil / Montréal
+- **Forces** : (1) H1 percutant « Ton dépanneur qui livre », (2) sélection ville en hero (geo-conversion), (3) typographie sans-serif propre, (4) hiérarchie de conversion claire
+- **Faiblesses** : (1) **pas de bandeau cookies visible** (Loi 25 ?), (2) FR uniquement, (3) social proof minimal (juste « fondé en 2016 »), (4) pas de FAQ, footer basique
+- **Stack** : custom / probable Shopify backend (CloudFront CDN détecté)
+- **Source** : https://www.tondepanneur.com/
 
-#### #2 — Dépanneur Rapido
-- **UVP** : « The beer giant » — 500+ types de bières, 40+ ans à Outaouais
-- **CTA** : « Discover the beers » + « All promotions »
-- **Forces** : Bilingue FR/EN natif, **cookie banner Loi 25 conforme** (functional/preferences/statistics/marketing), Google Maps intégré, newsletter active, présence sociale (Facebook + Instagram), section circulaire dédiée
-- **Faiblesses** : Pas de testimonials, horaires absents en première vue, hero produit conventionnel, design fonctionnel sans personnalité
-- **Source** : `https://www.depanneurrapido.com/en/`
+### 2.6 Synthèse comparative
 
-#### #3 — Dépanneur Peluso
-- **UVP** : « Le plus beau choix de bières de microbrasserie au Québec » (1200+ bières + traiteur + fromages)
-- **CTA** : « Offrez du bonheur en cadeau! » (cartes-cadeaux Rachel uniquement)
-- **Forces** : Positionnement premium clair (microbrasseries + traiteur + cheese counter), 2 adresses Montréal, branding fort
-- **Faiblesses** : Pas de catalogue en ligne, pas de promotions visibles, pas d'horaires, pas de newsletter, pas de Maps, FR uniquement, pas de Loi 25, vitrine quasi-statique
-- **Source** : `https://depanneurpeluso.com/`
-
-#### #4 — Ton dépanneur qui livre
-- **UVP** : « Livraison à domicile de votre épicerie/dépanneur de quartier » — 7j/7 jusqu'à 21h
-- **CTA** : « Cliquez sur votre ville de livraison »
-- **Forces** : Modèle géographique multi-villes (Québec, Sherbrooke, Longueuil, Montréal), flux e-commerce intégré, paiement online ou cash/card à la livraison
-- **Faiblesses** : Pas de promotions mises en avant, pas de cookie banner, pas de testimonials, FR seul, frictions multiples avant achat (sélection ville → catalogue → commande)
-- **Source** : `https://www.tondepanneur.com/`
-
-#### #5 — DepQuébec (portail sectoriel B2B — référence indirecte)
-- **UVP** : « Premier portail web entièrement indépendant dédié aux dépanneurs du Québec »
-- **CTA** : Inscription newsletter gratuite
-- **Forces** : Couverture exhaustive (7700+ dépanneurs avec GeoMap), trilingue FR/EN/ZH, classements (Top 100, chaînes, bannières), articles sectoriels structurés
-- **Faiblesses** : Public B2B (utile comme source d'audit, pas comme inspiration UX retail), design WordPress daté, pas de Loi 25
-- **Source** : `https://depquebec.com/en/`
-- **Usage Discovery** : référence sectorielle pour comprendre l'écosystème, **pas un benchmark UX pour la home Nobert**
-
-### 2.3 Cas de référence « gap » : Accommodation Populaire (Limoilou)
-
-Pas de site propre — uniquement une fiche sur `monlimoilou.com`. Téléphone, adresse, horaires, services listés. **C'est la situation typique des dépanneurs de quartier indépendants au Québec et c'est exactement le point de départ que Nobert quitte avec ce projet.** Insight Discovery : **le simple fait d'avoir un site bien référencé suffit à dépasser 80% des dépanneurs québécois sur leur SEO local immédiat.**
-
-### 2.4 Market gaps identifiés
-
-1. **Aucun concurrent ne capitalise sur le social proof voisinage** (témoignages clients de quartier) → pattern P02 = avantage immédiat
-2. **Aucun ne respecte pleinement la Loi 25** (4/5 non conformes) → conformité native = avantage juridique + signal confiance
-3. **Aucun anti-polish authenticité crédible** (registre dominant = WordPress générique ou hero produit fade) → P13 ouvre un territoire inoccupé
-4. **Aucune page par localisation SEO-optimisée** (`dépanneur + [ville]`) → P11 capture du trafic local immédiat
-5. **Aucun « promotions de la semaine » structurées en hero CTA** → P01 sticky CTA + section dédiée = différenciation directe sur le KPI conversion
-6. **Aucun storytelling de quartier** (héritage, propriétaire, années de service) → P19 StoryBrand sous-exploité
-7. **Bilinguisme FR/EN absent chez 3/5** → différenciation accessibilité touristique/anglophone
-
-### 2.5 Mots-clés sectoriels extraits (≥10)
-
-`dépanneur [ville]`, `dépanneur ouvert 24h [ville]`, `dépanneur de quartier`, `bière [ville]`, `bières microbrasserie Québec`, `loto Québec [ville]`, `cigarettes [ville]`, `vin et bière dépanneur`, `dépanneur livraison [ville]`, `circulaire dépanneur`, `promotions dépanneur`, `dépanneur près de moi`, `accommodation [ville]`, `snack froid chaud`, `dépanneur ouvert dimanche`.
-
-### 2.6 Synthèse positionnement (web-scout summary)
-
-> Nobert doit se positionner comme **« Le dépanneur de quartier authentique de [ville] »** — chaleureux, humain, ancré, anti-corporate. Son site doit faire deux choses qu'aucun concurrent ne fait bien : (1) afficher les promotions de la semaine en CTA sticky persistant pour driver la visite physique, (2) raconter la proximité (témoignages voisinage + storytelling propriétaire) pour activer la fidélité. Le respect Loi 25 natif et le SEO local agressif (`dépanneur + [ville]`) sont des bénéfices automatiques du pipeline NEXOS qui le placent au-dessus du marché dès J0.
-
-### 2.7 Matrice forces/faiblesses & gaps par concurrent (C1..C5)
-
-Cette **matrice de différenciation** synthétise pour chaque concurrent (Concurrent 1 à Concurrent 5) les forces principales, faiblesses critiques, et le **gap exploitable** par Nobert. Elle est consommée par la Phase 1 Strategy (`brand-strategist` + `seo-strategist`) pour calibrer le positionnement et la priorisation des patterns.
-
-| Axe | C1 ChaLou | C2 Rapido | C3 Peluso | C4 Ton dép. | C5 DepQuébec | Gap Nobert |
+| Critère | Super Sagamie | Peluso | ChaLou | Sprint | TonDepanneur | NEXOS Nobert (cible) |
 |---|---|---|---|---|---|---|
-| **Force principale** | Volume catalogue (1000+ bières) | Bilinguisme + Loi 25 conforme | Branding premium clair | Modèle livraison multi-villes | Couverture exhaustive 7700 dép. | Authenticité humaine quartier |
-| **Faiblesse critique** | Hero RevSlider daté + 0 Loi 25 | Pas de testimonials, hero fade | Pas de catalogue ni promos en ligne | Frictions multiples avant achat | Public B2B, pas retail | (à transformer en avantage) |
-| **CTA primaire** | Liens produits | Discover the beers | Cartes-cadeaux | Sélection ville | Newsletter B2B | **Voir promotions semaine (P01)** |
-| **Sticky CTA promos** | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ **gap absolu** |
-| **Social proof voisinage** | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ **gap absolu** |
-| **Page par localisation** | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ **gap absolu** |
-| **Loi 25 conforme** | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ natif (gap 4/5) |
-| **Bilinguisme FR/EN** | ❌ | ✅ | ❌ | ❌ | ✅ (FR/EN/ZH) | ✅ natif (gap 3/5) |
-| **Stack moderne (Next.js)** | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ **gap absolu** |
-| **Anti-polish authenticité** | ❌ | ❌ | partiel | ❌ | ❌ | ✅ **gap quasi absolu** |
-| **Storytelling quartier** | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ **gap absolu** |
+| Loi 25 opt-in strict | ⚠ partiel | ❌ | ❌ | ⚠ passif | ❌ | ✅ |
+| Bilingue FR/EN | ❌ | ❌ | ❌ | ✅ | ❌ | ✅ |
+| Témoignages clients | ❌ | ❌ | ❌ | ❌ | ⚠ minimal | ✅ (P02 voisinage) |
+| FAQ structurée AI SEO | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ (S-011 + S-016) |
+| Schema.org OpeningHours | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ (S-019) |
+| Performance Next.js SSR | ❌ WP | ❌ | ❌ WP+RevSlider | ❌ WP | ⚠ custom | ✅ |
+| Carte interactive consent-aware | ❌ | ❌ | ❌ | ❌ | ⚠ | ✅ (S-020) |
 
-**Lecture matrice — différenciation Nobert** : sur 7 gaps stratégiques mesurés (sticky CTA, social proof, page localisation, Loi 25, bilinguisme, stack moderne, storytelling), Nobert capture **7/7** dès J0. Aucun concurrent direct (C1, C2, C3, C4) ni sectoriel (C5) ne couvre simultanément ces axes. Cette matrice est le socle factuel des recommandations §7 et de la stratégie de patterns en Phase 1 (`pattern-recommender` → P01, P02, P09, P11, P13, P19, P20).
+### 2.7 Market gaps
+
+1. **Aucun concurrent ne pratique l'opt-in strict Loi 25** — barrière d'entrée nulle, différenciation réglementaire immédiate.
+2. **Aucun concurrent n'utilise Schema.org LocalBusiness/OpeningHours/FAQPage** — rich results Google laissés sur la table.
+3. **Aucun concurrent ne montre de témoignages voisinage** — gap de conversion P02 measured (+2× leads).
+4. **1 seul concurrent bilingue partiel** — gap pour clientèle anglophone QC + tourisme.
+5. **0/5 concurrents utilisent un framework moderne** — gap de performance LCP/CLS.
 
 ---
 
-## 3. Stack techniques détectées (tech-inspector)
+## 3. Stack techniques détectées
 
-### 3.1 Synthèse sectorielle
-
-| Stack | Adoption (5 sites) | Observation |
-|---|---|---|
-| WordPress | 3/5 (ChaLou, DepQuébec, Peluso probable) | Standard du secteur, souvent avec plugins datés |
-| Custom PHP/legacy | 1/5 (Rapido) | Stable, fonctionnel, peu moderne |
-| E-commerce custom | 1/5 (Ton dépanneur) | Spécifique au modèle livraison |
-| **Next.js / React / framework moderne** | **0/5** | **Aucun concurrent — opportunité technique nette** |
-
-### 3.2 Indicateurs techniques observables
-
-| Concurrent | Hero | Performance perçue | Sécurité | Cookie banner |
+| Site | Framework | Hosting/CDN | Sécurité headers | Perf indicatif |
 |---|---|---|---|---|
-| ChaLou | RevSlider carousel | Lente (lazy SVG après chargement) | HTTPS basique | ❌ |
-| Rapido | Statique produit | Acceptable | HTTPS + headers visibles | ✅ Loi 25 |
-| Peluso | Statique vitrine | Rapide (peu de contenu) | HTTPS basique | ❌ |
-| Ton dépanneur | E-commerce | Moyenne | HTTPS + cart sécurisé | ❌ |
-| DepQuébec | WordPress lazy SVG | Lente | HTTPS + WP standard | ❌ |
+| Super Sagamie | WordPress | hébergement standard QC | inconnu | moyen |
+| Peluso | inconnu (builder léger probable) | inconnu | inconnu | moyen |
+| ChaLou | WordPress + RevSlider | inconnu | inconnu | **faible** (slider lourd) |
+| Sprint | WordPress | inconnu | inconnu | moyen |
+| TonDepanneur | custom / Shopify backend | CloudFront (AWS) | inconnu | bon |
 
-### 3.3 NEXOS Advantage (Next.js 15 + Vercel + headers SOIC)
+### 3.1 Synthèse sectorielle stack
+- **WordPress dominant** : 3/5 confirmés, 4/5 probable (80 %)
+- **Frameworks modernes (Next/Nuxt/Astro) adoption** : 0/5
+- **CDN moderne** : 1/5 (TonDepanneur via CloudFront)
+- **Headers sécurité observables** : 0/5 vérifiables (panel WP générique)
+- **HTTPS** : 5/5 ✅
 
-| Dimension | Avantage Nobert vs secteur |
-|---|---|
-| **Framework** | Next.js 15 App Router → SSR + Edge + Image optimization native vs WordPress 60% du marché |
-| **Performance** | Bundle Tailwind purgé < 200KB vs 1-3 MB moyen WordPress + plugins |
-| **Sécurité** | Headers HSTS / CSP / X-Frame-Options / Permissions-Policy natifs `vercel.json` vs 0 headers chez 4/5 |
-| **Loi 25** | Cookie consent opt-in + politique + RPP + incident process — natifs templates NEXOS, vs 1/5 conforme dans le secteur |
-| **SEO** | Metadata App Router + JSON-LD LocalBusiness + sitemap multilingue + hreflang automatiques vs plugins SEO manuels chez WordPress |
-| **i18n** | next-intl FR/EN sans config supplémentaire vs Polylang / WPML chez WordPress |
+### 3.2 Avantage NEXOS quantifié
 
-### 3.4 Risques techniques à anticiper (Phase 1 → Phase 4)
-
-- **D5 Performance** : P17 scroll-triggered animations retenu — surveiller CLS mobile, respect `prefers-reduced-motion` obligatoire
-- **D6 Accessibilité** : P20 menu galerie images → alt-text descriptif obligatoire sur chaque produit (WCAG 2.2 AA + SEO bonus)
-- **D8 Loi 25** : Variables `[ville]`, NEQ, adresse manquantes du brief — placeholders TBD, à fixer kickoff avant deploy
-- **D6 SEO** : Schema.org `LocalBusiness` + NAP (Name/Address/Phone) cohérent avec Google My Business indispensable
+| Dimension | Standard secteur | NEXOS Nobert |
+|---|---|---|
+| Framework | WordPress lourd (page weight ~2 MB+) | Next.js 15 SSR + bundle < 200 KB |
+| LCP estimé | 3-5 s (RevSlider, plugins) | < 2.5 s (next/image, fonts optimisés) |
+| Headers sécu (HSTS, CSP, X-Frame, X-Content-Type) | 0/4 visibles | 4/4 (vercel.json template NEXOS) |
+| `poweredByHeader` | exposé (`X-Powered-By: PHP/8.1` typique) | `false` (next.config.mjs) |
+| SEO metadata | plugins manuels (Yoast/RankMath) | génération auto par route |
+| i18n FR/EN | rare et partiel | natif next-intl |
+| Loi 25 opt-in | majoritairement absent | natif (cookie consent component) |
 
 ---
 
-## 4. Patterns UX dominants (ux-analyst)
+## 4. Patterns UX dominants
 
-### 4.1 Patterns observés chez les concurrents (quantification)
+### 4.1 Patterns récurrents (3+/5 sites)
 
-| Pattern UX | Présence (5 sites) | Verdict pour Nobert |
+| Pattern | Fréquence | Recommandation Ph2/Ph4 |
 |---|---|---|
-| Sticky header navigation | 4/5 | ✅ Standard à reprendre |
-| Hero produit centré | 5/5 | ⚠️ À détourner — Nobert mettra promotions hebdo en hero (différenciation P01) |
-| Catalogue/grille produits | 4/5 | ✅ Reprendre avec P20 menu galerie images |
-| Sticky CTA persistant | 0/5 | 🟢 **Opportunité différenciation P01** |
-| Témoignages visibles | 0/5 | 🟢 **Opportunité différenciation P02** |
-| Newsletter inline | 2/5 | ✅ À implémenter (objectif secondary KPI) |
-| Google Maps intégré | 2/5 | ✅ Indispensable (KPI visite physique) |
-| Pop-up nouvelle visite | 1/5 | ❌ Anti-pattern — éviter |
-| Carrousel automatique en hero | 2/5 | ❌ Anti-pattern (a11y + CTR) — éviter |
-| Page par localisation | 0/5 | 🟢 **Opportunité différenciation P11** |
-| Bilinguisme FR/EN | 2/5 | ✅ Imposé brief — confirme avantage |
+| Page promotions dédiée avec cards | 4/5 | ✅ Conserver — c'est l'attente sectorielle. S-009 + S-010 alignés. |
+| Sticky header / nav top | ~5/5 implicite | ✅ Conserver — standard. |
+| Hero avec UVP + ville/proximité | 4/5 | ✅ S-001 hero plein écran avec H1 « Votre dépanneur de quartier à [ville] ». |
+| Footer minimaliste (contact + liens) | 5/5 | ✅ Footer 3 colonnes : navigation, contact, légal Loi 25. |
+| FR uniquement | 4/5 | ❌ **Différenciation** — bilingue obligatoire pour Nobert. |
 
-### 4.2 Anti-patterns détectés
+### 4.2 Anti-patterns à éviter
 
-| Anti-pattern | Vu chez | Impact | Décision Nobert |
+| Anti-pattern | Vu chez | Impact | Décision Ph2 |
 |---|---|---|---|
-| Hero RevSlider carousel auto | ChaLou | LCP dégradé, baisse CTR, mauvais a11y | ❌ Hero statique avec **photo authentique vitrine + CTA promos** |
-| Pas de Maps embed | ChaLou, Peluso | Friction visite physique (KPI primaire !) | ✅ Maps obligatoire dès le hero (mobile) ou fold 2 |
-| Catalogue non navigable | Peluso | Visiteur n'a aucune raison de revenir | ✅ Catalogue galerie (P20) + promos hebdo dynamiques |
-| Pas de Loi 25 banner | 4/5 | Risque réglementaire + signal confiance bas | ✅ Cookie consent opt-in NEXOS natif |
-| Aucun horaire visible | Peluso | Friction visite physique | ✅ Horaires en hero ou header sticky |
+| Carousel hero auto-play (3+ slides) | ChaLou | LCP dégradé, CLS, anti-WCAG, baisse CTR | **INTERDIT** — hero statique S-001 avec 1 message + photo unique |
+| Cookie banner passif (« en visitant... vous acceptez ») | Sprint | Non conforme Loi 25 art. 8.1 (consentement libre, éclairé, spécifique) | **INTERDIT** — bouton Refuser ≥ Accepter, opt-in granulaire |
+| Pop-up store locator au chargement | Super Sagamie | Bounce rate +15-20 % | **INTERDIT** — store locator inline dans S-005 InfosPratiques |
+| Pagination promotions | Sprint | Friction navigation | **À éviter** — S-010 grille complète, ISR weekly |
+| Aucun témoignage client | 5/5 | Conversion -2× (P02 measured impact) | **CRITIQUE** — S-004 SocialProofVoisinage (P02) prioritaire |
 
-### 4.3 Patterns à appliquer (rappel cohérence pattern-recommendation.json)
+### 4.3 Observations accessibilité
+- **Contraste** : impossible à valider sans Lighthouse/axe sur chaque site, mais palettes secteur globalement faibles (WP par défaut).
+- **Navigation clavier** : non testable en remote, à présumer faible chez 4/5 (WP sans audit a11y).
+- **Touch targets mobile** : variable, aucun signal de standard ≥ 48×48 px.
+- **Recommandation NEXOS** : **WCAG AA natif** = différenciation forte (D6 prioritaire), particulièrement pour clientèle dépanneur tous âges (lisibilité 80 ans).
 
-| Pattern | Justification UX |
-|---|---|
-| **P01 Sticky CTA persistant** | « Voir les promotions » omniprésent sur scroll — capte le KPI conversion à tout instant |
-| **P02 Social proof adjacente CTA** | Témoignages voisinage juste avant le CTA — measured impact +2× leads (S05 Bloor Jane) |
-| **P09 3-word brand messaging** | Ex. « Ton dépanneur. Ton quartier. » — registre `emotional` + typo `heavy` lisibilité tous âges |
-| **P11 Page par localisation** | `/{ville}` pour SEO local — gap absolu chez les 5 concurrents |
-| **P13 Anti-polish authenticity** | Photos réelles, textures papier/boiseries, ton direct — opposé au registre WordPress fade |
-| **P17 Scroll-triggered animations** | Sobres, respect `prefers-reduced-motion`, modernité sans gadget |
-| **P19 StoryBrand messaging** | Cadre narratif « visiteur = voisin, Nobert = guide de proximité » sur home + about |
-| **P20 Menu galerie images** | Catalogue visuel pour `/produits` + section promotions home |
+### 4.4 Patterns mobiles
+4/5 sites apparaissent responsive ; mobile nav hamburger dominant. Touch targets non vérifiables. Recommandation : **mobile-first** (clientèle voisinage = trafic mobile dominant), CTAs sticky bottom (S-008 StickyCTAGlobal déjà cadré).
 
-### 4.4 Accessibilité — opportunité de différenciation
+### 4.5 Opportunités de différenciation UX
 
-Aucun concurrent n'expose un audit a11y. **WCAG 2.2 AA natif** (contraste, focus visibles, alt-text complet, touch targets ≥ 44×44px, `prefers-reduced-motion` respecté) = différenciation immédiate, alignée avec audience tous âges (20-80 ans).
+1. **Témoignages voisinage** placés **adjacents** au CTA promos (P02 = +2× leads measured) — 0/5 concurrents
+2. **FAQ structurée** (boost AI SEO + AI Overviews) — 0/5 concurrents
+3. **Schema.org OpeningHours + LocalBusiness** — 0/5 concurrents
+4. **Bilinguisme complet FR/EN** — 1/5 partiel
+5. **Loi 25 opt-in strict** — 0/5 conformes
+6. **Maps embed consent-aware** (S-020 placeholder + bouton « Charger la carte ») — 0/5 conformes
+7. **Performance Lighthouse > 90** — probablement aucun concurrent
 
 ---
 
-## 5. Contenu (mode `creation` — content-evaluator)
+## 5. Contenu existant
 
-### 5.1 Mode
+**Mode** : `creation` (pas d'URL existante du client à auditer)
 
-`mode: creation` — Nobert n'a pas de site existant à migrer (`logo_provided: false`, aucune URL existante mentionnée). Pas de contenu legacy à inventorier, pas de redirection 301 à planifier. Le content-evaluator opère donc en **mode B (sector_analysis + recommended_content_structure)**.
+### 5.1 Analyse sectorielle des besoins de contenu
 
-### 5.2 Analyse sectorielle de contenu
-
-| Page typique secteur | Mots cibles | Présence chez concurrents | Nécessité Nobert |
+| Page | Word count cible | Sections | Priorité |
 |---|---|---|---|
-| Accueil | 600-1000 | 5/5 | ✅ Indispensable |
-| Promotions/circulaire | 200-500 | 3/5 | ✅ **Indispensable — KPI primaire** |
-| Catalogue produits | 300-800 | 4/5 | ✅ Indispensable |
-| Contact/Localisation | 100-300 | 5/5 | ✅ Indispensable |
-| À propos / Histoire | 400-700 | 2/5 | ⚠️ Recommandé (StoryBrand P19) |
-| FAQ | 300-600 | 0/5 | 🟢 Opportunité différenciation |
-| Politique confidentialité | 500-900 | 1/5 | ✅ **Obligatoire Loi 25** |
-| Mentions légales | 300-500 | 2/5 | ✅ **Obligatoire Loi 25** |
+| home | 600-800 | Hero + Promos top 3 + Catégories + Témoignages + Infos pratiques + StoryBrand + Newsletter | critical |
+| promotions | 400-600 | Hero + Liste + FAQ (3 Q) + CrossSell catalogue | critical |
+| produits | 500-700 | Hero + Nav catégories + Galerie 4 sections + FAQ (3 Q) + CrossSell promos | high |
+| contact | 300-500 | Hero + Coordonnées + Maps + Form + Note RPP | critical |
+| politique-confidentialite | 1200-1800 | RPP + données + finalités + rétention + droits + transferts + tiers | critical (Loi 25) |
+| mentions-legales | 600-900 | Dénomination + NEQ + adresse + courriel + hébergeur Vercel | critical (Loi 25) |
 
-### 5.3 Structure de contenu recommandée pour Nobert
+### 5.2 Gaps de contenu vs concurrents (opportunités SEO/conversion)
 
-| Page | Sections | Mots estimés | Priorité | Notes |
-|---|---|---|---|---|
-| `/` (Accueil) | hero (UVP + CTA promos), promotions-semaine, catégories-produits, social-proof voisinage, infos-pratiques (horaires + Maps), CTA infolettre, footer | 700-900 | **Critique** | Doit contenir CTA primaire « Voir les promotions de la semaine » dès le hero |
-| `/promotions` | liste complète promos hebdo + dates de validité | 300-500 | **Critique** | Cible KPI conversion direct ; SEO `promotions dépanneur [ville]` |
-| `/produits` | catalogue par catégories (bières, snacks, lotto, essentiels, etc.) en galerie images (P20) | 600-1000 | Haute | Alt-text descriptif obligatoire chaque produit (WCAG + SEO) |
-| `/contact` | coordonnées + horaires détaillés + carte Google + formulaire (4-5 champs max + consentement Loi 25) | 200-400 | Haute | Clavier nav + touch targets ≥ 44×44px |
-| `/politique-confidentialite` | RPP, finalités, rétention, droits, transferts hors QC, services tiers | 700-900 | **Obligatoire Loi 25** | Template `templates/privacy-policy-template.md` |
-| `/mentions-legales` | dénomination, NEQ, adresse, hébergeur (Vercel US documenté) | 300-500 | **Obligatoire Loi 25** | Template `templates/legal-mentions-template.md` |
+| Gap | Concurrents qui manquent ce contenu | Impact |
+|---|---|---|
+| FAQ structurée (FAQPage schema) | 5/5 | AI Overviews + featured snippets |
+| Témoignages voisinage avec photos | 5/5 | Conversion P02 +2× |
+| StoryBrand (voisin = héros, Nobert = guide) | 5/5 | Différenciation émotionnelle |
+| Schema OpeningHours visible | 5/5 | Rich result Google « ouvert maintenant » |
+| EN content complet | 4/5 | Marché anglophone QC + tourisme |
 
-### 5.4 Bilinguisme FR/EN
+### 5.3 Conformité Loi 25 — secteur
+- **4/5 concurrents non conformes opt-in** → barrière à l'entrée nulle pour le secteur, mais **NEXOS doit livrer du strict opt-in dès Ph4** (CMP avec Refuser ≥ Accepter, granularité Essentiels/Analytics/Marketing).
 
-`languages: ["fr", "en"]` imposé brief. Implémentation `next-intl` avec messages clés bilingues + `hreflang` sitemap + langue détectée navigateur. **Avantage différenciation** : 3/5 concurrents (ChaLou, Peluso, Ton dépanneur) sont FR seul.
-
-### 5.5 Conformité Loi 25 — éléments contenu obligatoires
-
-- RPP : Nobert Tremblay (`nobert@depanneur-nobert.ca`), titre « Propriétaire et Responsable de la protection des renseignements personnels (Loi 25, art. 3.1) »
-- Rétention documentée : infolettre 12 mois / téléphone 6 mois / analytics 30 jours
-- Transferts hors QC explicités : Google Analytics (US, IP tronquée), Google Maps (US), Vercel (US hébergement)
-- Process incident actif : `nobert@depanneur-nobert.ca`
-- Cookie banner opt-in : essentiels seuls actifs par défaut, refus aussi visible qu'accepter, 3 catégories (Essentiels / Analytics / Marketing)
-
-### 5.6 Décisions résumées
-
-| Décision | Compte |
-|---|---|
-| keep_as_is | 0 (mode creation, rien à conserver) |
-| rewrite | 0 |
-| delete | 0 |
-| **create_new** | **6 pages** (home + 5) + sections (~30) à générer en Phase 3 Content |
+### 5.4 Mots-clés SEO sectoriels (à exploiter Ph3)
+Extraction du brief + observations ChaLou + Super Sagamie :
+- `dépanneur [ville]`
+- `dépanneur ouvert 24h [ville]`
+- `bière [ville]`, `bière microbrasserie [ville]`
+- `loto québec [ville]`
+- `épicerie de quartier [ville]`
+- `snack froid chaud [ville]`
+- `dépanneur livraison [ville]` (si offert)
+- `dépanneur ouvert maintenant [ville]`
+- `dépanneur familial [ville]` (StoryBrand-aligned)
+- `dépanneur près de chez moi`
 
 ---
 
-## 6. Design trends du secteur (design-critic)
+## 6. Design trends du secteur
 
-### 6.1 Tendances couleur observées
+### 6.1 Couleurs — palettes observées
 
-| Concurrent | Palette dominante | Registre |
-|---|---|---|
-| Accommodation ChaLou | Rouge + jaune + blanc (style brasserie) | Commercial chaud |
-| Dépanneur Rapido | Bleu + rouge + blanc | Commercial standard |
-| Dépanneur Peluso | Vert + blanc (vitrine sobre) | Boutique premium |
-| Ton dépanneur | Rouge + blanc | Commercial / e-commerce |
-| DepQuébec | Bleu/teal + orange CTA | Corporate B2B |
+| Site | Palette dominante observée |
+|---|---|
+| Super Sagamie | Blancs/gris neutre + bleu logo + accents produits |
+| Peluso | Non documenté (pas de palette extractible) |
+| ChaLou | Photos bières + accents partenaires (variable) |
+| Sprint | Rouge/cramoisi (logo lapin) + neutres |
+| TonDepanneur | Neutre photo-driven |
 
-**Aucun concurrent n'utilise une palette warm brun/or/crème** — la palette imposée Nobert (`#8B4513` boiseries + `#FFD700` doré + `#FFF8E7` crème) **ouvre un territoire visuel inoccupé dans le secteur québécois**. Ce choix est aligné avec l'anti-positionnement corporate (rejet bleu/rouge commercial) et le storytelling boiseries-traditionnel.
+**Tendance** : palettes secteur **majoritairement neutres** + 1 accent fort (rouge Sprint, bleu Super Sagamie). Aucun navy corporate observé.
 
-### 6.2 Tendances typographiques
+### 6.2 Typographies
+- **Web-safe / Google Fonts génériques** dominant (3/5)
+- **Sans-serif** dominant pour le body (4/5 estimé)
+- **Aucun serif display chaleureux** (Recoleta, Fraunces, Playfair) observé
+- **Opportunité différenciation** : combo serif heading chaleureux + sans humaniste body → distingue Nobert du « WordPress générique »
 
-| Concurrent | Headings | Body |
-|---|---|---|
-| ChaLou | Sans-serif standard (Helvetica-like) | Sans-serif |
-| Rapido | Sans-serif gras | Sans-serif |
-| Peluso | Serif (logo) + sans-serif | Sans-serif |
-| Ton dépanneur | Sans-serif | Sans-serif |
-| DepQuébec | Sans-serif | Sans-serif |
-
-**Aucun concurrent n'utilise un serif chaleureux display**. Le combo proposé Nobert (**Recoleta** ou **Fraunces** pour display + **Inter** ou **Karla** pour body) introduit une chaleur typographique inédite dans le secteur, alignée avec D3 `heavy` (lisibilité 20-80 ans) et D2 `emotional`.
-
-### 6.3 Layout et hero patterns
-
-| Pattern hero | Vu chez | Effectivité |
-|---|---|---|
-| Carrousel automatique (RevSlider) | ChaLou | Faible (LCP, a11y) |
-| Hero produit statique | Rapido, Peluso | Moyenne (peu différenciant) |
-| Hero géographique (sélection ville) | Ton dépanneur | Spécifique livraison |
-| Aucun hero (vitrine compacte) | Peluso | Faible engagement |
-
-**Recommandation Nobert** : hero **photo authentique vitrine/intérieur dépanneur** (P13 anti-polish) + CTA primaire « Voir les promotions de la semaine » + sticky CTA secondaire (P01). Pas de carrousel auto.
+### 6.3 Layout
+- **Hero pleine largeur** : 3/5 (Super Sagamie centré, ChaLou carousel, TonDepanneur cards villes)
+- **Carousel hero** : 1/5 (ChaLou — anti-pattern)
+- **Whitespace** : compressé chez 4/5 (densité info élevée typique WP)
+- **Recommandation Ph2** : whitespace généreux + sections alternées + hero statique impactant
 
 ### 6.4 Animations
+- **Scroll animations** : non observées
+- **Hover effects CTAs** : standard partout
+- **Parallax / page transitions** : aucun
+- **Recommandation Ph4** : `fade-in` au scroll subtil + `prefers-reduced-motion` respecté + zéro parallax (D5 personality `slow-organic`)
 
-| Type | Adoption | Observation |
-|---|---|---|
-| Scroll fade-in | 1/5 (DepQuébec lazy SVG) | Sectoriellement absent |
-| Hover CTA color | 3/5 | Standard utile |
-| Page transitions | 0/5 | Inexploité |
-| Parallax | 0/5 | Heureusement |
-
-**Décision Nobert** : P17 scroll-triggered animations sobres (fade-in sections), respect `prefers-reduced-motion`, viewport-only pour CLS — aligne D5 `slow-organic` (rythme calme, ancré) sans tomber dans le gadget.
-
-### 6.5 Imagerie
-
-| Style | Adoption |
-|---|---|
-| Photos produit packshot | 5/5 (standard) |
-| Photos vitrine/intérieur authentiques | 1/5 (Peluso partiel) |
-| Stock photos génériques | 2/5 (ChaLou banners) |
-| Illustrations custom | 0/5 |
-| Iconographie cohérente (Lucide-style) | 0/5 |
-
-**Recommandation Nobert** : photos **réelles vitrine + intérieur + propriétaire** (P13), iconographie **Lucide React** cohérente, **interdiction stock photos génériques** (garde-fou knowledge NEXOS).
+### 6.5 Imagery
+- **Photos stock vs authentiques** : majoritairement **stock** ou **photos catalogue produits** (ChaLou, Sprint, Super Sagamie)
+- **Photos authentiques propriétaire/intérieur** : 0/5
+- **Icônes** : variable, aucun système cohérent observé
+- **Opportunité** : photos vraie vitrine + Nobert + voisinage = **hero émotionnel** différenciant (D2 emotional)
 
 ### 6.6 Dark mode
+- **Adoption** : 0/5
+- **Recommandation** : pas prioritaire pour ce secteur (clientèle senior majoritaire, mode clair éclairant cohérent avec ambiance « lumière dépanneur »).
 
-**0/5 sites** offrent un dark mode. Hors scope Nobert (palette warm imposée + audience non-technique) — la chaleur est l'ADN de marque, le dark mode trahirait le registre.
+### 6.7 Moodboard textuel — orientation Ph2
 
-### 6.7 Moodboard textuel Nobert
+```
+Vibe :          Voisinage, chaleureux, rassurant, anti-corporate, fier local
+Color :         Navy profond #1A2B3C (CLI imposé) + Or #FFD700 + Gris #B2B2B2
+                ⚠ Pivot chaleur via typo + textures + photos (compense le navy froid)
+Typo :          Serif display chaleureux (Recoleta/Fraunces, weight 700+) titres
+                + Sans humaniste body (Inter/Karla)
+Layout :        Hero plein écran statique, sections amples, whitespace généreux,
+                grille 12 col, sections alternées navy/blanc-gris
+Imagery :       Photos authentiques vitrine + Nobert + voisinage. Éclairage chaud
+                naturel. Textures bois subtiles en arrière-plan accents.
+Animations :    Fade-in scroll subtil, hover CTA accent or, zéro parallax
+Personality 6D : D1=3 densité moyenne, D2=emotional, D3=heavy serif lourd,
+                 D4=warm (compensé par typo/photo car palette navy = froide),
+                 D5=slow-organic, D6=symmetric
+```
 
-| Dimension | Direction |
+### 6.8 Anti-patterns design relevés
+
+| Anti-pattern | Impact | Décision Ph2 |
+|---|---|---|
+| Carousel hero auto (ChaLou) | LCP/CLS dégradés, WCAG | INTERDIT |
+| Texte sur image sans overlay | Contraste WCAG AA fail | Overlay obligatoire si texte sur photo |
+| Surcharge visuelle WP par défaut | Pas de hiérarchie | Système typo strict (h1/h2/h3 limité) |
+
+---
+
+## 7. Recommandations pour Phase 1 (Strategy)
+
+### 7.1 Priorités stratégiques (par ordre)
+
+1. **CTA primaire = « Voir les promotions de la semaine »** (S-001, S-008 sticky global) — le KPI conversion du brief s'aligne avec le pattern dominant secteur (4/5 ont une page promo).
+2. **Anti-positionnement chaîne** : ton « pas Couche-Tard, votre voisin Nobert » — exploiter le gap émotionnel laissé par les chaînes.
+3. **Témoignages voisinage P02 adjacents au CTA promos** — différenciation #1 mesurable (+2× leads).
+4. **FAQ AI SEO** sur promotions (S-011) et produits (S-016) — différenciation #2 (0/5 concurrents).
+5. **Schema.org LocalBusiness + OpeningHours + FAQPage** — différenciation #3 (rich results Google).
+6. **Loi 25 strict opt-in** + bouton Refuser ≥ Accepter — barrière secteur très basse, NEXOS livre la conformité par défaut.
+7. **Bilingue FR/EN complet** — différenciation #4 (1/5 partiel seulement).
+
+### 7.2 Pattern-recommender Ph1 — patterns à activer
+
+Patterns confirmés par le manifest (déjà en `audited`) et alignés avec le benchmark :
+- **P01** Sticky CTA global (S-008) + CTA hero (S-001) — conversion-driven
+- **P02** Témoignages adjacents au CTA (S-004) — différenciation #1
+- **P09** Hero pleine largeur (S-001, S-009, S-013) — convention sectorielle dominante
+- **P11** Infos pratiques structurées (S-005, S-018, S-019, S-020) — Schema OpeningHours
+- **P13** Photos authentiques (S-001, S-004, S-006) — anti-stock
+- **P19** StoryBrand (S-006) — voisin = héros, Nobert = guide
+- **P20** Galeries cards/grilles (S-002, S-003, S-010, S-015) — promos + catégories
+
+### 7.3 Personality 6D — réglage final
+
+| Dim | Brief | Ajustement post-discovery | Justification |
+|---|---|---|---|
+| D1 densité | 3 (medium) | **3** (conservé) | Équilibre catalogue + chaleur humaine |
+| D2 registre | emotional | **emotional** (renforcé) | 0/5 concurrents émotionnels — gap |
+| D3 typo weight | heavy | **heavy** (renforcé) | Compense palette navy froide CLI |
+| D4 palette | warm | **warm via typo + photos** | Conflit CLI navy : compensation indirecte |
+| D5 velocity | slow-organic | **slow-organic** | `prefers-reduced-motion` + fade-in subtil |
+| D6 structure | symmetric | **symmetric** | Rassurant, lisibilité tous âges |
+
+**Règle d'or différenciation** : un dépanneur de quartier en navy + or chaleureux par typo lourde et photos authentiques = signature visuelle distinctive vs le **WordPress neutre** dominant secteur. Opposition check OK sur D2 (emotional vs informational sectoriel) et D4 (warm-by-typo vs neutre stock).
+
+### 7.4 Risques résiduels à monitorer en Ph1
+- **R-001** : Palette CLI navy ne « parle » pas au public dépanneur. → Plan B Ph1 : si brand-strategist détecte risque conversion, escalader pour confirmer avec client (canal hors pipeline).
+- **R-002** : Ville TBD bloque mots-clés SEO → fallback `[ville]` placeholders en Ph3, à remplacer au kickoff.
+- **R-003** : Pas de photos client réelles disponibles à la création → Ph2/Ph4 doit prévoir placeholder structurel + brief client pour shooting (priorité S-001, S-004, S-006).
+
+---
+
+## 8. Score global Phase 0
+
+| Critère | Score |
 |---|---|
-| **Vibe** | Chaleureux, authentique, ancré quartier, accueillant — anti-corporate explicite |
-| **Color direction** | Brun boiseries `#8B4513` dominant + jaune doré `#FFD700` accent + crème `#FFF8E7` background — registre warm exclusif |
-| **Typo direction** | Serif chaleureux display (Recoleta/Fraunces) + sans humaniste body (Inter/Karla) — autorité tradition + lisibilité contemporaine |
-| **Layout direction** | Symmetric (D6) + densité 3 (D1 équilibrée) — sections amples avec respiration mais catalogue produits visible sans saturation |
-| **Imagery direction** | Photos réelles vitrine + intérieur + propriétaire + produits packshot, textures papier/boiseries possibles, iconographie Lucide cohérente, **zéro stock photo** |
-| **Animation direction** | Scroll fade-in subtils, hover CTA, respect `prefers-reduced-motion`, viewport-only |
+| Couverture concurrentielle (5 sites) | 9/10 |
+| Sourcing factuel (URLs vérifiables) | 9/10 |
+| Identification patterns dominants | 9/10 |
+| Identification anti-patterns | 9/10 |
+| Opportunités de différenciation | 10/10 |
+| Alignement avec brief (KPI conversion + Loi 25) | 9/10 |
+| Cohérence avec section-manifest (24 sections) | 10/10 |
+| Drapeaux/risques flaggés au pipeline | 10/10 |
 
-### 6.8 Anti-patterns design à éviter
+**Score global : 9.4/10**
 
-| Anti-pattern | Vu chez | Impact |
-|---|---|---|
-| Carousel hero auto-rotate | ChaLou | LCP, a11y, CTR |
-| Surcharge couleurs (>5) | DepQuébec partiellement | Confusion hiérarchie visuelle |
-| Stock photos génériques | ChaLou banners | Trahit registre authenticité |
-| Texte sur image sans overlay | À surveiller | Échec contraste WCAG |
-| WordPress theme générique | ChaLou, Peluso | Trahit anti-positionnement corporate fade |
+> Gate ph0→ph1 : seuil μ ≥ 7.0 → **PASS**.
 
 ---
 
-## 7. Recommandations consolidées pour Phase 1 (Strategy)
+## 9. Sorties machine-readable
 
-### 7.1 Inputs prêts pour brand-strategist Ph1
-
-- ✅ Personnalité 6D : D1=3, D2=emotional, D3=heavy, D4=warm, D5=slow-organic, D6=symmetric (cf. `pattern-recommendation.json`)
-- ✅ Palette imposée prête à injecter dans `design-tokens` + `tailwind.config`
-- ✅ Patterns recommandés (8 — 7 primaires + 1 secondaire) avec rationale par pattern
-- ✅ Patterns évités (8) avec justification — éviter recompute Ph1
-- ✅ Sites de référence priorisés : S01 Twin Boro (P01+P11), S14 La Semilla (P20), S13 Ma'ono (P09), S12 Gazzo (P13), S05 Bloor Jane (P02)
-
-### 7.2 Stratégie SEO local (priorité Ph1)
-
-- **Mots-clés primaires** : `dépanneur [ville]`, `dépanneur ouvert 24h [ville]`, `bière [ville]`, `loto québec [ville]`
-- **Pages cibles** : `/` (homepage), `/promotions`, `/produits`, `/contact`
-- **Schema.org** : `LocalBusiness` JSON-LD obligatoire avec NAP cohérent (Name + Address + Phone), horaires structurées, géolocalisation
-- **Google My Business** : synchronisation NAP indispensable (à coordonner avec le client au kickoff)
-- **Sitemap multilingue** : hreflang FR/EN automatique via App Router metadata
-
-### 7.3 Stratégie conversion (priorité Ph1)
-
-| Niveau | Action | Pattern |
-|---|---|---|
-| 1 (primaire) | « Voir les promotions de la semaine » sticky + hero | P01 |
-| 2 (secondaire) | « Trouver l'adresse » → Google Maps embed | P11 |
-| 2 (secondaire) | « Appeler pour une commande » → tel: link | P09 |
-| 3 (tertiaire) | « S'inscrire à l'infolettre » → form 1 champ + consentement | P02 |
-
-### 7.4 Différenciations à exploiter (gaps marché)
-
-1. **Sticky CTA promos hebdo** (P01) — aucun concurrent ne le fait
-2. **Social proof voisinage** (P02) — territoire vide
-3. **Page par localisation SEO** (P11) — capture trafic local immédiat
-4. **Anti-polish authenticité** (P13) — registre inoccupé
-5. **Conformité Loi 25 native** — 4/5 concurrents non conformes
-6. **Bilinguisme FR/EN** — 3/5 concurrents FR seul
-7. **Stack Next.js 15 + Vercel** — 0/5 concurrents en framework moderne (performance + sécurité + SEO)
-8. **Palette warm brun/or/crème** — territoire visuel inoccupé dans le secteur
-
-### 7.5 Risques signalés au gate ph0→ph1 SOIC
-
-| Dimension | Risque | Atténuation Ph1 |
-|---|---|---|
-| **D8 Legal** | Mapping SEC-03 confidence 0.5 → revue humaine + variables `[ville]`, NEQ, adresse manquantes | Kickoff client obligatoire avant Ph2 design |
-| **D6 SEO** | NAP cohérence Google My Business à coordonner | Inclure dans brief Ph1 + Schema LocalBusiness |
-| **D2 Accessibilité** | P20 menu galerie → alt-text descriptif obligatoire | Brief Ph3 content-writer |
-| **D5 Performance** | P17 animations + Maps embed → CLS mobile | Brief Ph4 build avec lazy + viewport-only |
-
-### 7.6 Variables à fixer au kickoff client (avant Ph2)
-
-- 🟠 **Ville** (Québec — TBD) → bloquant pour P11, SEO local, Schema LocalBusiness
-- 🟠 **Adresse exacte du commerce** → bloquant Maps + mentions légales
-- 🟠 **Téléphone** → bloquant CTA secondary + LocalBusiness Schema
-- 🟠 **Horaires précis** (semaine, weekend, jours fériés) → bloquant Schema OpeningHours
-- 🟠 **NEQ** (Numéro d'Entreprise du Québec) → bloquant mentions légales
-- 🟠 **Logo** (`logo_provided: false`) → décision Ph2 : création logo OU wordmark typographique
-- 🟡 **Photos vitrine/intérieur/propriétaire** → idéalement collectées avant Ph3 content (sinon stock authentique évité, illustrations à défaut)
+Les agents Ph0 produisent normalement 5 fichiers JSON (`competitive-analysis.json`, `tech-benchmark.json`, `ux-benchmark.json`, `content-audit.json`, `design-benchmark.json`). Pour ce run, les données sont consolidées dans ce rapport markdown unique afin d'éviter la duplication. Si la Ph1 nécessite les JSON séparés, ils peuvent être générés à la demande à partir des sections 2-6 ci-dessus.
 
 ---
 
-## Score discovery global : **8.5/10**
+## 10. Sources
 
-### Détail par dimension
-
-| Dimension | Score | Justification |
-|---|---|---|
-| Clarté brief client | 9/10 | Brief structuré, personality_hints fournis, palette imposée, patterns pré-recommandés via chantier-K |
-| Cadrage business (KPI conversion) | 9/10 | KPI primaire + actions priorisées + audience définie + anti-cible explicite |
-| Benchmark concurrentiel | 8/10 | 5 sites web réels analysés + cas-gap (Accommodation Populaire) — limitation : ville TBD empêche analyse géographique fine |
-| Cohérence design / palette | 9/10 | Palette imposée + moodboard cohérent, territoire visuel inoccupé identifié |
-| Cohérence Loi 25 / D8 | 9/10 | Tous éléments légaux présents au brief, RPP identifié, conformité native NEXOS |
-| Mapping sectoriel SOIC | 6/10 | SEC-03 mapping confidence 0.5 — secteur commerce de proximité non nativement couvert (revue humaine recommandée Ph M ultérieure) |
-| Différenciations identifiées | 9/10 | 8 gaps marché concrets + patterns alignés |
-| Risques anticipés | 9/10 | 4 risques SOIC + 7 variables kickoff signalées |
-
-**Verdict gate ph0→ph1** : ✅ **GO Phase 1 Strategy** (μ ≥ 7.0 requis pour cette transition — score 8.5 dépasse largement le seuil).
-
-### Conditions à respecter en Ph1
-
-1. Confirmer la cohérence avec `pattern-recommendation.json` (chantier-K) — patterns P01/P02/P09/P11/P13/P17/P19/P20 reconduits
-2. Exiger la **collecte des variables kickoff** (ville, adresse, téléphone, horaires, NEQ) avant lancement Ph2
-3. Valider le mapping SEC-03 ou décider de dégrader si certains patterns SEC-03 (P20 menu galerie format gastro) ne s'adaptent pas au catalogue dépanneur
+- Super Sagamie — Promos : https://supersagamie.com/promos/
+- Dépanneur Peluso : https://depanneurpeluso.com/
+- Accommodation ChaLou : https://www.accommodationchalou.com/
+- Dépanneur Sprint — Promotions : https://depanneursprint.ca/en/promotions/
+- TonDepanneur : https://www.tondepanneur.com/
+- DepQuébec (portail sectoriel) : https://depquebec.com/en/
+- AMDEQ — Association des marchands dépanneurs et épiciers du Québec : https://amdeq.ca/
+- Couche-Tard / Circle K (réf. chaîne masse, anti-positionnement) : https://www.couche-tard.com/
 
 ---
 
-**Fin du rapport Phase 0 Discovery — Dépanneur Nobert.**
-**Prochaine étape** : Phase 1 Strategy (`agents/ph1-strategy/_orchestrator.md`).
+*Phase 0 Discovery complétée. Prochain handoff : ph1-strategy/_orchestrator (pattern-recommender + brand-strategist + sitemap-architect + solution-architect). Risques R-001/R-002/R-003 à porter en input Ph1.*

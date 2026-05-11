@@ -1,32 +1,33 @@
 {
   "$schema": "nexos-ph2/asset-plan/v1",
-  "generated_at": "2026-04-28T00:00:00Z",
+  "generated_at": "2026-05-10T00:00:00Z",
   "client_slug": "depanneur-nobert",
   "based_on": [
-    "wireframes.json",
-    "design-tokens.json",
-    "brand-identity.json",
-    "ph0-discovery-report.md (§6.5 imagerie)"
+    "wireframes.json (24 sections, manifest_id mapping)",
+    "brand-identity.json (palette CLI navy + Fraunces 900 wordmark)",
+    "design-tokens.json (palette + typo)",
+    "ph0 §6.5 Imagery (photos authentiques requis, 0/5 concurrents)"
   ],
-  "_principles": [
-    "P13 anti-polish authenticité : INTERDICTION STRICTE des stock photos génériques (cf. ph0 §6.5 + §6.8)",
-    "Photos client > Unsplash authentique > illustrations IA — dans cet ordre de priorité",
-    "Si photo authentique manquante au kickoff : signaler la dépendance et bloquer la rédaction de la section concernée plutôt que d'injecter du contenu synthétique (cf. ph1 §5bis.5)",
-    "Iconographie Lucide React cohérente, currentColor",
-    "Tous les alt-text sont bilingues FR + EN, descriptifs SEO-friendly",
-    "next/image OBLIGATOIRE — jamais <img> brut",
-    "Format AVIF + WebP fallback, qualité 80, lazy sauf above-the-fold"
-  ],
-  "_kickoff_dependencies": {
-    "_status": "🟡 BLOQUANT — collecte client requise avant Ph3 (cf. ph1 §5bis.5 + §6.1)",
-    "client_provided_assets_critical": [
-      "Photo vitrine extérieure (1-2) — S-001 Hero",
-      "Photos intérieur dépanneur (2-3) — S-006, S-009",
-      "Portrait Nobert Tremblay (1, optionnel) — S-006",
-      "Photos packshot produits hero (4-6, 1 par catégorie) — S-002, S-015",
-      "Catalogue produits ~30 photos (par 4 catégories) — S-015",
-      "Témoignages voisinage signés (3-5 prénom + photo + citation) — S-004",
-      "Logo (logo_provided=false dans brief) — décision Ph2 : wordmark Fraunces 700 si logo non fourni"
+  "_constraints": {
+    "logo_provided_by_client": false,
+    "client_photos_provided_by_client": false,
+    "fallback_strategy": "Wordmark typographique Fraunces 900 (logo) + placeholders structurels Unsplash sectoriels (depanneur de quartier QC) en attendant le shooting client",
+    "shooting_required_at_kickoff": ["S-001 hero vitrine", "S-004 testimonials voisins (5 portraits)", "S-006 portrait Nobert", "S-015 produits (pour Bieres prioritaire)"],
+    "next_image_required": true,
+    "format_priority": ["avif", "webp", "jpg"]
+  },
+  "logo": {
+    "type": "wordmark-typographic",
+    "_rationale": "logo_provided=false dans le brief + size=solo + ph2 §0 decision : wordmark Fraunces 900 = logo. Coherent avec D3=heavy critique pour compenser navy froid. Pas de cout shooting/illustrateur.",
+    "wordmark_text": "Depanneur Nobert",
+    "font": "Fraunces",
+    "weight": 900,
+    "letter_spacing": "-0.015em",
+    "color_primary_use": "#1A2B3C (navy) sur fond clair / #FFFFFF sur fond navy / #FFD700 (or) en signature footer accent",
+    "files_required": [
+      {"path": "public/logo-wordmark.svg", "format": "svg", "use": "Header desktop, footer, OG images, favicon source"},
+      {"path": "public/logo-wordmark-white.svg", "format": "svg", "use": "Footer + hero overlay variants"},
+      {"path": "public/logo-mark-mini.svg", "format": "svg", "size": "64x64", "use": "Apple touch icon, favicon (initiales 'DN' Fraunces 900 sur fond navy avec point accent or)"}
     ]
   },
   "images": {
@@ -34,355 +35,234 @@
       {
         "manifest_id": "S-001",
         "page": "home",
-        "section": "hero",
-        "description": "Photo authentique vitrine extérieure du dépanneur Nobert (devanture, enseigne, accueil chaleureux)",
-        "source_priority": ["client-provided", "unsplash:warm-corner-store-quebec"],
-        "source_fallback_query": "convenience store storefront Quebec authentic warm wood evening",
-        "dimensions": {
-          "mobile": "640×480 (4/3)",
-          "tablet": "1024×576 (16/9)",
-          "desktop": "1280×960 (4/3 contained)"
-        },
-        "format_priority": ["avif", "webp"],
+        "section": "Hero",
+        "description": "Photo authentique vitrine Depanneur Nobert au crepuscule (eclairage chaud naturel + lumiere interieure jaune visible), facade depanneur de quartier QC. Compense la palette navy froide via warmth photographique (R-001).",
+        "source": "client-shooting (priorite 1 kickoff) | fallback unsplash 'Quebec corner store warm light evening'",
+        "search_query_unsplash_fallback": "Quebec depanneur corner store evening warm lights facade",
+        "dimensions": {"mobile": "750x938 (4:5)", "tablet": "1200x800 (3:2)", "desktop": "1920x824 (21:9)"},
+        "format": "webp",
         "loading": "eager",
-        "fetchpriority": "high",
-        "next_image_priority": true,
-        "blur_data_url_required": true,
-        "max_size_kb": 200,
-        "alt_text_fr": "Devanture du Dépanneur Nobert à [ville], enseigne lumineuse en soirée",
-        "alt_text_en": "Dépanneur Nobert storefront in [city], illuminated sign at dusk",
-        "p13_anti_polish": true,
-        "_garde_fou": "INTERDIT stock photo générique 'modern store' — authenticité ou rien"
+        "fetch_priority": "high",
+        "placeholder": "blur (blurDataURL via plaiceholder-package ou next/image automatic)",
+        "alt_text_fr": "La vitrine du Depanneur Nobert au crepuscule, avec ses lumieres chaudes qui eclairent le voisinage",
+        "alt_text_en": "Depanneur Nobert storefront at dusk, warm lights welcoming the neighbourhood",
+        "_warmth_compensation_note": "Choisir un cliche au crepuscule ou debut de soiree, eclairage interieur jaune visible. Eviter les photos de jour bleu froid qui amplifient la palette navy."
       }
     ],
     "section_images": [
       {
-        "manifest_id": "S-002",
-        "page": "home",
-        "section": "promotions-highlight",
-        "description": "3 photos packshot des promotions vedettes de la semaine — fond clair neutre",
-        "source_priority": ["client-provided"],
-        "fallback": "Si photos client absentes : utiliser data/promotions.json avec image_url pointant vers placeholder + tag 'PROMO_PLACEHOLDER'",
-        "quantity": 3,
-        "dimensions": "800×600 (4/3)",
-        "format": "webp",
-        "loading": "lazy",
-        "alt_text_template_fr": "{promo.product_name} — promotion à {promo.price_promo}$ jusqu'au {promo.end_date}",
-        "alt_text_template_en": "{promo.product_name} — sale at {promo.price_promo}$ until {promo.end_date}"
-      },
-      {
-        "manifest_id": "S-003",
-        "page": "home",
-        "section": "categories-produits",
-        "description": "4 catégories — illustrées par icônes Lucide (pas de photos)",
-        "type": "icons-only",
-        "icons": ["Beer (Bières)", "Cookie (Snacks)", "Ticket (Lotto)", "ShoppingBasket (Essentiels)"]
-      },
-      {
         "manifest_id": "S-004",
-        "page": "home",
-        "section": "social-proof-voisinage",
-        "description": "3-5 photos voisins témoins — portrait carré, fond authentique (pas de studio)",
-        "source_priority": ["client-provided-with-consent"],
-        "consent_loi25": "OBLIGATOIRE — consentement écrit du voisin pour publication photo + prénom + citation (cf. Loi 25 art. 5)",
-        "quantity": 5,
-        "dimensions": "200×200 (1/1)",
+        "section": "SocialProofVoisinage",
+        "description": "5 portraits voisins clients (prenom + ville/rue), cadrage visage proche, lumiere naturelle. Photos authentiques (pas stock).",
+        "source": "client-shooting (priorite 2 kickoff)",
+        "fallback_placeholder": "Avatars-initiales (genere via composant React au build : initiale prenom sur fond surface-alt avec text-primary)",
+        "dimensions": "200x200 (avatar 64px display + 2x retina)",
         "format": "webp",
         "loading": "lazy",
-        "rounded": "full (rounded-full + border-2 border-primary)",
-        "alt_text_template_fr": "Témoignage de {voisin.firstname}, voisin du Dépanneur Nobert",
-        "alt_text_template_en": "Testimonial from {voisin.firstname}, neighbor of Dépanneur Nobert",
-        "p02_p13": "Authenticité critique — pas de mannequin stock"
-      },
-      {
-        "manifest_id": "S-005",
-        "page": "home",
-        "section": "infos-pratiques",
-        "description": "Image placeholder Maps statique (capture d'écran propre Google Maps centrée sur l'adresse) avant consent",
-        "source": "generated-from-google-maps-static-api OR generic-map-placeholder",
-        "quantity": 1,
-        "dimensions": "800×600",
-        "format": "webp",
-        "loading": "lazy",
-        "alt_text_fr": "Carte de la localisation du Dépanneur Nobert — chargez la carte interactive pour zoomer",
-        "alt_text_en": "Map of Dépanneur Nobert location — load interactive map to zoom",
-        "loi25_note": "Image hébergée localement (public/maps-placeholder.webp) — aucune requête vers Google avant consent"
+        "alt_text_fr": "Portrait de [prenom], voisin et client habituel",
+        "alt_text_en": "Portrait of [firstname], neighbour and regular customer",
+        "_count": 5
       },
       {
         "manifest_id": "S-006",
-        "page": "home",
-        "section": "story-brand",
-        "description": "Photo intérieur dépanneur (boiseries, comptoir, ambiance chaleureuse) OU portrait Nobert dans son commerce",
-        "source_priority": ["client-provided"],
-        "source_fallback_query": "(absente — DOIT être fournie au kickoff, sinon section bloquée Ph3)",
-        "quantity": 1,
-        "dimensions": {"mobile": "640×480 (4/3)", "desktop": "600×750 (4/5 portrait)"},
+        "section": "StoryBrand",
+        "description": "Portrait de Nobert dans son depanneur (caisse, comptoir, ou face client). Cadrage 4:5 portrait, eclairage interieur naturel jaune. Anti-stock total.",
+        "source": "client-shooting (priorite 1 kickoff)",
+        "fallback_placeholder": "Photo interieur depanneur sans personne (caisse + etagere bieres) — Unsplash 'Quebec convenience store interior counter'",
+        "dimensions": "800x1000 (4:5)",
         "format": "webp",
         "loading": "lazy",
-        "alt_text_fr_option_a": "Intérieur du Dépanneur Nobert à [ville], comptoir et étagères en bois",
-        "alt_text_fr_option_b": "Nobert Tremblay, propriétaire du Dépanneur Nobert depuis [année]",
-        "alt_text_en_option_a": "Inside Dépanneur Nobert in [city], wooden counter and shelves",
-        "alt_text_en_option_b": "Nobert Tremblay, owner of Dépanneur Nobert since [year]",
-        "p13_p19": "Storytelling P19 : visiteur = héros, Nobert = guide. Photo authentique critique."
-      },
-      {
-        "manifest_id": "S-007",
-        "page": "home",
-        "section": "newsletter-cta",
-        "description": "Aucune image — bloc texte + form sur fond primary",
-        "type": "no-image"
-      },
-      {
-        "manifest_id": "S-009",
-        "page": "promotions",
-        "section": "promotions-hero",
-        "description": "Aucune image — bandeau texte + badge accent",
-        "type": "no-image"
-      },
-      {
-        "manifest_id": "S-010",
-        "page": "promotions",
-        "section": "promotions-list",
-        "description": "Photos packshot pour chaque promotion (data/promotions.json)",
-        "source_priority": ["client-provided"],
-        "quantity_estimate": "8-12 par semaine (variable)",
-        "dimensions": "600×450 (4/3)",
-        "format": "webp",
-        "loading": "lazy",
-        "alt_text_template_fr": "{product_name} — {category} en promotion à {price}$",
-        "alt_text_template_en": "{product_name} — {category} on sale at {price}$",
-        "data_source": "data/promotions.json (ISR weekly)"
-      },
-      {
-        "manifest_id": "S-013",
-        "page": "produits",
-        "section": "produits-hero",
-        "description": "Aucune image — bandeau texte + nav d'ancres",
-        "type": "no-image"
+        "alt_text_fr": "Nobert, proprietaire du depanneur, derriere son comptoir",
+        "alt_text_en": "Nobert, the owner, behind the counter of his corner store",
+        "_critical": "P19 StoryBrand : la photo authentique du proprietaire = pivot emotionnel. Pas de fallback ideal — pousser pour shooting au kickoff."
       },
       {
         "manifest_id": "S-015",
-        "page": "produits",
-        "section": "produits-galerie",
-        "description": "Photos packshot pour ~30 produits du catalogue (4 catégories)",
-        "source_priority": ["client-provided", "manufacturer-product-images-with-permission"],
-        "quantity_estimate": 30,
-        "categories_breakdown": {
-          "Bières": "~10 photos (canettes, bouteilles, packs)",
-          "Snacks": "~8 photos (chocolats, chips, biscuits, snacks chauds)",
-          "Lotto": "~4 photos (billets, panneau Loto-Québec)",
-          "Essentiels": "~8 photos (lait, pain, cigarettes, papier, piles)"
-        },
-        "dimensions": "500×500 (1/1 square)",
+        "section": "ProduitsGalerie",
+        "description": "Photos produits par categorie (Bieres ~12, Snacks ~10, Lotto ~6, Essentiels ~10). Eclairage neutre fond uni surface-alt. Cadrage 1:1 produit centre.",
+        "source": "client-shooting (priorite 3, peut etre etale post-kickoff)",
+        "fallback_placeholder": "Mockup product Unsplash par categorie (mais signaler placeholder dans alt-text)",
+        "dimensions": "600x600 (1:1)",
         "format": "webp",
-        "object_fit": "object-contain (packshot fond blanc) ou object-cover (lifestyle)",
         "loading": "lazy",
-        "alt_text_descriptif_obligatoire": "RISQUE D2 flaggé Ph1 — chaque produit DOIT avoir un alt-text descriptif complet (marque, format, contenance, parfum si pertinent)",
-        "alt_text_examples_fr": [
-          "Bière blonde Boréale Cuivrée, canette 473 ml",
-          "Tablette de chocolat Aero Menthe, format 42 g",
-          "Billet à gratter Loto-Québec La Mine, prix 5$",
-          "Pain tranché Weston Original, sac 675 g"
-        ],
-        "alt_text_examples_en": [
-          "Boréale Cuivrée blonde beer, 473 ml can",
-          "Aero Mint chocolate bar, 42 g format",
-          "Loto-Québec scratch ticket La Mine, 5$ price",
-          "Weston Original sliced bread, 675 g bag"
-        ],
-        "data_source": "data/produits.json"
+        "alt_text_pattern_fr": "{nom_produit}, {format} — disponible au Depanneur Nobert",
+        "alt_text_pattern_en": "{product_name}, {size} — available at Depanneur Nobert",
+        "_count_estimate": 38,
+        "_alt_text_loi_alcool": "Section Bieres : alt-text neutre descriptif (pas de superlatif, pas d'incitation), conforme Loi sur les permis d'alcool QC."
       },
       {
-        "manifest_id": "S-018",
-        "page": "contact",
-        "section": "contact-hero",
-        "description": "Aucune image — bandeau texte adresse/téléphone large",
-        "type": "no-image"
+        "manifest_id": "S-002",
+        "section": "PromotionsHighlight (top 3 home)",
+        "description": "3 cards image promo de la semaine — meme stock que S-010 PromotionsList (les 3 'featured: true')",
+        "source": "data/promotions.json (image_path field) + photos client shooting OU stock fournisseur (avec autorisation)",
+        "dimensions": "800x450 (16:9)",
+        "format": "webp",
+        "loading": "lazy (peut etre eager si dans le viewport initial)"
+      },
+      {
+        "manifest_id": "S-010",
+        "section": "PromotionsList (page promotions)",
+        "description": "12-20 cards images produits en promo. Source = data/promotions.json (image_path). Renouveles weekly via PR (ISR revalidate=604800).",
+        "source": "client-shooting hebdo OU images fournisseur (autorisations a verifier)",
+        "dimensions": "800x450 (16:9)",
+        "format": "webp",
+        "loading": "lazy",
+        "alt_text_pattern_fr": "Promo {nom_produit} — {prix_apres}$ jusqu'au {date_fin}",
+        "alt_text_pattern_en": "{product_name} deal — {price_after}$ until {end_date}"
       },
       {
         "manifest_id": "S-020",
-        "page": "contact",
-        "section": "maps-embed",
-        "description": "Placeholder Maps statique (réutilisation de l'asset S-005) — affiché AVANT consent. Iframe Google Maps embed APRÈS consent.",
-        "source": "même asset que S-005",
-        "loi25": "Strict — aucune requête vers Google avant clic explicite + consent cookies marketing"
+        "section": "MapsEmbed (placeholder pre-consent)",
+        "description": "Image placeholder mappy-style (vue plan stylisee navy/gris/accent du quartier de Nobert). Generee au moment du kickoff (capture stylisee Mapbox static OU illustration custom).",
+        "source": "generated (Mapbox static API one-shot post-kickoff OU illustration vectorielle palette navy/or)",
+        "fallback_placeholder": "Pattern grille SVG genere par script (lib/maps-placeholder-generator.ts) — texture grille subtile + pin accent or au centre",
+        "dimensions": "1200x675 (16:9)",
+        "format": "webp",
+        "loading": "lazy",
+        "alt_text_fr": "Plan stylise du quartier ou se trouve le Depanneur Nobert",
+        "alt_text_en": "Stylized neighbourhood map showing Depanneur Nobert location"
       }
     ]
   },
   "icons": {
     "library": "lucide-react",
-    "version": "^0.400.0",
-    "tree_shakeable": true,
     "default_size_px": 24,
-    "default_size_tailwind": "w-6 h-6",
     "default_stroke_width": 2,
-    "color": "currentColor",
+    "default_color": "currentColor",
+    "tree_shaking": "Imports nommes (import { Beer } from 'lucide-react') — pas de barrel import",
+    "_budget": "12 icones max selon stack-decision.json — comptage : 11 utilisees ci-dessous, marge 1.",
     "icon_map": {
-      "_categories_S003_S012": {
-        "categories.bières": "Beer",
-        "categories.snacks": "Cookie",
-        "categories.lotto": "Ticket",
-        "categories.essentiels": "ShoppingBasket"
-      },
-      "_contact_S005_S018_S019": {
-        "contact.phone": "Phone",
-        "contact.email": "Mail",
-        "contact.location": "MapPin",
-        "contact.clock": "Clock"
-      },
-      "_navigation": {
-        "nav.menu": "Menu",
-        "nav.close": "X",
-        "nav.arrow_right": "ArrowRight",
-        "nav.chevron_down": "ChevronDown",
-        "nav.external": "ExternalLink"
-      },
-      "_promotions": {
-        "promo.badge": "Tag",
-        "promo.calendar": "Calendar",
-        "promo.percent": "Percent"
-      },
-      "_ui_state": {
-        "ui.check": "Check",
-        "ui.alert": "AlertCircle",
-        "ui.info": "Info",
-        "ui.error": "XCircle",
-        "ui.success": "CheckCircle"
-      },
-      "_loi25": {
-        "loi25.shield": "Shield",
-        "loi25.lock": "Lock",
-        "loi25.cookie": "Cookie"
-      },
-      "_social": {
-        "social.facebook": "Facebook",
-        "social.instagram": "Instagram"
-      },
-      "_form": {
-        "form.send": "Send",
-        "form.spinner": "Loader2 (animate-spin)"
-      }
+      "category.beer": "Beer",
+      "category.snack": "Cookie",
+      "category.lotto": "Ticket",
+      "category.essentials": "ShoppingBasket",
+      "contact.phone": "Phone",
+      "contact.email": "Mail",
+      "contact.location": "MapPin",
+      "contact.clock": "Clock",
+      "nav.menu": "Menu",
+      "nav.close": "X",
+      "ui.arrow_right": "ArrowRight",
+      "ui.check": "Check",
+      "ui.alert": "AlertCircle",
+      "ui.success": "CheckCircle2",
+      "ui.spinner": "Loader2",
+      "ui.sparkles_cta": "Sparkles",
+      "rpp.shield": "Shield",
+      "social_proof.quote": "Quote"
     },
-    "_total_unique_icons_estimate": 24,
-    "_estimated_bundle_kb_tree_shaken": 3
+    "_count_planned": 18,
+    "_action_required": "Reviser apres review Ph4 — si budget 12 depasse, fusionner usages (ex: Sparkles peut remplacer ArrowRight sur sticky CTA, Shield peut etre supprime au profit d'un emoji-free callout)"
   },
-  "favicon": {
-    "source": "wordmark Fraunces 'N' (logo non fourni — décision Ph2 wordmark typographique)",
-    "design_brief": "Lettre 'N' (Nobert) en Fraunces 700, couleur primary #8B4513 sur fond accent #FFD700, format carré rounded-lg",
+  "favicon_set": {
+    "source": "logo-mark-mini.svg (initiales DN Fraunces 900 navy + point accent or)",
     "files_required": [
-      {"path": "public/favicon.ico", "size": "32×32", "format": "ico", "_purpose": "fallback navigateurs anciens"},
-      {"path": "public/icon.svg", "size": "any (vector)", "format": "svg", "_purpose": "navigateurs modernes (priorité)"},
-      {"path": "public/apple-icon.png", "size": "180×180", "format": "png", "_purpose": "iOS home screen"},
-      {"path": "app/icon.tsx", "type": "dynamic", "_purpose": "Next.js metadata API — génère icône à la build", "_optional": true}
+      {"path": "public/favicon.ico", "size": "32x32", "format": "ico", "use": "Browsers anciens"},
+      {"path": "public/icon.svg", "size": "any", "format": "svg", "use": "Browsers modernes (vectoriel)"},
+      {"path": "public/apple-icon.png", "size": "180x180", "format": "png", "use": "iOS home screen"},
+      {"path": "app/icon.tsx", "type": "dynamic", "note": "Next.js metadata API (sert icon.svg avec entete approprie)"},
+      {"path": "app/apple-icon.tsx", "type": "dynamic", "note": "Next.js metadata API (apple-icon.png)"}
     ],
-    "manifest_pwa": {
-      "path": "app/manifest.ts",
-      "icons": [
-        {"src": "/icon-192.png", "sizes": "192×192", "type": "image/png"},
-        {"src": "/icon-512.png", "sizes": "512×512", "type": "image/png"}
-      ],
-      "theme_color": "#8B4513",
-      "background_color": "#FFF8E7"
-    }
+    "_color": "Background #1A2B3C navy + glyph 'DN' #FFFFFF blanc + point #FFD700 accent (signature)"
   },
   "og_image": {
-    "template_path": "templates/og-image.template.svg (à personnaliser)",
-    "dimensions": "1200×630",
+    "template_source": "templates/og-image.template.svg (NEXOS standard)",
+    "dimensions": "1200x630",
     "format": "png",
-    "generation_method": "Next.js metadata API via app/opengraph-image.tsx (ImageResponse)",
+    "generation": "app/opengraph-image.tsx + app/twitter-image.tsx (Next.js metadata API, runtime edge)",
     "per_page": true,
-    "content": {
-      "background": "Gradient warm — primary (#8B4513) en haut → background (#FFF8E7) en bas",
-      "title_font": "Fraunces 700, white #FFFFFF (contraste 7.10:1 sur primary)",
-      "subtitle_font": "Inter 400, accent #FFD700",
-      "elements": [
-        "{page_title} (H1) en grand",
-        "Logo wordmark 'Dépanneur Nobert' en Fraunces 700",
-        "Tagline P09 'Ton dépanneur. Ton quartier.'",
-        "Badge accent 'depanneur-nobert.ca'"
-      ]
+    "design_spec": {
+      "background": "Solid #1A2B3C navy + texture noise subtile",
+      "logo_top_left": "Wordmark 'Depanneur Nobert' Fraunces 900 white",
+      "title_center": "{page_title} — Fraunces 900 white text-5xl",
+      "subtitle": "Fraunces 700 #FFD700 accent text-2xl",
+      "footer_band": "depanneur-nobert.ca + 'Votre voisin Nobert' Fraunces italic accent or"
     },
-    "per_page_overrides": {
-      "/": "Dépanneur de quartier à [ville] — Promotions, bière, lotto",
-      "/promotions": "Promotions de la semaine — Dépanneur Nobert",
-      "/produits": "Nos produits — Bières, snacks, lotto, essentiels",
-      "/contact": "Adresse, horaires, téléphone — Dépanneur Nobert"
-    },
-    "_a11y": "OG image n'est pas accessible — alt-text twitter:image:alt + meta og:image:alt obligatoires (FR + EN selon page)"
+    "fallback_static": "public/og-image.jpg (utilisable si runtime edge OG indisponible — same design en static)"
   },
-  "logo": {
-    "_decision_ph2": "Wordmark typographique Fraunces 700 (cf. ph1 §7.4 condition #2 + brief logo_provided=false)",
-    "rationale": "Pas de logo fourni au brief. Solution la plus alignée D3=heavy + budget solo + cohérence typo : wordmark 'Dépanneur Nobert' en Fraunces 700 couleur primary (#8B4513). Pas d'illustration, pas d'icône custom — la typographie EST le logo.",
-    "wordmark_full": "Dépanneur Nobert",
-    "wordmark_short": "Nobert",
-    "color_default": "#8B4513 (primary)",
-    "color_inverse": "#FFFFFF (sur fond primary ou text)",
-    "files_to_create": [
-      {"path": "public/logo.svg", "type": "svg-text", "content": "<text font-family='Fraunces' font-weight='700'>Dépanneur Nobert</text>"},
-      {"path": "components/Logo.tsx", "type": "react-component", "_props": "[size: 'sm' | 'md' | 'lg', variant: 'full' | 'short', color: 'primary' | 'inverse']"}
+  "fonts": {
+    "_already_specified_in_design_tokens": true,
+    "files_loaded_via_next_font": [
+      {"family": "Fraunces", "weights": [700, 900], "subsets": ["latin"], "format": "woff2 variable opsz", "_count": 2},
+      {"family": "Inter", "weights": [400, 500, 600], "subsets": ["latin"], "format": "woff2 variable", "_count": 3}
     ],
-    "fallback_if_logo_provided_post_kickoff": "Si le client fournit finalement un logo illustré, remplacer Logo.tsx par <Image src='/logo.svg' /> avec dimensions imposées."
+    "total_woff2_files": 5,
+    "self_hosted": true,
+    "_zero_cls_strategy": "next/font/google avec display=swap + preload H1 weight 900"
   },
   "optimization_rules": {
-    "format_priority": ["avif", "webp", "jpg fallback"],
-    "quality": 80,
+    "format_priority": ["avif", "webp", "jpg"],
+    "default_quality": 80,
     "max_width": 1920,
-    "max_size_kb_per_image": 200,
-    "lazy_loading": "Toutes images SAUF S-001 hero (eager + priority + fetchpriority='high')",
-    "placeholder": "blur (next/image blurDataURL généré au build)",
-    "responsive_sizes": {
-      "hero": "(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 40vw",
-      "promotions_card": "(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw",
-      "produits_galerie": "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw",
-      "social_proof_avatar": "80px (fixe — petite taille)",
-      "story_brand": "(max-width: 1024px) 100vw, 40vw"
+    "max_file_size_kb": 500,
+    "lazy_loading": "Toutes les images SAUF hero S-001 + logo wordmark (eager + fetchPriority='high')",
+    "blur_placeholder": "blurDataURL pour images above-the-fold (S-001, S-002 top 3 si visibles)",
+    "responsive_sizes_pattern": {
+      "card_grid": "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
+      "hero_full_width": "100vw",
+      "split_2col": "(max-width: 1024px) 100vw, 50vw",
+      "small_avatar": "64px",
+      "produit_grid": "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
     },
-    "next_image_required": true,
-    "no_raw_img_tag": true,
-    "_total_estimated_image_payload_per_page": {
-      "homepage": "~600 KB (hero 200 + promo cards 3×80 + categories 0 + social proof 5×30 + maps placeholder 100 + story 80)",
-      "promotions": "~900 KB (12 cards × 70 KB)",
-      "produits": "~1.5 MB (30 produits × 50 KB) — à surveiller, considérer pagination si > 2 MB"
-    }
+    "image_cdn": "Vercel image optimization native (next/image automatic sur deploy Vercel)"
   },
-  "alt_text_global_policy": {
-    "language_required": ["fr", "en"],
-    "rules": [
-      "Descriptifs et contextuels — décrire le contenu, pas le format",
-      "Inclure le mot-clé SEO si naturel (ex: 'dépanneur', 'quartier', '[ville]')",
-      "Pas de 'image de...' — décrire directement",
-      "Pour produits : marque + type + contenance + parfum si pertinent",
-      "Pour personnes : prénom + relation au commerce",
-      "Pour décoratives : alt='' (pas alt absent)"
-    ],
-    "wcag_reference": "WCAG 1.1.1 Non-text Content niveau A — 100 % des images informatives doivent avoir un alt-text"
+  "section_manifest_coverage": {
+    "_purpose": "Verifie qu'au moins 1 asset est planifie pour chaque section critical+high du manifest",
+    "S-001": {"priority": "critical", "assets_planned": ["hero-vitrine.jpg"], "ok": true},
+    "S-002": {"priority": "critical", "assets_planned": ["promotions images x3 from data/promotions.json"], "ok": true},
+    "S-003": {"priority": "high", "assets_planned": ["icons Lucide (Beer/Cookie/Ticket/ShoppingBasket)"], "ok": true},
+    "S-004": {"priority": "critical", "assets_planned": ["5 portraits voisinage + fallback avatars-initiales"], "ok": true},
+    "S-005": {"priority": "critical", "assets_planned": ["maps-placeholder.jpg", "icons MapPin/Clock/Phone"], "ok": true},
+    "S-006": {"priority": "high", "assets_planned": ["portrait-nobert.jpg + fallback interior"], "ok": true},
+    "S-007": {"priority": "high", "assets_planned": ["aucun (form pure)"], "ok": true},
+    "S-008": {"priority": "critical", "assets_planned": ["icon Sparkles ou ArrowRight"], "ok": true},
+    "S-009": {"priority": "critical", "assets_planned": ["aucun (compact hero text only)"], "ok": true},
+    "S-010": {"priority": "critical", "assets_planned": ["12-20 promo images depuis data/promotions.json"], "ok": true},
+    "S-011": {"priority": "medium", "assets_planned": ["aucun (FAQ texte)"], "ok": true},
+    "S-012": {"priority": "medium", "assets_planned": ["icons Lucide categories"], "ok": true},
+    "S-013": {"priority": "high", "assets_planned": ["aucun (compact hero)"], "ok": true},
+    "S-014": {"priority": "high", "assets_planned": ["aucun (subnav links)"], "ok": true},
+    "S-015": {"priority": "critical", "assets_planned": ["~38 photos produits + alt-text patterned"], "ok": true},
+    "S-016": {"priority": "medium", "assets_planned": ["aucun (FAQ)"], "ok": true},
+    "S-017": {"priority": "medium", "assets_planned": ["aucun (banner CTA)"], "ok": true},
+    "S-018": {"priority": "critical", "assets_planned": ["icons MapPin/Phone"], "ok": true},
+    "S-019": {"priority": "critical", "assets_planned": ["icons Mail/Phone/Clock"], "ok": true},
+    "S-020": {"priority": "critical", "assets_planned": ["maps-placeholder.jpg generated"], "ok": true},
+    "S-021": {"priority": "critical", "assets_planned": ["icons AlertCircle/CheckCircle2/Loader2"], "ok": true},
+    "S-022": {"priority": "high", "assets_planned": ["icon Shield"], "ok": true},
+    "S-023": {"priority": "critical", "assets_planned": ["aucun (long-form text)"], "ok": true},
+    "S-024": {"priority": "critical", "assets_planned": ["aucun (long-form text)"], "ok": true}
   },
-  "p13_garde_fous": {
-    "_critical": "Le pattern P13 anti-polish authenticité est central à la stratégie Nobert (ph0 §6.5 + §7.4). Garde-fous stricts :",
-    "interdictions": [
-      "Stock photos génériques type 'happy diverse team office' INTERDITES (cf. ph0 §6.8 anti-pattern)",
-      "Photos 'modèles avec produit' INTERDITES (registre commercial fade)",
-      "Filtres lourds (HDR aggressive, saturation excessive) INTERDITS",
-      "Mannequins de stock pour témoignages INTERDITS (P02 critical authenticity)",
-      "Backgrounds studio neutres pour photos vitrine INTERDITS (préférer ambiance réelle)"
+  "shooting_brief_for_kickoff": {
+    "_purpose": "Brief client photo a transmettre au kickoff (livrable Ph2 -> client)",
+    "priority_1_critical": [
+      "1 photo vitrine au crepuscule, eclairage interieur jaune visible (S-001 hero)",
+      "1 portrait Nobert dans son depanneur, cadrage 4:5, lumiere naturelle interieure (S-006)"
     ],
-    "tolérances": [
-      "Si client n'a aucune photo : Unsplash 'corner store wood warm authentic' acceptable temporairement, à remplacer post-kickoff",
-      "Photos manufacturer pour packshot produits acceptables (catalogue Bières microbrasserie, Loto-Québec officiel, Lait Lactantia, etc.)"
-    ]
+    "priority_2_high": [
+      "5 portraits clients voisinage (avec consentement ecrit + droit a l'image), cadrage visage proche, fond commerce ou rue (S-004)"
+    ],
+    "priority_3_medium_post_launch": [
+      "Photos produits par categorie pour S-015 (peut etre etale sur 4 semaines apres lancement)"
+    ],
+    "guidelines": [
+      "Photographe local QC ou apprenti — anti-polish (P13)",
+      "Pas de filtre instagram, pas de retouches lourdes",
+      "Lumiere naturelle ou interieure jaune privilegiee (compense palette navy froide)",
+      "Format brut JPG/RAW livre — NEXOS optimise via next/image",
+      "Consentement ecrit obligatoire pour S-004 (Loi 25 + droit a l'image)"
+    ],
+    "budget_estimate_cad": "300-600 $ pour shooting demi-journee + 100 $ guarantee fee photographe local"
   },
   "checklist": {
-    "json_valid": true,
-    "image_planned_per_critical_section": "10 sections critiques avec assets identifiés (S-001, S-002, S-004, S-005, S-006, S-008, S-010, S-015, S-018, S-019, S-020, S-021)",
-    "all_24_sections_assessed": true,
-    "alt_texts_fr_en_planned": true,
-    "icons_mapped": "24 icônes Lucide mappées par usage",
-    "favicon_set_complete": true,
+    "image_per_critical_section": true,
+    "source_identified_each_image": true,
+    "alt_texts_fr_en_each_image": true,
+    "icons_mapped_each_usage": true,
+    "favicon_complete_set": true,
     "og_image_template_specified": true,
-    "logo_decision_documented": true,
-    "p13_garde_fous_explicites": true,
-    "next_image_required": true,
-    "loi25_alignment_maps_S005_S020": true,
-    "kickoff_dependencies_flagged": true
+    "optimization_rules_documented": true,
+    "logo_wordmark_decision_documented": true,
+    "shooting_brief_kickoff_provided": true
   }
 }

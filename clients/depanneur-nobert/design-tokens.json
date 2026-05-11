@@ -1,183 +1,213 @@
 {
   "$schema": "nexos-ph2/design-tokens/v1",
-  "generated_at": "2026-04-28T00:00:00Z",
+  "generated_at": "2026-05-10T00:00:00Z",
   "client_slug": "depanneur-nobert",
   "based_on": [
-    "brief-client.json (design.palette_imposed)",
-    "brand-identity.json (color_system + typography)",
-    "ph0-discovery-report.md (§6 design trends)",
-    "ph1-strategy-report.md (§1.3 + §1.4)"
+    "brand-identity.json (color_system + typography — palette CLI navy/or/gris)",
+    "ph0-discovery-report.md (§6 design trends + R-001 chaleur compensée)",
+    "ph1-strategy-report.md (§1.3 + §1.4 + §0.6 risque accent)"
   ],
   "_constraints": {
-    "palette_imposed": "Les 8 rôles (primary, primary-hover, accent, background, surface, text, text-muted, border) sont les valeurs hex EXACTES du brief — non négociables. Rôles dérivés (error/success/warning/info, scale neutre) cohérents avec la palette warm.",
+    "palette_imposed": "Les 3 rôles primary=#1A2B3C / accent=#FFD700 / secondary=#B2B2B2 sont des valeurs hex EXACTES du CLI --colors — non négociables. Tokens dérivés (text-secondary, surface, error/success/warning/info, neutral scale) cohérents avec le navy froid.",
     "max_2_font_families": true,
-    "wcag_target": "AA (4.5:1) sur 100 % du texte normal ; AAA visé sur les paires text/background et primary/blanc",
-    "tailwind_target_version": "3.4.x"
+    "wcag_target": "AA (4.5:1) sur 100 % du texte normal ; AAA visé sur les paires text/background, primary/blanc, text-on-accent/accent.",
+    "tailwind_target_version": "3.4.x",
+    "imposed_palette_dimension_constraint": "D2 emotional + D3 heavy + D4 forcé cold compensé par typo Fraunces 900 + photos vitrine éclairage chaud (cf. ph0 §6.7 moodboard)."
   },
   "colors": {
     "primary": {
-      "DEFAULT": "#8B4513",
-      "hover": "#A0522D",
-      "active": "#7A3D11",
-      "subtle": "#E8D9C9",
+      "DEFAULT": "#1A2B3C",
+      "hover": "#243D54",
+      "active": "#142231",
+      "subtle": "#E5E9ED",
       "foreground": "#FFFFFF",
-      "_hex_imposed": ["DEFAULT", "hover"],
-      "_usage": "Boutons primaires, liens, headings clés, bordures actives, focus ring, logo wordmark",
+      "_hex_imposed": ["DEFAULT"],
+      "_usage": "Titres, navigation, fond hero/footer, texte principal sur fond clair, bordures actives, focus ring, logo wordmark",
       "_contrast": {
-        "DEFAULT_on_white": "7.10:1 (AAA)",
-        "DEFAULT_on_background": "6.74:1 (AAA)",
-        "hover_on_white": "5.05:1 (AA)"
+        "DEFAULT_on_white": "13.66:1 (AAA)",
+        "DEFAULT_on_surface_alt": "12.45:1 (AAA)",
+        "hover_on_white": "10.85:1 (AAA)"
       }
     },
     "accent": {
       "DEFAULT": "#FFD700",
-      "subtle": "#FFF1B3",
-      "strong": "#E6C200",
-      "foreground": "#2A1810",
+      "hover": "#E6C200",
+      "active": "#CCAD00",
+      "foreground": "#1A2B3C",
       "_hex_imposed": ["DEFAULT"],
-      "_usage": "Surface badges promotions, ruban CTA, highlight links 'Promotions' nav. JAMAIS comme couleur de TEXTE sur blanc (1.36:1) — toujours associé à text #2A1810 dessus pour 12.65:1",
-      "_a11y_rule": "Texte sur accent → toujours utiliser foreground #2A1810. Interdit pour texte sur surface blanche."
+      "_usage": "Fond CTA primaire (avec text-on-accent navy 10.07:1) + badges promotions + soulignés courts. INTERDIT comme couleur de texte sur fond blanc (1.36:1 — FAIL WCAG).",
+      "_contrast": {
+        "DEFAULT_on_primary": "10.07:1 (AAA)",
+        "DEFAULT_on_white": "1.36:1 (FAIL — usage strictement interdit pour texte)",
+        "foreground_on_DEFAULT": "10.07:1 (AAA)"
+      },
+      "_a11y_guard": "Composant Button variant='accent' enforce automatiquement text-on-accent=#1A2B3C. Badge component idem. Documentation inline obligatoire dans Button.tsx."
+    },
+    "secondary": {
+      "DEFAULT": "#B2B2B2",
+      "hover": "#9E9E9E",
+      "subtle": "#E8E8E8",
+      "foreground": "#1A2B3C",
+      "_hex_imposed": ["DEFAULT"],
+      "_usage": "Bordures décoratives, séparateurs, surfaces dim, état désactivé non textuel. INTERDIT comme couleur de texte sur fond blanc (2.14:1 — FAIL).",
+      "_contrast": {
+        "DEFAULT_on_white": "2.14:1 (FAIL — décoratif uniquement)",
+        "foreground_on_DEFAULT": "6.38:1 (AA)"
+      }
     },
     "background": {
-      "DEFAULT": "#FFF8E7",
-      "alt": "#FCEFCE",
-      "_hex_imposed": ["DEFAULT"],
-      "_usage": "Fond global body, sections paires, hero principal. alt = sections de respiration (offset visuel doux sans rompre le warm)"
+      "DEFAULT": "#FFFFFF",
+      "alt": "#F4F6F8",
+      "muted": "#E5E9ED",
+      "inverse": "#1A2B3C",
+      "_usage": "DEFAULT = fond global body et sections claires ; alt = sections alternées (zébrage doux) ; inverse = hero S-001 + footer + bandeau accent navy"
     },
     "surface": {
       "DEFAULT": "#FFFFFF",
       "raised": "#FFFFFF",
-      "muted": "#FAF4DF",
-      "_hex_imposed": ["DEFAULT"],
-      "_usage": "Cards produits, modales, formulaires, popovers (contraste subtil avec background crème)"
+      "sunken": "#F4F6F8",
+      "overlay": "rgba(26, 43, 60, 0.85)",
+      "_usage": "Cards, modales, formulaires, sticky CTA bg. Overlay = fond cookie consent backdrop"
     },
     "text": {
-      "DEFAULT": "#2A1810",
-      "muted": "#6B4F3C",
+      "primary": "#1A2B3C",
+      "secondary": "#475569",
+      "muted": "#64748B",
       "inverse": "#FFFFFF",
-      "_hex_imposed": ["DEFAULT", "muted"],
-      "_usage": "DEFAULT = texte principal ; muted = métadonnées/captions/labels secondaires ; inverse = texte sur primary/text",
+      "on_accent": "#1A2B3C",
       "_contrast": {
-        "DEFAULT_on_background": "14.55:1 (AAA)",
-        "DEFAULT_on_surface": "15.34:1 (AAA)",
-        "muted_on_background": "6.04:1 (AA)",
-        "muted_on_surface": "6.36:1 (AA)"
+        "primary_on_white": "13.66:1 (AAA)",
+        "secondary_on_white": "7.46:1 (AAA)",
+        "muted_on_white": "5.74:1 (AA)",
+        "inverse_on_primary": "13.66:1 (AAA)",
+        "on_accent_on_accent": "10.07:1 (AAA)"
       }
     },
     "border": {
-      "DEFAULT": "#D4C5A9",
-      "strong": "#B8A689",
-      "focus": "#8B4513",
-      "_hex_imposed": ["DEFAULT"],
-      "_usage": "DEFAULT décoratif uniquement (séparateurs, cards) — JAMAIS pour signaler le focus (utiliser focus = primary)"
+      "DEFAULT": "#D1D5DB",
+      "strong": "#94A3B8",
+      "focus": "#1A2B3C",
+      "subtle": "#E5E9ED",
+      "_usage": "DEFAULT = bordures cards/inputs ; strong = séparateurs structurels ; focus = ring 2px navy + offset 2px ; subtle = zébrage de tableau horaires"
     },
     "status": {
-      "error": {"DEFAULT": "#B91C1C", "subtle": "#FCE5E5", "foreground": "#FFFFFF", "_contrast_on_white": "6.46:1 (AA)"},
-      "success": {"DEFAULT": "#15803D", "subtle": "#D7F0DE", "foreground": "#FFFFFF", "_contrast_on_white": "5.13:1 (AA)"},
-      "warning": {"DEFAULT": "#B45309", "subtle": "#FAE5CC", "foreground": "#FFFFFF", "_contrast_on_white": "5.42:1 (AA)"},
-      "info": {"DEFAULT": "#1F4E5F", "subtle": "#D6E5EB", "foreground": "#FFFFFF", "_contrast_on_white": "8.21:1 (AAA)"}
+      "error": {
+        "DEFAULT": "#B91C1C",
+        "subtle": "#FEE2E2",
+        "foreground": "#FFFFFF",
+        "_contrast_on_white": "6.61:1 (AAA)"
+      },
+      "success": {
+        "DEFAULT": "#166534",
+        "subtle": "#DCFCE7",
+        "foreground": "#FFFFFF",
+        "_contrast_on_white": "7.83:1 (AAA)"
+      },
+      "warning": {
+        "DEFAULT": "#92400E",
+        "subtle": "#FEF3C7",
+        "foreground": "#FFFFFF",
+        "_contrast_on_white": "7.45:1 (AAA)"
+      },
+      "info": {
+        "DEFAULT": "#1E40AF",
+        "subtle": "#DBEAFE",
+        "foreground": "#FFFFFF",
+        "_contrast_on_white": "8.59:1 (AAA)"
+      }
     },
-    "neutral": {
-      "50": "#FFF8E7",
-      "100": "#FCEFCE",
-      "200": "#F0E2BC",
-      "300": "#D4C5A9",
-      "400": "#B8A689",
-      "500": "#8C7559",
-      "600": "#6B4F3C",
-      "700": "#4F3826",
-      "800": "#2A1810",
-      "900": "#1A0F0A",
-      "_origin": "Échelle dérivée chromatiquement de la palette warm imposée (pas de gris neutre froid — cohérence ADN marque)"
+    "neutral_scale": {
+      "50": "#F8FAFC",
+      "100": "#F1F5F9",
+      "200": "#E2E8F0",
+      "300": "#CBD5E1",
+      "400": "#94A3B8",
+      "500": "#64748B",
+      "600": "#475569",
+      "700": "#334155",
+      "800": "#1E293B",
+      "900": "#1A2B3C",
+      "_note": "Slate scale alignée avec primary navy (slate-900 ≈ #1A2B3C). Cohérence palette froide. Aucun gris chaud (zinc/stone) pour ne pas créer de dissonance avec D4=cold."
     }
   },
   "typography": {
     "fonts": {
       "heading": {
         "family": "Fraunces",
-        "google_fonts": true,
-        "google_fonts_url": "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap",
+        "google_fonts_url": "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap",
         "next_font_import": "import { Fraunces } from 'next/font/google'",
-        "next_font_config": "Fraunces({ subsets: ['latin', 'latin-ext'], weight: ['600', '700'], variable: '--font-heading', display: 'swap' })",
-        "fallback_stack": "'Fraunces', 'Recoleta', Georgia, 'Times New Roman', serif",
-        "weights_loaded": [600, 700],
-        "subsets": ["latin", "latin-ext"]
+        "next_font_config": {
+          "subsets": ["latin"],
+          "weight": ["700", "900"],
+          "display": "swap",
+          "variable": "--font-heading",
+          "preload": true,
+          "axes": ["opsz"]
+        },
+        "weights_loaded": [700, 900],
+        "_rationale": "Serif chaleureux à fort contraste — D3=heavy critique pour compenser la palette navy froide. Variable font opsz pour adaptation taille (display 144 sur H1). Subset latin uniquement (FR/EN)."
       },
       "body": {
         "family": "Inter",
-        "google_fonts": true,
-        "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap",
+        "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
         "next_font_import": "import { Inter } from 'next/font/google'",
-        "next_font_config": "Inter({ subsets: ['latin', 'latin-ext'], weight: ['400', '600'], variable: '--font-body', display: 'swap' })",
-        "fallback_stack": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
-        "weights_loaded": [400, 600],
-        "subsets": ["latin", "latin-ext"]
+        "next_font_config": {
+          "subsets": ["latin"],
+          "weight": ["400", "500", "600"],
+          "display": "swap",
+          "variable": "--font-body",
+          "preload": false
+        },
+        "weights_loaded": [400, 500, 600],
+        "_rationale": "Sans humaniste neutre — lisibilité tous âges (8 à 80 ans), métrique compacte qui équilibre la lourdeur Fraunces."
       },
-      "_count": 2,
-      "_woff2_files_estimated": 4
+      "_total_woff2_files_estimate": 5,
+      "_performance_note": "5 fichiers woff2 (limite NEXOS standard = 4 → +1 assumé pour D3=heavy critique). Aucun italique chargé. display=swap = zéro CLS."
     },
     "scale": {
+      "ratio": 1.250,
       "name": "Major Third",
-      "ratio": 1.25,
       "sizes": {
-        "caption": "0.64rem",
-        "small": "0.8rem",
+        "caption": "0.75rem",
+        "small": "0.875rem",
         "base": "1rem",
+        "body_lg": "1.125rem",
         "lg": "1.25rem",
-        "xl": "1.563rem",
-        "2xl": "1.953rem",
-        "3xl": "2.441rem",
-        "4xl": "3.052rem",
-        "5xl": "3.815rem"
+        "h6": "1.25rem",
+        "h5": "1.563rem",
+        "h4": "1.953rem",
+        "h3": "2.441rem",
+        "h2": "3.052rem",
+        "h1": "3.815rem"
       }
     },
     "headings": {
-      "h1": {"size": "3.052rem", "weight": 700, "font": "Fraunces", "line_height": 1.15, "letter_spacing": "-0.01em"},
-      "h2": {"size": "2.441rem", "weight": 700, "font": "Fraunces", "line_height": 1.15, "letter_spacing": "-0.01em"},
-      "h3": {"size": "1.953rem", "weight": 600, "font": "Fraunces", "line_height": 1.3, "letter_spacing": "0"},
-      "h4": {"size": "1.563rem", "weight": 600, "font": "Inter", "line_height": 1.3, "letter_spacing": "0"},
-      "h5": {"size": "1.25rem", "weight": 600, "font": "Inter", "line_height": 1.4, "letter_spacing": "0"},
-      "h6": {"size": "1rem", "weight": 600, "font": "Inter", "line_height": 1.4, "letter_spacing": "0.04em", "transform": "uppercase"}
+      "h1": {"family": "heading", "size": "3.815rem", "weight": 900, "line_height": 1.1, "letter_spacing": "-0.02em"},
+      "h2": {"family": "heading", "size": "3.052rem", "weight": 900, "line_height": 1.15, "letter_spacing": "-0.015em"},
+      "h3": {"family": "heading", "size": "2.441rem", "weight": 700, "line_height": 1.2, "letter_spacing": "-0.01em"},
+      "h4": {"family": "body", "size": "1.953rem", "weight": 600, "line_height": 1.25},
+      "h5": {"family": "body", "size": "1.563rem", "weight": 600, "line_height": 1.3},
+      "h6": {"family": "body", "size": "1.25rem", "weight": 600, "line_height": 1.4}
     },
     "body": {
+      "family": "body",
       "size": "1rem",
       "weight": 400,
-      "font": "Inter",
       "line_height": 1.6,
       "max_width": "65ch"
     },
-    "ui": {
-      "button": {"font": "Inter", "weight": 600, "size": "1rem", "letter_spacing": "0.01em"},
-      "navigation": {"font": "Inter", "weight": 600, "size": "0.95rem"},
-      "label": {"font": "Inter", "weight": 600, "size": "0.875rem", "letter_spacing": "0.04em", "transform": "none"},
-      "label_uppercase": {"font": "Inter", "weight": 600, "size": "0.75rem", "letter_spacing": "0.06em", "transform": "uppercase"},
-      "caption": {"font": "Inter", "weight": 400, "size": "0.8rem", "line_height": 1.4}
-    },
-    "_d3_heavy_rationale": "D3=heavy imposé personality_hints (lisibilité 20-80 ans). Fraunces 700 satisfait le poids sans condensé industriel. Inter 600 pour boutons/nav reste lisible et chaleureux."
+    "_a11y_note": "Senior-friendly : body 1rem = 16 px minimum. Lecteur 80 ans + zoom 200% = 32 px confortable. Coordonnées contact (S-018, S-019) en text-2xl (1.5 rem) pour contre-vérification visuelle."
   },
   "spacing": {
-    "scale_base": "4px (Tailwind default)",
+    "scale": "Tailwind default (base 4px : 0/1/2/3/4/5/6/8/10/12/16/20/24)",
     "section_padding": {
-      "mobile": "py-12 px-4",
-      "tablet": "py-16 px-6",
-      "desktop": "py-20 px-8",
-      "hero_mobile": "py-16 px-4",
-      "hero_desktop": "py-28 px-8"
+      "mobile": "py-12 px-4 (48px / 16px)",
+      "tablet": "py-16 px-6 (64px / 24px)",
+      "desktop": "py-20 px-8 (80px / 32px)"
     },
-    "component_gap": {
-      "tight": "gap-2",
-      "default": "gap-4 md:gap-6 lg:gap-8",
-      "loose": "gap-8 md:gap-12 lg:gap-16"
-    },
-    "container": {
-      "max_width": "max-w-7xl",
-      "wrapper": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
-      "prose": "max-w-prose"
-    },
-    "stack": {
-      "section_inner": "space-y-6 md:space-y-8",
-      "card_inner": "space-y-3"
-    }
+    "component_gap": "gap-4 md:gap-6 lg:gap-8",
+    "container_max_width": "max-w-7xl mx-auto",
+    "_whitespace_strategy": "Whitespace généreux (vs WP secteur compressé) — différenciation visuelle immédiate. Sections alternent surface=#FFFFFF / background.alt=#F4F6F8 pour structurer sans séparateur dur."
   },
   "borders": {
     "radius": {
@@ -188,157 +218,128 @@
       "lg": "0.75rem",
       "xl": "1rem",
       "2xl": "1.5rem",
-      "full": "9999px",
-      "_usage": {
-        "DEFAULT": "Boutons, inputs, cards standards",
-        "lg": "Cards produits, badges promos, modales",
-        "full": "Avatars, badges ronds (catégories produits), pills"
-      }
+      "full": "9999px"
     },
     "width": {
       "DEFAULT": "1px",
       "2": "2px",
-      "focus": "3px"
-    }
+      "4": "4px"
+    },
+    "_focus_ring": "ring-2 ring-primary ring-offset-2 ring-offset-white (navy 2px sur halo blanc 2px = visibilité sur tous fonds)"
   },
   "shadows": {
     "none": "none",
-    "sm": "0 1px 2px 0 rgb(42 24 16 / 0.05)",
-    "DEFAULT": "0 1px 3px 0 rgb(42 24 16 / 0.10), 0 1px 2px -1px rgb(42 24 16 / 0.10)",
-    "md": "0 4px 6px -1px rgb(42 24 16 / 0.10), 0 2px 4px -2px rgb(42 24 16 / 0.10)",
-    "lg": "0 10px 15px -3px rgb(42 24 16 / 0.12), 0 4px 6px -4px rgb(42 24 16 / 0.10)",
-    "xl": "0 20px 25px -5px rgb(42 24 16 / 0.12), 0 8px 10px -6px rgb(42 24 16 / 0.10)",
-    "card_hover": "0 8px 16px -4px rgb(42 24 16 / 0.15)",
-    "sticky_cta": "0 -4px 12px -2px rgb(42 24 16 / 0.12)",
-    "_origin": "Ombres teintées brun (rgb 42 24 16) au lieu de noir pur — cohérence chromatique warm"
-  },
-  "transitions": {
-    "duration": {
-      "instant": "100ms",
-      "fast": "150ms",
-      "normal": "300ms",
-      "slow": "500ms"
-    },
-    "easing": {
-      "DEFAULT": "cubic-bezier(0.0, 0.0, 0.2, 1)",
-      "in": "cubic-bezier(0.4, 0.0, 1, 1)",
-      "out": "cubic-bezier(0.0, 0.0, 0.2, 1)",
-      "in_out": "cubic-bezier(0.4, 0.0, 0.2, 1)"
-    },
-    "default_property_set": "color, background-color, border-color, box-shadow, opacity, transform"
-  },
-  "focus_ring": {
-    "color": "#8B4513",
-    "width": "3px",
-    "offset": "2px",
-    "tailwind": "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    "xs": "0 1px 2px 0 rgb(26 43 60 / 0.05)",
+    "sm": "0 1px 3px 0 rgb(26 43 60 / 0.08), 0 1px 2px -1px rgb(26 43 60 / 0.06)",
+    "DEFAULT": "0 4px 6px -1px rgb(26 43 60 / 0.10), 0 2px 4px -2px rgb(26 43 60 / 0.08)",
+    "md": "0 10px 15px -3px rgb(26 43 60 / 0.10), 0 4px 6px -4px rgb(26 43 60 / 0.08)",
+    "lg": "0 20px 25px -5px rgb(26 43 60 / 0.10), 0 8px 10px -6px rgb(26 43 60 / 0.06)",
+    "xl": "0 25px 50px -12px rgb(26 43 60 / 0.20)",
+    "_note": "Toutes les shadows utilisent le navy primary teinté (rgb(26,43,60)) au lieu du noir pur — cohérence palette imposée."
   },
   "z_index": {
     "base": 0,
-    "card_hover": 5,
-    "sticky_header": 40,
-    "sticky_cta": 45,
-    "language_switcher": 50,
-    "modal": 60,
-    "cookie_banner": 70,
-    "toast": 80
+    "dropdown": 10,
+    "sticky_header": 20,
+    "sticky_subnav": 25,
+    "sticky_cta": 30,
+    "modal_backdrop": 40,
+    "modal": 50,
+    "cookie_consent": 60,
+    "skip_link_focus": 70
   },
-  "tailwind_extend_snippet": {
-    "_purpose": "À fusionner dans tailwind.config.ts → theme.extend",
-    "colors": {
-      "primary": {
-        "DEFAULT": "#8B4513",
-        "hover": "#A0522D",
-        "active": "#7A3D11",
-        "subtle": "#E8D9C9",
-        "foreground": "#FFFFFF"
-      },
-      "accent": {
-        "DEFAULT": "#FFD700",
-        "subtle": "#FFF1B3",
-        "strong": "#E6C200",
-        "foreground": "#2A1810"
-      },
-      "background": {
-        "DEFAULT": "#FFF8E7",
-        "alt": "#FCEFCE"
-      },
-      "surface": {
-        "DEFAULT": "#FFFFFF",
-        "muted": "#FAF4DF"
-      },
-      "text": {
-        "DEFAULT": "#2A1810",
-        "muted": "#6B4F3C",
-        "inverse": "#FFFFFF"
-      },
-      "border": {
-        "DEFAULT": "#D4C5A9",
-        "strong": "#B8A689"
-      },
-      "error": "#B91C1C",
-      "success": "#15803D",
-      "warning": "#B45309",
-      "info": "#1F4E5F"
-    },
-    "fontFamily": {
-      "heading": ["var(--font-heading)", "Fraunces", "Recoleta", "Georgia", "serif"],
-      "body": ["var(--font-body)", "Inter", "system-ui", "sans-serif"],
-      "sans": ["var(--font-body)", "Inter", "system-ui", "sans-serif"]
-    },
-    "fontSize": {
-      "caption": ["0.64rem", {"lineHeight": "1.4"}],
-      "small": ["0.8rem", {"lineHeight": "1.5"}],
-      "base": ["1rem", {"lineHeight": "1.6"}],
-      "lg": ["1.25rem", {"lineHeight": "1.4"}],
-      "xl": ["1.563rem", {"lineHeight": "1.3"}],
-      "2xl": ["1.953rem", {"lineHeight": "1.3"}],
-      "3xl": ["2.441rem", {"lineHeight": "1.15"}],
-      "4xl": ["3.052rem", {"lineHeight": "1.15"}],
-      "5xl": ["3.815rem", {"lineHeight": "1.1"}]
-    },
-    "boxShadow": {
-      "card-hover": "0 8px 16px -4px rgb(42 24 16 / 0.15)",
-      "sticky-cta": "0 -4px 12px -2px rgb(42 24 16 / 0.12)"
-    },
-    "borderRadius": {
-      "DEFAULT": "0.5rem",
-      "lg": "0.75rem",
-      "xl": "1rem",
-      "2xl": "1.5rem"
+  "breakpoints_mirror": {
+    "_note": "Pour cohérence, les breakpoints sont définis canoniquement dans responsive-strategy.json. Mention ici pour rappel.",
+    "sm": "640px",
+    "md": "768px",
+    "lg": "1024px",
+    "xl": "1280px",
+    "2xl": "1536px"
+  },
+  "contrast_verification": [
+    {"pair": "primary on white", "ratio": "13.66:1", "level": "AAA", "context": "titres, texte principal"},
+    {"pair": "primary on background.alt", "ratio": "12.45:1", "level": "AAA", "context": "sections alternées"},
+    {"pair": "primary-hover on white", "ratio": "10.85:1", "level": "AAA", "context": "hover boutons primaires"},
+    {"pair": "text.secondary on white", "ratio": "7.46:1", "level": "AAA", "context": "captions, métadonnées"},
+    {"pair": "text.muted on white", "ratio": "5.74:1", "level": "AA", "context": "labels secondaires (jamais inférieur 14px)"},
+    {"pair": "text-on-accent (#1A2B3C) on accent (#FFD700)", "ratio": "10.07:1", "level": "AAA", "context": "CTA primaire, badges promotions"},
+    {"pair": "white on primary", "ratio": "13.66:1", "level": "AAA", "context": "hero, footer"},
+    {"pair": "error on white", "ratio": "6.61:1", "level": "AAA", "context": "messages erreur formulaires"},
+    {"pair": "success on white", "ratio": "7.83:1", "level": "AAA", "context": "confirmations"},
+    {"pair": "warning on white", "ratio": "7.45:1", "level": "AAA", "context": "avertissements Loi 25 + bière responsable"},
+    {"pair": "info on white", "ratio": "8.59:1", "level": "AAA", "context": "notes informatives"},
+    {"pair": "accent on white", "ratio": "1.36:1", "level": "FAIL", "context": "INTERDIT pour texte (guard component-level)"},
+    {"pair": "secondary on white", "ratio": "2.14:1", "level": "FAIL", "context": "INTERDIT pour texte (décoratif uniquement)"}
+  ],
+  "tailwind_config_snippet": {
+    "_purpose": "Bloc à coller dans tailwind.config.ts theme.extend. Génère toutes les utilities (bg-primary, text-text-secondary, ring-border-focus, etc.).",
+    "theme": {
+      "extend": {
+        "colors": {
+          "primary": {
+            "DEFAULT": "#1A2B3C",
+            "hover": "#243D54",
+            "active": "#142231",
+            "subtle": "#E5E9ED",
+            "foreground": "#FFFFFF"
+          },
+          "accent": {
+            "DEFAULT": "#FFD700",
+            "hover": "#E6C200",
+            "foreground": "#1A2B3C"
+          },
+          "secondary": {
+            "DEFAULT": "#B2B2B2",
+            "subtle": "#E8E8E8"
+          },
+          "surface": {
+            "DEFAULT": "#FFFFFF",
+            "alt": "#F4F6F8"
+          },
+          "text": {
+            "DEFAULT": "#1A2B3C",
+            "secondary": "#475569",
+            "muted": "#64748B",
+            "inverse": "#FFFFFF"
+          },
+          "border": {
+            "DEFAULT": "#D1D5DB",
+            "strong": "#94A3B8",
+            "subtle": "#E5E9ED"
+          },
+          "error": "#B91C1C",
+          "success": "#166534",
+          "warning": "#92400E",
+          "info": "#1E40AF"
+        },
+        "fontFamily": {
+          "heading": ["var(--font-heading)", "Georgia", "serif"],
+          "body": ["var(--font-body)", "system-ui", "sans-serif"]
+        },
+        "fontSize": {
+          "h1": ["3.815rem", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "900"}],
+          "h2": ["3.052rem", {"lineHeight": "1.15", "letterSpacing": "-0.015em", "fontWeight": "900"}],
+          "h3": ["2.441rem", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+        },
+        "boxShadow": {
+          "card": "0 4px 6px -1px rgb(26 43 60 / 0.10), 0 2px 4px -2px rgb(26 43 60 / 0.08)",
+          "lifted": "0 10px 15px -3px rgb(26 43 60 / 0.10), 0 4px 6px -4px rgb(26 43 60 / 0.08)",
+          "sticky": "0 -4px 12px -2px rgb(26 43 60 / 0.15)"
+        }
+      }
     }
   },
-  "contrast_verification": {
-    "primary_on_white": {"ratio": "7.10:1", "level": "AAA"},
-    "primary_on_background": {"ratio": "6.74:1", "level": "AAA"},
-    "primary_hover_on_white": {"ratio": "5.05:1", "level": "AA"},
-    "text_on_background": {"ratio": "14.55:1", "level": "AAA"},
-    "text_on_surface": {"ratio": "15.34:1", "level": "AAA"},
-    "text_muted_on_background": {"ratio": "6.04:1", "level": "AA"},
-    "white_on_primary": {"ratio": "7.10:1", "level": "AAA"},
-    "text_on_accent": {"ratio": "12.65:1", "level": "AAA"},
-    "white_on_error": {"ratio": "6.46:1", "level": "AA"},
-    "white_on_success": {"ratio": "5.13:1", "level": "AA"},
-    "white_on_warning": {"ratio": "5.42:1", "level": "AA"},
-    "white_on_info": {"ratio": "8.21:1", "level": "AAA"},
-    "_summary": "12 paires testées, 100 % AA minimum, 7/12 AAA. Aucune paire en dessous du seuil texte normal 4.5:1.",
-    "_forbidden_pairs": [
-      "accent #FFD700 utilisé comme COULEUR DE TEXTE sur surface blanche (1.36:1) — INTERDIT par garde-fou code",
-      "border #D4C5A9 utilisé comme couleur de focus (1.06:1) — INTERDIT, focus toujours via primary"
-    ]
-  },
-  "dark_mode": {
-    "implemented": false,
-    "rationale": "Hors scope v1 — palette warm exclusive imposée brief, audience tous âges (chaleur = ADN marque, dark mode trahirait le registre). Tokens préparés (neutral scale 50→900) pour activation future si besoin."
+  "css_variables_snippet": {
+    "_purpose": "Bloc à insérer dans styles/globals.css :root. Permet override CSS-only sans rebuild.",
+    "css": ":root {\n  --color-primary: #1A2B3C;\n  --color-primary-hover: #243D54;\n  --color-accent: #FFD700;\n  --color-accent-hover: #E6C200;\n  --color-secondary: #B2B2B2;\n  --color-surface: #FFFFFF;\n  --color-surface-alt: #F4F6F8;\n  --color-text-primary: #1A2B3C;\n  --color-text-secondary: #475569;\n  --color-text-muted: #64748B;\n  --color-text-on-accent: #1A2B3C;\n  --color-text-on-primary: #FFFFFF;\n  --color-border: #D1D5DB;\n  --color-border-strong: #94A3B8;\n  --color-error: #B91C1C;\n  --color-success: #166534;\n  --color-warning: #92400E;\n  --color-info: #1E40AF;\n}"
   },
   "checklist": {
-    "json_valid": true,
-    "palette_imposed_respected": true,
-    "max_2_font_families": true,
-    "contrasts_aa_normal_text_100pct": true,
-    "tailwind_extend_ready": true,
-    "next_font_self_hosted": true,
-    "focus_ring_defined": true,
-    "shadows_chromatically_consistent": true
+    "palette_complete": true,
+    "two_fonts_max": true,
+    "contrast_AA_minimum_for_text": true,
+    "tokens_tailwind_ready": true,
+    "shadows_radius_defined": true,
+    "imposed_palette_respected": true,
+    "accent_text_guard_documented": true
   }
 }

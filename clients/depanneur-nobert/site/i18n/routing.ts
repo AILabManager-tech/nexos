@@ -11,7 +11,7 @@ export const routing = defineRouting({
     '/': '/',
     '/promotions': {
       fr: '/promotions',
-      en: '/promotions',
+      en: '/deals',
     },
     '/produits': {
       fr: '/produits',

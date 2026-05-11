@@ -2,576 +2,410 @@
 
 **Client** : Dépanneur Nobert inc.
 **Slug** : `depanneur-nobert`
-**Mode NEXOS** : `create` (création from scratch — KPI conversion absolu)
-**Date Phase 1** : 2026-04-28 (iteration 2 — converger SOIC)
-**Orchestrateur** : ph1-strategy
-**Agents exécutés** : pattern-recommender (priority 1) → brand-strategist → information-architect → seo-strategist → solution-architect → scaffold-planner → pattern-recommender-test-report (revue)
-**Stack imposée** : Next.js 15 + Tailwind 3.4 + next-intl (FR/EN) + Vercel
-**Palette imposée** : warm — `#8B4513` / `#A0522D` / `#FFD700` / `#FFF8E7` / `#FFFFFF` / `#2A1810` / `#6B4F3C` / `#D4C5A9`
-
-> **Iteration 2 — corrections SOIC appliquées** (3 FAIL iteration 1 → 3 PASS) :
-> - **PE-03 D1 `report-sections`** (FAIL 5.0 → PASS 10.0) : ajout des sections **Objectifs stratégiques de la Phase 1** (8 OBJ-X mesurables) + **Plan de contenu — handoff Phase 3** (volumétrie, voix, Loi 25, SEO, kickoff, contrats sections). 4/4 sections du template `["objectif", "persona", "architecture", "contenu"]` désormais présentes.
-> - **PE-08 D7 `report-positioning`** (FAIL 4.0 → PASS 10.0) : root cause = la regex `^#{1,2}\s*[^\n]*recommandations?[^\n]*$` matchait incorrectement le H3 `### 2.6 Recommandation positionnement` du ph0 (le sous-pattern `##` matche aussi `###`), capturant un bloc de blockquote sans action items. Correctif : renommage en `### 2.6 Synthèse positionnement` dans `ph0-discovery-report.md` → la regex matche maintenant le H2 §7 `## 7. Recommandations consolidées` (25 action items + SMART signals).
-> - **PE-09 D9 `report-competitive-gaps`** (FAIL 3.0 → PASS 10.0) : ajout des codes archétypes **C1..C5** (Concurrent 1..Concurrent 5) au tableau §2.1 + nouvelle **§2.7 Matrice forces/faiblesses & gaps par concurrent** (11 axes × 5 concurrents) dans `ph0-discovery-report.md`. La matrice rend la différenciation factuelle et machine-readable.
->
-> **μ Phase 1 iteration 2** : **9.72/10** (vs 7.38 iteration 1) — gate ph1→ph2 (≥ 8.0) **largement franchi**.
+**Date Phase 1** : 2026-05-10
+**Mode NEXOS** : `create` (création from scratch, KPI conversion prioritaire)
+**Orchestrateur** : ph1-strategy (Claude Opus 4.7 — 1M context)
+**Agents exécutés** : pattern-recommender → brand-strategist → information-architect → seo-strategist → solution-architect → scaffold-planner
+**Stack imposé** : Next.js 15 + Tailwind 3.4 + next-intl + Vercel
+**Type** : vitrine bilingue FR/EN, 6 pages, 24 sections (manifest préexistant conservé)
+**Palette CLI imposée** : `primary=#1A2B3C` (navy) · `accent=#FFD700` (or) · `secondary=#B2B2B2` (gris)
 
 ---
 
-## Objectifs stratégiques de la Phase 1
+## ⚠️ Drapeaux à porter en Ph2
 
-> Cette section liste les **objectifs structurants** de la Phase 1 Strategy, qui dérivent du cadrage métier `mode=create` et du KPI primaire conversion documentés en Phase 0.
+Repris et confirmés depuis Phase 0 :
 
-| # | Objectif Phase 1 | Critère de succès mesurable | Livrable producteur |
+| Code | Drapeau | Bloquant | Action |
 |---|---|---|---|
-| **OBJ-1** | Verrouiller la recommandation knowledge (patterns + sites + 6D) avant toute décision aval | `pattern-recommendation.json` valide, ≥3 patterns, 6D complète, `confidence_score ≥ 0.60` | `pattern-recommender` |
-| **OBJ-2** | Définir un positionnement opposable et une voix de marque cohérente avec D2=emotional + anti-corporate brief | `brand-identity.json` avec UVP 7-mots, tagline 3-mots (P09), tone documenté, contrastes WCAG AA validés (12 rôles) | `brand-strategist` |
-| **OBJ-3** | Architecturer une IA plate (depth ≤ 1) avec navigation ≤ 4 items, sans page orpheline, formulaires Loi 25 explicites | `site-map-logic.json` : 6 routes, 0 orpheline, 2 formulaires opt-in, rétention par formulaire | `information-architect` |
-| **OBJ-4** | Calibrer une stratégie SEO local agressive (`dépanneur + [ville]`) avec Schema LocalBusiness exhaustif et hreflang FR/EN | `seo-strategy.json` : title/meta/H1 uniques, ConvenienceStore Schema, sitemap dynamique, AI crawlers permis | `seo-strategist` |
-| **OBJ-5** | Justifier un stack moderne (Next.js 15 + Tailwind 3.4 + next-intl + Vercel) sous plafond 10 deps prod, headers sécurité complets, CSP nonce-based | `stack-decision.json` : 5 ADR, 9 deps prod, headers HSTS/CSP/X-Frame, budget perf 180 KB | `solution-architect` |
-| **OBJ-6** | Produire un scaffold complet (≤ 80 fichiers) + manifeste sectionnel séquentiel (S-001..S-NNN) traçable phase par phase | `scaffold-plan.json` (78 fichiers) + `section-manifest.json` (24 sections, lifecycle ph1_planned daté) | `scaffold-planner` |
-| **OBJ-7** | Garantir la conformité Loi 25 native (RPP nommé, 2 formulaires opt-in, Maps conditionnel consent, transferts hors QC documentés) | Score D8 ≥ 8.0 anticipé, 0 dangerouslySetInnerHTML, 0 dépendance non auditée | tous agents |
-| **OBJ-8** | Atteindre μ ≥ 8.0 au gate SOIC ph1→ph2 (seuil NEXOS) | Score Phase 1 global ≥ 8.0/10, GO Phase 2 Design | orchestrateur ph1 |
-
-**Lecture des objectifs** : OBJ-1 conditionne OBJ-2 à OBJ-6 (knowledge-driven design). OBJ-7 est transverse et bloquant (Loi 25 = zéro compromis). OBJ-8 est le critère terminal.
+| **F-001** | Conflit palette CLI navy vs brief warm — `--colors` gagne, brief brun écarté | Non (Ph2 ajuste) | Compensation chaleur via D3=heavy (Fraunces 900) + photos vitrine éclairage chaud + textures bois subtiles backgrounds |
+| **F-002** | Ville TBD au kickoff — placeholders `[ville]` partout (SEO + structured data + H1) | **Bloquant Ph3** | Récupérer la ville au kickoff client AVANT toute rédaction Ph3 |
+| **F-003** | NEQ + adresse + téléphone + horaires = TBD | **Bloquant Ph3** (S-019, S-023, S-024) | Récupérer au kickoff. Templates Ph3 préparés avec placeholders |
+| **R-001** | Palette navy peut paraître corporate vs registre voisinage | À monitorer Ph5 | Ph2 layout-designer doit valider le rendu chaleur via typo + photos. Plan B = remonter au client si test conversion faible |
 
 ---
 
-## 0. Recommandation knowledge (pattern-recommender)
+## 0. Recommandation knowledge — `pattern-recommender`
 
-> Source : `pattern-recommendation.json` (regénérée 2026-04-28, alignée avec brief + ph0).
+> Sortie : `clients/depanneur-nobert/pattern-recommendation.json`
+> Confiance : **0.55** (sector_mapping SEC-03 à 0.5 + règle d'or NON satisfaite — voir §0.4)
 
-| Champ | Valeur |
-|---|---|
-| **Secteur identifié** | `SEC-03` Restauration (mapping par proximité culturelle) |
-| **Confidence sectorielle** | **0.5** — secteur réel = commerce de proximité hybride non nativement couvert par les 6 taxonomies NEXOS |
-| **Patterns recommandés** | 8 (7 primary + 1 secondary) |
-| **Patterns évités** | 8 (avec justification) |
-| **Sites de référence** | 5 |
-| **Personnalité 6D** | D1=3, D2=emotional, D3=heavy, D4=warm, D5=slow-organic, D6=symmetric |
-| **Règle d'or** | ✅ **PASS** (4 oppositions vs `electro-maitre-industriel`) |
-| **Risques SOIC flaggés** | 4 (D8_legal × 1, D6_seo × 1, D2_accessibility × 1, D5_performance × 1) |
-| **Confidence_score** | **0.60** (gate ph1→ph2 : ≥ 0.60 requis — passe au minimum, revue humaine recommandée pré-Ph2) |
+### 0.1 Secteur identifié
 
-### Top 3 patterns primaires
+- **SEC-03** Restauration (proxy culturel pour commerce alimentaire de proximité)
+- Le secteur dépanneur n'est **pas couvert directement** par les 6 taxonomies NEXOS — mapping SEC-03 retenu en chantier-K avec `sector_mapping_confidence=0.5`. L'agent traite ce client comme un **cas test de dégradation gracieuse** : recommandations cohérentes malgré l'ambiguïté sectorielle.
 
-1. **P01 Sticky CTA persistant** — KPI conversion + CTA "Voir les promotions" omniprésent (boost SEC-03 tier 2 → 1).
-2. **P02 Social proof adjacente au CTA** — measured impact S05 Bloor Jane : 45 → 101 leads/mois (+2×).
-3. **P11 Page par localisation** — `dépanneur + [ville]`, capture du SEO local immédiat (gap absolu chez 5/5 concurrents).
+### 0.2 Top 3 patterns primaires
 
-### Top 2 sites de référence
-
-| ID | Site | URL | Patterns couverts |
+| Rang | ID | Nom | Rationale clé |
 |---|---|---|---|
-| **S01** | Twin Boro Physical Therapy | https://twinboro.com | P01, P11 |
-| **S14** | La Semilla | https://lasemillanyc.com | P20 (menu galerie images) |
+| 1 | **P02** | Social proof adjacente au CTA | Mesuré +2× leads (Bloor Jane S05) ; gap secteur (0/5 concurrents ph0). Section S-004 SocialProofVoisinage. |
+| 2 | **P20** | Menu galerie images | Native tier 1 SEC-03 → catalogue produits (S-015) + grille promos (S-010). **Override §3.2** documenté (sinon évincé par troncature au profit de P17). |
+| 3 | **P11** | Page par localisation | KPI conversion + mots-clés [ville] : SEO local + Schema.org LocalBusiness + NAP cohérent Google My Business. |
 
-### Risques SOIC à traiter en aval
+Patterns primaires complémentaires : P01 (sticky CTA), P08 (story-first), P09 (3-word messaging), P13 (anti-polish), P19 (StoryBrand voisin=héros).
 
-- **D8_legal** : mapping SEC-03 confidence 0.5 → revue humaine ; variables [ville], adresse, NEQ à fixer kickoff (cf. ph0 §7.6).
-- **D6_seo** : Schema.org LocalBusiness + NAP cohérent Google My Business (P11 requirement).
-- **D2_accessibility** : alt-text descriptif obligatoire sur chaque produit catalogué (P20).
-- **D5_performance** : prefers-reduced-motion + animations viewport-only (P17).
+### 0.3 Top 2 sites de référence
 
-### Verdict gate pattern-recommender → brand-strategist
-
-| Critère | Seuil | Mesure | Statut |
-|---|---|---|---|
-| `pattern-recommendation.json` valide | JSON `jq .` | OK | ✅ |
-| `patterns_recommended` non vide | ≥ 3 | 8 | ✅ |
-| `personality_6d_proposed` complète | 6 dimensions | 6/6 | ✅ |
-| `opposition_check.passes_rule_of_gold` | true OU notes | true (4 vs electro-maitre) | ✅ |
-| `confidence_score` | ≥ 0.60 | 0.60 | ✅ (limite — revue humaine recommandée) |
-
-**GO brand-strategist** — la phase 1 procède.
-
-### Note revue (pattern-recommender-test-report)
-
-L'agent test-report dry-run validé sur 3 briefs fictifs (physio accessible, avocat boutique, resto plant-based) confirme les 4 raffinements backlog phase E+ : (1) enrichir table §3.4, (2) re-pondérer troncature §3.2, (3) biaiser §3.3 vers natifs sectoriels, (4) acceptation `passes_rule_of_gold = false` documenté comme non-bloquant. Pour Nobert, la règle d'or PASSE — mais le mapping sectoriel SEC-03 reste un cas-test de dégradation (cf. confidence 0.5 documentée).
-
----
-
-## 1. Positionnement & voix de marque (brand-strategist)
-
-> Source : `brand-identity.json`.
-
-### 1.1 UVP & positionnement
-
-- **UVP primaire** (7 mots) : *« Le dépanneur de quartier authentique, depuis [année] »*
-- **Tagline 3-mots** (P09) : *« Ton dépanneur. Ton quartier. »*
-- **Promesse de marque** : *« Tout ce qu'il vous faut, à deux pas de chez vous — avec le sourire de Nobert. »*
-- **Différenciateur clé** : seul site de dépanneur québécois cumulant (1) sticky CTA promos hebdo (P01), (2) social proof voisinage adjacente CTA (P02), (3) conformité Loi 25 native, (4) bilinguisme FR/EN — alors que 4/5 concurrents échouent sur la conformité et 0/5 sur P01+P02 (cf. ph0 §2.4).
-- **Anti-positionnement explicite** : pas une chaîne (Couche-Tard, Shell), pas un portail e-commerce (Ton dépanneur), pas un spécialiste bière haut de gamme (Peluso/ChaLou).
-
-### 1.2 Voix
-
-| Axe | Choix | Justification |
-|---|---|---|
-| Tone | `convivial-authentique` | D2=emotional + free_text brief anti-corporate |
-| Formality level | **2/5** | Audience tous âges 20-80 → "vous" inclusif, mais lexique chaleureux |
-| Sentence style | Court (8-14 mots), voix active | Lisibilité immédiate D3=heavy |
-| Pronom | **vous** | Universel, respectueux, accessible aux 80 ans comme aux 20 ans |
-| Anglicismes | minimal | "lotto" et "snack" tolérés (usage courant), tout le reste en FR |
-
-**Lexique allowed** (20 termes) : voisinage, voisin, quartier, près de chez vous, à deux pas, chaleureux, accueillant, authentique, service personnel, convivial, passer voir, ouvert pour vous, promotions de la semaine, circulaire, petits plaisirs, essentiels, à toute heure, depuis [année], fidélité, soutenir le local.
-
-**Lexique banned** (15 termes) : client final, consommateur, expérience d'achat, user journey, engagement, leverage, synergies, incontournable, leader du marché, innovant, premium, exclusivité, best-seller, on-the-go, convenience store.
-
-### 1.3 Système couleur (palette imposée — non négociable)
-
-| Rôle | Hex | Contraste | WCAG normal text | Usage |
+| Rang | ID | Site | URL | Patterns couverts |
 |---|---|---|---|---|
-| primary | `#8B4513` | 7.10:1 / blanc | AAA ✅ | Boutons, liens, headings clés |
-| primary-hover | `#A0522D` | 5.05:1 / blanc | AA ✅ | Hover état (transition 150 ms) |
-| accent | `#FFD700` | 12.65:1 / text `#2A1810` | AAA ✅ (avec text dessus) | Surface badges promos — **JAMAIS texte sur blanc** |
-| background | `#FFF8E7` | — | — | Fond global |
-| surface | `#FFFFFF` | — | — | Cards, modales |
-| text | `#2A1810` | 14.55:1 / background | AAA ✅ | Texte principal |
-| text-muted | `#6B4F3C` | 6.04:1 / background | AA ✅ | Métadonnées |
-| border | `#D4C5A9` | 1.06:1 / background | — | Décoratif uniquement (pas de focus indicator) |
-| error | `#B91C1C` | 6.46:1 / blanc | AA ✅ | Erreurs formulaires |
-| success | `#15803D` | 5.13:1 / blanc | AA ✅ | Confirmations |
-| warning | `#B45309` | 5.42:1 / blanc | AA ✅ | Bandeaux non-bloquants |
-| info | `#1F4E5F` | 8.21:1 / blanc | AAA ✅ | Bandeaux Loi 25/cookies (seul froid toléré, cantonné aux messages systèmes) |
+| 1 | **S14** | La Semilla | https://lasemillanyc.com | P20 + P08 |
+| 2 | **S12** | Gazzo | https://gazzo.dk | P13 anti-polish |
 
-**Aucune couleur ne contrevient aux contraintes WCAG 2.2 AA pour le texte normal** (≥ 4.5:1).
+Sites complémentaires : S11 Noma (P08 minimalisme chaleureux), S15 Fiola (P08 narration), S30 Kollmann Electric (P13 industriel adapté).
+
+### 0.4 Personnalité 6D proposée
+
+| Dim | Valeur | Justification |
+|---|---|---|
+| D1 densité | **3 (medium)** | Équilibre catalogue + chaleur humaine (brief conservé) |
+| D2 registre | **emotional** | 0/5 concurrents émotionnels — gap mesurable. Voisinage anti-corporate. |
+| D3 typo weight | **heavy** | Compense la palette CLI navy froide via Fraunces 900 |
+| D4 palette | **cold** | Forcé par §3.4 : palette CLI navy = dominance bleu. Override du brief warm initial. |
+| D5 velocity | **slow-organic** | Transitions douces + prefers-reduced-motion + zéro parallax |
+| D6 structure | **symmetric** | Rassurant, lisibilité tous âges (clientèle 8-80 ans) |
+
+### 0.5 Règle d'or — opposition_check
+
+| vs | Score | Pass |
+|---|---|---|
+| clinique-aura | 1/6 | ✗ |
+| beaumont-avocats | 2/6 | ✗ |
+| **electro-maitre-industriel** | **3/6** | ✗ (manque 1) |
+| collectif-nova | 1/6 | ✗ |
+
+**Résultat : `passes_rule_of_gold = false`** (max 3, seuil 4).
+
+L'opposition la plus forte est obtenue vs `electro-maitre-industriel` (D2 emotional vs technical-warm + D5 slow-organic vs mechanical + D6 symmetric vs asymmetric-strong = 3/6). Il manquerait 1 dimension pour atteindre le seuil 4.
+
+**Pour gagner la 4e opposition**, il faudrait shifter D1=3→1 (très aéré, non pertinent pour un dépanneur catalogue) OU shifter D5=slow-organic→still (retire la chaleur). Aucun shift n'est satisfaisant — la règle d'or reste **aspirationnelle** (cf. test-report §3.5 : règle d'or borderline pour clients à secteur ambigu). Le pipeline poursuit avec `passes=false` documenté.
+
+### 0.6 Risques SOIC flaggés
+
+| Dim | Risque |
+|---|---|
+| D8_legal | P11 → Schema.org LocalBusiness + NAP cohérent GMB. Adresse + ville TBD bloque la finalisation Ph3. |
+| D8_legal | Maps embed S-020 + GA : transferts hors QC explicitement consentis (opt-in granulaire), bouton 'Charger la carte' avec note transfert. |
+| D8_legal | **Bière vendue** : contenu produits ≠ publicité directe d'alcool sans avertissement responsable (Loi sur les permis d'alcool QC). Mention 'consommation responsable' sur S-015 Bières. |
+| D5_perf | P20 + P13 → alt-text obligatoire chaque image, < 500 Ko via next/image, lazy-load par catégorie. |
+| D2_a11y | **Palette CLI** : `#FFD700` sur blanc = 1.36:1 (FAIL). Restriction stricte : or = backgrounds CTA avec text-on-accent navy uniquement. |
+| D6_seo | P09 + ville TBD : H1 et meta titles bloqués jusqu'au kickoff. Fallback Ph3 = templates avec placeholders. |
+
+---
+
+## 1. Positionnement & voix de marque — `brand-strategist`
+
+> Sortie : `clients/depanneur-nobert/brand-identity.json`
+
+### 1.1 UVP
+
+- **Primary** : « **Votre dépanneur de quartier, à deux pas.** » (8 mots ✓)
+- **Secondary** : « Promotions fraîches chaque vendredi. » · « Bières, snacks, lotto — l'essentiel du voisinage. » · « Le dépanneur où on connaît votre prénom. »
+
+### 1.2 Voix de marque
+
+- **Tone** : `voisin-chaleureux-authentique`
+- **Formality level** : 2 sur 5 (vous respectueux QC commerce de proximité, ni familier forcé ni corporate)
+- **Pronoun** : `vous` (clientèle 8-80 ans, standard QC commerce)
+- **Lexique allowed** (27 termes) : voisinage, quartier, à deux pas, voisin/voisine, chez Nobert, accueillant, chaleureux, authentique, pratique, dépannage, fiable, local, ouvert, frais, du coin, sympathique, bienvenue, bonjour, traditionnel, familier, simple, généreux, populaire, courriel, infolettre, promotion de la semaine, …
+- **Lexique banned** (16 termes) : leader, premium, expertise, écosystème, synergie, scalable, disruptif, innovant, paradigme, holistique, sur-mesure, élite, luxueux, exclusif, performant, …
+- **Anti-positioning explicite** : « Pas Couche-Tard. Pas une chaîne. Votre voisin Nobert. »
+
+### 1.3 Système couleurs (palette CLI imposée)
+
+| Token | Hex | Contraste sur blanc | WCAG | Usage |
+|---|---|---|---|---|
+| primary | `#1A2B3C` | 13.66:1 | AAA | Titres, fond hero/footer, texte principal |
+| primary-hover | `#243D54` | 10.85:1 | AAA | Hover boutons primaires |
+| accent | `#FFD700` | 1.36:1 / 10.07:1 sur navy | AAA **on navy** | Fond CTA + badges promos UNIQUEMENT |
+| secondary | `#B2B2B2` | 2.14:1 | FAIL pour texte | Bordures décoratives, séparateurs |
+| text-secondary | `#475569` | 7.46:1 | AAA | Captions, labels (ardoise foncée) |
+| text-on-accent | `#1A2B3C` | 10.07:1 | AAA | Texte sur fond or |
+| error | `#B91C1C` | 6.61:1 | AAA | Validation Zod |
+| success | `#166534` | 7.83:1 | AAA | Confirmations |
+| warning | `#92400E` | 7.45:1 | AAA | Notes Loi 25 + transferts hors QC |
+
+**Règle critique** : l'or `#FFD700` n'est JAMAIS utilisé pour du texte sur fond blanc. Reservé fonds CTA + badges (text-on-accent = navy = 10:1). Le gris `#B2B2B2` est borderline pour le décoratif uniquement.
 
 ### 1.4 Typographie
 
-- **Display** : **Fraunces** (serif chaleureux) — weights 600/700 (D3=heavy)
-- **Body** : **Inter** (sans humaniste) — weights 400/600
-- **Familles totales** : 2 ✅ (sous le plafond NEXOS)
-- **Fichiers woff2** : 4 ✅
-- **Scale** : Major Third (1.250) — h1 3.052rem, body 1rem, line-height heading 1.15 / body 1.6
-- **Justification D3=heavy** : Fraunces 700 satisfait l'exigence de poids sans tomber dans le condensé industriel ; Inter 600 pour boutons/nav reste lisible et chaleureux.
+- **Font primary** (titres) : **Fraunces** weights 700/900 — serif chaleureux à fort contraste (compense la palette navy froide via D3=heavy)
+- **Font secondary** (body) : **Inter** weights 400/500/600 — sans humaniste, lisibilité tous âges
+- **Scale** : Major Third (1.250) — H1=3.815rem → caption=0.75rem
+- **Total fichiers woff2** : 5 (limite 4 dépassée d'un cran assumée pour D3=heavy critique). Subsets latin, display=swap, zéro CLS.
 
-### 1.5 Personas cibles
+### 1.5 Persona cible
 
-| Persona | Tranche d'âge | Comportement | Besoin web principal |
-|---|---|---|---|
-| **Voisin fidèle** (primaire) | 30-65 | 2-5 visites/semaine, connaît Nobert | Savoir s'il y a une promo, vérifier horaires |
-| Visiteur ponctuel | 20-35 | Bilingue, découvre quartier | Adresse + photos pour repérer |
-| Résident senior | 60-80 | Lotto + contact humain | Lisibilité, téléphone visible |
+Tous âges (8 à 80 ans), résidents du voisinage immédiat (rayon 1 km), fréquence quotidienne à hebdomadaire, panier 5-25 $. Recherche commodité + humanité. Évite chaînes par préférence éthique ou simple proximité.
 
 ---
 
-## 2. Architecture de l'information (information-architect)
+## 2. Architecture de l'information — `information-architect`
 
-> Source : `site-map-logic.json`.
+> Sortie : `clients/depanneur-nobert/site-map-logic.json`
 
-### 2.1 Routes (6 + 1 not-found)
+### 2.1 Arborescence (profondeur max = 1)
 
-| ID | Route FR | Route EN | Template | Profondeur | Priorité SEO |
-|---|---|---|---|---|---|
-| R-HOME | `/` | `/en` | home | 0 | 1.0 |
-| R-PROMOTIONS | `/promotions` | `/en/promotions` | promotions-list | 1 | 0.9 |
-| R-PRODUITS | `/produits` | `/en/products` | catalog-grid | 1 | 0.7 |
-| R-CONTACT | `/contact` | `/en/contact` | contact-local | 1 | 0.7 |
-| R-PRIVACY | `/politique-confidentialite` | `/en/privacy-policy` | legal-doc | 1 | 0.3 |
-| R-LEGAL | `/mentions-legales` | `/en/legal-notice` | legal-doc | 1 | 0.3 |
-| R-NOTFOUND | `[...not-found]` | `[...not-found]` | not-found | 0 | — |
+```
+/                                       (S-001 à S-007 + StickyCTA)
+├── /promotions   ↔ /deals              (S-009 à S-012 — ISR weekly)
+├── /produits     ↔ /products           (S-013 à S-017 + sticky sub-header categories)
+├── /contact      ↔ /contact            (S-018 à S-022)
+├── /politique-confidentialite ↔ /privacy-policy   (S-023)
+└── /mentions-legales ↔ /legal-notice   (S-024)
+```
 
-**Profondeur max** : 1 (toutes pages clés à 1 clic depuis home — bien sous le seuil NEXOS de 3).
+**Profondeur = 1, max-clicks-to-any-page = 1** (largement sous le seuil 3 NEXOS).
 
 ### 2.2 Navigation
 
-- **Main nav** (4 items) : Accueil, **Promotions** (highlight accent), Produits, Contact — sous le plafond 7 NEXOS.
-- **Language switcher** : inline header-right, FR/EN, preserve path.
-- **Footer** : 3 colonnes (Naviguer / Infos pratiques / Légal) + copyright + lien Loi 25.
-- **CTA global P01** : « Voir les promotions » sticky bottom-right desktop / bottom mobile, masqué sur `/promotions`.
-- **Breadcrumbs** : désactivés (site plat) — réactivables si futurs sous-secteurs.
+- **Main nav (4 items)** : Accueil · **Promotions** *(highlight badge or)* · Produits · Contact
+- **LangSwitcher** : header-right, FR/EN avec préservation route via `pathnames` mapping next-intl
+- **Footer 3 colonnes** : Le dépanneur / Infos pratiques / Légal Loi 25 (incl. lien `Gérer mes cookies`)
+- **CTA global S-008** : sticky bottom-right desktop / bottom-full-width mobile, hidden sur `/promotions` et pages légales
 
-### 2.3 Data flow & formulaires
+### 2.3 Slugs FR ≠ EN (à signaler à Vercel + Ph4)
 
-| ID | Formulaire | Champs | Consentement Loi 25 | Rétention | Endpoint |
-|---|---|---|---|---|---|
-| FORM-NEWSLETTER | Inscription infolettre | email | ✅ explicite, opt-in, non pré-coché | 12 mois | `POST /api/newsletter/subscribe` |
-| FORM-CONTACT | Contact | nom, email, tel (opt), message, honeypot | ✅ explicite, opt-in, non pré-coché | 24 mois | `POST /api/contact/send` |
+| FR | EN |
+|---|---|
+| `/promotions` | `/deals` |
+| `/produits` | `/products` |
+| `/politique-confidentialite` | `/privacy-policy` |
+| `/mentions-legales` | `/legal-notice` |
 
-**Rate limiting** : 5 newsletter / IP / 10 min ; 3 contact / IP / 30 min.
+Mapping via `next-intl` `createSharedPathnamesNavigation`.
 
-### 2.4 Tracking conditionnel au consentement
+### 2.4 Formulaires (Loi 25 explicite)
 
-| Event | Catégorie consent | Service | Loi 25 |
+| ID | Rétention | Consent | Endpoint |
 |---|---|---|---|
-| pageview | analytics | GA4 (IP tronquée) | opt-in obligatoire |
-| click_cta_promotions | analytics | GA4 | opt-in obligatoire |
-| newsletter_signup | analytics | GA4 | opt-in obligatoire |
-| phone_click | analytics | GA4 | opt-in obligatoire |
-| maps_engagement | marketing | GA4 | opt-in obligatoire (transfert US documenté) |
+| FORM-NEWSLETTER (S-007) | 12 mois | opt-in checkbox non cochée | POST `/api/newsletter` |
+| FORM-CONTACT (S-021) | 6 mois post-réponse | opt-in checkbox non cochée | POST `/api/contact` (SMTP → nobert@…) |
 
-**Cookie consent** : opt-in 3 catégories (Essentiels actifs / Analytics / Marketing), parité visuelle stricte Accept/Refuser/Personnaliser.
+Honeypot, rate-limit (1/IP/5 min news, 3/IP/h contact), validation Zod partagée client+server.
 
-### 2.5 Maillage interne
+### 2.5 Tracking points (gating consentement)
 
-- **Pages hub** : R-HOME (concentre le link equity).
-- **Maillage** : 9 liens inter-pages documentés (`link_map`), aucune orpheline.
-- **Max liens sortants/page** : 30 (largement respecté).
+5 events GA4 (`pageview`, `cta_promotions_click`, `newsletter_submit_success`, `phone_click`, `maps_load`) — tous gated sur `cookie_consent.analytics === true`. Aucun script tiers ne se charge avant opt-in granulaire.
+
+### 2.6 Maillage interne
+
+- **Hub pages** : `/` (homepage pivot) + `/promotions` (KPI conversion principal)
+- **Cycle conversion** : Hero → /promotions → cross-sell → /produits → cross-sell → /promotions
+- **0 page orpheline** (chaque route au moins linkée depuis main_nav ou cross-sell)
 
 ---
 
-## 3. Plan SEO (seo-strategist)
+## 3. Plan SEO — `seo-strategist`
 
-> Source : `seo-strategy.json`.
+> Sortie : `clients/depanneur-nobert/seo-strategy.json`
 
 ### 3.1 Stratégie globale
 
-- **Mot-clé primaire** : `dépanneur [ville]`
-- **Secondaires (5)** : `dépanneur ouvert 24h [ville]`, `dépanneur de quartier [ville]`, `dépanneur près de moi`, `bière [ville]`, `loto québec [ville]`
-- **Long-tail (5)** : `dépanneur ouvert dimanche [ville]`, `promotions dépanneur [ville] cette semaine`, etc.
-- **Difficulté** : low (DR 5-25) — secteur peu disputé en SEO local QC, dominé par fiches GMB et annuaires.
-- **Intent** : transactional + local-navigational
-- **Avantage technique** : 0/5 concurrents en framework moderne → Next.js + Schema = avantage immédiat.
+- **Primary keyword** : `dépanneur [ville]` (placeholder kickoff)
+- **Secondary** (6) : `dépanneur ouvert 24h [ville]`, `bière [ville]`, `loto québec [ville]`, `épicerie de quartier [ville]`, `snack froid chaud [ville]`, `dépanneur près de chez moi`
+- **Long tail** (6) : `dépanneur ouvert maintenant [ville]`, `promotions dépanneur [ville] cette semaine`, `bière microbrasserie [ville] dépanneur`, etc.
+- **Difficulté** : low (DR 5-25) — secteur faiblement digitalisé
+- **Intent** : transactional (visite physique imminente) + informational (horaires)
 
-### 3.2 Pages SEO (synthèse)
+### 3.2 Title + Meta (FR + EN, < 60 / 120-155 chars)
 
-| Page | Title (FR) | Schema |
-|---|---|---|
-| `/` | `Dépanneur de quartier à [ville] — Promotions, bière, lotto \| Nobert` (66 chars) | LocalBusiness + ConvenienceStore + WebSite + Organization |
-| `/promotions` | `Promotions de la semaine — Dépanneur Nobert [ville]` (51 chars) | LocalBusiness + ItemList + Offer + BreadcrumbList |
-| `/produits` | `Nos produits — Bières, snacks, lotto, essentiels \| Dépanneur Nobert` (67 chars) | LocalBusiness + ItemList + Product + BreadcrumbList |
-| `/contact` | `Adresse, horaires, téléphone — Dépanneur Nobert [ville]` (54 chars) | LocalBusiness + ConvenienceStore + PostalAddress + OpeningHoursSpecification + ContactPoint + BreadcrumbList |
-| `/politique-confidentialite` | `Politique de confidentialité (Loi 25) — Dépanneur Nobert` (56 chars) | WebPage + BreadcrumbList |
-| `/mentions-legales` | `Mentions légales — Dépanneur Nobert` (37 chars) | WebPage + BreadcrumbList |
+Toutes les pages ont `title_tag_fr/en` et `meta_desc_fr/en` redigés avec le placeholder `[ville]`. Exemples :
 
-Toutes sous 70 chars ✅, toutes meta entre 134 et 154 chars ✅, H1 unique par page ✅.
+- **Home** : « Dépanneur Nobert | Votre dépanneur de quartier à [ville] » (53 chars FR)
+- **Promotions** : « Promotions de la semaine | Dépanneur Nobert [ville] » (52 chars FR)
+- **Produits** : « Bières, snacks, lotto, essentiels | Dépanneur Nobert » (53 chars FR)
 
-### 3.3 Structured data (LocalBusiness — extrait)
+### 3.3 Structured data (JSON-LD)
 
-`@type: ConvenienceStore` avec PostalAddress, GeoCoordinates, OpeningHoursSpecification, ContactPoint, areaServed, sameAs (Facebook + Google Maps). Validation Rich Results Test obligatoire avant deploy Ph5.
+| Page | Schema |
+|---|---|
+| Site-wide | Organization · WebSite · BreadcrumbList |
+| `/` | LocalBusiness (`@type: ConvenienceStore`) · OpeningHoursSpecification |
+| `/promotions` | LocalBusiness · **FAQPage** · OfferCatalog |
+| `/produits` | LocalBusiness · **FAQPage** · ItemList |
+| `/contact` | LocalBusiness · OpeningHoursSpecification · ContactPage |
 
-### 3.4 Sitemap & technique
+**Différenciation #1 AI Overviews** : 0/5 concurrents ph0 n'ont pas de FAQPage structurée → présence immédiate sur featured snippets QC dépanneur.
 
-- 12 URLs (6 routes × 2 locales) — `app/sitemap.ts` dynamique
-- changefreq : home/promos `weekly`, produits `monthly`, contact/legal `yearly`
-- hreflang FR-CA / EN-CA + x-default = FR
-- Robots dynamique avec **AI crawlers permis** (GPTBot, ClaudeBot, PerplexityBot, Google-Extended) — alignement template NEXOS et stratégie AI SEO.
+### 3.4 Sitemap + robots
 
-### 3.5 Local SEO
+- `app/sitemap.ts` dynamique avec hreflang fr/en/x-default
+- `app/robots.ts` : **AI crawlers autorisés** (`GPTBot`, `Google-Extended`, `ClaudeBot`) — secteur sous-représenté dans les LLM, présence = avantage concurrentiel direct
+- Priority : home 1.0 / promos 0.9 / produits 0.8 / contact 0.7 / légal 0.3
 
-- **Google Business Profile** obligatoire — création/vérification au kickoff, alignement strict NAP avec Schema.
-- **Annuaires** : Pages Jaunes, Yelp, portails de quartier locaux selon [ville].
-- **Backlinks** : Chambre de commerce, microbrasseries partenaires, associations de quartier.
+### 3.5 Bloqué par kickoff
 
-### 3.6 Core Web Vitals targets
-
-| Métrique | Cible | Justification |
-|---|---|---|
-| LCP mobile | < 2.5 s | Audience 3G/4G ruraux possible |
-| INP mobile | < 200 ms | Tactile sénior (60-80) |
-| CLS mobile | < 0.1 | next/font + viewport-only Framer Motion |
+| Item | Impact |
+|---|---|
+| Ville | Tous title/meta/H1/structured data |
+| Adresse + NEQ | Mentions légales + LocalBusiness |
+| Téléphone | tel: links + LocalBusiness |
+| Horaires précis 7 jours | OpeningHoursSpecification + S-019 |
 
 ---
 
-## 4. Stack technique (solution-architect)
+## 4. Stack technique — `solution-architect`
 
-> Source : `stack-decision.json`.
+> Sortie : `clients/depanneur-nobert/stack-decision.json`
 
-### 4.1 Stack imposé brief (non-négociable)
+### 4.1 Stack core (imposé)
 
-| Composant | Choix | Version |
+| Composant | Choix | Justification |
 |---|---|---|
-| Framework | Next.js | 15.x — App Router uniquement |
-| Langage | TypeScript | 5.x strict + noUncheckedIndexedAccess + exactOptionalPropertyTypes |
-| CSS | Tailwind CSS | **3.4.x** (vs 4.x — cf. ADR-001) |
-| i18n | next-intl | 3.x (FR default sans préfixe / EN avec `/en`) |
-| Tests | Vitest + Testing Library + Playwright | E2E inclus (cf. ADR) |
-| Images | next/image | AVIF + WebP fallback |
-| Fonts | next/font/google | Self-hosted, 4 woff2 total |
-| Deploy | Vercel | iad1 + yul1 fallback, Edge middleware |
+| Framework | Next.js 15.x App Router | brief.design.stack_imposed.framework |
+| Langage | TypeScript 5 strict (+ noUncheckedIndexedAccess) | Standard NEXOS |
+| CSS | **Tailwind 3.4** (vs 4.x) | ADR-001 — stabilité production |
+| i18n | next-intl ^3.x avec `pathnames` mapping | Slugs FR ≠ EN |
+| Tests | Vitest + RTL (pas e2e) | Budget solo |
+| Deploy | Vercel | brief.site.hosting=vercel |
 
-### 4.2 Inclusions optionnelles (5)
+### 4.2 Additions optionnelles (8 deps prod)
 
-- **Framer Motion 11.x** (+15 KB) — P17 scoped sections home uniquement (cf. ADR-002)
-- **React Hook Form 7 + Zod 3** (+12 KB) — validation type-safe FR/EN des 2 formulaires
-- **@vercel/analytics + @vercel/speed-insights** (+6 KB conditional, post-consent)
-- **Lucide React** (~3 KB tree-shaken) — iconographie cohérente alignée brief
-- **isomorphic-dompurify** — *include_if_needed* (réservé Ph4 si HTML user-submitted)
+- **Framer Motion** ^11 (15 KB) — ADR-002, scope limité ≤ 12 éléments animés/page, `useReducedMotion()` systématique
+- **React Hook Form** ^7 + **Zod** ^3 + **@hookform/resolvers** — formulaires Loi 25 (~23 KB total)
+- **lucide-react** — 12 icônes max, tree-shaking strict
+- **DOMPurify** : EXCLU (ADR-003 — pages légales en JSX statique, économie 22 KB)
 
-### 4.3 Rejets explicites (8)
+### 4.3 ADR Log (5 décisions documentées)
 
-jQuery, styled-components/Emotion, Pages Router, WordPress/Headless CMS, NextAuth, Prisma/Drizzle, GSAP, Sanity/Contentful — tous justifiés (surcoût ou philosophie incompatible).
+| ID | Titre |
+|---|---|
+| ADR-001 | Tailwind 3.4 plutôt que 4.x (stabilité prod) |
+| ADR-002 | Framer Motion inclus malgré size=solo (P17 + D5 critiques) |
+| ADR-003 | Pages légales en JSX statique (pas innerHTML, alignement fix A-006) |
+| ADR-004 | Maps embed gated par consent applicatif (iframe natif, pas SDK) |
+| ADR-005 | ISR weekly /promotions (revalidate=604800, regen vendredi) |
 
 ### 4.4 Sécurité
 
-- `poweredByHeader: false`, `reactStrictMode: true`, `compress: true`
-- **Headers HTTP complets** : X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, HSTS 2 ans + preload, Permissions-Policy restrictive (camera/microphone closed, geolocation self), X-DNS-Prefetch-Control on
-- **CSP nonce-based** via middleware Next.js — script_src self + nonce + GA4 ; img_src self + Maps + GA4 ; frame_src maps embed ; connect_src self + GA + Resend
-- **Rate limiting** API : 5 newsletter / IP / 10 min ; 3 contact / IP / 30 min
+- `poweredByHeader: false`, `reactStrictMode: true`
+- 6 headers HTTP via `vercel.json` (X-Frame-Options DENY, HSTS preload, Permissions-Policy, etc.)
+- **CSP nonce-based** via middleware (default-src 'self', script-src 'self' 'nonce-{N}' GA tags, frame-src maps.google.com avec gating consent applicatif)
+- Rate limiting `/api/newsletter` (1/IP/5 min), `/api/contact` (3/IP/h)
+- Cible `npm audit` : 0 high/critical au build
 
-### 4.5 Performance budget
+### 4.5 Budget perf
 
-| Limite | Cible |
-|---|---|
-| First-load JS | < 180 KB |
-| LCP mobile | < 2.5 s |
-| Image / fichier | < 200 KB |
-| Fonts woff2 | ≤ 4 |
-| Production deps | ≤ 10 (estimé : 9) |
-
-### 4.6 ADR rédigés (5)
-
-| ID | Titre | Statut |
-|---|---|---|
-| ADR-001 | Tailwind 3.4 vs 4.x | accepted (stabilité écosystème) |
-| ADR-002 | Framer Motion pour P17 | accepted (scope strict sections home) |
-| ADR-003 | Pas de CMS ni DB | accepted (data/promotions.json + ISR) |
-| ADR-004 | Resend pour relais email | accepted (DX Next + free tier) |
-| ADR-005 | Maps embed conditionnel consent | accepted (Loi 25) |
+- LCP < 2.5s (3.0s mobile 4G) · INP < 200ms · CLS < 0.1
+- Bundle first-load < 250 KB · images max 500 KB · 5 fichiers fonts max
+- Cible Lighthouse Performance ≥ 90
 
 ---
 
-## 5. Scaffold — arbre de fichiers (scaffold-planner)
+## 5. Scaffold — `scaffold-planner`
 
-> Source : `scaffold-plan.json` + `section-manifest.json`.
+> Sortie : `clients/depanneur-nobert/scaffold-plan.json`
+> **Section manifest préservé** : 24 sections (`audited`) du manifest existant conservées sans réécriture.
 
-### 5.1 Statistiques scaffold
-
-| Métrique | Valeur |
-|---|---|
-| Fichiers totaux | **78** |
-| Critical | 41 |
-| High | 21 |
-| Medium | 8 |
-| Low | 0 |
-
-### 5.2 Structure de dossiers
+### 5.1 Arbre de fichiers (78 fichiers totaux)
 
 ```
 depanneur-nobert-site/
 ├── app/
 │   ├── [locale]/
-│   │   ├── layout.tsx, page.tsx, not-found.tsx, error.tsx, loading.tsx
-│   │   ├── promotions/page.tsx
-│   │   ├── produits/page.tsx
-│   │   ├── contact/page.tsx
-│   │   ├── politique-confidentialite/page.tsx
-│   │   └── mentions-legales/page.tsx
-│   ├── api/
-│   │   ├── newsletter/route.ts
-│   │   └── contact/route.ts
-│   ├── sitemap.ts, robots.ts, manifest.ts
+│   │   ├── layout.tsx            # Header, Footer, CookieConsent, JSON-LD Org+WebSite
+│   │   ├── page.tsx              # Home (S-001..S-007)
+│   │   ├── promotions/page.tsx   # ISR weekly (S-009..S-012)
+│   │   ├── produits/page.tsx     # (S-013..S-017)
+│   │   ├── contact/page.tsx      # (S-018..S-022)
+│   │   ├── politique-confidentialite/page.tsx  # JSX statique S-023
+│   │   ├── mentions-legales/page.tsx           # JSX statique S-024
+│   │   ├── not-found.tsx · error.tsx · loading.tsx
+│   ├── api/newsletter/route.ts · api/contact/route.ts
+│   ├── sitemap.ts · robots.ts
 ├── components/
-│   ├── ui/         (Button, Card, Input, Textarea, Checkbox, Badge, Container, Section)
-│   ├── sections/   (Hero, PromotionsHighlight, SocialProof, …)
-│   └── layout/     (Header, Footer, StickyCTA, CookieConsentBanner, LanguageSwitcher)
-├── lib/            (jsonld, schemas, email, rateLimit, cookieConsent, analytics, promotions, produits, horaires, cn)
-├── messages/       (fr.json, en.json)
-├── data/           (promotions.json, produits.json, horaires.json, temoignages.json)
-├── types/          (index.ts)
-├── i18n/           (routing.ts, request.ts)
-├── styles/         (globals.css)
-├── public/         (favicon, icons, og-image, maps-placeholder)
-├── tests/          (smoke.spec.ts Playwright)
-├── middleware.ts
-├── next.config.mjs, tailwind.config.ts, tsconfig.json
-├── vercel.json, .env.example, .eslintrc.json
-└── package.json, README.md
+│   ├── layout/    # Header, Footer, LangSwitcher, StickyCTA (S-008), CookieConsent
+│   ├── sections/  # 23 composants 1:1 avec S-001..S-024 (LegalDocBody = 2 variants)
+│   ├── ui/        # Button (variants primary/accent/ghost), Card, Badge, Input, Textarea, Checkbox
+│   └── jsonld/    # LocalBusiness, FAQ, Breadcrumb, Organization
+├── lib/
+│   ├── analytics.ts (gating consent)
+│   ├── cookie-consent.ts (Context + helpers)
+│   ├── jsonld/{local-business,faq}.ts
+│   ├── schemas/{contact,newsletter}.ts (Zod partagés client/server)
+│   ├── rate-limit.ts · utils/{cn,format}.ts
+├── i18n/{request,navigation}.ts (pathnames mapping FR/EN)
+├── messages/{fr,en}.json (parité 1:1)
+├── data/{promotions,produits,temoignages,horaires}.json
+├── public/{favicon, og-image, hero-vitrine, maps-placeholder}
+├── styles/globals.css
+├── types/{brand,data}.ts
+├── tests/{cookie-consent,contact-form,lang-switcher}.test.tsx
+├── middleware.ts (next-intl + nonce CSP)
+├── next.config.mjs · tailwind.config.ts · tsconfig.json · vercel.json
+└── package.json · .env.example · .eslintrc.json · .gitignore · README.md
 ```
 
-### 5.3 Section manifest — 24 sections
+### 5.2 Mapping section → composant
 
-Sections par page :
+24 sections du manifest → 23 fichiers de composant (LegalDocBody mutualisé S-023+S-024 via variant). Mapping complet dans `scaffold-plan.json::section_to_component_mapping`.
 
-| Page | Sections | IDs |
-|---|---|---|
-| Home | 7 | S-001 → S-007 |
-| Global (StickyCTA) | 1 | S-008 |
-| Promotions | 4 | S-009 → S-012 |
-| Produits | 5 | S-013 → S-017 |
-| Contact | 5 | S-018 → S-022 |
-| Politique-confidentialité | 1 | S-023 |
-| Mentions-légales | 1 | S-024 |
+### 5.3 Section manifest
 
-**Sections critiques mappées sur patterns recommandés** :
-
-- **S-001 Hero** ← P01 + P09 + P13
-- **S-004 SocialProofVoisinage** ← P02 (placement adjacent au CTA, conforme measured impact)
-- **S-008 StickyCTAGlobal** ← P01 (toutes pages sauf /promotions)
-- **S-015 ProduitsGalerie** ← P20 (alt-text obligatoire, risque D2 flaggé pattern-recommender)
-- **S-005 InfosPratiques + S-018 ContactHero + S-019 CoordonneesHoraires + S-020 MapsEmbed** ← P11 (NAP cohérent + Schema LocalBusiness)
-- **S-006 StoryBrand** ← P19
-
-Toutes les sections ont `lifecycle.ph1_planned = 2026-04-28T00:00:00Z`, autres lifecycle null.
+**Action Phase 1** : aucune. Le manifest existant (`section-manifest.json`, 24 sections, statut `audited`) est **conservé en l'état**. Mode `create` ne réécrit pas un manifest pré-existant. Les phases ultérieures (Ph2/Ph3/Ph4/Ph5) mettront à jour les `lifecycle.*` au besoin.
 
 ---
 
-## 5bis. Plan de contenu — handoff Phase 3 (content-writer)
+## Score global Phase 1
 
-> Cette section synthétise les **directives de contenu** issues de la Phase 1 que la Phase 3 (content-writer) devra exécuter. Elle agrège les inputs `brand-identity.json` (voix), `seo-strategy.json` (mots-clés), `site-map-logic.json` (formulaires) et `section-manifest.json` (24 sections à rédiger).
-
-### 5bis.1 Volumétrie de contenu à produire (mode `creation`)
-
-| Page | Sections rédigées | Mots cibles totaux | Bilingue | Priorité |
-|---|---|---|---|---|
-| `/` Accueil | S-001 à S-007 (7) | 700–900 FR + EN | ✅ | **Critique** |
-| `/promotions` | S-009 à S-012 (4) | 300–500 FR + EN | ✅ | **Critique** |
-| `/produits` | S-013 à S-017 (5) | 600–1000 FR + EN | ✅ | Haute |
-| `/contact` | S-018 à S-022 (5) | 200–400 FR + EN | ✅ | Haute |
-| `/politique-confidentialite` | S-023 (1) | 700–900 FR + EN | ✅ | **Critique Loi 25** |
-| `/mentions-legales` | S-024 (1) | 300–500 FR + EN | ✅ | **Critique Loi 25** |
-| **Global** | StickyCTAGlobal S-008 + cookie banner + nav + footer | ~150 FR + EN | ✅ | Critique |
-
-**Total** : ~3 100 mots FR + 3 100 mots EN — tous structurés selon le `section-manifest.json` (24 sections, IDs S-001→S-024).
-
-### 5bis.2 Directives de voix appliquées au contenu (cf. `brand-identity.json`)
-
-- **Tone** : `convivial-authentique` (D2 emotional, anti-corporate explicite)
-- **Pronom** : « **vous** » universel (audience 20–80 ans)
-- **Formality level** : 2/5 (lexique chaleureux, pas guindé)
-- **Sentence style** : phrases courtes (8–14 mots), voix active
-- **Lexique imposé** : 20 termes allowed (voisinage, à deux pas, chaleureux, accueillant, depuis [année], etc.)
-- **Lexique banni** : 15 termes (premium, leader, innovant, on-the-go, convenience store, etc.)
-
-### 5bis.3 Contenu obligatoire Loi 25 (D8 — zéro compromis)
-
-| Élément | Contenu requis | Source template |
+| Critère | Score | Note |
 |---|---|---|
-| **RPP (Responsable Protection RP)** | Nom : Nobert Tremblay — Courriel : `nobert@depanneur-nobert.ca` — Titre complet (Loi 25, art. 3.1) | brief + `templates/privacy-policy-template.md` |
-| **Cookie banner** | Texte FR + EN, 3 catégories (Essentiels/Analytics/Marketing), parité visuelle Accept/Refuser/Personnaliser | `templates/cookie-consent-component.tsx` |
-| **Politique de confidentialité (S-023)** | RPP, données collectées, finalités, rétention (12/6/1 mois), droits, transferts hors QC (US ×3), services tiers | `templates/privacy-policy-template.md` |
-| **Mentions légales (S-024)** | Dénomination Dépanneur Nobert inc., NEQ (à fixer au kickoff), adresse, hébergeur Vercel (US documenté) | `templates/legal-mentions-template.md` |
-| **Note RPP contact (S-022)** | Encadré « Vos droits Loi 25 » avec courriel RPP + lien politique-confidentialite | section-manifest |
-| **Process incident** | Procédure de notification active : `nobert@depanneur-nobert.ca` (Loi 25 art. 3.5) | brief |
+| Cohérence avec brief + ph0 (KPI conversion + Loi 25 + palette CLI) | 9/10 | Palette navy override appliqué proprement, compensation chaleur via typo + photos |
+| Pattern recommendation knowledge-driven | 7/10 | Patterns alignés mais règle d'or NON satisfaite (max 3 oppositions, seuil 4) |
+| Brand identity actionnable Ph2 | 9/10 | Tokens + contrastes WCAG AAA chiffrés + typo justifiée |
+| IA + i18n + Loi 25 | 10/10 | Slugs FR≠EN, pathnames mapping, formulaires Loi 25 explicites, gating consent complet |
+| SEO + structured data + AI Overviews | 9/10 | FAQPage différenciation #1, AI crawlers autorisés, blocage [ville] documenté |
+| Stack + ADR + sécurité | 10/10 | 5 ADR documentés, CSP nonce-based, rate-limit, budget perf chiffré |
+| Scaffold complet et 1:1 avec manifest | 10/10 | 78 fichiers, mapping S-001..S-024 → composants explicite |
+| Risques flaggés au pipeline | 9/10 | F-001..F-003 + R-001 + 6 risques SOIC remontés |
 
-### 5bis.4 Contenu SEO obligatoire par page (cf. `seo-strategy.json`)
+**Score global : 9.1/10**
 
-- **H1 unique** par page (1 seul H1)
-- **Title FR** + **Title EN** ≤ 70 chars, mot-clé primaire en début
-- **Meta description FR/EN** 134–154 chars, CTA explicite
-- **Alt-text descriptif** sur 100 % des images (≥ 30 produits catalogue P20 — risque D2 flaggé)
-- **Schema JSON-LD** : LocalBusiness + ConvenienceStore + ItemList (promos & produits) + BreadcrumbList
-- **OG image** 1200×630 par page (template `og-image.template.svg` personnalisé palette warm)
-
-### 5bis.5 Contenu authentique à collecter au kickoff (avant lancement Ph3)
-
-| Asset contenu | Quantité | Usage section | Priorité |
-|---|---|---|---|
-| Photos vitrine extérieure | 1–2 | S-001 Hero (P13) | Haute |
-| Photos intérieur dépanneur | 2–3 | S-006 StoryBrand, S-009 PromotionsHero | Haute |
-| Photo propriétaire (Nobert) | 1 | S-006 StoryBrand (P19) | Haute |
-| Photos packshot produits hero | 4–6 (1 par catégorie) | S-002 PromotionsHighlight, S-015 ProduitsGalerie | Haute |
-| Témoignages voisinage (signés) | 3–5 prénoms + citations | S-004 SocialProofVoisinage (P02) | **Critique** |
-| Liste promotions semaine type | ~6–10 produits + prix + dates | S-010 PromotionsList | **Critique** |
-| Catalogue produits (~30 items) | par 4 catégories (Bières, Snacks, Lotto, Essentiels) | S-015 ProduitsGalerie | **Critique** |
-| Coordonnées NAP exactes | Adresse, téléphone, horaires (semaine + WE + fériés) | S-005, S-018, S-019, Schema | **Critique** |
-| Année de fondation | chiffre rond | UVP « depuis [année] » + S-006 StoryBrand | Haute |
-
-**Garde-fou** : interdiction stricte d'utiliser des **stock photos génériques** (rupture du registre P13 anti-polish authenticité). Si une photo manque au kickoff, l'agent Ph3 doit signaler la dépendance et bloquer la rédaction de la section concernée plutôt que d'injecter du contenu synthétique.
-
-### 5bis.6 Contrats de contenu pour les 24 sections (extraits)
-
-| ID | Nom | Contenu attendu (résumé) | Pattern(s) |
-|---|---|---|---|
-| **S-001** | Hero | H1 « Votre dépanneur de quartier à [ville] » + CTA primaire « Voir les promotions de la semaine » + CTA secondaire « Trouver l'adresse » + sous-titre 12–18 mots | P01, P09, P13 |
-| **S-002** | PromotionsHighlight | Top 3 promos cards (titre + image + dates + badge accent) + lien « Voir toutes les promotions » | P20 |
-| **S-004** | SocialProofVoisinage | 3–5 témoignages voisinage (prénom + photo + citation 1 phrase courte authentique), placés ADJACENTS au CTA promos | P02 |
-| **S-006** | StoryBrand | 3 paragraphes : héros (le voisin), guide (Nobert), promesse (proximité depuis [année]) | P19, P13 |
-| **S-008** | StickyCTAGlobal | « Voir les promotions » sticky bottom-right desktop / bottom mobile, masqué sur `/promotions` | P01 |
-| **S-015** | ProduitsGalerie | 4 sections ancrées (Bières, Snacks, Lotto, Essentiels) avec ~30 cards image + nom + alt-text descriptif obligatoire | P20 |
-| **S-020** | MapsEmbed | Avant consent : placeholder + bouton « Charger la carte (Google Maps – États-Unis) » + note transfert hors QC | P11 |
-| **S-023** | PolitiqueContent | Politique Loi 25 complète issue du template (≥ 700 mots FR + EN) | — |
-| **S-024** | MentionsContent | Mentions légales complètes issues du template (≥ 300 mots FR + EN) | — |
-
-> **Handoff** : la Phase 3 content-writer recevra ce plan de contenu + `brand-identity.json` (lexique allowed/banned) + `seo-strategy.json` (mots-clés par page) + `section-manifest.json` (24 contrats sections). Aucune section ne peut être rédigée tant que les **6 variables CRITIQUES kickoff** (cf. §6) ne sont pas fixées.
+> Gate ph1→ph2 : seuil μ ≥ 8.0 → **PASS**.
+>
+> Note : la règle d'or non satisfaite (`opposition_check.passes_rule_of_gold = false`) est **documentée et acceptée** comme aspirationnelle (cf. pattern-recommender-test-report §3.5). Elle ne bloque pas le passage en Ph2 selon la convention de l'orchestrateur.
 
 ---
 
-## 6. Risques & dépendances kickoff
+## Sorties machine-readable
 
-### 6.1 Variables bloquantes à fixer au kickoff (avant Ph2)
-
-| Variable | Impact si absente | Priorité |
-|---|---|---|
-| 🟠 **[ville]** | bloque P11, SEO local, Schema LocalBusiness, 100% des keywords | **CRITIQUE** |
-| 🟠 **[adresse exacte]** | bloque Maps + mentions légales + Schema | **CRITIQUE** |
-| 🟠 **[telephone]** | bloque CTA secondaire + Schema + tel: link | **CRITIQUE** |
-| 🟠 **[horaires précis]** | bloque Schema OpeningHours + section InfosPratiques | **CRITIQUE** |
-| 🟠 **[NEQ]** | bloque mentions légales | **CRITIQUE** |
-| 🟠 **[année] de création** | UVP primaire + storytelling P19 | **HAUTE** |
-| 🟠 **Logo/wordmark** | décision Ph2 — création logo OU wordmark Fraunces typographique | **HAUTE** |
-| 🟡 Photos vitrine/intérieur/propriétaire | P13 anti-polish authenticity (Hero, StoryBrand) | **HAUTE** |
-| 🟡 Témoignages voisinage (3-5) | P02 social proof (S-004) | **HAUTE** |
-
-### 6.2 Risques SOIC consolidés Ph1
-
-| Dimension | Risque | Atténuation prévue |
-|---|---|---|
-| **D8 Legal** | Mapping SEC-03 confidence 0.5 + variables [ville], NEQ | Revue humaine pré-Ph2 + collecte kickoff |
-| **D6 SEO** | NAP cohérence Google My Business | Création/vérification GMB au kickoff + Schema strict |
-| **D2 Accessibilité** | P20 menu galerie → alt-text obligatoire | Brief Ph3 content-writer + lint a11y Ph4 |
-| **D5 Performance** | Framer Motion + Maps + image promos | Budget 180 KB strict + Maps lazy + viewport-only animations |
-| **D8 Legal (transfert US)** | Maps + GA4 + Vercel + Resend | 4 sous-traitants documentés politique-confidentialite + opt-in cookie |
-| **D9 Confidence sectorielle** | SEC-03 ≠ commerce de proximité réel | Phase M (post-livraison Nobert) → décider SEC-07 ? |
+| Fichier | Status |
+|---|---|
+| `pattern-recommendation.json` | ✅ valide JSON, schema `nexos-ph1/pattern-recommendation/v1` |
+| `brand-identity.json` | ✅ valide JSON, schema `nexos-ph1/brand-identity/v1` |
+| `site-map-logic.json` | ✅ valide JSON, schema `nexos-ph1/site-map-logic/v1` |
+| `seo-strategy.json` | ✅ valide JSON, schema `nexos-ph1/seo-strategy/v1` |
+| `stack-decision.json` | ✅ valide JSON, schema `nexos-ph1/stack-decision/v1` |
+| `scaffold-plan.json` | ✅ valide JSON, schema `nexos-ph1/scaffold-plan/v1` |
+| `section-manifest.json` | ✅ préservé (24 sections, statut `audited`) |
 
 ---
 
-## 7. Score Phase 1 global
+## Handoff Phase 2 — Design
 
-### 7.1 Détail par critère NEXOS
+### Décisions héritées (non négociables)
 
-| Critère | Score / 10 | Justification |
-|---|---|---|
-| Cohérence pattern-recommender × brief | 9 | 8 patterns, 5 sites, 6D complète, règle d'or PASS, mapping documenté |
-| Brand identity (palette + typo + voix) | 9 | Palette imposée respectée intégralement, contrastes WCAG validés, voix anti-corporate alignée brief |
-| Architecture de l'information | 9 | 6 routes plates (depth=1), nav 4 items, pas d'orpheline, formulaires Loi 25 explicites |
-| Plan SEO local | 9 | Title/meta/H1 uniques, Schema ConvenienceStore exhaustif, hreflang complet, AI SEO inclus |
-| Stack technique justifié | 9 | 5 ADR, 9 prod deps (sous plafond 10), CSP nonce, headers complets |
-| Scaffold + section-manifest | 9 | 78 fichiers / 24 sections, ID séquentiels, mapping patterns clair |
-| Loi 25 / D8 conformité | 9 | RPP nommé, 2 formulaires consentement, Maps conditionnel, retention par formulaire |
-| Risques anticipés | 9 | 6 risques SOIC remontés + 8 variables kickoff bloquantes signalées |
-| Cohérence avec ph0 Discovery | 10 | 100% des décisions ph0 reportées et étendues (palette, patterns, anti-positionnement) |
-| Qualité documentation | 8 | 7 JSON valides, rationale par décision, traçabilité brief→ph0→ph1 |
+1. **Palette CLI navy/or/gris imposée** — primary `#1A2B3C` + accent `#FFD700` + secondary `#B2B2B2`. Compensation chaleur via Fraunces 900 + photos vitrine éclairage chaud + textures bois subtiles.
+2. **Typographie** : Fraunces 700/900 (titres) + Inter 400/500/600 (body). Scale Major Third 1.250.
+3. **Architecture i18n** : 6 pages × 2 locales avec slugs FR≠EN via `next-intl pathnames`.
+4. **Hero S-001 statique** (pas vidéo, pas carousel — anti-patterns confirmés ph0).
+5. **24 sections du manifest** — composants 1:1 fournis par scaffold-plan.
 
-### 7.2 Score global Phase 1 : **9.0 / 10** (auto-évaluation NEXOS) — μ SOIC iteration 2 : **9.72 / 10** (9 gates / 9 PASS)
+### Inputs pour Ph2 (design)
 
-### 7.3 Verdict gate ph1 → ph2
+- `brand-identity.json` (tokens couleurs, typo, voix de marque)
+- `site-map-logic.json` (routes, nav, formulaires, breadcrumbs)
+- `pattern-recommendation.json` (patterns à appliquer + sites de référence à étudier)
+- `section-manifest.json` (24 sections immutables)
 
-| Seuil | Mesure (iter 1) | Mesure (iter 2) | Statut |
-|---|---|---|---|
-| μ ≥ 8.0 (gate ph1→ph2 SOIC) | 7.38 (FAIL) | **9.72** | ✅ **GO PHASE 2 DESIGN** |
+### Risques à monitorer en Ph2
 
-**Détail SOIC iteration 2** (PHASE_EARLY × 9 gates) :
-
-| Gate | Dim | Score iter 1 | Score iter 2 | Δ |
-|---|---|---|---|---|
-| PE-01 report-completeness | D2 | 10.00 | 10.00 | = |
-| PE-02 report-score-present | D1 | 10.00 | 10.00 | = |
-| PE-03 report-sections | D1 | 5.00 FAIL | **10.00 PASS** | +5.00 |
-| PE-04 no-placeholders | D2 | 10.00 | 10.00 | = |
-| PE-05 report-stack-detected | D3 | 10.00 | 10.00 | = |
-| PE-06 report-ux-patterns | D5 | 10.00 | 10.00 | = |
-| PE-07 report-content-gaps | D6 | 7.50 | 7.50 | = |
-| PE-08 report-positioning | D7 | 4.00 FAIL | **10.00 PASS** | +6.00 |
-| PE-09 report-competitive-gaps | D9 | 3.00 FAIL | **10.00 PASS** | +7.00 |
-| **μ** | — | **7.38** | **9.72** | **+2.34** |
-
-### 7.4 Conditions à respecter en Phase 2
-
-1. **Bloquer le démarrage Ph2 design** tant que les 5 variables CRITIQUES kickoff (ville, adresse, téléphone, horaires, NEQ) ne sont pas fixées par le client.
-2. **Décider du logo** : création illustrée OU wordmark typographique Fraunces seul (recommandation : wordmark — cohérent avec D3=heavy + budget solo).
-3. **Collecter idéalement avant Ph3** : 5-8 photos authentiques (vitrine, intérieur, propriétaire, 4-5 produits hero) + 3-5 témoignages voisinage signés.
-4. **Valider auprès du client** la formulation finale de l'UVP avec [année] : préférer un chiffre rond (« depuis 1995 ») à un placeholder.
-5. **Garder le scope `--colors` strict** : aucune extension de palette en Ph2 design — seules les nuances dérivées des 8 couleurs imposées sont permises (ombres, alpha).
-6. **Anticiper le brief Ph3 content-writer** : alt-text descriptif pour ~30 produits (P20 risque D2_accessibility).
+1. **R-001 palette navy "corporate"** — layout-designer doit valider que la chaleur typo + photos + textures compense la perception froide. Test perception au plus tard Ph5.
+2. **Contraste accent or** — discipline stricte : or = backgrounds CTA + badges UNIQUEMENT, jamais texte sur blanc.
+3. **Anti-pattern carousel** — Hero S-001 photo unique impactante, zéro carousel.
+4. **Photos authentiques** — placeholder structurel Ph2, brief client pour shooting (priorité S-001, S-004, S-006, S-015).
 
 ---
 
-## 8. Livrables produits (récapitulatif)
-
-| Fichier | Statut | Validateur |
-|---|---|---|
-| `clients/depanneur-nobert/pattern-recommendation.json` | ✅ regénéré 2026-04-28 | JSON valide, gate ph1 PASS |
-| `clients/depanneur-nobert/brand-identity.json` | ✅ produit | JSON valide, contrastes AA validés |
-| `clients/depanneur-nobert/site-map-logic.json` | ✅ produit | JSON valide, 0 orpheline, depth ≤ 3 |
-| `clients/depanneur-nobert/seo-strategy.json` | ✅ produit | JSON valide, Schema LocalBusiness exhaustif |
-| `clients/depanneur-nobert/stack-decision.json` | ✅ produit | JSON valide, 5 ADR, 9 deps prod |
-| `clients/depanneur-nobert/scaffold-plan.json` | ✅ produit | JSON valide, 78 fichiers typés/priorisés |
-| `clients/depanneur-nobert/section-manifest.json` | ✅ produit | JSON valide, 24 sections S-001→S-024 séquentielles |
-| `clients/depanneur-nobert/ph1-strategy-report.md` | ✅ ce document | — |
-
----
-
-**Fin du rapport Phase 1 Strategy — Dépanneur Nobert.**
-**Score global : 9.0 / 10 — GO PHASE 2 DESIGN** (sous réserve collecte des 5 variables kickoff CRITIQUES).
-**Prochaine étape** : `agents/ph2-design/_orchestrator.md` (à exécuter une fois le kickoff client confirmé).
+*Phase 1 Strategy complétée 2026-05-10. Prochain handoff : `ph2-design/_orchestrator` (layout-designer + design-token-mapper + responsive-strategist + interaction-designer + asset-manager + visual-direction).*

@@ -2,12 +2,23 @@
 
 **Client** : Dépanneur Nobert inc.
 **Slug** : `depanneur-nobert`
-**Mode NEXOS** : `create` (création from scratch — KPI conversion absolu)
-**Date Phase 2** : 2026-04-28
-**Orchestrateur** : ph2-design
+**Mode NEXOS** : `create` (création from scratch — KPI conversion prioritaire)
+**Date Phase 2** : 2026-05-10
+**Orchestrateur** : ph2-design (Claude Opus 4.7 — 1M context)
 **Agents exécutés** : design-system-architect → layout-designer → responsive-specialist → interaction-designer → asset-director
 **Stack imposée** : Next.js 15 + Tailwind 3.4 + next-intl (FR/EN) + Vercel
-**Palette imposée** : warm — `#8B4513` / `#A0522D` / `#FFD700` / `#FFF8E7` / `#FFFFFF` / `#2A1810` / `#6B4F3C` / `#D4C5A9`
+**Palette CLI imposée** : `primary=#1A2B3C` (navy) · `accent=#FFD700` (or) · `secondary=#B2B2B2` (gris)
+
+---
+
+## ⚠️ Drapeaux portés depuis Ph1 (rappel)
+
+| Code | Drapeau | Statut Ph2 | Action |
+|---|---|---|---|
+| **F-001** | Conflit palette CLI navy vs brief warm — `--colors` gagne | ✅ Compensé | Fraunces 900 + photos vitrine éclairage chaud (cf. asset-plan §hero S-001) + textures noise subtiles OG |
+| **F-002** | Ville TBD au kickoff — placeholders `[ville]` | ⏸ Bloquant Ph3 (pas Ph2) | Aucun impact design ; structure prête à recevoir la ville |
+| **F-003** | NEQ + adresse + téléphone TBD | ⏸ Bloquant Ph3 (S-019, S-023, S-024) | Wireframes prêts à recevoir données réelles |
+| **R-001** | Palette navy peut paraître corporate | 🟡 Compensation engagée | Layout-designer + asset-director ont compensé : photo crépuscule + Fraunces 900 + bandeaux navy alternés blanc-gris doux. Validation finale Ph5. |
 
 ---
 
@@ -15,359 +26,351 @@
 
 | Axe | Décision opérationnelle Phase 2 |
 |---|---|
-| **KPI primaire** | Conversion → Phase 2 doit servir le CTA « Voir les promotions de la semaine » (S-001 hero + S-008 sticky global) |
-| **CTA above-the-fold** | ✅ Hero S-001 (CTA primary directement visible sans scroll) |
-| **Audience design** | Tous âges 20-80 — D3=heavy + touch targets ≥ 48px + texte adresse/téléphone S-018 en text-2xl |
-| **Anti-cible visuelle** | Pas de carrousel auto, pas de hero RevSlider WordPress, pas de stock photos génériques (P13 garde-fou) |
+| **KPI primaire** | Conversion → Phase 2 sert le CTA « Voir les promotions de la semaine » (S-001 hero CTA accent + S-008 sticky global accent + S-004 cta-adjacent) |
+| **CTA above-the-fold** | ✅ Hero S-001 — CTA primaire accent or visible sans scroll, contrast text-on-accent navy 10.07:1 (AAA) |
+| **Audience design** | Tous âges 8-80 — D3=heavy + touch targets ≥48px + S-018/S-019 adresse en text-2xl + zoom 200% fonctionnel testé |
+| **Anti-cible visuelle** | Pas de carrousel auto (anti-pattern ChaLou ph0), pas de hero RevSlider WordPress, pas de stock photos génériques (P13 garde-fou) |
 
-**Décision Phase 2 majeure** : pas de logo illustré (logo_provided=false brief) → **wordmark typographique Fraunces 700** (cf. `asset-plan.json` §logo). Cohérent avec D3=heavy + budget solo.
+**Décision Phase 2 majeure** : `logo_provided=false` du brief → **wordmark typographique Fraunces 900** « Dépanneur Nobert » sert de logo (cf. `asset-plan.json` §logo). Cohérent avec D3=heavy critique pour compenser la palette navy + budget solo + zéro coût illustrateur.
 
 ---
 
-## 1. Design system (design-system-architect → `design-tokens.json`)
+## 1. Design system (`design-system-architect` → `design-tokens.json`)
 
-### 1.1 Couleurs — palette imposée respectée intégralement
+### 1.1 Couleurs — palette CLI imposée respectée intégralement
 
-| Rôle | Hex (imposé brief) | Tailwind token | Usage |
+| Rôle | Hex (imposé CLI) | Tailwind token | Contraste sur blanc | Usage |
+|---|---|---|---|---|
+| primary | `#1A2B3C` | `primary` | **13.66:1 (AAA)** | Titres, nav, fond hero/footer, texte principal, focus ring |
+| primary-hover | `#243D54` | `primary.hover` | 10.85:1 (AAA) | Hover boutons primary + liens nav |
+| accent | `#FFD700` | `accent` | 1.36:1 ❌ FAIL | **Fond CTA UNIQUEMENT** (text-on-accent navy 10.07:1 AAA) + badges promos |
+| secondary | `#B2B2B2` | `secondary` | 2.14:1 ❌ FAIL | **Décoratif uniquement** (bordures, séparateurs, dim states) — JAMAIS texte |
+| text-secondary | `#475569` | `text.secondary` | 7.46:1 (AAA) | Captions, métadonnées, labels |
+| surface | `#FFFFFF` | `surface` | — | Cards, modales, formulaires |
+| surface-alt | `#F4F6F8` | `surface.alt` | — | Sections alternées (zébrage doux sans hard-edge) |
+| border | `#D1D5DB` | `border` | — | Bordures cards, inputs |
+
+**Garde-fous a11y critiques** :
+- Composant `Button.tsx` variant `accent` enforce automatiquement `text-on-accent=#1A2B3C` (compile error si override).
+- Composant `Badge.tsx` accent enforce idem.
+- `secondary` interdit en text-color (lint rule + revue Ph5).
+- Toutes les `box-shadow` utilisent `rgb(26 43 60 / X)` (navy teinté) au lieu du noir pur — cohérence palette froide.
+
+### 1.2 Contrastes WCAG — 11/13 paires AAA, 1 AA, 2 FAIL guardées
+
+| Paire | Ratio | Niveau | Notes |
 |---|---|---|---|
-| primary | `#8B4513` | `primary` | Boutons primaires, liens, headings clés, focus ring |
-| primary-hover | `#A0522D` | `primary-hover` | État hover (transition 150 ms) |
-| accent | `#FFD700` | `accent` | Surfaces badges promos — JAMAIS texte sur blanc |
-| background | `#FFF8E7` | `background` | Fond global body, sections paires |
-| surface | `#FFFFFF` | `surface` | Cards, modales, formulaires |
-| text | `#2A1810` | `text` | Texte principal |
-| text-muted | `#6B4F3C` | `text-muted` | Métadonnées, captions |
-| border | `#D4C5A9` | `border` | Bordures décoratives — JAMAIS focus indicator |
+| primary on white | 13.66:1 | AAA | titres, texte principal |
+| primary on surface-alt | 12.45:1 | AAA | sections alternées |
+| primary-hover on white | 10.85:1 | AAA | hover boutons |
+| white on primary | 13.66:1 | AAA | hero, footer |
+| text.secondary on white | 7.46:1 | AAA | captions |
+| text.muted on white | 5.74:1 | AA | labels secondaires (≥14px) |
+| text-on-accent (#1A2B3C) on accent (#FFD700) | 10.07:1 | AAA | CTA primaire, badges |
+| error on white | 6.61:1 | AAA | messages erreur |
+| success on white | 7.83:1 | AAA | confirmations |
+| warning on white | 7.45:1 | AAA | Loi 25 + bière responsable |
+| info on white | 8.59:1 | AAA | notes infos |
+| accent on white | 1.36:1 | **FAIL** | INTERDIT pour texte (guard component + lint) |
+| secondary on white | 2.14:1 | **FAIL** | INTERDIT pour texte (décoratif uniquement) |
 
-**Rôles dérivés cohérents avec la palette warm** : neutral scale 50→900 (chromatique brun, pas gris froid), shadows teintées brun (`rgb(42 24 16 / X)` au lieu de noir pur), error/success/warning conservent leurs couleurs sémantiques mais info reste sarcelle `#1F4E5F` (seul froid toléré pour bandeaux Loi 25).
+### 1.3 Typographie — Fraunces 700/900 + Inter 400/500/600
 
-### 1.2 Contrastes WCAG — 100 % AA, 7/12 AAA
+- **Fraunces** (heading) — variable font opsz, weights 700 (sub) + 900 (h1/h2/h3 bold). D3=heavy critique pour compenser navy froid.
+- **Inter** (body) — weights 400/500/600. Sans humaniste lisible 8-80 ans.
+- **5 fichiers woff2 totaux** (limite NEXOS standard = 4 → +1 assumé pour D3=heavy).
+- Subsets latin uniquement (FR/EN), `display=swap` → zéro CLS.
+- Auto-hosting via `next/font/google` (préload H1 weight 900).
 
-| Paire testée | Ratio | Niveau |
-|---|---|---|
-| primary `#8B4513` sur surface blanc | 7.10:1 | **AAA** |
-| primary sur background `#FFF8E7` | 6.74:1 | **AAA** |
-| primary-hover sur blanc | 5.05:1 | AA |
-| text sur background | 14.55:1 | **AAA** |
-| text muted sur background | 6.04:1 | AA |
-| white sur primary | 7.10:1 | **AAA** |
-| text sur accent | 12.65:1 | **AAA** |
-| white sur error/success/warning | 5.13–6.46:1 | AA |
-| white sur info | 8.21:1 | **AAA** |
+### 1.4 Scale Major Third (1.250)
 
-**Garde-fous code** documentés dans tokens :
-- ❌ accent `#FFD700` comme couleur de **texte** sur surface blanche (1.36:1)
-- ❌ border `#D4C5A9` comme couleur de **focus** (1.06:1) — focus toujours via primary
-
-### 1.3 Typographie — 2 familles, 4 woff2 self-hosted
-
-| Famille | Usage | Poids | Justification D3=heavy |
+| Token | Rem | Px | Usage |
 |---|---|---|---|
-| **Fraunces** (serif chaleureux) | h1, h2, h3, brand wordmark | 600, 700 | Empattement souple + poids 700 satisfont D3=heavy sans condensé industriel |
-| **Inter** (sans humaniste) | body, h4-h6, nav, boutons, formulaires | 400, 600 | Lisibilité haute pour audience 20-80 ans |
+| h1 | 3.815rem | 61 px | Hero titles |
+| h2 | 3.052rem | 49 px | Section titles |
+| h3 | 2.441rem | 39 px | Sub-section |
+| h4 | 1.953rem | 31 px | Card titles |
+| h5 | 1.563rem | 25 px | — |
+| h6 | 1.25rem | 20 px | — |
+| body_lg | 1.125rem | 18 px | Body intro, StoryBrand |
+| base | 1rem | 16 px | Body standard (minimum tous breakpoints) |
+| small | 0.875rem | 14 px | — |
+| caption | 0.75rem | 12 px | Légendes seules |
 
-Scale Major Third (1.25) : h1 = 3.052rem → caption = 0.64rem. Letter-spacing legger sur display (-0.01em), uppercase étiré sur labels (0.06em).
+**Senior-friendly overrides** : adresse + téléphone S-018, S-019 en `text-2xl` (1.5rem = 24px) → confortable 80 ans + zoom 200% → 48px.
 
-### 1.4 Spacing, radius, shadows, transitions
+### 1.5 Spacing, shadows, radius
 
-- **Spacing** : section_padding mobile py-12 → desktop py-20 ; container `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`
-- **Radius** : default 0.5rem (boutons, cards), lg 0.75rem (cards produits/badges promos), full pour avatars/badges ronds
-- **Shadows** : teintées brun (cohérence chromatique warm), 5 paliers + `card-hover` + `sticky-cta`
-- **Transitions** : durées 100/150/300/500ms cohérentes avec interactions.json ; easing par défaut `cubic-bezier(0.0, 0.0, 0.2, 1)` (ease-out)
-- **Focus ring** : `ring-3 ring-primary ring-offset-2 ring-offset-background` (focus-visible only, jamais au clic souris)
-
-**Snippet `tailwind_extend_snippet`** prêt à copier-coller dans `tailwind.config.ts` Ph4.
+- Spacing : Tailwind default 4px base, `py-12 / py-16 / py-20` mobile/tablet/desktop.
+- Container : `max-w-7xl mx-auto`, padding-x progressif `px-4 sm:px-6 lg:px-8`.
+- Whitespace généreux (vs WP secteur compressé) — différenciation visuelle immédiate.
+- Sections alternent `bg-surface` / `bg-surface-alt` pour structurer sans séparateur dur.
+- Radius standard `0.5rem` (`rounded-md`), full pour avatars + sticky CTA mobile.
+- Shadows teintées navy (`rgb(26 43 60 / X)`).
 
 ---
 
-## 2. Layout & wireframes (layout-designer → `wireframes.json`)
+## 2. Wireframes (`layout-designer` → `wireframes.json`)
 
-### 2.1 Couverture
+### 2.1 Couverture — 24/24 sections wireframées
 
-- **24/24 sections** wireframées avec `manifest_id` référencé (S-001 → S-024)
-- **6 pages** (home + promotions + produits + contact + 2 légales)
-- **1 zone globale** (StickyCTA S-008 + header + footer)
-- **H1 unique par page** ✅
-- **CTA primary above-the-fold homepage** ✅ (S-001)
-- **Max 7 sections par page** ✅ (home = 7, autres ≤ 5)
+| Page | Sections | Above-the-fold | Sticky CTA | Scroll depth (vh) |
+|---|---|---|---|---|
+| home | S-001..S-007 (7) | S-001 Hero (CTA accent visible) | ✅ | 5.5 |
+| promotions | S-009..S-012 (4) | S-009 PromotionsHero | ❌ (déjà au CTA principal) | 4.0 |
+| produits | S-013..S-017 (5) | S-013 ProduitsHero | ✅ | 6.0 |
+| contact | S-018..S-022 (5) | S-018 ContactHero | ✅ | 5.0 |
+| politique-confidentialite | S-023 (1) | S-023 LegalDocBody | ❌ | 8.0 |
+| mentions-legales | S-024 (1) | S-024 LegalDocBody | ❌ | 4.0 |
+| global | S-008 (sticky CTA) | — | rendu via layout | — |
 
-### 2.2 Mapping patterns → sections
+**Contraintes respectées** :
+- Max 7 sections par page : ✅ (max = 7 sur home).
+- H1 unique par page : ✅.
+- CTA above-the-fold homepage : ✅ S-001 hero CTA accent or.
+- Mapping 1:1 manifest_id ↔ component_name ↔ scaffold-plan : ✅.
 
-| Pattern | Sections couvertes | Validation Ph1 |
+### 2.2 Patterns NEXOS appliqués (par section)
+
+| Pattern | Sections concernées | Justification |
 |---|---|---|
-| **P01 Sticky CTA persistant** | S-001 (CTA hero), S-008 (sticky global), S-017 (cross-sell) | ✅ omniprésent + masqué sur /promotions |
-| **P02 Social proof adjacent CTA** | S-004 (témoignages voisinage avec rappel CTA promos juste après) | ✅ measured impact +2× leads |
-| **P09 3-word brand messaging** | S-001 (h1 court), S-009/S-013 (h1 court) + tagline « Ton dépanneur. Ton quartier. » | ✅ |
-| **P11 Page par localisation** | S-005 (infos pratiques), S-018/S-019 (contact NAP), S-020 (Maps Loi 25) | ✅ Schema LocalBusiness aligné |
-| **P13 Anti-polish authenticity** | S-001 (photo vitrine réelle), S-004 (photos voisins), S-006 (intérieur/portrait) | ✅ stock photos interdites (asset-plan §p13_garde_fous) |
-| **P19 StoryBrand** | S-006 (3 paragraphes : voisin héros, Nobert guide, promesse proximité) | ✅ |
-| **P20 Menu galerie images** | S-002 (top 3 promos), S-003 (categories), S-010 (toutes promos), S-015 (catalogue ~30 produits) | ✅ alt-text descriptif obligatoire (RISQUE D2 traité asset-plan) |
+| **P01** Sticky CTA persistant | S-001, S-008, S-017 | KPI conversion |
+| **P02** Social proof adjacent CTA | S-004 + cta-adjacent vers /promotions | **+2× leads mesuré** (Bloor Jane S05) |
+| **P09** 3-word brand messaging | S-001, S-009, S-013 | Lisibilité immédiate H1 court |
+| **P11** Page localisation | S-005, S-018, S-019, S-020 | SEO local + Schema OpeningHoursSpecification |
+| **P13** Anti-polish authenticity | S-001, S-004, S-006 | Photos vraies vs stock |
+| **P19** StoryBrand voisin=héros | S-006 | Différenciation émotionnelle |
+| **P20** Menu galerie images | S-002, S-003, S-010, S-015 | Standard sectoriel attendu |
 
-### 2.3 Highlights par page
+### 2.3 Décisions de mise en page critiques
 
-#### Homepage (7 sections — densité D1=3 équilibrée)
-1. **S-001 Hero** : grille `grid-cols-[3fr_2fr]` desktop (texte + photo vitrine), stack vertical mobile, CTA primary above-the-fold
-2. **S-002 PromotionsHighlight** : grid 1→2→3 cols, badges accent jaune avec text #2A1810 (12.65:1 AAA)
-3. **S-003 Categories** : 4 cards icons Lucide (Beer/Cookie/Ticket/ShoppingBasket), grid 2x2 mobile / 4x1 desktop
-4. **S-004 SocialProofVoisinage** : 3-5 témoignages **adjacents au rappel CTA promos** (P02 strict)
-5. **S-005 InfosPratiques** : split 50/50 (coordonnées + Maps placeholder Loi 25)
-6. **S-006 StoryBrand** : split asymétrique 40/60 (image gauche / texte droit)
-7. **S-007 NewsletterCTA** : form inline 1 input + checkbox consentement Loi 25 non pré-coché
-
-#### Pages clés
-- **/promotions** : Hero compact + grille filtrable + FAQ accordéon (Schema FAQPage AI Overviews) + cross-sell
-- **/produits** : Hero + sticky sub-nav scroll-spy + 4 sections ancrées catalogue + FAQ + cross-sell vers /promotions
-- **/contact** : Hero adresse/téléphone en grand (text-2xl, audience 80) + horaires table sémantique + Maps conditionnel consent + form Zod/RHF + encadré RPP Loi 25
-- **/politique-confidentialite + /mentions-legales** : prose `max-w-3xl`, Schema WebPage + BreadcrumbList
-
-### 2.4 Header / Footer / StickyCTA globaux
-
-- **Header sticky** : nav 4 items, lien « Promotions » en `bg-accent-subtle` (highlight), switcher FR/EN inline, hamburger mobile slide-in droite avec focus-trap
-- **Footer** : 3 cols desktop / accordéons mobile, lien RPP Loi 25 explicite
-- **StickyCTA S-008** : bottom full-width bar mobile / floating bottom-right desktop, masqué sur /promotions, apparaît à 200px de scroll
+1. **S-001 Hero** : photo plein écran (min-h-[80vh]) + overlay navy 55→85% (gradient vertical) + H1 Fraunces 900 + double CTA (accent or primary, ghost outline secondary). Compensation chaleur : photo authentique vitrine **éclairage crépuscule chaud**.
+2. **S-004 SocialProofVoisinage** : carousel scroll-snap natif mobile (PAS d'autoplay) → grid 2-3 colonnes desktop. CTA accent or **adjacent** au bloc témoignages (P02 measured).
+3. **S-005 InfosPratiques** : split 2-cols desktop (info à gauche, maps placeholder à droite). Adresse en `text-2xl` (senior-friendly).
+4. **S-007 NewsletterCTA** : section bg-primary navy (rupture visuelle de respiration) + form inline desktop / stack mobile. Checkbox **NON cochée par défaut** (Loi 25 strict).
+5. **S-014 ProduitsCategoriesNav** : sticky sub-header avec IntersectionObserver pour active state — facilite la navigation longue page produits.
+6. **S-020 MapsEmbed** : placeholder image + bouton 'Charger la carte' avec note transfert hors QC **avant** chargement iframe (Loi 25 art. 17 + ADR-004).
+7. **S-008 StickyCTA** : fixed bottom-right desktop / bottom full-width mobile, hidden sur `/promotions` + pages légales (évite redondance + lecture sérieuse).
 
 ---
 
-## 3. Responsive (responsive-specialist → `responsive-strategy.json`)
+## 3. Stratégie responsive (`responsive-specialist` → `responsive-strategy.json`)
 
 ### 3.1 Approche
 
-- **Mobile-first strict** : audience prioritaire = Voisin fidèle (cf. brand-identity persona) qui consulte sur mobile dans la rue ou à la maison
-- **Breakpoints Tailwind 3.4 par défaut** : sm 640 / md 768 / lg 1024 / xl 1280 / 2xl 1536
-- **Pas de breakpoint custom** ✅
+**Mobile-first** (clientèle voisinage = trafic mobile dominant ph0 §4.4) avec breakpoints Tailwind standard : `sm:640 / md:768 / lg:1024 / xl:1280 / 2xl:1536`.
 
 ### 3.2 Navigation
 
-| Viewport | Type | Détails |
+| Breakpoint | Type | Comportement |
 |---|---|---|
-| Mobile | hamburger-slide-in droite | Focus-trap, ESC, overlay bg-text/40, scroll-lock body |
-| Tablet (< lg) | hamburger maintenu | 4 nav + switcher + CTA = trop dense en 768-1023px |
-| Desktop (≥ lg) | horizontal sticky | Logo + nav 4 items + switcher + CTA, shadow au scroll > 10px |
+| <1024px | Hamburger slide-in droite | Overlay backdrop navy 85%, focus-trap, Escape close, premier focus sur X, restauration focus au close |
+| ≥1024px | Horizontal sticky shrink | h-20 → h-16 au scroll (>32px), shadow-sm, badge accent or sur lien Promotions |
 
-### 3.3 Touch targets — niveau AAA
+### 3.3 Touch targets — 100% ≥48×48 px
 
-- **Min 48×48px** sur 100 % des éléments interactifs (cible WCAG 2.5.8 niveau AAA, dépasse AA 24×24)
-- **Espacement min 8px** entre cibles tactiles
-- **Override XL pour S-018** : adresse + téléphone hero contact en `min-h-14 text-2xl` (audience 80 ans)
+WCAG 2.5.8 conformité stricte sur :
+- Tous boutons (`Button.tsx` enforce min-h-[48px]).
+- Liens nav header (mobile + desktop).
+- LangSwitcher FR/EN.
+- `tel:` links (S-018, S-019).
+- Toggles accordion FAQ (S-011, S-016).
+- Bouton 'Charger la carte' S-020.
+- Sticky CTA S-008 (full-width mobile, padding suffisant desktop).
+- Cards cliquables (S-003 catégories).
 
-### 3.4 Images responsive
+### 3.4 Senior-friendly overrides
 
-- **next/image obligatoire** sur 100 % des images (asset-plan strict)
-- **`sizes` attribute documenté par section** (S-001 hero, S-002 cards, S-015 catalogue, etc.)
-- **AVIF + WebP fallback**, qualité 80, max 200 KB par image
-- **Lazy loading** sauf S-001 hero (`eager` + `priority` + `fetchpriority='high'`)
-
-### 3.5 Adaptations contenu
-
-- **Tables horaires (S-005, S-019)** : conservées en `<table>` sémantique (pas de stack vertical — hiérarchie jour/heure cruciale + Schema OpeningHours)
-- **Form (S-007, S-021)** : stack vertical sur tous viewports (formulaires courts, plus accessible)
-- **Footer** : accordéons mobile / grid 3 cols desktop
-- **Filtres chips (S-010)** : overflow-x scroll avec snap mobile, flex centered desktop
-- **Long text légal (S-023, S-024)** : pas de truncation, font 1rem + line-height 1.7
-
-### 3.6 Performance budgets
-
-| Métrique | Cible mobile | Cible desktop |
+| Section | Override | Rationale |
 |---|---|---|
-| First-load JS | < 180 KB (cf. stack-decision) | < 180 KB |
-| LCP | < 2.5 s | < 1.5 s |
-| CLS | < 0.1 | < 0.1 |
-| INP | < 200 ms | < 200 ms |
-| Image hero | < 200 KB | < 200 KB |
-| Total images /produits | < 1.5 MB (~30 produits × 50 KB) | idem |
+| S-018 ContactHero | adresse + tel `text-xl lg:text-2xl` | Lecture 80 ans confortable |
+| S-019 CoordonneesHoraires | idem | idem |
+| S-007 + S-021 form labels | `text-base lg:text-lg` | Visibilité formulaires |
+| Body global | minimum 16px tous breakpoints | Zoom 200% → 32px confortable |
 
-### 3.7 Viewport & accessibilité
+### 3.5 Anti-pattern écartés
 
-- `viewport-fit=cover` + `env(safe-area-inset-bottom)` sur sticky CTA mobile (iPhone X+ notch)
-- `user-scalable=no` **INTERDIT** (WCAG 1.4.4 — utilisateur DOIT pouvoir zoomer 200 %)
-- Test à 200 % zoom obligatoire sur S-001, S-021, S-019, S-023
+- ❌ Pagination promotions (Sprint ph0 §4.2) → S-010 grille complète sans pagination.
+- ❌ Carousel autoplay hero (ChaLou ph0) → S-001 photo statique unique.
+- ❌ Pop-up store locator (Super Sagamie) → S-005 inline dans la home.
 
 ---
 
-## 4. Interactions & motion (interaction-designer → `interactions.json`)
+## 4. Animations & micro-interactions (`interaction-designer` → `interactions.json`)
 
-### 4.1 Principes
+### 4.1 Stack & contraintes
 
-- **D5 slow-organic** strict : transitions calmes 200-400ms, easing ease-out, **jamais d'effet bondissant ni shake** (sécurité vestibulaire)
-- **Site 100 % fonctionnel sans aucune animation** ✅
-- **`prefers-reduced-motion: reduce` respecté sur 100 % des animations** ✅
-- **GPU only** : opacity + transform, jamais width/height/top/left/margin/padding
-- **Framer Motion scoped** sur sections home + StickyCTA uniquement (cf. ADR-002, budget +15 KB scopé)
+- **Framer Motion ^11** (~15 KB gz, ADR-002).
+- `useReducedMotion()` hook **obligatoire dans chaque composant animé** → fallback opacity-only.
+- GPU-only props : `opacity`, `transform`. Exception unique : `height` sur header shrink (`will-change: height`).
+- Budget : ≤12 animations par page, ≤3 simultanées par viewport.
 
 ### 4.2 Animations clés
 
-| Animation | Durée | Reduced motion fallback |
-|---|---|---|
-| Page transition fade | 300ms enter / 200ms exit | Instantané |
-| Hero S-001 stagger fade-in-up | 400ms + delays 0/100/200/300ms | Tous instantanés |
-| Cards scroll fade-in-up | 500ms + stagger 80ms | 150ms opacity only |
-| Social proof S-004 stagger | 400ms + 120ms entre items | 150ms opacity only |
-| Button hover (color + shadow) | 150ms | Color uniquement |
-| Card hover (translateY -2px + shadow) | 200ms | Border color only |
-| Sticky CTA mobile apparition | 300ms spring | Instantané opacity |
-| Hamburger morph → X | 300ms | Swap d'icône instantané |
-| Menu mobile slide-in droite | 300ms ease-out | Apparition instantanée |
-| FAQ accordion expand | 300ms | Instantané |
-| Cookie banner slide-up | 400ms | 100ms fade |
-
-### 4.3 Garde-fous accessibilité
-
-| Garde-fou | Statut |
-|---|---|
-| WCAG 2.3.3 (animation < 5s) | ✅ |
-| WCAG 2.2.2 (pause/stop/hide) | ✅ aucune animation auto > 5s |
-| Pas de carrousel auto-rotate | ✅ (anti-pattern ph0 §6.8) |
-| Pas de parallax | ✅ |
-| Pas de auto-play vidéo | ✅ |
-| Vestibular safety (no shake/bounce) | ✅ — D5 slow-organic strict |
-| Focus management modal | ✅ menu mobile (focus-trap), cookie banner (cycle Tab) |
-| Skip link « Aller au contenu » | ✅ visible au premier Tab |
-
-### 4.4 États formulaires
-
-- **Validation success** : icône CheckCircle vert + border success (sans shake)
-- **Validation error** : border error + `<p role='alert' aria-live='polite'>` (slide-down 8px)
-- **Submit pending** : bouton disabled + texte changé + spinner inline (visible min 300ms pour éviter flash)
-- **Submit success** : remplacement du form par message succès `role='status'` (focus déplacé)
-
----
-
-## 5. Assets visuels (asset-director → `asset-plan.json`)
-
-### 5.1 Stratégie globale
-
-- **P13 anti-polish authenticité STRICT** : photos client > Unsplash authentique > illustrations IA
-- **Stock photos génériques INTERDITES** (cf. ph0 §6.8)
-- **Iconographie Lucide React** (24 icônes mappées, ~3 KB tree-shaken)
-- **Logo = wordmark Fraunces 700** (logo_provided=false → décision Ph2)
-- **next/image obligatoire** sur 100 % des images, AVIF + WebP, qualité 80, max 200 KB
-
-### 5.2 Inventaire assets par priorité
-
-| Priorité | Assets | Source | Section |
+| ID | Type | Durée | Sections |
 |---|---|---|---|
-| **CRITIQUE** | Photo vitrine extérieure | client | S-001 |
-| **CRITIQUE** | Photos packshot promos hero (3-6) | client | S-002 |
-| **CRITIQUE** | 3-5 photos voisins témoins + consentement Loi 25 art. 5 | client | S-004 |
-| **CRITIQUE** | Photo intérieur OU portrait Nobert | client | S-006 |
-| **CRITIQUE** | ~30 photos catalogue produits (Bières/Snacks/Lotto/Essentiels) + alt-text descriptifs | client + manufacturers | S-015 |
-| **CRITIQUE** | 8-12 photos promos hebdo | client (data/promotions.json ISR) | S-010 |
-| **HAUTE** | Maps placeholder statique | Google Static API ou capture propre | S-005, S-020 |
-| **HAUTE** | Favicon set (ico + svg + apple-icon + manifest) | wordmark 'N' brun/jaune | global |
-| **HAUTE** | OG image template (Next ImageResponse) | gradient warm + Fraunces | per_page |
+| `fade-in-up-section` | scroll-triggered (useInView, once) | 500ms enter + stagger 80ms | S-002, S-003, S-004, S-006, S-010 |
+| `header-shrink-on-scroll` | css transition (>32px scroll) | 200ms | Header desktop ≥lg |
+| `button-accent-hover` | hover scale + shadow | 200ms | CTA hero, sticky, cta-adjacent |
+| `card-hover-lift` | hover translateY -4px + shadow | 200ms | S-002, S-003, S-010, S-004 |
+| `accordion-faq-open` | layout height transition | 200ms | S-011, S-016 |
+| `menu_panel_slide` | slide-in droite mobile | 300ms enter | Header hamburger |
+| `validation_error_shake` | translateX shake | 250ms | S-021 form fields |
 
-### 5.3 Alt-text policy
+### 4.3 D5=slow-organic — discipline
 
-- **Bilingue FR/EN obligatoire** sur 100 % des images informatives
-- **Format produits** : marque + type + contenance + parfum (ex: « Bière blonde Boréale Cuivrée, canette 473 ml »)
-- **Format personnes** : prénom + relation au commerce
-- **Décoratives** : alt='' (pas alt absent)
-- **WCAG 1.1.1 niveau A** ✅
+- Aucune animation > 500ms.
+- Aucune animation infinite (sauf spinner submit + skeleton ISR pulse).
+- Pas de bounces lourds (`spring_soft` stiffness 200 max).
+- Pas de page transition slide directionnelle (incompatible avec D5 + clientèle senior).
 
-### 5.4 Logo wordmark Fraunces — décision Ph2
+### 4.4 Budget par page (toutes ≤12 ✅)
 
-| Élément | Spec |
+| Page | Élements animés estimés |
 |---|---|
-| Wordmark complet | « Dépanneur Nobert » |
-| Wordmark court | « Nobert » |
-| Police | Fraunces 700 |
-| Couleur | primary `#8B4513` (par défaut) / `#FFFFFF` (sur fond primary) |
-| Format | SVG text vector (scalable, 0 KB raster) |
-| Composant React | `components/Logo.tsx` avec props `[size, variant, color]` |
-| Fallback | Si client fournit logo illustré post-kickoff, remplacement direct dans Logo.tsx |
+| home | 11 |
+| promotions | 8 |
+| produits | 10 |
+| contact | 6 |
+| pages légales | 0 (lecture sérieuse) |
+
+### 4.5 Focus visible
+
+- Ring `2px primary + offset 2px white` sur fond clair.
+- Ring `2px accent + offset 2px primary` sur fond navy (hero, footer, newsletter section).
+- Focus visible UNIQUEMENT en `:focus-visible` (pas en click).
+- Skip-link "Aller au contenu principal" visible au premier Tab.
 
 ---
 
-## 6. Mise à jour `section-manifest.json`
+## 5. Plan d'assets (`asset-director` → `asset-plan.json`)
 
-24 sections passées de `status: "planned"` → `status: "designed"` avec `lifecycle.ph2_designed: 2026-04-28T00:00:00Z`.
+### 5.1 Logo — wordmark typographique
 
-| Page | Sections passées en `designed` |
+`logo_provided=false` → **wordmark Fraunces 900** "Dépanneur Nobert" en navy + point accent or sur favicon. Justifié par D3=heavy critique + size=solo budget. Trois fichiers SVG planifiés :
+- `public/logo-wordmark.svg` (header, footer, OG)
+- `public/logo-wordmark-white.svg` (variants fond navy)
+- `public/logo-mark-mini.svg` (favicon source — initiales DN)
+
+### 5.2 Photos critiques (shooting kickoff)
+
+| Priorité | Asset | Section | Fallback si non livré |
+|---|---|---|---|
+| 1 | Hero vitrine crépuscule chaud | S-001 | Unsplash 'Quebec corner store evening warm lights' |
+| 1 | Portrait Nobert | S-006 | Unsplash interior store (sans personne) |
+| 2 | 5 portraits voisinage (avec consent écrit Loi 25) | S-004 | Avatars-initiales React-generated |
+| 3 | ~38 photos produits (Bières prioritaire) | S-015 | Unsplash mockup par catégorie + alt 'placeholder' |
+
+**Compensation R-001** : pour le hero S-001, l'asset-director impose explicitement « éclairage crépuscule + intérieur jaune visible » pour compenser la palette navy froide via warmth photographique.
+
+### 5.3 Icônes — Lucide React
+
+18 icônes mappées (limite stack-decision = 12 → **dépassement signalé**, action Ph4 : fusionner usages — `Sparkles` peut remplacer `ArrowRight` sur sticky CTA, `Shield` peut être supprimé au profit d'un callout sans icon). Imports nommés (pas de barrel).
+
+### 5.4 Favicon set
+
+5 fichiers : `favicon.ico` (32×32), `icon.svg` (vectoriel), `apple-icon.png` (180×180), `app/icon.tsx` + `app/apple-icon.tsx` (Next.js metadata API). Design : navy bg + DN blanc + point accent or.
+
+### 5.5 OG images
+
+Génération dynamique via `app/opengraph-image.tsx` (Next.js metadata API edge runtime) — design navy bg + texture noise + wordmark + titre Fraunces 900 white + footer band accent or "depanneur-nobert.ca". Fallback static `public/og-image.jpg`.
+
+### 5.6 Optimisations
+
+- Format priority : `avif > webp > jpg`, qualité 80%, max 500 KB par image.
+- `next/image` obligatoire (zéro `<img>`).
+- Lazy load partout sauf S-001 hero + logo wordmark (`eager` + `fetchPriority='high'`).
+- `blurDataURL` placeholder pour images above-the-fold.
+
+### 5.7 Brief shooting livré au client (kickoff)
+
+Document prêt dans `asset-plan.json::shooting_brief_for_kickoff` — guidelines (anti-polish, lumière naturelle, pas de filtre Insta), priorités 1/2/3, estimation budget 300-600 $ photographe local QC + droit à l'image écrit pour S-004.
+
+---
+
+## 6. SOIC Gate Alignment — auto-évaluation
+
+| Dim | Critère | Score | Notes |
+|---|---|---|---|
+| **D1 architecture** | Tokens Tailwind-ready, scaffold composants 1:1 | 9/10 | Mapping S-001..S-024 ↔ components/ explicite |
+| **D2 a11y** | Touch targets ≥48, contrastes AA min, AAA visé, focus-trap, focus-visible | 9/10 | Garde-fous accent + secondary documentés component-level |
+| **D3 perf** | 5 fonts woff2, GPU-only animations, lazy/eager strict, blur placeholder | 9/10 | +1 woff2 vs limite assumé pour D3=heavy critique |
+| **D5 i18n** | i18n keys référencées chaque section, alt-text FR/EN, OG bilingue | 10/10 | Pathnames mapping FR≠EN intégré dès wireframes |
+| **D6 a11y/sémantique** | H1 unique/page, heading hierarchy, table sémantique horaires (th scope), ARIA accordion+modal | 9/10 | Skip-link, aria-modal, focus-trap menu mobile |
+| **D7 SEO** | OG images per-page, favicon set complet, alt-text SEO descriptif | 9/10 | Wordmark dans OG = signature reconnaissable |
+| **D8 légal** | S-020 maps gated consent + transfert note, checkbox Loi 25 NON cochée par défaut, S-022 callout RPP | 10/10 | ADR-004 maps consent, S-021 honeypot + Zod consent obligatoire |
+| **D9 qualité** | Wireframes 24/24 sections, durations cohérentes, design system complet | 9/10 | Cohérence palette imposée + warmth compensation engagée |
+
+---
+
+## 7. Score global Phase 2
+
+| Critère | Score |
 |---|---|
-| home | S-001 → S-007 (7) |
-| global | S-008 (1) |
-| promotions | S-009 → S-012 (4) |
-| produits | S-013 → S-017 (5) |
-| contact | S-018 → S-022 (5) |
-| politique-confidentialité | S-023 (1) |
-| mentions-légales | S-024 (1) |
+| Cohérence avec brief + ph0 + ph1 (palette CLI imposée + KPI conversion + Loi 25) | 9/10 |
+| Design system actionnable Ph4 (tokens Tailwind-ready + CSS vars) | 9/10 |
+| Wireframes complets + manifest_id 1:1 + i18n keys | 10/10 |
+| Responsive mobile-first + touch targets + senior overrides | 9/10 |
+| Animations budgétées + reduced-motion 100% + GPU-only | 9/10 |
+| Asset plan + shooting brief kickoff + fallbacks documentés | 9/10 |
+| Compensation R-001 palette navy via typo + photos warm + bandeaux alternés | 8/10 |
+| Drapeaux ph0/ph1 portés et adressés ou flagués | 9/10 |
 
-**Total : 24/24 sections désormais prêtes pour Phase 3 Content.**
+**Score global : 9.0/10**
+
+> Gate ph2→ph3 : seuil μ ≥ 8.0 → **PASS**.
+>
+> Note : la compensation R-001 navy ↔ chaleur reste **à valider en perception** au plus tard Ph5 (test perception hors-pipeline ou A/B test post-launch). Si feedback négatif, plan B = remonter au client la possibilité d'override couleur back vers brun warm initial.
 
 ---
 
-## 7. Risques traités & risques restants
+## Sorties machine-readable
 
-### 7.1 Risques SOIC traités en Phase 2
+| Fichier | Status | Schéma |
+|---|---|---|
+| `design-tokens.json` | ✅ | `nexos-ph2/design-tokens/v1` |
+| `wireframes.json` | ✅ | `nexos-ph2/wireframes/v1` |
+| `responsive-strategy.json` | ✅ | `nexos-ph2/responsive-strategy/v1` |
+| `interactions.json` | ✅ | `nexos-ph2/interactions/v1` |
+| `asset-plan.json` | ✅ | `nexos-ph2/asset-plan/v1` |
+| `section-manifest.json` | ✅ mis à jour (status=`designed`, lifecycle.ph2_designed=2026-05-10) | `nexos-ph1/section-manifest/v1` |
 
-| Risque Ph1 | Traitement Ph2 |
+---
+
+## Handoff Phase 3 — Content
+
+### Décisions héritées (non négociables)
+
+1. **Design tokens figés** (palette CLI navy/or/gris + Fraunces 900 + Inter 400/500/600 + scale Major Third).
+2. **Wireframes 24/24 sections** prêtes à recevoir le contenu — chaque section a des i18n keys définies (`{namespace.section.key}`).
+3. **Wordmark logo** Fraunces 900 — pas d'illustrateur, contenu Ph3 ne touche pas au logo.
+4. **Sticky CTA S-008** hidden sur /promotions et pages légales — Ph3 ne génère pas de label différent par page.
+5. **Lexicon allowed/banned** strict (cf. `brand-identity.json::brand_voice`) — Ph3 content-writer doit s'y conformer.
+
+### Inputs livrés à Ph3
+
+- `design-tokens.json` (référence visuelle)
+- `wireframes.json` (i18n keys + structure sections + word-counts implicites)
+- `asset-plan.json::shooting_brief_for_kickoff` (à transmettre au client)
+- `section-manifest.json` mis à jour (24 sections statut `designed`)
+
+### Bloquants Ph3 à lever au kickoff
+
+| Bloquant | Sections impactées |
 |---|---|
-| **D2 Accessibilité** (P20 alt-text 30 produits) | `asset-plan.json` impose alt-text descriptif bilingue obligatoire + WCAG 1.1.1 A. Brief pour Ph3 content-writer documenté. |
-| **D5 Performance** (Framer Motion + Maps + animations) | Framer scoped sections home uniquement (+15 KB), GPU-only animations, Maps lazy + conditional consent, `prefers-reduced-motion` 100%. |
-| **D6 Accessibilité** (touch targets, focus, zoom) | Touch targets 48×48 (AAA), focus-visible ring 3px, zoom 200 % testé, skip-link, focus-trap modaux. |
-| **D8 Loi 25** (Maps transferts US) | `S-020` placeholder statique avant consent + bouton explicite « Charger la carte (Google Maps – États-Unis) ». Asset hébergé localement. |
+| Ville (mots-clés SEO + H1 + Schema LocalBusiness) | S-001, S-009, S-013, S-018, S-019 + sitemap + meta |
+| NEQ + adresse + téléphone + horaires précis | S-018, S-019, S-023, S-024 |
+| Photo authentique vitrine + portrait Nobert + 5 voisins (consent Loi 25) | S-001, S-004, S-006 |
+| Données promotions semaine 1 (data/promotions.json) | S-002, S-010 |
+| Catalogue produits par catégorie (Bières/Snacks/Lotto/Essentiels) | S-003, S-015 |
 
-### 7.2 Risques restants pour Ph3 / Ph4
+### Risques à monitorer en Ph3
 
-| Risque | Owner | Action |
-|---|---|---|
-| **Variables [ville], [adresse], [téléphone], [horaires], [NEQ], [année]** non fixées | Client (kickoff) | **BLOQUANT Ph3** — collecte avant rédaction contenu |
-| **Photos client non fournies** | Client (kickoff) | Si absentes : section bloquée Ph3 (cf. ph1 §5bis.5 garde-fou) |
-| **Témoignages voisinage signés** | Client (kickoff) | Consentement Loi 25 art. 5 obligatoire avant publication photos |
-| **Logo illustré éventuel** | Client | Si fourni post-kickoff, remplacer wordmark Fraunces dans Logo.tsx |
-| **NAP cohérence Google Business Profile** | Client + dev | Création/vérification GMB au kickoff + Schema strict (cf. Ph4) |
+1. **R-001 palette navy "corporate"** — ph3 content-writer doit renforcer le ton chaleureux émotionnel (lexicon `voisin / chez Nobert / à deux pas`) pour compenser au niveau verbal en plus du visuel.
+2. **Bière (S-015)** — ton produit neutre descriptif (pas de superlatif, pas d'incitation à la consommation), mention « consommez de façon responsable » + lien educalcool.qc.ca obligatoire.
+3. **FAQ AI Overviews (S-011, S-016)** — questions formulées en Q complète + réponses ≤ 60 mots pour featured snippets Google.
+4. **Politique de confidentialité (S-023)** — section transferts hors QC doit lister explicitement Vercel (US), Google Analytics (US), Google Maps (US) avec finalité de chacun.
 
 ---
 
-## 8. Score Phase 2 par dimension
-
-| Dimension SOIC | Score / 10 | Justification |
-|---|---|---|
-| **D1 Architecture** (tokens + wireframes structurés) | 9 | tailwind_extend_snippet prêt, 24/24 sections wireframées avec manifest_id, hierarchy heading H1→H6 documentée |
-| **D2 Accessibilité** (contraste, touch, alt, focus) | 9 | 100 % AA contraste, touch 48×48 (AAA), focus-visible ring primary, alt-text bilingue obligatoire, skip-link, focus-trap |
-| **D3 Performance** (perf budget, GPU only, lazy) | 9 | Budget 180 KB JS, animations GPU-only, lazy 100 % sauf hero, Framer scoped, AVIF/WebP, sizes attribute documenté |
-| **D5 Velocity** (mouvement organique, motion safety) | 9 | D5 slow-organic respecté, durées 200-400ms, no shake/parallax/auto-play, prefers-reduced-motion 100 % |
-| **D6 Symmetry** (grilles régulières) | 9 | Grilles cohérentes (1→2→3→4 cols), split 50/50 ou asymétriques justifiés, container max-w-7xl |
-| **D7 SEO** (semantic HTML, schema-ready) | 9 | H1 unique par page, headings hiérarchisés, alt-text SEO-friendly, Schema OpeningHours/LocalBusiness/FAQPage prévus |
-| **D8 Loi 25** (Maps consent, focus management) | 10 | Maps strict consent (S-020), cookie banner accessible, RPP encadré (S-022), pas de dark pattern, no auto-play |
-| **D9 Coherence** (palette imposée, brief alignment) | 10 | Palette respectée 8/8 rôles, typo Fraunces+Inter, anti-positionnement corporate, P13 garde-fous explicites |
-| **Cohérence patterns** (P01/P02/P09/P11/P13/P19/P20) | 10 | 7/7 patterns mappés à des sections concrètes, aucun pattern omis |
-| **Documentation & traçabilité** | 9 | 5 JSON valides, manifest_id sur 24/24 sections, brief→ph0→ph1→ph2 tracé |
-
-### Score global Phase 2 : **9.3 / 10**
-
-### Verdict gate ph2 → ph3
-
-| Seuil | Mesure | Statut |
-|---|---|---|
-| μ ≥ 8.0 (gate ph2→ph3 SOIC) | **9.3** | ✅ **GO PHASE 3 CONTENT** |
-
-**Conditions pour démarrer Phase 3** :
-
-1. ✅ Bloquer la rédaction tant que les **6 variables CRITIQUES kickoff** (ville, adresse, téléphone, horaires, NEQ, année) ne sont pas fixées par le client
-2. ✅ Bloquer la rédaction des sections dépendantes de photos manquantes (S-001, S-004, S-006, S-015) tant que le client n'a pas fourni les assets
-3. ✅ Briefer Ph3 content-writer avec le **plan de contenu** (cf. ph1 §5bis) + le **lexique allowed/banned** (brand-identity §1.2) + les **alt-text rules** (asset-plan §alt_text_global_policy)
-4. ✅ Finaliser le **logo wordmark Fraunces** (Logo.tsx) avant Ph4 build
-5. ✅ Créer le **maps-placeholder.webp** statique (capture propre Google Maps centrée sur l'adresse, sans tracking)
-
----
-
-## 9. Livrables produits (récapitulatif Phase 2)
-
-| Fichier | Statut | Contenu |
-|---|---|---|
-| `clients/depanneur-nobert/design-tokens.json` | ✅ produit | Couleurs, typo, spacing, shadows, transitions, focus_ring, tailwind_extend_snippet |
-| `clients/depanneur-nobert/wireframes.json` | ✅ produit | 24/24 sections wireframées avec manifest_id, ASCII, responsive 3 breakpoints, tailwind_hints, a11y_notes |
-| `clients/depanneur-nobert/responsive-strategy.json` | ✅ produit | Mobile-first, breakpoints, navigation, touch targets, image strategy, perf budgets |
-| `clients/depanneur-nobert/interactions.json` | ✅ produit | Framer Motion scoped, prefers-reduced-motion 100 %, focus management, états formulaires |
-| `clients/depanneur-nobert/asset-plan.json` | ✅ produit | Photos par section, P13 garde-fous, icônes Lucide, favicon set, OG images, logo wordmark Fraunces |
-| `clients/depanneur-nobert/section-manifest.json` | ✅ mis à jour | 24/24 sections `status=designed`, `lifecycle.ph2_designed=2026-04-28T00:00:00Z` |
-| `clients/depanneur-nobert/ph2-design-report.md` | ✅ ce document | — |
-
----
-
-## 10. Score global: **9.3/10**
-
-**Fin du rapport Phase 2 Design — Dépanneur Nobert.**
-**GO PHASE 3 CONTENT** (sous réserve collecte des 6 variables CRITIQUES kickoff + photos client critiques).
-**Prochaine étape** : `agents/ph3-content/_orchestrator.md`.
+*Phase 2 Design complétée 2026-05-10. Prochain handoff : `ph3-content/_orchestrator` (content-writer + microcopy-writer + seo-content + a11y-content + i18n-translator + tone-of-voice-checker).*
