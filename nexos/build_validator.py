@@ -17,11 +17,16 @@ logger = get_logger(__name__)
 
 # ── Constantes ────────────────────────────────────────────────────────
 
-CRITICAL_FILES = [
+# Item 5 chantier 4 : la stack moderne NEXOS génère dans `app/[locale]/`.
+# La stack legacy utilisait `src/app/[locale]/`. On accepte les deux conventions
+# via `_check_critical_files()`.
+CRITICAL_FILES_ROOT = [
     "vercel.json",
     "next.config.mjs",
-    "src/app/[locale]/politique-confidentialite/page.tsx",
-    "src/app/[locale]/mentions-legales/page.tsx",
+]
+CRITICAL_FILES_LOCALE = [
+    "politique-confidentialite/page.tsx",
+    "mentions-legales/page.tsx",
 ]
 
 REQUIRED_HEADERS = [
@@ -136,11 +141,36 @@ def _check_audit(site_dir: Path) -> tuple[int, int]:
 
 
 def _check_critical_files(site_dir: Path) -> list[str]:
-    """Vérifie la présence des fichiers critiques."""
+    """Vérifie la présence des fichiers critiques.
+
+    Item 5 chantier 4 : détecte automatiquement la convention `app/` (moderne)
+    ou `src/app/` (legacy) au lieu de coder en dur `src/app/`. Évite le faux
+    négatif sur les sites NEXOS générés post-refactor chantier knowledge.
+    """
     missing = []
-    for filepath in CRITICAL_FILES:
+
+    # Fichiers root (vercel.json, next.config.mjs)
+    for filepath in CRITICAL_FILES_ROOT:
         if not (site_dir / filepath).exists():
             missing.append(filepath)
+
+    # Fichiers locale : essayer app/ moderne puis src/app/ legacy
+    locale_root_modern = site_dir / "app" / "[locale]"
+    locale_root_legacy = site_dir / "src" / "app" / "[locale]"
+    if locale_root_modern.exists():
+        locale_base = "app/[locale]"
+    elif locale_root_legacy.exists():
+        locale_base = "src/app/[locale]"
+    else:
+        # Pas de dossier locale détecté → on rapporte les chemins modernes
+        # (signal clair que rien n'est en place).
+        locale_base = "app/[locale]"
+
+    for relpath in CRITICAL_FILES_LOCALE:
+        full_rel = f"{locale_base}/{relpath}"
+        if not (site_dir / full_rel).exists():
+            missing.append(full_rel)
+
     return missing
 
 

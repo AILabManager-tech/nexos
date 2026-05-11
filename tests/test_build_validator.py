@@ -39,7 +39,8 @@ class TestBuildResult:
 
 
 class TestCheckCriticalFiles:
-    def test_all_present(self, tmp_path):
+    def test_all_present_legacy_src_app(self, tmp_path):
+        """Convention legacy `src/app/[locale]/` doit toujours passer."""
         (tmp_path / "vercel.json").touch()
         (tmp_path / "next.config.mjs").touch()
         p = tmp_path / "src" / "app" / "[locale]" / "politique-confidentialite"
@@ -52,9 +53,38 @@ class TestCheckCriticalFiles:
         missing = _check_critical_files(tmp_path)
         assert missing == []
 
+    def test_all_present_modern_app(self, tmp_path):
+        """Item 5 chantier 4 : convention moderne `app/[locale]/` doit aussi
+        passer (stack par défaut NEXOS post-refactor knowledge)."""
+        (tmp_path / "vercel.json").touch()
+        (tmp_path / "next.config.mjs").touch()
+        p = tmp_path / "app" / "[locale]" / "politique-confidentialite"
+        p.mkdir(parents=True)
+        (p / "page.tsx").touch()
+        m = tmp_path / "app" / "[locale]" / "mentions-legales"
+        m.mkdir(parents=True)
+        (m / "page.tsx").touch()
+
+        missing = _check_critical_files(tmp_path)
+        assert missing == []
+
     def test_all_missing(self, tmp_path):
         missing = _check_critical_files(tmp_path)
         assert len(missing) == 4
+
+    def test_modern_app_partial_missing_uses_modern_path(self, tmp_path):
+        """Si app/ existe mais 1 fichier manque → le chemin reporté pointe
+        bien sur app/ (convention détectée), pas src/app/."""
+        (tmp_path / "vercel.json").touch()
+        (tmp_path / "next.config.mjs").touch()
+        # Crée le dossier app/[locale] mais sans page.tsx
+        (tmp_path / "app" / "[locale]" / "mentions-legales").mkdir(parents=True)
+        # politique-confidentialite manquante exprès
+
+        missing = _check_critical_files(tmp_path)
+        assert any("app/[locale]/politique-confidentialite" in m for m in missing)
+        # Pas src/app/ (la convention détectée est app/ moderne)
+        assert not any(m.startswith("src/app/") for m in missing)
 
 
 class TestCheckVercelHeaders:
