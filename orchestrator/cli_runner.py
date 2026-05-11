@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 import sys
 import time
@@ -12,6 +13,21 @@ from pathlib import Path
 from ._shared import say
 
 _CODEX_CLI_TIMEOUT = 1800  # 30 minutes par phase
+
+# A-004 chantier 4 : détection rate limit Claude OAuth + retry/pivot.
+# Patterns observés :
+# - "You're out of extra usage · resets 4:20am (America/Toronto)" (Claude CLI)
+# - "rate limit exceeded"
+# - "HTTP 429"
+# - "quota exceeded"
+_RATE_LIMIT_PATTERNS = [
+    re.compile(r"rate[\s-]?limit", re.IGNORECASE),
+    re.compile(r"\b429\b"),
+    re.compile(r"out of\s+(?:extra\s+)?usage", re.IGNORECASE),
+    re.compile(r"quota\s+exceeded", re.IGNORECASE),
+    re.compile(r"resets?\s+(?:at\s+)?\d", re.IGNORECASE),
+]
+_RATE_LIMIT_BACKOFF_S = (30, 120, 480)  # 30s, 2min, 8min
 
 
 def get_cli_host() -> str:
@@ -189,17 +205,89 @@ def run_claude_cli(prompt: str, cwd: str, log_path: Path) -> int:
         return 124
 
 
-def run_cli(prompt: str, cwd: str, log_path: Path) -> int:
-    """Dispatche vers le bon CLI (claude, codex, ou gemini) en fonction de l'env."""
-    host = get_cli_host()
+def detect_rate_limit_in_log(log_path: Path) -> bool:
+    """A-004 fix : détecte un rate limit dans le log d'une session CLI.
+
+    Scrute la queue du log (derniers 4 Ko) pour matcher les patterns
+    connus de rate limit Claude/Codex. Retourne True si match.
+    """
+    if not log_path.exists():
+        return False
+    try:
+        content = log_path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return False
+    tail = content[-4000:]
+    return any(p.search(tail) for p in _RATE_LIMIT_PATTERNS)
+
+
+def _is_codex_available() -> bool:
+    """Vérifie si codex CLI est installé (pour pivot post-rate-limit Claude)."""
+    try:
+        subprocess.run(["codex", "--version"], capture_output=True, timeout=2)
+        return True
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return False
+
+
+def _dispatch_cli(host: str, prompt: str, cwd: str, log_path: Path) -> int:
+    """Lance le CLI spécifié (sans logique de retry)."""
     say(f"[dim]Using {host} CLI[/]")
     if host == "claude":
         return run_claude_cli(prompt, cwd, log_path)
-    elif host == "codex":
+    if host == "codex":
         return run_codex_cli(prompt, cwd, log_path)
-    else:  # gemini
-        say("[red]Gemini CLI non supporté pour NEXOS v4.0 (WIP)[/]")
-        return 1
+    say("[red]Gemini CLI non supporté pour NEXOS v4.0 (WIP)[/]")
+    return 1
 
 
-__all__ = ["get_cli_host", "run_claude_cli", "run_cli", "run_codex_cli"]
+def run_cli(prompt: str, cwd: str, log_path: Path) -> int:
+    """Dispatche vers le bon CLI avec retry sur rate limit (A-004).
+
+    - Première tentative avec le host par défaut
+    - Si exit non-zéro ET log contient un rate limit pattern → retry avec
+      backoff exponential (30s, 2min, 8min)
+    - Après tous les retries Claude, pivot vers Codex si dispo
+    - Si succès en n'importe quelle étape → return 0
+    - Sinon return le exit code de la dernière tentative
+    """
+    host = get_cli_host()
+    rc = _dispatch_cli(host, prompt, cwd, log_path)
+    if rc == 0:
+        return 0
+
+    if not detect_rate_limit_in_log(log_path):
+        # Échec pas lié au rate limit → return immédiatement
+        return rc
+
+    say("[yellow]⚠ Rate limit détecté dans le log — A-004 retry/pivot enclenché[/]")
+
+    for attempt, backoff_s in enumerate(_RATE_LIMIT_BACKOFF_S, start=1):
+        say(
+            f"[yellow]  Tentative {attempt + 1}/{len(_RATE_LIMIT_BACKOFF_S) + 1} dans {backoff_s}s...[/]"
+        )
+        time.sleep(backoff_s)
+        rc = _dispatch_cli(host, prompt, cwd, log_path)
+        if rc == 0:
+            return 0
+        if not detect_rate_limit_in_log(log_path):
+            return rc  # nouveau type d'échec → propager
+
+    # Tous les retries sur le host actuel ont échoué — pivot Codex si Claude
+    if host == "claude" and _is_codex_available():
+        say("[yellow]⚠ Rate limit Claude persistant — pivot vers Codex[/]")
+        rc = _dispatch_cli("codex", prompt, cwd, log_path)
+        if rc == 0:
+            return 0
+
+    return rc
+
+
+__all__ = [
+    "_RATE_LIMIT_PATTERNS",
+    "detect_rate_limit_in_log",
+    "get_cli_host",
+    "run_claude_cli",
+    "run_cli",
+    "run_codex_cli",
+]
