@@ -33,6 +33,7 @@ from ._shared import (
 )
 from .brief import load_runtime_brief
 from .cli_runner import run_cli
+from .gate_display import format_gate_result
 from .preflight import RerunContext, run_preflight, run_preflight_tooling
 from .prompts import build_phase_prompt
 from .verify import _fix_report_to_dict, verify_phase_output
@@ -373,16 +374,16 @@ def run_pipeline(
                     },
                 )
 
-            if loop.converged:
-                say(
-                    f"[green]✓ SOIC GATE: μ={loop.final_mu:.2f} ≥ {threshold} "
-                    f"— ACCEPT ({loop.total_iterations} iter)[/]"
+            say(
+                format_gate_result(
+                    converged=loop.converged,
+                    mu=loop.final_mu,
+                    threshold=threshold,
+                    decision=loop.final_decision.value,
+                    iterations=loop.total_iterations,
                 )
-            else:
-                say(
-                    f"[red]✗ SOIC GATE: μ={loop.final_mu:.2f} < {threshold} "
-                    f"— {loop.final_decision.value} ({loop.total_iterations} iter)[/]"
-                )
+            )
+            if not loop.converged:
                 if loop.abort_reason:
                     say(f"[red]  Raison: {loop.abort_reason}[/]")
                 break
