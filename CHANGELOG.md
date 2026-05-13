@@ -1,5 +1,59 @@
 # NEXOS — CHANGELOG
 
+## [Chantier 5 — Phase A] — 2026-05-11→13
+
+### Added
+- **`nexos/module_registry.py`** : registre modulaire avec discovery via `manifest.json`, validation JSON Schema Draft 2020-12 input/output, exécution `registry.run(module_id, payload)` avec erreurs typées (`ModuleNotFoundError`, `ModuleContractError`).
+- **`nexos/workflow_runner.py`** : composition déclarative de modules en workflows, contexte step-to-step, trace par étape.
+- **3 modules opérationnels** : `hello` (canari), `brief-synthesizer` (intake → brief canonique), `legal-gap-checker` (détection champs Loi 25 manquants + `next_questions`).
+- **1 workflow** : `intake-preflight` (brief-synthesizer → legal-gap-checker).
+- **Sous-commandes CLI** : `nexos module list/validate/run`, `nexos workflow list/run`.
+- **`jsonschema>=4.0`** promu en dependency runtime.
+- **13 nouveaux tests** (`test_module_registry`, `test_workflow_runner`, `test_brief_synthesizer_module`, `test_legal_gap_checker_module`).
+
+### Pushed
+- `e36fcbe` feat(modules) — registre + workflow runner + 3 modules
+- `2c545b2` feat(cli) — sous-commandes nexos module/workflow
+
+Cf. `../_etat_des_lieux/14_chantier_5_modularisation.md`.
+
+## [4.3.0] — 2026-05-10
+
+### Added (Chantier 4 — dette pipeline structurelle, 11 items)
+- **Item 1** : `W-18 CumulativeLayoutShiftGate` côté SOIC + intégration côté Ph4 (commit `993a762`). Bloque CLS > 0.25, FAIL > 0.5.
+- **Item 2** : `build_validator._count_test_files()` + `_run_tests()` (mode WARNING en v4.3.x, FAIL en v4.4.0). Commit `f9f1150`.
+- **Item 3** : `orchestrator/reconciliation.py` — filet défensif WARNING si écart μ Ph4↔Ph5 > 2 pts. Commit `e5450cf`.
+- **Item 4** : `tools/osiris-scan.sh` réécrit avec timeout + 3 retries backoff + budget 5min. Commit `9418037`.
+- **Item 5** : `_check_critical_files()` détecte `app/` moderne **et** `src/app/` legacy. Commit `88e09e0`.
+- **A-002** : `orchestrator/ph4_sync.py` barrière quiescence FS. Commit `9be746c`.
+- **A-003** : `gate_display.format_gate_result()` distingue ABORT/REJECT. Commit `02e28b9`.
+- **A-004** : `detect_rate_limit_in_log()` + retry/pivot Claude→Codex. Commit `f0b861b`.
+- **A-008** : regex PE-02 étendue (5 labels + markdown bold). Commit `3a11987` + soic_v3 `a52b171`.
+- **A-009** : RFC fixture drift + scripts freeze/audit Phase 1. Commit `3645c4e`.
+- **A-010** : deps-scan validation JSON avant émission. Commit `2276467`.
+
+### Fixed
+- Pipeline **honnête** : Ph4 ne ment plus silencieusement, reconciliation Ph4↔Ph5 catch les divergences, rate-limit Claude → retry/pivot Codex au lieu de FAIL.
+
+### Tests
+- Passage 285 → 373 tests verts (+88 régression).
+
+### Pushed
+- 11 commits sur `origin/main` 2026-05-13 (rattrapage du push différé)
+- Tag `v4.3.0` poussé
+
+## [4.2.2] — 2026-05-10
+
+### Added (Chantier mode B — pipeline end-to-end)
+- Pipeline `nexos create --client-dir clients/depanneur-nobert --stack nextjs` validé from scratch (μ ph5 = 9.47).
+- `BUG_NEXOS_HEADERS_SCAN_DUPLICATE_KEY` (A-007) fix dédup bash + 3 tests (`bae3c20`).
+- `BUG_NEXOS_SOIC_GATES_OVERWRITE` (A-005) extraction `gates_persistence.py` + 12 tests (`6bbbec1`).
+- `BUG_NEXOS_PH5_AUTO_FIXER` (A-006) JSX natif + 12 tests dont neutralisation XSS (`07142c7`).
+- `CHANTIER_CLOS.md` + `rapport-final-chantier.md` produits.
+
+### Pushed
+- Tag `v4.2.2` (commit `0950a4f`) poussé 2026-05-13.
+
 ## [4.2.1] — 2026-04-20
 
 ### Added
