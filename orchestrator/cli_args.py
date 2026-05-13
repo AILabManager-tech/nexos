@@ -23,6 +23,8 @@ def build_parser() -> argparse.ArgumentParser:
   analyze   Discovery seule (ph0)
   converge  Boucle de convergence SOIC sur un client existant
   doctor    Diagnostic système (outils, templates, SOIC)
+  module    Registre modulaire NEXOS (list, validate, run)
+  workflow  Workflows modulaires NEXOS
   fix       Auto-correction D4/D8 sur un client
   report    Rapport agrégé d'un client""",
     )
@@ -134,15 +136,31 @@ def build_parser() -> argparse.ArgumentParser:
     )
     sp_conv.add_argument("--profile", type=str, help="Profil SOIC (ex: web-nextjs, api-fastapi)")
 
-    # NEXOS v4.0 — Doctor
     subparsers.add_parser("doctor", help="Diagnostic système (outils, templates, SOIC)")
 
-    # NEXOS v4.0 — Fix
+    sp_module = subparsers.add_parser("module", help="Registre modulaire NEXOS")
+    module_subparsers = sp_module.add_subparsers(dest="module_action", required=True)
+    module_subparsers.add_parser("list", help="Lister les modules disponibles")
+    sp_module_validate = module_subparsers.add_parser(
+        "validate", help="Valider un payload JSON contre le contrat input d'un module"
+    )
+    sp_module_validate.add_argument("module_id", type=str, help="ID du module")
+    sp_module_validate.add_argument("--payload", type=Path, required=True, help="Payload JSON")
+    sp_module_run = module_subparsers.add_parser("run", help="Exécuter un module")
+    sp_module_run.add_argument("module_id", type=str, help="ID du module")
+    sp_module_run.add_argument("--payload", type=Path, required=True, help="Payload JSON")
+
+    sp_workflow = subparsers.add_parser("workflow", help="Workflows modulaires NEXOS")
+    workflow_subparsers = sp_workflow.add_subparsers(dest="workflow_action", required=True)
+    workflow_subparsers.add_parser("list", help="Lister les workflows disponibles")
+    sp_workflow_run = workflow_subparsers.add_parser("run", help="Exécuter un workflow")
+    sp_workflow_run.add_argument("workflow_id", type=str, help="ID du workflow")
+    sp_workflow_run.add_argument("--payload", type=Path, required=True, help="Payload JSON")
+
     sp_fix = subparsers.add_parser("fix", help="Auto-correction D4/D8 sur un client")
     sp_fix.add_argument("client_dir", type=Path, help="Dossier client à corriger")
     sp_fix.add_argument("--dry-run", action="store_true", help="Analyser sans appliquer")
 
-    # NEXOS v4.0 — Report
     sp_report = subparsers.add_parser("report", help="Rapport agrégé d'un client")
     sp_report.add_argument("client_dir", type=Path, help="Dossier client à analyser")
 

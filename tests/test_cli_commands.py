@@ -3,7 +3,14 @@
 import json
 from unittest.mock import patch
 
-from nexos.cli_commands import _dry_run_analysis, run_doctor, run_fix, run_report
+from nexos.cli_commands import (
+    _dry_run_analysis,
+    run_doctor,
+    run_fix,
+    run_module_command,
+    run_report,
+    run_workflow_command,
+)
 
 
 class TestRunDoctor:
@@ -13,6 +20,74 @@ class TestRunDoctor:
         run_doctor()
         # Should have printed a Panel
         mock_console.print.assert_called()
+
+
+class TestRunModuleCommand:
+    @patch("nexos.cli_commands.console")
+    def test_list_modules(self, mock_console):
+        rc = run_module_command("list")
+
+        assert rc == 0
+        mock_console.print.assert_called()
+
+    @patch("nexos.cli_commands.console")
+    def test_validate_payload(self, mock_console, tmp_path):
+        payload_path = tmp_path / "payload.json"
+        payload_path.write_text(json.dumps({"name": "NEXOS"}))
+
+        rc = run_module_command("validate", "hello", payload_path)
+
+        assert rc == 0
+        calls = [str(c) for c in mock_console.print.call_args_list]
+        assert any("Input valide" in c for c in calls)
+
+    @patch("nexos.cli_commands.console")
+    def test_run_module(self, mock_console, tmp_path):
+        payload_path = tmp_path / "payload.json"
+        payload_path.write_text(json.dumps({"name": "NEXOS"}))
+
+        rc = run_module_command("run", "hello", payload_path)
+
+        assert rc == 0
+        calls = [str(c) for c in mock_console.print.call_args_list]
+        assert any("Bonjour NEXOS" in c for c in calls)
+
+    @patch("nexos.cli_commands.console")
+    def test_rejects_invalid_payload(self, mock_console, tmp_path):
+        payload_path = tmp_path / "payload.json"
+        payload_path.write_text(json.dumps({"bad": "field"}))
+
+        rc = run_module_command("validate", "hello", payload_path)
+
+        assert rc == 1
+        calls = [str(c) for c in mock_console.print.call_args_list]
+        assert any("required property" in c or "Additional properties" in c for c in calls)
+
+
+class TestRunWorkflowCommand:
+    @patch("nexos.cli_commands.console")
+    def test_list_workflows(self, mock_console):
+        rc = run_workflow_command("list")
+
+        assert rc == 0
+        mock_console.print.assert_called()
+
+    @patch("nexos.cli_commands.console")
+    def test_run_workflow(self, mock_console, tmp_path):
+        payload_path = tmp_path / "payload.json"
+        payload_path.write_text(
+            json.dumps(
+                {
+                    "company": {"name": "Client Incomplet"},
+                }
+            )
+        )
+
+        rc = run_workflow_command("run", "intake-preflight", payload_path)
+
+        assert rc == 0
+        calls = [str(c) for c in mock_console.print.call_args_list]
+        assert any("legal-gap-checker" in c for c in calls)
 
 
 class TestRunFix:

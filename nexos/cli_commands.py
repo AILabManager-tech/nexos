@@ -50,6 +50,119 @@ def run_doctor() -> None:
     say(Panel(doctor_report(), title="[bold cyan]nexos doctor[/]", border_style="cyan"))
 
 
+def _load_payload_json(payload_path: Path) -> dict[str, Any]:
+    try:
+        payload = json.loads(payload_path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        raise ValueError(f"Payload introuvable: {payload_path}") from None
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Payload JSON invalide: {exc}") from exc
+
+    if not isinstance(payload, dict):
+        raise ValueError("Payload JSON invalide: objet attendu")
+    return payload
+
+
+def run_module_command(
+    action: str,
+    module_id: str | None = None,
+    payload_path: Path | None = None,
+) -> int:
+    """Liste, valide ou exécute un module NEXOS isolé."""
+    from nexos.module_registry import ModuleContractError, ModuleRegistry, ModuleRegistryError
+
+    try:
+        registry = ModuleRegistry()
+    except ModuleRegistryError as exc:
+        say(f"[red]Erreur registre modules: {exc}[/]")
+        return 1
+
+    if action == "list":
+        table = Table(show_header=True, header_style="bold")
+        table.add_column("ID")
+        table.add_column("Statut")
+        table.add_column("Réseau")
+        table.add_column("Fichiers")
+        table.add_column("Description")
+        for module in registry.list_modules():
+            table.add_row(
+                module.id,
+                module.status,
+                "oui" if module.requires_network else "non",
+                "oui" if module.writes_files else "non",
+                module.description,
+            )
+        say(table)
+        return 0
+
+    if not module_id:
+        say("[red]Erreur: module_id requis[/]")
+        return 1
+    if payload_path is None:
+        say("[red]Erreur: --payload requis[/]")
+        return 1
+
+    try:
+        payload = _load_payload_json(payload_path)
+        if action == "validate":
+            input_errors = registry.validate_input(module_id, payload)
+            if input_errors:
+                for error in input_errors:
+                    say(f"[red]- {error}[/]")
+                return 1
+            say(f"[green]Input valide pour {module_id}[/]")
+            return 0
+        if action == "run":
+            output = registry.run(module_id, payload)
+            say(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+            return 0
+    except (ValueError, ModuleRegistryError, ModuleContractError) as exc:
+        say(f"[red]Erreur module: {exc}[/]")
+        return 1
+
+    say(f"[red]Action module inconnue: {action}[/]")
+    return 1
+
+
+def run_workflow_command(
+    action: str,
+    workflow_id: str | None = None,
+    payload_path: Path | None = None,
+) -> int:
+    """Liste ou exécute un workflow modulaire NEXOS."""
+    from nexos.workflow_runner import WorkflowNotFoundError, list_workflows, run_workflow
+
+    if action == "list":
+        table = Table(show_header=True, header_style="bold")
+        table.add_column("ID")
+        table.add_column("Étapes", justify="right")
+        table.add_column("Description")
+        for workflow in list_workflows():
+            table.add_row(workflow.id, str(len(workflow.steps)), workflow.description)
+        say(table)
+        return 0
+
+    if action == "run":
+        if not workflow_id:
+            say("[red]Erreur: workflow_id requis[/]")
+            return 1
+        if payload_path is None:
+            say("[red]Erreur: --payload requis[/]")
+            return 1
+        try:
+            payload = _load_payload_json(payload_path)
+            output = run_workflow(workflow_id, payload)
+        except (ValueError, WorkflowNotFoundError) as exc:
+            say(f"[red]Erreur workflow: {exc}[/]")
+            return 1
+
+        say(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0 if output["status"] == "passed" else 1
+
+    say(f"[red]Action workflow inconnue: {action}[/]")
+    return 1
+
+
 def run_fix(client_dir: Path, dry_run: bool = False) -> None:
     """
     Applique les auto-fixes D4/D8 sur un client sans lancer le pipeline.

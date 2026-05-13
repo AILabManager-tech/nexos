@@ -47,6 +47,32 @@ def main(argv: list[str] | None = None) -> int:
         else:
             say("[red]nexos doctor requiert les modules v4.0 (nexos/)[/]")
         return 0
+    if args.mode == "module":
+        if _NEXOS_V4:
+            from nexos.cli_commands import run_module_command
+
+            return int(
+                run_module_command(
+                    args.module_action,
+                    module_id=getattr(args, "module_id", None),
+                    payload_path=getattr(args, "payload", None),
+                )
+            )
+        say("[red]nexos module requiert les modules v4.0 (nexos/)[/]")
+        return 1
+    if args.mode == "workflow":
+        if _NEXOS_V4:
+            from nexos.cli_commands import run_workflow_command
+
+            return int(
+                run_workflow_command(
+                    args.workflow_action,
+                    workflow_id=getattr(args, "workflow_id", None),
+                    payload_path=getattr(args, "payload", None),
+                )
+            )
+        say("[red]nexos workflow requiert les modules v4.0 (nexos/)[/]")
+        return 1
     if args.mode == "fix":
         if _NEXOS_V4:
             from nexos.cli_commands import run_fix
