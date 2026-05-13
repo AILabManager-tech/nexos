@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "nexos.modules.brief-synthesizer.input",
+  "title": "BriefSynthesizerInput",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["company"],
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": ["create", "audit", "modify", "content", "analyze"],
+      "default": "create"
+    },
+    "company_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "company": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "slug": { "type": "string", "minLength": 1 },
+        "neq": { "type": "string" },
+        "address": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" }
+      }
+    },
+    "legal": {
+      "type": "object"
+    },
+    "site": {
+      "type": "object"
+    },
+    "design": {
+      "type": "object"
+    },
+    "context": {
+      "type": "object"
+    },
+    "adaptive": {
+      "type": "object"
+    },
+    "mission": {
+      "type": "object"
+    }
+  }
+}

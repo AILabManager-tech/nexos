@@ -1,0 +1,20 @@
+{
+  "id": "hello",
+  "name": "Hello Module",
+  "version": "0.1.0",
+  "description": "Module bidon qui valide le registre modulaire et les contrats I/O.",
+  "package": "nexos.modules.hello",
+  "entrypoint": "run",
+  "status": "experimental",
+  "tags": ["bloc-c", "smoke"],
+  "capabilities": ["contract-validation", "deterministic-transform"],
+  "inputs": ["name", "uppercase"],
+  "outputs": ["module_id", "message", "echo"],
+  "side_effects": [],
+  "requires_network": false,
+  "writes_files": false,
+  "contracts": {
+    "input": "input.schema.json",
+    "output": "output.schema.json"
+  }
+}

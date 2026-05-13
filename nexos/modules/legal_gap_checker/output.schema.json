@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "nexos.modules.legal-gap-checker.output",
+  "title": "LegalGapCheckerOutput",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["module_id", "ready_for_pipeline", "blocking_count", "gaps", "next_questions"],
+  "properties": {
+    "module_id": {
+      "const": "legal-gap-checker"
+    },
+    "ready_for_pipeline": {
+      "type": "boolean"
+    },
+    "blocking_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "label", "severity", "blocking", "message"],
+        "properties": {
+          "field": { "type": "string" },
+          "label": { "type": "string" },
+          "severity": { "type": "string", "enum": ["error", "warning"] },
+          "blocking": { "type": "boolean" },
+          "message": { "type": "string" }
+        }
+      }
+    },
+    "next_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "question", "required"],
+        "properties": {
+          "field": { "type": "string" },
+          "question": { "type": "string" },
+          "required": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

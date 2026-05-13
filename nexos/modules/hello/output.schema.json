@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "nexos.modules.hello.output",
+  "title": "HelloOutput",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["module_id", "message", "echo"],
+  "properties": {
+    "module_id": {
+      "const": "hello"
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1
+    },
+    "echo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "uppercase"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "uppercase": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "legal-gap-checker",
+  "name": "Legal Gap Checker",
+  "version": "0.1.0",
+  "description": "Détecte les champs Loi 25 manquants ou incompatibles avant qu'un brief entre dans le pipeline.",
+  "package": "nexos.modules.legal_gap_checker",
+  "entrypoint": "run",
+  "status": "experimental",
+  "tags": ["modular", "saas", "legal", "loi-25"],
+  "capabilities": ["legal-gap-detection", "intake-question-generation"],
+  "inputs": ["brief", "mode"],
+  "outputs": ["ready_for_pipeline", "blocking_count", "gaps", "next_questions"],
+  "side_effects": [],
+  "requires_network": false,
+  "writes_files": false,
+  "contracts": {
+    "input": "input.schema.json",
+    "output": "output.schema.json"
+  }
+}

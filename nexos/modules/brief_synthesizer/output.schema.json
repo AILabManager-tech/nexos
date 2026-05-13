@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "nexos.modules.brief-synthesizer.output",
+  "title": "BriefSynthesizerOutput",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["module_id", "brief", "validation_errors", "ready_for_pipeline"],
+  "properties": {
+    "module_id": {
+      "const": "brief-synthesizer"
+    },
+    "brief": {
+      "type": "object"
+    },
+    "validation_errors": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "ready_for_pipeline": {
+      "type": "boolean"
+    }
+  }
+}

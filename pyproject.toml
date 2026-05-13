@@ -8,6 +8,7 @@ license = { text = "Proprietary" }
 readme = "README.md"
 
 dependencies = [
+  "jsonschema>=4.0",
   "rich>=13.0,<14.0",
 ]
 
@@ -25,7 +26,6 @@ dev = [
   "pytest-cov>=5.0,<7.0",
   "ruff>=0.5",
   "mypy>=1.10",
-  "jsonschema>=4.0",
   "pre-commit>=3.7",
 ]
 all = [
@@ -41,7 +41,15 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 py-modules = ["nexos_cli", "nexos_gateway"]
-packages = ["nexos", "soic", "orchestrator"]
+packages = [
+  "nexos",
+  "nexos.modules",
+  "nexos.modules.brief_synthesizer",
+  "nexos.modules.hello",
+  "nexos.modules.legal_gap_checker",
+  "soic",
+  "orchestrator",
+]
 
 [tool.setuptools.package-data]
 "*" = ["*.md", "*.json", "*.yaml", "*.yml"]
@@ -180,6 +188,8 @@ module = [
   "nexos.pipeline_config",
   "nexos.agent_registry",
   "nexos.logging_config",
+  "nexos.module_registry",
+  "nexos.workflow_runner",
 ]
 disallow_untyped_defs = true
 disallow_incomplete_defs = true

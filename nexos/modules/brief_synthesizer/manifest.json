@@ -1,0 +1,20 @@
+{
+  "id": "brief-synthesizer",
+  "name": "Brief Synthesizer",
+  "version": "0.1.0",
+  "description": "Transforme un intake réduit en brief-client.json canonique et expose les champs bloquants restants.",
+  "package": "nexos.modules.brief_synthesizer",
+  "entrypoint": "run",
+  "status": "experimental",
+  "tags": ["bloc-d", "brief", "legal"],
+  "capabilities": ["brief-normalization", "legal-gap-detection"],
+  "inputs": ["mode", "company", "legal", "site", "design", "context"],
+  "outputs": ["brief", "validation_errors", "ready_for_pipeline"],
+  "side_effects": [],
+  "requires_network": false,
+  "writes_files": false,
+  "contracts": {
+    "input": "input.schema.json",
+    "output": "output.schema.json"
+  }
+}

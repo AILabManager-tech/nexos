@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "nexos.modules.legal-gap-checker.input",
+  "title": "LegalGapCheckerInput",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": ["create", "audit", "modify", "content", "analyze"],
+      "default": "create"
+    },
+    "brief": {
+      "type": "object"
+    },
+    "client": {
+      "type": "object"
+    },
+    "company": {
+      "type": "object"
+    },
+    "legal": {
+      "type": "object"
+    },
+    "site": {
+      "type": "object"
+    }
+  },
+  "anyOf": [
+    { "required": ["brief"] },
+    { "required": ["legal"] }
+  ]
+}
