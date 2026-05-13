@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "nexos.modules.pattern-prerecommender.output",
+  "title": "PatternPreRecommenderOutput",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["module_id", "patterns", "sector_id", "fallback"],
+  "properties": {
+    "module_id": {"const": "pattern-prerecommender"},
+    "patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "tier_score", "rationale"],
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "tier_score": {"type": "integer"},
+          "rationale": {"type": "string"},
+          "reference_sites": {"type": "array", "items": {"type": "string"}},
+          "soic_dimensions_impacted": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "sector_id": {"type": ["string", "null"]},
+    "fallback": {
+      "type": "boolean",
+      "description": "True si le secteur n'a pas pu être déterminé et qu'on retourne un set par défaut."
+    }
+  }
+}

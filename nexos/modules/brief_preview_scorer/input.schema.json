@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "nexos.modules.brief-preview-scorer.input",
+  "title": "BriefPreviewScorerInput",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["brief"],
+  "properties": {
+    "brief": {
+      "type": "object",
+      "description": "Brief canonique tel que produit par brief-synthesizer."
+    }
+  }
+}

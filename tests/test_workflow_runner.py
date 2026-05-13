@@ -39,7 +39,7 @@ def _valid_intake() -> dict:
 def test_lists_intake_preflight_workflow() -> None:
     workflows = list_workflows()
 
-    assert [workflow.id for workflow in workflows] == ["intake-preflight"]
+    assert [workflow.id for workflow in workflows] == ["intake-preflight", "saas-preview"]
 
 
 def test_intake_preflight_workflow_passes_with_valid_payload() -> None:

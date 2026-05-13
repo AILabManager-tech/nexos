@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "nexos.modules.intake-question-prioritizer.input",
+  "title": "IntakeQuestionPrioritizerInput",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["gaps"],
+  "properties": {
+    "gaps": {
+      "type": "array",
+      "description": "Tableau de gaps tels que produits par legal-gap-checker.",
+      "items": {
+        "type": "object",
+        "required": ["field", "message"],
+        "properties": {
+          "field": {"type": "string"},
+          "label": {"type": "string"},
+          "severity": {"type": "string"},
+          "blocking": {"type": "boolean"},
+          "message": {"type": "string"}
+        }
+      }
+    },
+    "estimated_mu": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "μ estimé courant (optionnel), pour calculer le delta de remontée."
+    }
+  }
+}

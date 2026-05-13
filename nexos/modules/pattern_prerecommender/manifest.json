@@ -1,0 +1,20 @@
+{
+  "id": "pattern-prerecommender",
+  "name": "Pattern Pre-Recommender",
+  "version": "0.1.0",
+  "description": "Recommande 1-3 patterns web (P01-P20) depuis un brief + secteur, avant Ph1, en lisant `agents/knowledge/pattern-matrix.json`.",
+  "package": "nexos.modules.pattern_prerecommender",
+  "entrypoint": "run",
+  "status": "experimental",
+  "tags": ["saas", "preview", "design", "patterns"],
+  "capabilities": ["pattern-matching", "sector-recommendation"],
+  "inputs": ["brief", "sector_id", "top_k"],
+  "outputs": ["module_id", "patterns", "sector_id", "fallback"],
+  "side_effects": [],
+  "requires_network": false,
+  "writes_files": false,
+  "contracts": {
+    "input": "input.schema.json",
+    "output": "output.schema.json"
+  }
+}

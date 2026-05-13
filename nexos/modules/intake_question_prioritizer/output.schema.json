@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "nexos.modules.intake-question-prioritizer.output",
+  "title": "IntakeQuestionPrioritizerOutput",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["module_id", "questions", "blocking_count", "lifting_mu_delta"],
+  "properties": {
+    "module_id": {"const": "intake-question-prioritizer"},
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["field", "priority_score", "question", "rationale"],
+        "properties": {
+          "field": {"type": "string"},
+          "label": {"type": "string"},
+          "priority_score": {"type": "number", "minimum": 0, "maximum": 10},
+          "question": {"type": "string"},
+          "rationale": {"type": "string"},
+          "blocking": {"type": "boolean"},
+          "estimated_mu_lift": {"type": "number"}
+        }
+      }
+    },
+    "blocking_count": {"type": "integer", "minimum": 0},
+    "lifting_mu_delta": {
+      "type": "number",
+      "description": "Estimation du gain de μ si toutes les questions sont répondues."
+    }
+  }
+}

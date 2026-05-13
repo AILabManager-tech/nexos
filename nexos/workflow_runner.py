@@ -36,6 +36,19 @@ def _brief_from_synthesizer(_payload: dict[str, Any], context: dict[str, Any]) -
     return {"brief": synthesizer_output["brief"]}
 
 
+def _gaps_with_mu(_payload: dict[str, Any], context: dict[str, Any]) -> dict[str, Any]:
+    """Input builder pour intake-question-prioritizer."""
+    gaps = context["steps"]["legal-gap-checker"]["output"]["gaps"]
+    scorer = context["steps"].get("brief-preview-scorer", {}).get("output", {})
+    return {"gaps": gaps, "estimated_mu": scorer.get("estimated_mu", 0.0)}
+
+
+def _brief_for_prerecommender(_payload: dict[str, Any], context: dict[str, Any]) -> dict[str, Any]:
+    """Input builder pour pattern-prerecommender depuis le brief canonique."""
+    synthesizer_output = context["steps"]["brief-synthesizer"]["output"]
+    return {"brief": synthesizer_output["brief"], "top_k": 3}
+
+
 WORKFLOWS: dict[str, WorkflowDefinition] = {
     "intake-preflight": WorkflowDefinition(
         id="intake-preflight",
@@ -52,7 +65,42 @@ WORKFLOWS: dict[str, WorkflowDefinition] = {
                 input_builder=_brief_from_synthesizer,
             ),
         ),
-    )
+    ),
+    "saas-preview": WorkflowDefinition(
+        id="saas-preview",
+        description=(
+            "Pipeline de preview SaaS — intake réduit → brief canonique → "
+            "gaps Loi 25 → score SOIC estimé → questions priorisées → "
+            "patterns design recommandés. Aucun appel pipeline complet."
+        ),
+        steps=(
+            WorkflowStep(
+                id="brief-synthesizer",
+                module_id="brief-synthesizer",
+                input_builder=_root_payload,
+            ),
+            WorkflowStep(
+                id="legal-gap-checker",
+                module_id="legal-gap-checker",
+                input_builder=_brief_from_synthesizer,
+            ),
+            WorkflowStep(
+                id="brief-preview-scorer",
+                module_id="brief-preview-scorer",
+                input_builder=_brief_from_synthesizer,
+            ),
+            WorkflowStep(
+                id="intake-question-prioritizer",
+                module_id="intake-question-prioritizer",
+                input_builder=_gaps_with_mu,
+            ),
+            WorkflowStep(
+                id="pattern-prerecommender",
+                module_id="pattern-prerecommender",
+                input_builder=_brief_for_prerecommender,
+            ),
+        ),
+    ),
 }
 
 
