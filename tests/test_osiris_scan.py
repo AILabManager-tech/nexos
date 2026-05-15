@@ -40,11 +40,29 @@ def test_returns_valid_json_when_scanner_missing(tmp_path: Path):
 
 
 def test_returns_scanner_output_on_success(tmp_path: Path):
-    """Scanner qui réussit → stdout = JSON du scanner."""
+    """Scanner qui réussit → stdout = JSON du scanner.
+
+    Nouveau contrat (P7) : scanner reçoit --url <URL> --output report --mode <mode>
+    et écrit `reports/<domain>_<date>.json` relatif au CWD du process.
+    osiris-scan.sh capture ce fichier et l'émet sur stdout.
+    """
     body = textwrap.dedent(
         """\
-        import sys, json
-        print(json.dumps({"score": 8.5, "url": sys.argv[1]}))
+        import argparse, json, os, datetime
+        from urllib.parse import urlparse
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--url", required=True)
+        parser.add_argument("--output", default=None)
+        parser.add_argument("--mode", default="fast")
+        parser.add_argument("--runs", type=int, default=1)
+        parser.add_argument("--verbose", action="store_true")
+        parser.add_argument("--history", action="store_true")
+        args = parser.parse_args()
+        domain = urlparse(args.url).hostname or "unknown"
+        os.makedirs("reports", exist_ok=True)
+        date = datetime.date.today().isoformat()
+        with open(f"reports/{domain}_{date}.json", "w") as f:
+            json.dump({"score": 8.5, "url": args.url}, f)
         """
     )
     osiris_dir = _make_fake_osiris(tmp_path, body)
@@ -148,11 +166,27 @@ def test_invalid_json_output_retried_then_fails(tmp_path: Path):
 
 
 def test_first_attempt_success_no_retry(tmp_path: Path):
-    """Première tentative réussit → pas de retry, donc rapide."""
+    """Première tentative réussit → pas de retry, donc rapide.
+
+    Nouveau contrat (P7) : scanner reçoit --url et écrit reports/<domain>_<date>.json.
+    """
     body = textwrap.dedent(
         """\
-        import json
-        print(json.dumps({"ok": True}))
+        import argparse, json, os, datetime
+        from urllib.parse import urlparse
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--url", required=True)
+        parser.add_argument("--output", default=None)
+        parser.add_argument("--mode", default="fast")
+        parser.add_argument("--runs", type=int, default=1)
+        parser.add_argument("--verbose", action="store_true")
+        parser.add_argument("--history", action="store_true")
+        args = parser.parse_args()
+        domain = urlparse(args.url).hostname or "unknown"
+        os.makedirs("reports", exist_ok=True)
+        date = datetime.date.today().isoformat()
+        with open(f"reports/{domain}_{date}.json", "w") as f:
+            json.dump({"ok": True}, f)
         """
     )
     osiris_dir = _make_fake_osiris(tmp_path, body)
