@@ -69,6 +69,39 @@ jobs:
           path: coverage.xml
           retention-days: 14
 
+  vitest-clients:
+    name: Vitest (client sites)
+    runs-on: ubuntu-latest
+    # Détecte les régressions UI / Zod / API handlers sur les sites clients
+    # avec couverture Vitest réelle (P4c + P5).
+    strategy:
+      fail-fast: false
+      matrix:
+        client:
+          - depanneur-nobert
+        # Les 7 autres clients n'ont pas encore de tests Vitest — à ajouter
+        # selon roadmap "propagation tests Vitest 7 clients".
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: clients/${{ matrix.client }}/site/package-lock.json
+      - name: Install client deps
+        working-directory: clients/${{ matrix.client }}/site
+        run: npm ci --prefer-offline --no-audit
+      - name: Run Vitest
+        working-directory: clients/${{ matrix.client }}/site
+        run: npm test -- --run
+      - name: Run TypeScript check
+        working-directory: clients/${{ matrix.client }}/site
+        run: npx tsc --noEmit
+      - name: Build site (smoke)
+        working-directory: clients/${{ matrix.client }}/site
+        run: npm run build
+
   e2e:
     name: E2E tests (orchestrator smoke)
     runs-on: ubuntu-latest
