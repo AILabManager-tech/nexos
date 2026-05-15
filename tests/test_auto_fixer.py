@@ -4,10 +4,12 @@ import json
 from unittest.mock import patch
 
 from nexos.auto_fixer import (
+    DEFAULT_CSP,
     REQUIRED_HEADERS,
     TEMPLATES_DIR,
     FixReport,
     _fix_cookie_consent,
+    _fix_csp_middleware,
     _fix_legal_page,
     _fix_next_config,
     _fix_privacy_page,
@@ -15,6 +17,7 @@ from nexos.auto_fixer import (
     _generate_legal_page_tsx,
     _inline_md_jsx,
     _markdown_to_jsx_children,
+    _read_csp_from_vercel,
     auto_fix,
 )
 
@@ -29,11 +32,13 @@ class TestFixReport:
             cookie_consent_added=True,
             npm_audit_fixed=5,
             vercel_headers_fixed=True,
+            csp_added=True,
+            csp_middleware_added=True,
             next_config_patched=True,
             privacy_page_added=True,
             legal_page_added=True,
         )
-        assert r.total_fixes == 6
+        assert r.total_fixes == 8
 
 
 class TestFixVercelHeaders:
@@ -289,6 +294,127 @@ class TestGenerateLegalPageTsx:
         page = _generate_legal_page_tsx("# T", "T")
         assert '<article className="prose prose-gray max-w-none">' in page
         assert "</article>" in page
+
+
+class TestReadCspFromVercel:
+    """Lecture CSP depuis vercel.json — single source of truth (P4a)."""
+
+    def test_returns_none_when_vercel_missing(self, tmp_path):
+        assert _read_csp_from_vercel(tmp_path / "vercel.json") is None
+
+    def test_returns_none_when_no_csp_header(self, tmp_path):
+        path = tmp_path / "vercel.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "headers": [
+                        {
+                            "source": "/(.*)",
+                            "headers": [{"key": "X-Frame-Options", "value": "DENY"}],
+                        }
+                    ]
+                }
+            )
+        )
+        assert _read_csp_from_vercel(path) is None
+
+    def test_returns_csp_value_when_present(self, tmp_path):
+        custom_csp = "default-src 'self'; script-src 'self' 'nonce-xyz'"
+        path = tmp_path / "vercel.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "headers": [
+                        {
+                            "source": "/(.*)",
+                            "headers": [{"key": "Content-Security-Policy", "value": custom_csp}],
+                        }
+                    ]
+                }
+            )
+        )
+        assert _read_csp_from_vercel(path) == custom_csp
+
+    def test_returns_none_on_corrupted_json(self, tmp_path):
+        path = tmp_path / "vercel.json"
+        path.write_text("{ this is not valid json")
+        assert _read_csp_from_vercel(path) is None
+
+
+class TestFixCspMiddleware:
+    """Création middleware.ts local pour aligner CSP dev sur prod (P4a)."""
+
+    def _write_vercel_with_csp(self, site_dir, csp=DEFAULT_CSP):
+        (site_dir / "vercel.json").write_text(
+            json.dumps(
+                {
+                    "headers": [
+                        {
+                            "source": "/(.*)",
+                            "headers": [{"key": "Content-Security-Policy", "value": csp}],
+                        }
+                    ]
+                }
+            )
+        )
+
+    def test_creates_middleware_when_csp_present(self, tmp_path):
+        self._write_vercel_with_csp(tmp_path)
+        report = FixReport()
+        _fix_csp_middleware(tmp_path, report)
+        middleware = tmp_path / "middleware.ts"
+        assert middleware.exists()
+        assert report.csp_middleware_added is True
+        content = middleware.read_text()
+        # Le middleware encode la CSP via json.dumps → guillemets doubles
+        assert "Content-Security-Policy" in content
+        assert "process.env.VERCEL" in content
+        # CSP value présente (json.dumps préserve les guillemets simples)
+        assert "'self'" in content
+
+    def test_skips_when_vercel_has_no_csp(self, tmp_path):
+        (tmp_path / "vercel.json").write_text(json.dumps({"headers": []}))
+        report = FixReport()
+        _fix_csp_middleware(tmp_path, report)
+        assert not (tmp_path / "middleware.ts").exists()
+        assert report.csp_middleware_added is False
+
+    def test_skips_when_vercel_missing(self, tmp_path):
+        report = FixReport()
+        _fix_csp_middleware(tmp_path, report)
+        assert not (tmp_path / "middleware.ts").exists()
+        assert report.csp_middleware_added is False
+
+    def test_skips_when_middleware_already_exists(self, tmp_path):
+        self._write_vercel_with_csp(tmp_path)
+        existing = tmp_path / "middleware.ts"
+        existing.write_text("// builder custom middleware")
+        report = FixReport()
+        _fix_csp_middleware(tmp_path, report)
+        # Le contenu existant n'est PAS écrasé (respect décision builder)
+        assert existing.read_text() == "// builder custom middleware"
+        assert report.csp_middleware_added is False
+
+    def test_skips_when_src_middleware_exists(self, tmp_path):
+        """Détecte aussi src/middleware.ts (convention Next.js alternative)."""
+        self._write_vercel_with_csp(tmp_path)
+        src_dir = tmp_path / "src"
+        src_dir.mkdir()
+        (src_dir / "middleware.ts").write_text("// existing")
+        report = FixReport()
+        _fix_csp_middleware(tmp_path, report)
+        assert not (tmp_path / "middleware.ts").exists()
+        assert report.csp_middleware_added is False
+
+    def test_csp_value_correctly_encoded_as_ts_literal(self, tmp_path):
+        """Caractères spéciaux (guillemets, accents) correctement échappés."""
+        tricky_csp = 'default-src "self"; report-uri /csp-report'
+        self._write_vercel_with_csp(tmp_path, csp=tricky_csp)
+        report = FixReport()
+        _fix_csp_middleware(tmp_path, report)
+        content = (tmp_path / "middleware.ts").read_text()
+        # Les guillemets doubles dans la CSP doivent être échappés via json.dumps
+        assert '\\"self\\"' in content
 
 
 class TestAutoFix:

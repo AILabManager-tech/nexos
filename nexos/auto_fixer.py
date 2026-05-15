@@ -133,6 +133,7 @@ class FixReport:
     npm_audit_fixed: int = 0
     vercel_headers_fixed: bool = False
     csp_added: bool = False
+    csp_middleware_added: bool = False
     next_config_patched: bool = False
     privacy_page_added: bool = False
     legal_page_added: bool = False
@@ -147,6 +148,8 @@ class FixReport:
         if self.vercel_headers_fixed:
             count += 1
         if self.csp_added:
+            count += 1
+        if self.csp_middleware_added:
             count += 1
         if self.next_config_patched:
             count += 1
@@ -362,6 +365,99 @@ def _fix_csp(site_dir: Path, report: FixReport) -> None:
     vercel_path.write_text(_vercel_json_dumps(data))
     report.csp_added = True
     logger.info("Content-Security-Policy added to vercel.json")
+
+
+def _read_csp_from_vercel(vercel_path: Path) -> str | None:
+    """Lit la valeur CSP depuis vercel.json (single source of truth).
+
+    Retourne None si vercel.json absent, corrompu, ou sans CSP.
+    """
+    if not vercel_path.exists():
+        return None
+    try:
+        data = json.loads(vercel_path.read_text())
+    except json.JSONDecodeError:
+        return None
+    for block in data.get("headers", []):
+        if block.get("source") != "/(.*)":
+            continue
+        for header in block.get("headers", []):
+            if header.get("key", "").lower() == "content-security-policy":
+                value = header.get("value", "")
+                return value if isinstance(value, str) and value else None
+    return None
+
+
+# Template middleware Next.js — applique la CSP en LOCAL uniquement.
+# En prod Vercel, vercel.json gère déjà la CSP via les headers du CDN. Mais
+# `next dev` / `next start` localement ne lisent PAS vercel.json — d'où ce
+# middleware qui réplique la CSP côté serveur Node pour aligner les mesures
+# preflight (lighthouse, headers-scan) sur la config prod.
+#
+# Le check `process.env.VERCEL !== '1'` évite que le middleware double la CSP
+# en prod (sur Vercel, VERCEL=1 est toujours set par la runtime).
+_CSP_MIDDLEWARE_TEMPLATE = """\
+// AUTO-GÉNÉRÉ par nexos/auto_fixer.py (P4a)
+// Source de vérité CSP : vercel.json (header Content-Security-Policy)
+// Ce middleware réplique la CSP en LOCAL uniquement (next dev / next start)
+// pour aligner les mesures preflight sur la config prod servie par Vercel.
+// Régénéré à chaque `nexos fix` si supprimé.
+import {{ NextResponse }} from "next/server";
+import type {{ NextRequest }} from "next/server";
+
+const CSP = {csp_literal};
+
+export function middleware(_request: NextRequest) {{
+  const response = NextResponse.next();
+  // En prod Vercel, la CSP est servie via vercel.json. Le middleware ne
+  // l'ajoute qu'en local (next dev / next start) pour éviter une double
+  // valeur de header.
+  if (process.env.VERCEL !== "1") {{
+    response.headers.set("Content-Security-Policy", CSP);
+  }}
+  return response;
+}}
+
+export const config = {{
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+}};
+"""
+
+
+def _fix_csp_middleware(site_dir: Path, report: FixReport) -> None:
+    """Crée un middleware Next.js qui sert la CSP localement (P4a).
+
+    Stratégie défensive :
+      - Skip si `middleware.ts` existe déjà (ne pas écraser une décision builder)
+      - Skip si vercel.json n'a pas de CSP (rien à répliquer)
+      - Lit la CSP depuis vercel.json (single source of truth)
+      - Le middleware ne s'active qu'en local (`process.env.VERCEL !== '1'`)
+        pour éviter de doubler la CSP en prod sur Vercel
+    """
+    vercel_path = site_dir / "vercel.json"
+    csp_value = _read_csp_from_vercel(vercel_path)
+    if csp_value is None:
+        return
+
+    # Détection middleware existant (.ts ou .js, racine app/ ou src/)
+    candidates = [
+        site_dir / "middleware.ts",
+        site_dir / "middleware.js",
+        site_dir / "src" / "middleware.ts",
+        site_dir / "src" / "middleware.js",
+    ]
+    for path in candidates:
+        if path.exists():
+            return  # Builder a déjà un middleware — ne pas toucher
+
+    # Encode la CSP comme TypeScript string literal — gère guillemets, retours
+    # à la ligne, accents. json.dumps produit du JSON qui est aussi du TS valide.
+    csp_literal = json.dumps(csp_value, ensure_ascii=False)
+
+    target = site_dir / "middleware.ts"
+    target.write_text(_CSP_MIDDLEWARE_TEMPLATE.format(csp_literal=csp_literal))
+    report.csp_middleware_added = True
+    logger.info("CSP middleware.ts created (local dev coverage)")
 
 
 def _fix_next_config(site_dir: Path, report: FixReport) -> None:
@@ -668,6 +764,7 @@ def auto_fix(site_dir: Path, client_dir: Path, brief: dict | None = None) -> Fix
     _fix_npm_audit(site_dir, report)
     _fix_vercel_headers(site_dir, report)
     _fix_csp(site_dir, report)
+    _fix_csp_middleware(site_dir, report)
     _fix_next_config(site_dir, report)
     _fix_privacy_page(site_dir, brief, report)
     _fix_legal_page(site_dir, brief, report)
@@ -690,6 +787,8 @@ def _log_applied_fixes(client_dir: Path, report: FixReport) -> None:
         fixes.append({"fix": "vercel_headers", "target": "vercel.json"})
     if report.csp_added:
         fixes.append({"fix": "csp", "target": "vercel.json"})
+    if report.csp_middleware_added:
+        fixes.append({"fix": "csp_middleware", "target": "middleware.ts"})
     if report.next_config_patched:
         fixes.append({"fix": "next_config", "target": "next.config"})
     if report.privacy_page_added:
