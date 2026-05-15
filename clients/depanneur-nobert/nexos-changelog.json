@@ -1208,5 +1208,91 @@
     "event": "cli_report",
     "timestamp": "2026-05-15T00:59:50",
     "agent": "cli"
+  },
+  {
+    "event": "pipeline_start",
+    "timestamp": "2026-05-15T01:56:09",
+    "agent": "orchestrator",
+    "details": {
+      "mode": "audit",
+      "phases": [
+        "ph5-qa"
+      ]
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-15T01:56:09",
+    "phase": "ph5-qa",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-15T01:56:09",
+    "agent": "auto_fixer"
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-15T02:02:06",
+    "phase": "ph5-qa",
+    "agent": "soic",
+    "details": {
+      "mu": 9.10925925925926,
+      "threshold": 8.5,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "pipeline_end",
+    "timestamp": "2026-05-15T02:02:06",
+    "agent": "orchestrator",
+    "details": {
+      "gates": 1,
+      "mode": "audit"
+    }
+  },
+  {
+    "event": "pipeline_start",
+    "timestamp": "2026-05-15T03:27:33",
+    "agent": "orchestrator",
+    "details": {
+      "mode": "audit",
+      "phases": [
+        "ph5-qa"
+      ]
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-15T03:27:33",
+    "phase": "ph5-qa",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-15T03:27:33",
+    "agent": "auto_fixer"
+  },
+  {
+    "event": "pipeline_start",
+    "timestamp": "2026-05-15T03:28:15",
+    "agent": "orchestrator",
+    "details": {
+      "mode": "audit",
+      "phases": [
+        "ph5-qa"
+      ]
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-15T03:28:15",
+    "phase": "ph5-qa",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-15T03:28:15",
+    "agent": "auto_fixer"
   }
 ]
