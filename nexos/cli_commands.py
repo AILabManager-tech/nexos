@@ -283,6 +283,8 @@ def _dry_run_analysis(site_dir: Path, client_dir: Path) -> None:
             missing = [k for k in REQUIRED_HEADERS if k.lower() not in existing]
             if missing:
                 findings.append(f"Headers manquants dans vercel.json: {', '.join(missing)}")
+            if "content-security-policy" not in existing:
+                findings.append("Content-Security-Policy absente → ajouterait DEFAULT_CSP")
         except json.JSONDecodeError:
             findings.append("vercel.json corrompu → remplacerait par template")
 

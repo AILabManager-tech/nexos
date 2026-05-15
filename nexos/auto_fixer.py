@@ -71,6 +71,26 @@ REQUIRED_HEADERS = {
     "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
 }
 
+# CSP par défaut adaptée Next.js 15 + Tailwind + next-intl.
+# - 'unsafe-inline' script : requis pour le runtime Next sans nonces dynamiques
+# - 'unsafe-eval' : requis par certaines optimisations webpack/turbopack
+# - style-src 'unsafe-inline' : Tailwind + Next inline styles
+# - frame-ancestors 'none' : équivaut à X-Frame-Options DENY (CSP3)
+# Pour un hardening strict (production sensible), remplacer 'unsafe-inline'
+# par des nonces dynamiques via middleware Next — chantier séparé.
+DEFAULT_CSP = (
+    "default-src 'self'; "
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+    "style-src 'self' 'unsafe-inline'; "
+    "img-src 'self' data: blob: https:; "
+    "font-src 'self' data:; "
+    "connect-src 'self'; "
+    "frame-ancestors 'none'; "
+    "base-uri 'self'; "
+    "form-action 'self'; "
+    "upgrade-insecure-requests"
+)
+
 
 def _template_value(value: Any, fallback: str) -> str:
     """Garantit une valeur chaîne sûre pour les templates."""
@@ -87,6 +107,7 @@ class FixReport:
     cookie_consent_added: bool = False
     npm_audit_fixed: int = 0
     vercel_headers_fixed: bool = False
+    csp_added: bool = False
     next_config_patched: bool = False
     privacy_page_added: bool = False
     legal_page_added: bool = False
@@ -99,6 +120,8 @@ class FixReport:
         if self.npm_audit_fixed > 0:
             count += 1
         if self.vercel_headers_fixed:
+            count += 1
+        if self.csp_added:
             count += 1
         if self.next_config_patched:
             count += 1
@@ -267,6 +290,53 @@ def _fix_vercel_headers(site_dir: Path, report: FixReport) -> None:
         vercel_path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
         report.vercel_headers_fixed = True
         logger.info("Security headers added to vercel.json")
+
+
+def _fix_csp(site_dir: Path, report: FixReport) -> None:
+    """Ajoute Content-Security-Policy dans vercel.json si absente.
+
+    Stratégie défensive : si une CSP existe déjà (même value différente du défaut),
+    on N'ÉCRASE PAS — on respecte la décision du builder. On n'ajoute la
+    `DEFAULT_CSP` que sur les sites où aucune CSP n'a été configurée.
+
+    Modifie uniquement `vercel.json` (source de vérité prod sur Vercel). Le
+    next.config.mjs n'est pas touché ici pour éviter une regex fragile sur le
+    bloc headers() : `_fix_next_config` gère poweredByHeader, pas CSP.
+    """
+    vercel_path = site_dir / "vercel.json"
+    if not vercel_path.exists():
+        # vercel.json sera créé par _fix_vercel_headers (template) puis ce fix
+        # sera réappliqué au cycle suivant. On ne crée pas un vercel.json
+        # juste pour la CSP, ce serait un side effect en dehors du périmètre.
+        return
+
+    try:
+        data = json.loads(vercel_path.read_text())
+    except json.JSONDecodeError:
+        logger.warning("vercel.json corrupted, skipping CSP fix")
+        return
+
+    headers_list = data.get("headers", [])
+    global_block = None
+    for block in headers_list:
+        if block.get("source") == "/(.*)":
+            global_block = block
+            break
+
+    if global_block is None:
+        # _fix_vercel_headers est censé avoir créé ce bloc avant. Si toujours
+        # absent, ne pas créer ici : signal d'un ordre d'appel cassé en amont.
+        logger.warning("vercel.json missing global headers block, skipping CSP fix")
+        return
+
+    existing_keys = {h.get("key", "").lower() for h in global_block.get("headers", [])}
+    if "content-security-policy" in existing_keys:
+        return  # CSP déjà présente — ne pas écraser une décision builder
+
+    global_block["headers"].append({"key": "Content-Security-Policy", "value": DEFAULT_CSP})
+    vercel_path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+    report.csp_added = True
+    logger.info("Content-Security-Policy added to vercel.json")
 
 
 def _fix_next_config(site_dir: Path, report: FixReport) -> None:
@@ -572,6 +642,7 @@ def auto_fix(site_dir: Path, client_dir: Path, brief: dict | None = None) -> Fix
     _fix_cookie_consent(site_dir, report)
     _fix_npm_audit(site_dir, report)
     _fix_vercel_headers(site_dir, report)
+    _fix_csp(site_dir, report)
     _fix_next_config(site_dir, report)
     _fix_privacy_page(site_dir, brief, report)
     _fix_legal_page(site_dir, brief, report)
@@ -592,6 +663,8 @@ def _log_applied_fixes(client_dir: Path, report: FixReport) -> None:
         fixes.append({"fix": "npm_audit", "vulns_fixed": report.npm_audit_fixed})
     if report.vercel_headers_fixed:
         fixes.append({"fix": "vercel_headers", "target": "vercel.json"})
+    if report.csp_added:
+        fixes.append({"fix": "csp", "target": "vercel.json"})
     if report.next_config_patched:
         fixes.append({"fix": "next_config", "target": "next.config"})
     if report.privacy_page_added:
