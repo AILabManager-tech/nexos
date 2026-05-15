@@ -144,6 +144,106 @@ vercel promote <deployment-url> --scope=<team>
 
 ---
 
+## Allocation des ports — sous-blocs nommés
+
+NEXOS respecte la convention machine documentée dans `~/.claude/CLAUDE.md` user
+(section *Allocation des ports*). Aucun port automatique : tout passe par
+`nexos.port_allocator` ou son wrapper bash `tools/alloc-port.sh`.
+
+### Zones interdites (jamais utiliser)
+
+- **0-1023** : ports privilégiés OS (root requis)
+- **32768-60999** : zone éphémère kernel (cf `/proc/sys/net/ipv4/ip_local_port_range`)
+
+L'allocator refuse explicitement tout sous-bloc qui chevauche ces zones
+(`ForbiddenZoneError`) — validation au load du module.
+
+### Sous-blocs disponibles
+
+```bash
+bash tools/alloc-port.sh --list
+```
+
+Sortie attendue :
+
+```
+NEXOS_TESTS      20000-20099   tests éphémères (sites Next preview)
+NEXOS_ENGINE     20100-20199   pipeline engine (preflight Next.js ← P3)
+NEXOS_SCRAPING   20200-20299   scraping & automation
+NEXOS_CYBERSEC   20300-20399   cybersec interne pipeline
+NEXOS_BUFFER     20900-20999   ad-hoc NEXOS
+GENESIS_*        21000-21199   réservé Genesis
+GENCORE          22000-22999   RAG, qwen-gencore
+SAAS             23000-23999   NEXOS_PLATFORM/saas/
+CYBERSEC_LABS    24000-24999   juice-shop, DVWA, hexstrike
+AUDIT_TOOLKIT    25000-25999   osiris standalone
+GLOBAL_BUFFER    29000-29999   one-shot tous projets
+```
+
+### Usage Python (orchestrator)
+
+```python
+from nexos.port_allocator import allocate_port, NEXOS_ENGINE, SubblockSaturatedError
+
+try:
+    port = allocate_port(NEXOS_ENGINE)   # premier libre dans 20100-20199
+except SubblockSaturatedError:
+    # Aucun port libre. Pas de purge automatique.
+    # → caller décide : skip preflight OU purge explicite + retry.
+    ...
+```
+
+### Usage CLI
+
+```bash
+# Allocation simple — JSON parsable sur stdout
+bash tools/alloc-port.sh NEXOS_ENGINE
+# {"port": 20100, "subblock": "NEXOS_ENGINE"}
+
+# Sous-bloc saturé → exit 3 + JSON erreur sur stderr
+bash tools/alloc-port.sh NEXOS_ENGINE
+# {"error": "saturated", "subblock": "NEXOS_ENGINE", ...}
+```
+
+### Incident — sous-bloc saturé
+
+L'allocator NE purge JAMAIS automatiquement. Si `NEXOS_ENGINE` (ou tout autre
+sous-bloc) est saturé, le pipeline preflight skip proprement et un message
+explicite s'affiche :
+
+```
+✗ NEXOS_ENGINE saturé — ...
+  Hint: bash tools/alloc-port.sh NEXOS_ENGINE --purge
+```
+
+Purge explicite (kill -TERM sur tous les listeners du sous-bloc) :
+
+```bash
+bash tools/alloc-port.sh NEXOS_ENGINE --purge
+# {"port": 20100, "subblock": "NEXOS_ENGINE", "purged_pids": [4242, 4243]}
+```
+
+`--purge` envoie `SIGTERM` (pas `SIGKILL`) — laisse aux serveurs Next.js le
+temps de cleanup proprement. Si un PID résiste, escalader manuellement avec
+`kill -9 <pid>` après inspection (`ss -ltnp | grep :2010`).
+
+### Diagnostic — qui écoute dans le sous-bloc ?
+
+```bash
+ss -Hltnp | awk '$4 ~ /:201[0-9]{2}$/'   # NEXOS_ENGINE 20100-20199
+```
+
+### Régression P3
+
+- **Bug initial** (2026-05-15) : `_find_free_port()` dans `orchestrator/preflight.py`
+  faisait `socket.bind(("", 0))` ce qui pioche dans la zone éphémère kernel
+  (32768-60999, ex: port 55191 observé).
+- **Fix** : `_find_free_port()` délègue à `allocate_port(NEXOS_ENGINE)`.
+- **Test régression** : `tests/test_port_allocator.py::test_preflight_find_free_port_uses_nexos_engine`
+  ancre que le port retourné est toujours dans 20100-20199.
+
+---
+
 ## Contacts / traçabilité
 
 - **RPP Loi 25** d'un client : `clients/<slug>/brief-client.json` → `loi25.rpp.{nom,titre,courriel}`.

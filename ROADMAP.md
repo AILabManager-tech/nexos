@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-15 — P1 + P2 résolus (claude session continue)
+**Dernière mise à jour** : 2026-05-15 — P1 + P2 + P3 résolus (claude session continue)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` (3 commits pré-P1 + 3 commits P1 + 1 commit P2 fix + 1 commit docs(roadmap) — push à discrétion)
+**Branche** : `main` (3 commits pré-P1 + 3 commits P1 + 1 commit P2 fix + 1 commit docs(roadmap) + 4 commits P3 — push à discrétion)
 
 ---
 
@@ -15,7 +15,7 @@
 
 | Indicateur | Valeur | Note |
 |---|---|---|
-| Tests Python | **423/423** verts | +10 tests `test_score_injection.py` (P1) |
+| Tests Python | **444/444** verts | +21 tests `test_port_allocator.py` (P3) |
 | Tests Vitest depanneur-nobert | **13/13** verts | seed initial posé |
 | Build site depanneur-nobert | **PASS** | npm audit 0/0 |
 | Lighthouse depanneur-nobert | a11y 100, perf 92, BP 96, SEO 92 | mesures empiriques |
@@ -24,6 +24,7 @@
 | Pipeline NEXOS complet | OK pour `create` · ✅ **`audit` fonctionnel** (P2 résolu) | |
 | Divergence agent Ph5 / SOIC | ✅ **résolue (P1)** | SOIC = source de vérité unique via placeholders |
 | Silent failure paths | ✅ **3 nettoyés (P2)** | PipelineConfig + AgentRegistry + intake directive |
+| Ports hors zone CLAUDE.md | ✅ **résolu (P3)** | `nexos.port_allocator` + `tools/alloc-port.sh` — NEXOS_ENGINE 20100-20199 |
 
 ### Travail accompli session 2026-05-15
 
@@ -136,32 +137,32 @@ Chaque except logge maintenant un warning `say([yellow]⚠ ... — fallback ...)
 
 ---
 
-### 🟡 P3 — NEXOS utilise des ports dans la zone éphémère interdite
+### ✅ P3 — Zone ports interdite (RÉSOLU 2026-05-15)
 
-**Découvert** : 2026-05-15 lors du tooling preflight
-**Status** : viole la règle d'allocation `CLAUDE.md` user
+**Statut** : ✅ Résolu — `nexos.port_allocator` + `tools/alloc-port.sh` actifs ; preflight pioche dans NEXOS_ENGINE (20100-20199)
 
-**Symptôme** : NEXOS a démarré un serveur Next.js sur **port 55191**. Cette plage (32768-60999) est explicitement **interdite** par `~/.claude/CLAUDE.md` user (zone éphémère kernel). La zone allouée pour NEXOS est **20000-20999** (sous-bloc engine : 20100-20199).
+**Cause racine** : `orchestrator/preflight.py::_find_free_port` faisait `socket.bind(("", 0))` ce qui laisse le kernel piocher dans la zone éphémère (`/proc/sys/net/ipv4/ip_local_port_range` = 32768-60999) — explicitement interdite par `~/.claude/CLAUDE.md` user. Symptôme observé : Next.js démarré sur port 55191.
 
-**Pourquoi c'est P3** : ça fonctionne (pas de crash) mais viole une convention machine documentée. Risque de collision avec d'autres process système, et incohérence avec les ports utilisés manuellement (20000-20099 pour tests éphémères).
+**Implémentation** (Option B — helper Python + wrapper bash, validé en début de session) :
+- `nexos/port_allocator.py` (146 lignes) : 12 sous-blocs nommés constants (NEXOS_TESTS, NEXOS_ENGINE, NEXOS_SCRAPING, NEXOS_CYBERSEC, NEXOS_BUFFER, GENESIS_*, GENCORE, SAAS, CYBERSEC_LABS, AUDIT_TOOLKIT, GLOBAL_BUFFER), garde-fou `FORBIDDEN_RANGES` validé au load, `allocate_port()` séquentiel premier libre, `purge_subblock()` explicite SIGTERM (jamais déclenchée par allocate), `is_port_free()` via `socket.bind`. Stdlib pure, pas de deps.
+- `tools/alloc-port.sh` (160 lignes) : wrapper bash, sortie JSON parsable, `--list`, `--purge`, `--help`, exit codes 0-4 (success / invalid args / unknown subblock / saturated / forbidden zone). Inputs via env vars (safe contre shell injection).
+- `orchestrator/preflight.py::_find_free_port` : délègue à `allocate_port(NEXOS_ENGINE)`. Si saturé → `say([red])` + skip preflight gracieux + hint vers `--purge`.
+- Tests régression : `tests/test_port_allocator.py` (21 tests dont `test_no_subblock_overlaps_forbidden_zones` garde-fou constantes, `test_preflight_find_free_port_uses_nexos_engine` ancre le contrat P3).
+- Documentation : nouvelle section "Allocation des ports" dans `docs/runbook.md` (usage Python + CLI + incidents + diagnostic).
 
-**Plan**
-1. Identifier le code NEXOS qui démarre le serveur Next pour preflight → `orchestrator/preflight.py:135` (subprocess Popen `npx next start -p $port`)
-2. Voir comment le port est pioché (probablement random ou auto via Next)
-3. Forcer un picker dans 20100-20199 avec retry sur conflit
-4. Si possible créer un helper `tools/alloc-port.sh` qui implémente l'algo défini dans CLAUDE.md user (premier libre dans sous-bloc, purge cyclique si plein)
+**Validation** :
+- 444/444 tests Python verts (423 baseline + 20 nouveaux port_allocator + 1 régression preflight)
+- ruff check + format : clean
+- Smoke-tests CLI : `--help`, `--list`, `NEXOS_ENGINE` → 20100, `NEXOS_BUFFER` → 20900, sous-bloc inconnu → exit 2 JSON
 
-**Critère de succès**
-- Pipeline preflight démarre toujours dans 20100-20199
-- Erreur explicite si toute la zone est saturée
-- Documentation mise à jour dans `docs/runbook.md`
+**Décisions clés** (cf début de session) :
+- Pas de purge automatique (règle CLAUDE.md user) — `--purge` reste 100% explicite
+- Sous-bloc saturé = erreur claire, jamais de retombée vers zone éphémère
+- Validation `FORBIDDEN_RANGES` au load du module = garde-fou si une constante dérive un jour
 
-**Fichiers à toucher**
-- `orchestrator/preflight.py`
-- Nouveau : `tools/alloc-port.sh` (selon design CLAUDE.md user)
-- Tests : couverture range port
+**Commits** : à venir dans cette session (4 commits atomiques prévus — feat port_allocator + tests, feat alloc-port.sh, fix preflight + test régression, docs roadmap/runbook/journal)
 
-**Effort estimé** : 30 min (sans alloc-port.sh) · 1h30 (avec alloc-port.sh générique)
+**Effort réel** : ~1h30 (design API + module Python + tests + wrapper bash + patch preflight + docs)
 
 ---
 
@@ -389,6 +390,16 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ## 🗓️ Historique des sessions notables
 
+### 2026-05-15 — P3 résolu : zone ports interdite, helper port_allocator (claude session continue)
+- Cause racine identifiée : `socket.bind(("", 0))` dans `orchestrator/preflight.py::_find_free_port` retombe dans 32768-60999 (zone éphémère kernel, interdite par `~/.claude/CLAUDE.md` user)
+- Décision validée en début de session : Option B (helper Python + wrapper bash), pas un simple patch in-place
+- `nexos/port_allocator.py` créé : 12 sous-blocs constants nommés (NEXOS_TESTS/ENGINE/SCRAPING/CYBERSEC/BUFFER + GENESIS + GENCORE + SAAS + CYBERSEC_LABS + AUDIT_TOOLKIT + GLOBAL_BUFFER), `FORBIDDEN_RANGES` validé au load (0-1023, 32768-60999), `allocate_port` séquentiel premier libre, `purge_subblock` SIGTERM 100% explicite, `is_port_free` via socket.bind
+- `tools/alloc-port.sh` créé : wrapper bash JSON-parsable, `--list`, `--purge`, `--help`, exit codes 0-4, inputs via env vars (safe shell injection)
+- `orchestrator/preflight.py::_find_free_port` délégué à `allocate_port(NEXOS_ENGINE)` ; saturé → say red + skip preflight + hint `--purge`
+- 21 tests régression dans `tests/test_port_allocator.py` dont garde-fou constantes + ancre contrat preflight P3 = NEXOS_ENGINE
+- Documentation : section "Allocation des ports" dans `docs/runbook.md` (usage Python + CLI + incidents + diagnostic)
+- 444/444 tests Python verts, ruff check + format clean
+
 ### 2026-05-15 — P2 résolu : audit silent failure paths (claude session continue)
 - Bug ROADMAP « exit 1 silencieux » non reproductible — déjà résolu par effet de bord (probable : `cc30880` Claude OAuth fix, `f0b861b` rate-limit retry, ou `48f71c4` no-timeout doc)
 - Audit défensif ciblé : 9 patterns « silent failure » examinés sur chaîne audit (auto-fix → preflight → audit_toolkit → build_prompt → cli_runner)
@@ -431,18 +442,16 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ## 🎯 Pour la session prochaine — recommandation finale
 
-**P1 + P2 résolus 2026-05-15.** Pipeline `audit` fonctionnel, score Ph5 déterministe via SOIC, 3 silent paths nettoyés.
+**P1 + P2 + P3 résolus 2026-05-15.** Pipeline `audit` fonctionnel, score Ph5 déterministe via SOIC, 3 silent paths nettoyés, allocation ports conforme à `~/.claude/CLAUDE.md` user.
 
-**Prochain focus : P3 (zone ports interdite 32768-60999).** 30 min. NEXOS démarre Next.js sur port aléatoire dans la zone éphémère kernel — viole `~/.claude/CLAUDE.md` user. Forcer un picker dans 20100-20199.
-
-Une fois P3 fait : P4 (polish) en priorisant **P4b propagation 17 clients** (maintenant safe avec P1 résolu — chaque `nexos fix <client>` ne propagera plus de divergence score). Ordre suggéré P4b > P4d hardening tools/*.sh > P4c Vitest étendu > P4a CSP next.config > P4e doctor --all-clients.
-
-P3 (ports) peut attendre — c'est moins urgent, c'est de la conformité de convention.
-
-P4 (polish) : pas avant que P1+P2 soient clos.
+**Prochain focus : P4 (polish).** Ordre suggéré :
+1. **P4b propagation 17 clients** (~1h) — maintenant safe avec P1 résolu, chaque `nexos fix <client>` ne propagera plus de divergence score.
+2. **P4d hardening tools/*.sh** (~1h) — appliquer le pattern osiris-scan.sh (JSON valide même en cas d'erreur) aux 4 autres scans (deps, ssl, headers, lighthouse).
+3. **P4c Vitest étendu** (2-3h) — composants UI, routes API, schémas Zod sur depanneur-nobert.
+4. **P4a CSP next.config** (30 min) — étendre `_fix_csp` à `next.config.mjs` (cosmétique).
+5. **P4e doctor --all-clients** (30 min) — rapport tabulaire tous clients.
 
 **Critère de "session prochaine = succès"** :
-- P1 résolu : décision documentée sur source de vérité Ph5
-- Tests régression couvrant le cas divergence
-- ROADMAP.md mis à jour (P1 marqué clos, nouveaux items s'il y en a)
+- Un des items P4 fermé proprement avec tests + commits atomiques
+- ROADMAP.md mis à jour (item P4 marqué clos, découvertes notées)
 - 0 push autonome — utilisateur valide explicitement
