@@ -168,12 +168,35 @@ def run_workflow_command(
     return 1
 
 
+def _resolve_client_dir(arg: Path) -> Path:
+    """Auto-résout slug → clients/<slug> si arg n'existe pas tel quel.
+
+    Permet `nexos fix depanneur-nobert` au lieu de `nexos fix clients/depanneur-nobert`
+    (cohérence ergonomique : le CLAUDE.md utilise `--client-dir clients/<slug>` pour
+    `nexos create`, mais `fix` et `report` exigeaient le path complet en positionnel).
+
+    Stratégie défensive :
+    1. Si `arg` existe en tant que dossier → on le prend tel quel
+    2. Sinon si `clients/<arg>` existe → on l'utilise (auto-résolution slug)
+    3. Sinon → on rend `arg` inchangé (le caller produira l'erreur usuelle)
+
+    Audit dette 2026-05-15 items I+J.
+    """
+    if arg.is_dir():
+        return arg
+    candidate = Path("clients") / arg
+    if candidate.is_dir():
+        return candidate
+    return arg
+
+
 def run_fix(client_dir: Path, dry_run: bool = False) -> None:
     """
     Applique les auto-fixes D4/D8 sur un client sans lancer le pipeline.
 
     Si dry_run=True, analyse sans appliquer et montre ce qui serait corrigé.
     """
+    client_dir = _resolve_client_dir(client_dir)
     # Détecter le répertoire site
     site_dir = client_dir / "site"
     if not (site_dir / "package.json").exists():
@@ -327,6 +350,7 @@ def _dry_run_analysis(site_dir: Path, client_dir: Path) -> None:
 
 def run_report(client_dir: Path) -> None:
     """Affiche un rapport agrégé pour un client."""
+    client_dir = _resolve_client_dir(client_dir)
     say(
         Panel(
             f"[bold]Client:[/] {client_dir.name}",
