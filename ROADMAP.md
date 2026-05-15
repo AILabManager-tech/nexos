@@ -26,6 +26,9 @@
 | Divergence agent Ph5 / SOIC | ✅ **résolue (P1)** | SOIC = source de vérité unique via placeholders |
 | Silent failure paths | ✅ **3 nettoyés (P2)** | PipelineConfig + AgentRegistry + intake directive |
 | Ports hors zone CLAUDE.md | ✅ **résolu (P3)** | `nexos.port_allocator` + `tools/alloc-port.sh` — NEXOS_ENGINE 20100-20199 |
+| Osiris API désynchronisée | ✅ **résolu (P7)** | `osiris-scan.sh` adapté à `--url --output report`, scan production OK |
+| Bugs réels notés (audit) | 🔴 **P8 ouvert** (4 items B1-B4) | Aucun bloquant — Osiris deps externes, CVE HIGH, ABORT_PLATEAU, clients dormants |
+| Dette technique notée | 🟡 **P9 ouvert** (6 items D1-D6) | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
 | Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
 | CSP middleware dev local | ✅ **résolu (P4a)** | `_fix_csp_middleware` génère middleware.ts aligné prod (single source vercel.json) |
@@ -232,6 +235,155 @@ Nouveau flag `--all-clients` qui produit un rapport tabulaire de tous les client
 - `orchestrator/verify.py:55` (parse brief-client.json) — JSON corrompu ou schéma invalide → brief=None silencieux. Maintenant : `say([yellow] ⚠ ...)` avec type + message.
 
 Comportement inchangé sinon. Plus de fallback aveugle.
+
+---
+
+### ✅ P7 — Fix osiris-scan.sh API désynchronisée (RÉSOLU 2026-05-15)
+
+**Statut** : ✅ Résolu — Osiris remarche en pipeline, score réel mesuré
+
+**Cause racine** : L'API du scanner Osiris a changé sans que `tools/osiris-scan.sh` soit mis à jour. Tous les `osiris.json` clients étaient des JSON erreur "No such option: --format" depuis un certain temps. Le hardening P4d (P3 session) sauvait la pipeline du crash mais NEXOS tournait à l'aveugle sur l'axe sobriété/sécurité externe.
+
+**Diff API** :
+- Ancienne : `scanner.py <URL> --format json` (URL positional + flag JSON)
+- Nouvelle : `scanner.py --url <URL> --output report --mode fast` → écrit `reports/<domain>_<date>.json` (relatif CWD)
+
+**Fix** : refactor `tools/osiris-scan.sh` (commit `209fd2e`) :
+- URL via `--url` (kwarg)
+- Scanner exécuté depuis WORK_DIR temporaire (`mktemp -d`)
+- Capture du JSON généré dans `WORK_DIR/reports/`
+- Cleanup via `trap EXIT`
+- Pattern P4d conservé : exit 0 + JSON valide + retry + budget
+- Nouvelle env var : `OSIRIS_MODE` (fast|deep)
+
+**Validation prod** : scan depanneur-nobert remarche, score 4.0/10 "Critique" sur 5 axes (S/R/V/A/E). 6/6 tests `test_osiris_scan.py` verts (2 fake scanners mis à jour pour matcher nouvelle API).
+
+**Découverte intéressante** : SOIC μ=9.11 (READY) ↔ Osiris 4.0/10 (Critique) — les deux moteurs mesurent des choses différentes. Cf D2 dans P9.
+
+---
+
+### 🔴 P8 — Bugs réels à corriger (NOTÉS 2026-05-15)
+
+**Statut** : 🔴 Identifiés à l'audit post-stabilisation. **Aucun bloquant pour exploitation actuelle.**
+
+#### B1 — Osiris : 2 axes en échec côté scanner externe
+
+**Symptôme** :
+```
+ERREUR Intrusion : Blocklist introuvable : blocklists/trackers.json
+ERREUR Légalité : No module named 'playwright'
+```
+
+**Impact** : Score Osiris partiel 6/8 axes (au lieu de 8/8). NEXOS reçoit JSON valide mais incomplet. Dimensions Intrusion (I) et Légalité (L) absentes des mesures.
+
+**Cause** : Deps externes du scanner Osiris manquantes côté `/home/gear-code/02_projects/NEXOS_PLATFORM/osiris/`. Hors scope NEXOS strictement, mais bloque la mesure complète.
+
+**Fix proposé** :
+```bash
+cd /home/gear-code/02_projects/NEXOS_PLATFORM/osiris
+pip install playwright && playwright install chromium
+# + récupérer blocklists/trackers.json (probablement repo externe Osiris)
+```
+
+**Effort estimé** : 30 min. **Valeur** : élevée (gain de 2 axes critiques sur la mesure de chaque site).
+
+---
+
+#### B2 — CVE HIGH npm audit non résolu sur tous les sites
+
+**Symptôme** :
+```
+HIGH      next-intl <4.12.0    (GHSA chain via @formatjs)
+MODERATE  postcss   <8.5.10    (XSS via Unescaped </style> in CSS Stringify)
+```
+
+**Impact réel actuel** : faible. Tous tes sites NEXOS sont statiques (pas d'input CSS user-uploadé), donc surface d'attaque XSS postcss ≈ 0. Mais le CVE existe et persiste sur 8/8 sites.
+
+**Pourquoi pas auto-fixé en P4b** : `npm audit fix --force` voudrait installer next-intl@4.12.0 + next@15.5.18 — breaking change qui pourrait casser le build/runtime sans tests régression complets.
+
+**Fix proposé** (upgrade contrôlé) :
+1. Upgrade next 15.5.18 + next-intl 4.12.0 sur **depanneur-nobert seul** (client de référence)
+2. Run full Vitest (70 tests) + build + lighthouse pour valider
+3. Si OK, propager aux 7 autres clients
+4. Si KO, downgrade + ouvrir issue upstream
+
+**Effort estimé** : 1-2h. **Valeur** : moyenne aujourd'hui (surface attaque ≈ 0), élevée si un futur site sert du CSS user-uploadé.
+
+---
+
+#### B3 — ABORT_PLATEAU bloque 2 clients sans recovery automatique
+
+**Symptôme** :
+```
+collectif-nova : μ=8.05 décision=ABORT_PLATEAU
+vertex-pmo     : μ=7.91 décision=ABORT_PLATEAU
+```
+
+**Comportement actuel** : SOIC Converger détecte un plateau (μ ne progresse plus après N itérations) et abandonne. C'est volontaire — évite les boucles infinies coûteuses en tokens.
+
+**Trou de couverture** : aucune stratégie de recovery automatique. NEXOS dit "non" sans dire "voici comment débloquer". Pour ces 2 clients, humain doit intervenir manuellement.
+
+**Fix proposé** : ajouter `Converger.recover_from_plateau()` qui essaie séquentiellement :
+1. Re-générer la phase avec un modèle LLM différent (claude → codex → gemini)
+2. Re-prompt avec contexte enrichi (afficher les findings SOIC précédents)
+3. Si rien ne marche après 2 stratégies, vrai ABORT_PLATEAU avec changelog explicite
+
+**Effort estimé** : 2-3h (logique Converger + tests). **Valeur** : élevée pour autonomie totale (sinon NEXOS reste manuel sur ~25% des clients).
+
+---
+
+#### B4 — 6 clients dormants (brief OK, pipeline jamais exécuté)
+
+**Clients concernés** :
+```
+iusine, jokeresthetique, la-villa-du-sous-marin,
+l-usine-rh, l-usinerh, nexos-platform-industrial, usine-rh
+```
+
+**Symptôme** : Ces clients ont un `brief-client.json` mais pas de `site/`, pas de `soic-gates.json`. Le pipeline a soit jamais été lancé, soit a échoué silencieusement sans laisser de trace exploitable.
+
+**Cause probable** : Sessions antérieures où le pipeline a été interrompu. Manque de logging de l'échec dans changelog.
+
+**Fix proposé** :
+1. Lancer `nexos create --client-dir clients/<slug>` un par un sur les 7 dormants
+2. Logger explicitement les échecs (P2 + P6 ont déjà nettoyé les silent paths)
+3. Pour chaque échec, classer la cause (timeout LLM, rate limit, brief incomplet, modèle CLI absent)
+
+**Effort estimé** : 1-3h selon taux de succès. **Valeur** : moyenne (récupère 7 clients en pipeline actif).
+
+---
+
+### 🟡 P9 — Dette technique (notée 2026-05-15)
+
+**Statut** : 🟡 Polish / amélioration. Zero blocage opérationnel.
+
+#### D1 — CI Vitest matrix limitée à 1 client sur 8
+J'ai ajouté Vitest dans CI hier (commit `5e05951`) avec matrix `client: [depanneur-nobert]`. Les 7 autres clients : aucune protection régression UI/Zod/API en CI.
+**Action** : propager les 70 tests Vitest aux 7 autres clients, étendre matrix. Effort ~2h.
+
+#### D2 — Divergence SOIC interne vs Osiris externe
+depanneur-nobert : SOIC μ=9.11 (READY) ↔ Osiris 4.0/10 (Critique). Les deux mesurent des choses différentes (technique NEXOS vs santé opérationnelle réelle). NEXOS est aveugle à ce qu'Osiris mesure.
+**Action** : intégrer Osiris score comme dimension SOIC D10 (ou pondérer μ par Osiris). Effort 2-3h.
+
+#### D3 — Doc obsolète CLAUDE.md (symlinks)
+```
+osiris  → ~/osiris-scanner   # n'existe pas
+core-v3 → ~/projects/ai/ainova-os-v3   # n'existe pas
+```
+Le script `osiris-scan.sh` a un fallback sibling qui marche. Mais la doc ment.
+**Action** : corriger CLAUDE.md ou créer les symlinks. Effort 10 min.
+
+#### D4 — mypy installation inconsistante
+`python3 -m mypy` retourne "No module named mypy" en CLI direct. Mais `pytest tests/test_mypy_clean.py` passe (via venv). Inconsistance environnement.
+**Action** : `pip install mypy` au niveau système OU documenter activation venv. Effort 5 min.
+
+#### D5 — Verdict deploy marginal beaumont-avocats μ=8.50
+Exactement le seuil. Aucune marge. Toute modif mineure peut le faire descendre sous 8.5.
+**Action** : analyser dimensions faibles + améliorer pour gagner ~0.3 de marge. Effort 1h.
+
+#### D6 — `brief-synthesizer` schéma strict
+`additionalProperties: false` rejette champs comme `sector` qui pourraient être utiles. Friction UX. Pas un bug, by design.
+**Action** : ajouter champs optionnels au schéma (`sector`, `tags`, `notes`) si valeur produit confirmée. Effort 20 min.
 
 ---
 
