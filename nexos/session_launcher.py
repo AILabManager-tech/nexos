@@ -422,5 +422,9 @@ def launch_session(
     # SAFE: cmd is an argv list built by build_launcher_command from a
     # whitelisted host binary + static CLI flags + internal prompt template.
     # shell=False (default). No user string is shell-interpolated.
-    result = subprocess.run(cmd, cwd=str(nexos_root), check=False)
+    # No timeout: interactive CLI session (claude/codex/gemini) can legitimately
+    # run for an hour or more during a full pipeline. Imposing a timeout here
+    # would kill the user's session mid-conversation. Audit dette 2026-05-15
+    # (item B) : decision documented to prevent regression by reflex.
+    result = subprocess.run(cmd, cwd=str(nexos_root), check=False, timeout=None)
     return result.returncode
