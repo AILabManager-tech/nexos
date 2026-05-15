@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-15 par session doctor + audit dette
+**Dernière mise à jour** : 2026-05-15 par session doctor + audit dette + codification discipline (claude)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` (synchronisée avec `origin/main` post-push 2026-05-15)
+**Branche** : `main` (3 commits locaux non poussés : `021e1be`, `7413158`, `a59f5a4` — à push manuellement)
 
 ---
 
@@ -25,10 +25,12 @@
 
 ### Travail accompli session 2026-05-15
 
-**13 commits sur `nexos_v.3.0/main`** (poussés sur origin) :
+**16 commits sur `nexos_v.3.0/main`** (13 poussés sur origin, 3 locaux) :
 
 ```
-021e1be fix(tools): preflight pa11y writes to a11y.json with proper config
+a59f5a4 docs(cli): codify ROADMAP.md session discipline as mandatory rule   [local]
+7413158 docs(roadmap): add ROADMAP.md — continuity doc between sessions      [local]
+021e1be fix(tools): preflight pa11y writes to a11y.json with proper config   [local]
 973be85 test(e2e): update _fake_doctor signature for --client kwarg
 dd0417c test(depanneur-nobert): seed minimal Vitest suite (13 tests / 3 files)
 ecadb8b fix(depanneur-nobert): contrast text.muted #8B7355 → #7A6447 (WCAG AA)
@@ -385,13 +387,17 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ## 🗓️ Historique des sessions notables
 
-### 2026-05-15 — Doctor + audit dette (cette session)
-- 13 commits nexos_v.3.0 + 1 commit soic_v3
+### 2026-05-15 — Doctor + audit dette + codification discipline (claude)
+- 16 commits nexos_v.3.0 + 1 commit soic_v3
 - Audit dette : 13 items, 8 réels, 5 faux positifs ou cosmétiques
 - Découvertes : item N (divergence Ph5/SOIC), crash audit, port hors zone
 - Fix racine osiris-scan.sh JSON cassé attrapé en passant
 - Mode `nexos doctor --client` ajouté
 - depanneur-nobert : 34 → 0 erreurs WCAG AA contraste (palette `text.muted` corrigé), 0 → 13 tests Vitest
+- **ROADMAP.md créé** (commit `7413158`) comme doc de continuité multi-CLI
+- **Discipline session codifiée** dans CLAUDE.md / AGENTS.md / GEMINI.md (commit `a59f5a4`) avec autorité équivalente aux règles absolues
+- Préflight pa11y → `a11y.json` fixé (mismatch silencieux découvert en re-validant les fixes contraste)
+- Conclusion méthodologique : la dette réelle est d'**intégrité** (pipeline qui ment), pas de structure. Item N reste P1 pour prochaine session.
 
 ### Sessions antérieures (extraites CHANGELOG.md)
 - 2026-05-13 — Chantier 4 dette pipeline (11 items, tag v4.3.0)
