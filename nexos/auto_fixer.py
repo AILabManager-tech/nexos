@@ -102,6 +102,31 @@ def _template_value(value: Any, fallback: str) -> str:
     return text or fallback
 
 
+# Regex multi-ligne qui détecte les dicts terminaux à 2 clés `{ "key": ..., "value": ... }`
+# produits par json.dumps(indent=2). On les recollapse sur une seule ligne pour
+# préserver le format inline du template `vercel-headers.template.json` et éviter
+# des diffs clients pollués (audit dette 2026-05-15 item E).
+_VERCEL_HEADER_DICT_RE = re.compile(
+    r"(\s*)\{\n"
+    r'\s+"key":\s*("(?:[^"\\]|\\.)*"),\n'
+    r'\s+"value":\s*("(?:[^"\\]|\\.)*")\n'
+    r"\s*\}",
+)
+
+
+def _vercel_json_dumps(data: dict) -> str:
+    """Sérialise vercel.json en mode hybride : root indenté, headers dicts inline.
+
+    Le format cible est celui du template `templates/vercel-headers.template.json` :
+    structure principale en pretty-print multi-ligne, mais chaque entrée header
+    `{ "key": "X", "value": "Y" }` reste sur une seule ligne. Cela évite les
+    diffs de reformatage massifs quand on ajoute un seul header (cf. commit
+    4910f19 qui montrait 36 insertions / 8 deletions pour un seul ajout CSP).
+    """
+    raw = json.dumps(data, indent=2, ensure_ascii=False)
+    return _VERCEL_HEADER_DICT_RE.sub(r'\1{ "key": \2, "value": \3 }', raw) + "\n"
+
+
 @dataclass
 class FixReport:
     cookie_consent_added: bool = False
@@ -287,7 +312,7 @@ def _fix_vercel_headers(site_dir: Path, report: FixReport) -> None:
             added = True
 
     if added:
-        vercel_path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+        vercel_path.write_text(_vercel_json_dumps(data))
         report.vercel_headers_fixed = True
         logger.info("Security headers added to vercel.json")
 
@@ -334,7 +359,7 @@ def _fix_csp(site_dir: Path, report: FixReport) -> None:
         return  # CSP déjà présente — ne pas écraser une décision builder
 
     global_block["headers"].append({"key": "Content-Security-Policy", "value": DEFAULT_CSP})
-    vercel_path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+    vercel_path.write_text(_vercel_json_dumps(data))
     report.csp_added = True
     logger.info("Content-Security-Policy added to vercel.json")
 
