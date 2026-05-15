@@ -63,7 +63,10 @@ def run_pipeline(
         if color_overrides:
             pipeline_cfg.color_overrides = color_overrides
         phases = pipeline_cfg.phases
-    except Exception:
+    except Exception as e:
+        say(
+            f"[yellow]⚠ PipelineConfig.from_brief failed ({type(e).__name__}: {e}) — fallback PHASES_MAP[{mode}][/]"
+        )
         pipeline_cfg = None
         phases = PHASES_MAP[mode]
 

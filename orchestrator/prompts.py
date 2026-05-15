@@ -13,7 +13,7 @@ import re
 import unicodedata
 from pathlib import Path
 
-from ._shared import _NEXOS_V4, AGENTS_DIR
+from ._shared import _NEXOS_V4, AGENTS_DIR, say
 from .brief import load_runtime_brief
 
 
@@ -254,8 +254,10 @@ def build_phase_prompt(
                     f"\n# Agents filtrés (stack={stack}, type={site_type}) :\n{agent_list}\n"
                     f"Exécute CHAQUE agent listé ci-dessus."
                 )
-        except Exception:
-            pass
+        except Exception as e:
+            say(
+                f"[yellow]⚠ AgentRegistry failed for {phase} ({type(e).__name__}: {e}) — prompt without agents list[/]"
+            )
 
     # 1c. Section manifest — inject section context into prompt
     manifest_path = client_dir / "section-manifest.json"
@@ -313,8 +315,10 @@ def build_phase_prompt(
             intake_directive = _format_mode_intake_directive(brief_data, phase, mode_override=mode)
             if intake_directive:
                 parts.append(intake_directive)
-        except Exception:
-            pass
+        except Exception as e:
+            say(
+                f"[yellow]⚠ intake directive failed for {phase} ({type(e).__name__}: {e}) — prompt without intake cadrage[/]"
+            )
 
     # 3. Feed des phases précédentes
     phase_reports = {
