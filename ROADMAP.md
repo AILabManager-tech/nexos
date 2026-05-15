@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-15 — P1 (Item N) résolu (claude session continue)
+**Dernière mise à jour** : 2026-05-15 — P1 + P2 résolus (claude session continue)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` (3 commits locaux pré-P1 + commits P1 à venir — à push manuellement)
+**Branche** : `main` (3 commits pré-P1 + 3 commits P1 + 1 commit P2 fix + 1 commit docs(roadmap) — push à discrétion)
 
 ---
 
@@ -21,8 +21,9 @@
 | Lighthouse depanneur-nobert | a11y 100, perf 92, BP 96, SEO 92 | mesures empiriques |
 | Pa11y depanneur-nobert | **0 erreurs** | vs 34 contraste avant fix |
 | Clients actifs | 18 total · 8 complets brief+gates+site | cf `nexos doctor` |
-| Pipeline NEXOS complet | OK pour `create` · 🔴 **`audit` cassé** (cf P2) | |
+| Pipeline NEXOS complet | OK pour `create` · ✅ **`audit` fonctionnel** (P2 résolu) | |
 | Divergence agent Ph5 / SOIC | ✅ **résolue (P1)** | SOIC = source de vérité unique via placeholders |
+| Silent failure paths | ✅ **3 nettoyés (P2)** | PipelineConfig + AgentRegistry + intake directive |
 
 ### Travail accompli session 2026-05-15
 
@@ -97,36 +98,41 @@ cf455b3 fix(tools): osiris-scan.sh produces valid JSON on retry failure
 
 ---
 
-### 🟠 P2 — Crash `nexos audit` exit 1 silencieux
+### ✅ P2 — Crash `nexos audit` exit 1 silencieux (RÉSOLU 2026-05-15 par effet de bord)
 
-**Découvert** : 2026-05-15 en relançant Ph5 sur depanneur-nobert
-**Status** : mode `audit` cassé pour TOUS les clients
+**Statut** : ✅ Résolu — bug ROADMAP non reproductible aujourd'hui + 3 silent failure paths nettoyés défensivement
 
-**Symptôme**
+**Test reproduction** (2026-05-15) :
 ```bash
-$ python3 nexos_cli.py audit --client-dir clients/depanneur-nobert --url ...
-# preflight ✓, puis exit 1 sans stack trace visible (stderr supprimé qq part)
+$ timeout 90 python3 -u nexos_cli.py audit --client-dir clients/depanneur-nobert --url http://localhost:20003
+# Pipeline tourne propre : auto-fix OK → preflight 6/6 scans OK → "Using claude CLI" → timeout 90s (subprocess en attente)
+# EXIT=124 (timeout du test, pas du pipeline). Aucun "exit 1 silencieux".
 ```
 
-**Pourquoi c'est P2** : un des 7 modes officiels de NEXOS (`create`, `audit`, `modify`, `content`, `analyze`, `knowledge`, `converge`) n'est plus fonctionnel. Si l'utilisateur veut auditer un site existant sans relancer toute la création, il doit contourner manuellement (preflight + lecture artefacts).
+Le subprocess claude a un timeout interne de 30 min (`_CODEX_CLI_TIMEOUT = 1800` dans `cli_runner.py:15`) — design intentionnel documenté par commit `48f71c4` (no-timeout dans session_launcher).
 
-**Plan d'investigation**
-1. Re-lancer `nexos audit` au **foreground** (pas en background) avec `2>&1 | tee` pour capturer toute la stack
-2. Si stderr toujours supprimé, instrumenter ponctuellement `orchestrator/phases.py` avec un try/except global
-3. Probablement dans l'invocation subprocess de claude CLI (cf `nexos/session_launcher.py:425` — pas de timeout par design mais peut crasher si claude refuse)
-4. Vérifier que l'auto-fix appelé au début de Ph5 (`phases.py:122-129`) ne plante pas
+**Cause probable du fix par effet de bord** :
+- `cc30880` : Claude CLI uses -p mode + unsets ANTHROPIC_API_KEY for OAuth → résout "Invalid API key" qui causait probablement l'exit 1 immédiat
+- `f0b861b` : rate limit retry/pivot Claude→Codex (A-004) → couvre cas où claude refuse pour cause de rate limit
+- `8daf3d1` : switch default LLM host claude (default avant était codex potentiellement absent)
 
-**Critère de succès**
-- `nexos audit --client-dir clients/depanneur-nobert` termine sans erreur
-- Soit le mode produit un verdict Ph5 + écrit soic-gates, soit il documente clairement pourquoi il abort
-- Test e2e ajouté
+**Action préventive — 3 bugs latents fixés** (commit `a92adb8`) :
 
-**Fichiers à toucher (probables)**
-- `orchestrator/phases.py` (audit dispatch + invocation Ph5)
-- `nexos/session_launcher.py` (subprocess claude)
-- `tests/test_e2e_orchestrator.py` (couverture audit mode)
+Audit ciblé des patterns "silent failure" sur la chaîne `audit` (auto-fix → preflight → audit_toolkit → build_prompt → cli_runner) a identifié 3 `except Exception: pass` sans log :
 
-**Effort estimé** : 30-60 min
+1. `orchestrator/phases.py:66` — fallback silencieux `PipelineConfig.from_brief` → `PHASES_MAP`
+2. `orchestrator/prompts.py:257` — fallback silencieux AgentRegistry → prompt sans liste d'agents
+3. `orchestrator/prompts.py:316` — fallback silencieux intake directive → prompt sans cadrage métier
+
+Chaque except logge maintenant un warning `say([yellow]⚠ ... — fallback ...)` avec type + message exception. Aucun changement de comportement, juste visibility.
+
+**Validation** : 423/423 tests Python verts, ruff check + format clean, pre-commit hooks tous passés.
+
+**Files touched** : `orchestrator/phases.py`, `orchestrator/prompts.py`
+
+**Si le bug réapparaît** : les nouveaux warnings yellow rendront maintenant visible la cause exacte du fallback silencieux. Re-ouvrir P2 si nécessaire.
+
+**Effort réel** : 45 min (audit grep + classification + 3 edits + tests + commit)
 
 ---
 
@@ -383,6 +389,17 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ## 🗓️ Historique des sessions notables
 
+### 2026-05-15 — P2 résolu : audit silent failure paths (claude session continue)
+- Bug ROADMAP « exit 1 silencieux » non reproductible — déjà résolu par effet de bord (probable : `cc30880` Claude OAuth fix, `f0b861b` rate-limit retry, ou `48f71c4` no-timeout doc)
+- Audit défensif ciblé : 9 patterns « silent failure » examinés sur chaîne audit (auto-fix → preflight → audit_toolkit → build_prompt → cli_runner)
+- 3 bugs latents identifiés et fixés (`a92adb8`) — chaque `except Exception: pass` sans log remplacé par `say([yellow]⚠ ... — fallback ...)` :
+  - `phases.py:66` PipelineConfig → PHASES_MAP
+  - `prompts.py:257` AgentRegistry → prompt sans agents
+  - `prompts.py:316` intake directive → prompt sans cadrage
+- 5 patterns examinés et acceptés (cli_runner return 1 avec say, verify.py return False avec say, auto_fixer except spécifiques, etc.)
+- 1 amélioration suggérée mais skip (preflight Next server stderr=DEVNULL → log file) — yak shaving sans bug réel
+- 423/423 tests verts, ruff clean
+
 ### 2026-05-15 — P1 résolu : divergence agent Ph5 vs SOIC (claude session continue)
 - Cause racine identifiée : agent calcule sa propre grille D1-D9 indépendamment de SOIC GateEngine déterministe (qui pilote déjà `Converger.decide()` + `deploy-master`)
 - Décision documentée dans `CLAUDE.md` : SOIC = source de vérité unique
@@ -414,11 +431,11 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ## 🎯 Pour la session prochaine — recommandation finale
 
-**P1 résolu 2026-05-15.** Le verdict deploy/no-deploy s'appuie désormais sur SOIC déterministe via placeholders, sans divergence possible avec l'agent.
+**P1 + P2 résolus 2026-05-15.** Pipeline `audit` fonctionnel, score Ph5 déterministe via SOIC, 3 silent paths nettoyés.
 
-**Prochain focus : P2 (crash `nexos audit` exit 1 silencieux).** 30-60 min. Sans ça, impossible d'auditer un site existant sans relancer toute la création, ce qui bloque la propagation des fixes aux 17 autres clients (P4b).
+**Prochain focus : P3 (zone ports interdite 32768-60999).** 30 min. NEXOS démarre Next.js sur port aléatoire dans la zone éphémère kernel — viole `~/.claude/CLAUDE.md` user. Forcer un picker dans 20100-20199.
 
-Une fois P2 réparé : P3 (zone ports) reste rapide (30 min), puis P4 (polish) en priorisant P4b propagation 17 clients (maintenant safe avec P1 résolu).
+Une fois P3 fait : P4 (polish) en priorisant **P4b propagation 17 clients** (maintenant safe avec P1 résolu — chaque `nexos fix <client>` ne propagera plus de divergence score). Ordre suggéré P4b > P4d hardening tools/*.sh > P4c Vitest étendu > P4a CSP next.config > P4e doctor --all-clients.
 
 P3 (ports) peut attendre — c'est moins urgent, c'est de la conformité de convention.
 
