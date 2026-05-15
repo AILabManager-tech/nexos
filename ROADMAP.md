@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-15 par session doctor + audit dette + codification discipline (claude)
+**Dernière mise à jour** : 2026-05-15 — P1 (Item N) résolu (claude session continue)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` (3 commits locaux non poussés : `021e1be`, `7413158`, `a59f5a4` — à push manuellement)
+**Branche** : `main` (3 commits locaux pré-P1 + commits P1 à venir — à push manuellement)
 
 ---
 
@@ -15,13 +15,14 @@
 
 | Indicateur | Valeur | Note |
 |---|---|---|
-| Tests Python | **413/413** verts | aucune régression |
+| Tests Python | **423/423** verts | +10 tests `test_score_injection.py` (P1) |
 | Tests Vitest depanneur-nobert | **13/13** verts | seed initial posé |
 | Build site depanneur-nobert | **PASS** | npm audit 0/0 |
 | Lighthouse depanneur-nobert | a11y 100, perf 92, BP 96, SEO 92 | mesures empiriques |
 | Pa11y depanneur-nobert | **0 erreurs** | vs 34 contraste avant fix |
 | Clients actifs | 18 total · 8 complets brief+gates+site | cf `nexos doctor` |
 | Pipeline NEXOS complet | OK pour `create` · 🔴 **`audit` cassé** (cf P2) | |
+| Divergence agent Ph5 / SOIC | ✅ **résolue (P1)** | SOIC = source de vérité unique via placeholders |
 
 ### Travail accompli session 2026-05-15
 
@@ -62,42 +63,37 @@ cf455b3 fix(tools): osiris-scan.sh produces valid JSON on retry failure
 
 ## 🎯 Items dette ouverts (priorisés)
 
-### 🔴 P1 — Item N : Divergence agent Ph5 vs SOIC
+### ✅ P1 — Item N : Divergence agent Ph5 vs SOIC (RÉSOLU 2026-05-15)
 
-**Découvert** : 2026-05-15
-**Status** : bloque la confiance dans tout verdict deploy/no-deploy
+**Statut** : ✅ Résolu — SOIC = source de vérité unique pour μ Ph5
 
-**Symptôme** (cas depanneur-nobert run 2026-05-14) :
-```
-ph5-qa-report.md   →  "Score Final 7.52 / 10  FAIL"
-soic-gates.json    →  μ=8.78  ACCEPT  iter=1
-```
+**Cause racine identifiée** : l'agent Ph5 LLM calculait son propre μ subjectif via une grille D1-D9 documentée dans `agents/ph5-qa/_orchestrator.md`, alors que SOIC `GateEngine` calculait le sien via 17 gates déterministes (`soic/domain_grids/web.py`) sur les mêmes dimensions mais avec règles différentes. Les deux scores finissaient dans le même `ph5-qa-report.md` :
+- Corps du rapport : score agent (ex: 8.39 / 7.52)
+- Section "Reconciliation Ph4 ↔ Ph5" bas du rapport : score SOIC (ex: 9.11 / 8.78)
 
-Les deux sources sont en désaccord sur le même run, même rapport. Si SOIC dit ACCEPT et l'agent dit FAIL, `deploy-master` regarde lequel ? Quel chemin de code est la vraie source de vérité ?
+`deploy-master` et `Converger.decide()` se basent sur le score SOIC depuis `soic-gates.json` — c'était déjà de facto la source de vérité du pipeline, mais l'agent l'ignorait.
 
-**Pourquoi c'est P1** : tant qu'on ne sait pas qui ment, on déploie (ou refuse) à l'aveugle pour les 18 clients. Toutes les autres priorités sont aveugles tant que celle-ci n'est pas tranchée.
+**Décision documentée** (cf `CLAUDE.md` section "Source de vérité Ph5") :
+- **SOIC = source de vérité unique** pour μ et verdict ACCEPT/FAIL
+- L'agent Ph5 rédige le rapport **qualitatif** uniquement
+- Substitution des placeholders en post-traitement Python
 
-**Plan d'investigation**
-1. Lire `soic/evaluate.py` (symlink vers `soic_v3/evaluate.py`) — comment SOIC calcule μ
-2. Lire `soic_v3/converger.py` — comment la convergence ACCEPT/REJECT est décidée
-3. Comparer avec ce que l'agent Ph5 écrit dans le markdown (probablement un auto-score basé sur sa propre grille interne)
-4. Identifier le **point de divergence** : SOIC re-parse le markdown vs l'agent calcule en interne ?
-5. Décider : qui est la source de vérité officielle ? Documenter dans `CLAUDE.md`.
+**Implémentation** (Option C — placeholders + injection post-SOIC) :
+- `orchestrator/score_injection.py` : module qui substitue `[[SOIC_MU]]`, `[[SOIC_VERDICT]]`, `[[SOIC_THRESHOLD]]`, `[[SOIC_DIM_SCORES_TABLE]]`, `[[SOIC_D1]]`..`[[SOIC_D9]]` avec les valeurs lues depuis `soic-gates.json` + `soic-runs.jsonl`
+- Branché dans `orchestrator/phases.py:run_pipeline()` après `save_gate_history()` et avant `run_reconciliation_step()`
+- `agents/ph5-qa/_orchestrator.md` : nouvelle section "Scoring — SOIC = source de vérité unique" qui interdit à l'agent de calculer son propre μ
+- Tests régression : `tests/test_score_injection.py` (10 tests, dont `test_report_mu_matches_gates_mu_exactly` qui ancre le cas concret depanneur-nobert 9.10925 → "9.11")
+- Idempotent : rapports existants sans placeholders (ex: depanneur-nobert 2026-05-15) ne sont pas modifiés
 
-**Hypothèse de travail** : l'agent Ph5 écrit son auto-score (basé sur les agents qu'il a invoqués) dans le markdown, et SOIC fait son propre scoring indépendant en relisant les artefacts tooling. Les deux ne partagent pas la même grille de pondération.
+**Validation** :
+- 423/423 tests Python verts (413 baseline + 10 nouveaux)
+- ruff check + format : all clean
 
-**Critère de succès** :
-- Décision documentée : SOIC = source de vérité OU agent = source de vérité
-- Le rapport markdown reflète exactement le score SOIC (ou vice-versa, selon décision)
-- Tests de régression couvrant le cas de divergence
+**Commits** : à venir dans cette session (3 commits atomiques prévus — feat module + integration + docs roadmap)
 
-**Fichiers à toucher (probables)**
-- `soic_v3/evaluate.py`, `soic_v3/converger.py`, `soic_v3/models.py`
-- `agents/ph5-qa/_orchestrator.md` (instruction sur comment écrire le score)
-- `orchestrator/reconciliation.py` (filet existant Ph4↔Ph5, peut-être à étendre à agent↔SOIC)
-- Tests : `tests/test_soic_imports.py`, nouveau `test_score_consistency.py`
+**Rapports antérieurs (depanneur-nobert)** : le rapport actuel `clients/depanneur-nobert/ph5-qa-report.md` reste tel quel (codé en dur 8.39 / 9.11). Il sera régénéré au prochain run Ph5 avec les placeholders et n'aura plus de divergence. Pas de migration rétroactive nécessaire.
 
-**Effort estimé** : 1-2h investigation + 1h fix + 30 min tests = **2-3h**
+**Effort réel** : 2h30 (investigation 45 min + module + tests 60 min + integration + docs 45 min)
 
 ---
 
@@ -387,6 +383,16 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ## 🗓️ Historique des sessions notables
 
+### 2026-05-15 — P1 résolu : divergence agent Ph5 vs SOIC (claude session continue)
+- Cause racine identifiée : agent calcule sa propre grille D1-D9 indépendamment de SOIC GateEngine déterministe (qui pilote déjà `Converger.decide()` + `deploy-master`)
+- Décision documentée dans `CLAUDE.md` : SOIC = source de vérité unique
+- Module `orchestrator/score_injection.py` créé : substitue 5 placeholders (`[[SOIC_MU]]`, `[[SOIC_VERDICT]]`, `[[SOIC_THRESHOLD]]`, `[[SOIC_DIM_SCORES_TABLE]]`, `[[SOIC_D1]]`..`[[SOIC_D9]]`) avec valeurs lues depuis `soic-gates.json` + `soic-runs.jsonl`. Idempotent, tolère JSON corrompu.
+- 10 tests régression `tests/test_score_injection.py` (dont `test_report_mu_matches_gates_mu_exactly` ancre concrète depanneur-nobert 9.10925 → "9.11")
+- Agent Ph5 orchestrator instruit de ne plus calculer μ (nouvelle section "Scoring — SOIC = source de vérité unique")
+- Branchement post-SOIC dans `phases.py:run_pipeline` entre `save_gate_history` et `run_reconciliation_step`
+- pyproject.toml : `tests/* per-file-ignores += RUF001` (cohérent avec `orchestrator/*`)
+- 423/423 tests verts, ruff check + format all clean
+
 ### 2026-05-15 — Doctor + audit dette + codification discipline (claude)
 - 16 commits nexos_v.3.0 + 1 commit soic_v3
 - Audit dette : 13 items, 8 réels, 5 faux positifs ou cosmétiques
@@ -408,9 +414,11 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ## 🎯 Pour la session prochaine — recommandation finale
 
-**Commence par P1 (Item N — divergence Ph5/SOIC).** C'est la clé qui débloque toutes les autres décisions. Sans ça, propager des fixes aux 17 autres clients ou relancer Ph5 LLM = aveugle.
+**P1 résolu 2026-05-15.** Le verdict deploy/no-deploy s'appuie désormais sur SOIC déterministe via placeholders, sans divergence possible avec l'agent.
 
-Estimation honnête : 2-3h. Si tu finis P1 dans la session, idéalement enchaîne sur **P2 (crash audit)** qui est plus court (30-60 min) et qui te redonne un outil de validation.
+**Prochain focus : P2 (crash `nexos audit` exit 1 silencieux).** 30-60 min. Sans ça, impossible d'auditer un site existant sans relancer toute la création, ce qui bloque la propagation des fixes aux 17 autres clients (P4b).
+
+Une fois P2 réparé : P3 (zone ports) reste rapide (30 min), puis P4 (polish) en priorisant P4b propagation 17 clients (maintenant safe avec P1 résolu).
 
 P3 (ports) peut attendre — c'est moins urgent, c'est de la conformité de convention.
 
