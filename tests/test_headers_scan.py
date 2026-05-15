@@ -128,8 +128,11 @@ def test_headers_scan_keeps_last_value_after_redirect(redirect_server):
 
 def test_headers_scan_unreachable_url_emits_error_json():
     """Si curl ne peut pas joindre l'URL, le script doit émettre un JSON
-    d'erreur valide (pas un crash)."""
-    # Port libre garanti non occupé après free_port + close
+    d'erreur valide (pas un crash).
+
+    Contrat P4d (hardening tools/*.sh) : toujours exit 0 + JSON valide,
+    même en erreur. L'erreur est encodée dans le JSON pour consumer.
+    """
     port = _free_port()
     url = f"http://127.0.0.1:{port}/"
     result = subprocess.run(
@@ -138,8 +141,11 @@ def test_headers_scan_unreachable_url_emits_error_json():
         text=True,
         timeout=30,
     )
-    # Le script renvoie exit 1 + JSON d'erreur
-    assert result.returncode == 1
+    # P4d : exit 0 toujours + JSON valide contient le champ "error"
+    assert result.returncode == 0
     data = json.loads(result.stdout)
-    assert data["error"] == "unable to fetch headers"
+    assert "error" in data
+    assert "unable to fetch headers" in data["error"]
     assert data["url"] == url
+    # Le champ stderr est toujours présent (string, peut être vide)
+    assert "stderr" in data
