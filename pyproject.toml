@@ -140,7 +140,12 @@ unfixable = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["N802"]
+# tests/ :
+#   N802 — fonctions snake_case (pytest convention)
+#   RUF001 — caractères Unicode (× pour poids SOIC, μ pour score) : les
+#            assertions doivent matcher exactement le rendu produit par
+#            orchestrator/, qui ignore aussi RUF001 pour les mêmes raisons.
+"tests/*" = ["N802", "RUF001"]
 # orchestrator/ (package post-refactor chantier2-P) :
 #   C901 — complexité (refonte planifiée phase O)
 #   RUF001 — caractères Unicode intentionnels dans rendu UI rich (× pour poids
