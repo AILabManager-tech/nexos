@@ -83,5 +83,15 @@ while [ "$attempt" -le "$OSIRIS_MAX_RETRIES" ]; do
     attempt=$((attempt + 1))
 done
 
-echo "{\"error\": \"osiris scan failed after $OSIRIS_MAX_RETRIES attempts\", \"last_error\": \"$last_error\"}"
+# JSON émis via python3 pour garantir l'échappement correct des caractères de
+# contrôle (newlines, guillemets) présents dans $last_error (traceback Python
+# multi-ligne capturé par head -c 200). Sans cet encodage, le JSON est cassé
+# et `check-json` / parsers stricts crashent au consume.
+OSIRIS_MAX_RETRIES="$OSIRIS_MAX_RETRIES" LAST_ERROR="$last_error" python3 -c "
+import json, os
+print(json.dumps({
+    'error': f\"osiris scan failed after {os.environ['OSIRIS_MAX_RETRIES']} attempts\",
+    'last_error': os.environ['LAST_ERROR'],
+}, ensure_ascii=False))
+"
 exit 0

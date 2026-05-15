@@ -1,0 +1,4 @@
+{
+  "error": "osiris scan failed after 3 attempts",
+  "last_error": "exit 1: Traceback (most recent call last):\n  File \"/home/gear-code/02_projects/NEXOS_PLATFORM/nexos_v.3.0/tools/../../osiris/scanner.py\", line 15, in <module>\n    import click\nModuleNotFoundError: No module n"
+}
