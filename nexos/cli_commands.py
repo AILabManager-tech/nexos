@@ -48,11 +48,20 @@ def say(*args: Any, **kwargs: Any) -> None:
     console.print(*args, **kwargs)
 
 
-def run_doctor() -> None:
-    """Exécute le diagnostic complet du système."""
-    from nexos.tooling_manager import doctor_report
+def run_doctor(client: str | None = None) -> None:
+    """Exécute le diagnostic système, ou ciblé sur un client si `client` fourni."""
+    from nexos.tooling_manager import doctor_client_report, doctor_report
 
-    say(Panel(doctor_report(), title="[bold cyan]nexos doctor[/]", border_style="cyan"))
+    if client:
+        say(
+            Panel(
+                doctor_client_report(client),
+                title=f"[bold cyan]nexos doctor --client {client}[/]",
+                border_style="cyan",
+            )
+        )
+    else:
+        say(Panel(doctor_report(), title="[bold cyan]nexos doctor[/]", border_style="cyan"))
 
 
 def _load_payload_json(payload_path: Path) -> dict[str, Any]:

@@ -136,7 +136,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     sp_conv.add_argument("--profile", type=str, help="Profil SOIC (ex: web-nextjs, api-fastapi)")
 
-    subparsers.add_parser("doctor", help="Diagnostic système (outils, templates, SOIC)")
+    sp_doctor = subparsers.add_parser(
+        "doctor", help="Diagnostic système (outils, templates, SOIC) ou ciblé client"
+    )
+    sp_doctor.add_argument(
+        "--client",
+        type=str,
+        default=None,
+        help="Cibler un client spécifique (slug). Sans flag : diagnostic plateforme global.",
+    )
 
     sp_module = subparsers.add_parser("module", help="Registre modulaire NEXOS")
     module_subparsers = sp_module.add_subparsers(dest="module_action", required=True)

@@ -7,6 +7,7 @@ Dégradation gracieuse pour les outils optionnels (lighthouse, pa11y).
 
 import re
 import subprocess
+from pathlib import Path
 
 from nexos.logging_config import get_logger
 
@@ -209,6 +210,120 @@ def _count_clients() -> tuple[int, list[str]]:
         or (clients_dir / name / "package.json").exists()
     ]
     return len(all_clients), with_site
+
+
+def doctor_client_report(slug: str) -> str:
+    """Diagnostic ciblé sur un client (pour `nexos doctor --client <slug>`).
+
+    Inventorie l'état du client : brief, site, SOIC gates, tooling outputs,
+    dernier pipeline event. Vise à répondre "ce client est-il déployable ?"
+    sans scanner toute la plateforme. Audit dette 2026-05-15 item K.
+    """
+    import json
+
+    from nexos.config import settings
+
+    client_dir = (
+        Path(settings.clients_dir) / slug
+        if hasattr(settings, "clients_dir")
+        else Path("clients") / slug
+    )
+    if not client_dir.is_dir():
+        return f"NEXOS Doctor — Client `{slug}`\n{'=' * 50}\n\nErreur: client introuvable ({client_dir})"
+
+    lines = [f"NEXOS Doctor — Client `{slug}`", "=" * 50]
+
+    # Brief
+    brief_path = client_dir / "brief-client.json"
+    lines.append("\n  BRIEF")
+    lines.append("  " + "-" * 46)
+    if brief_path.exists():
+        try:
+            brief = json.loads(brief_path.read_text())
+            company = (
+                brief.get("company", {}).get("name")
+                or brief.get("identite", {}).get("nom_entreprise")
+                or "?"
+            )
+            lines.append(f"  [+] brief-client.json OK — {company}")
+        except json.JSONDecodeError:
+            lines.append("  [-] brief-client.json CORROMPU")
+    else:
+        lines.append("  [-] brief-client.json MANQUANT")
+
+    # Site Next.js
+    lines.append("\n  SITE")
+    lines.append("  " + "-" * 46)
+    site_dir = client_dir / "site"
+    if (site_dir / "package.json").exists():
+        try:
+            pkg = json.loads((site_dir / "package.json").read_text())
+            next_ver = pkg.get("dependencies", {}).get("next", "?")
+            lines.append(f"  [+] site/package.json OK — next@{next_ver}")
+        except json.JSONDecodeError:
+            lines.append("  [-] package.json CORROMPU")
+    else:
+        lines.append("  [-] site/ ABSENT ou sans package.json")
+
+    # SOIC gates
+    lines.append("\n  SOIC GATES")
+    lines.append("  " + "-" * 46)
+    gates_path = client_dir / "soic-gates.json"
+    if gates_path.exists():
+        try:
+            gates = json.loads(gates_path.read_text())
+            for g in gates if isinstance(gates, list) else []:
+                phase = g.get("phase", "?")
+                mu = g.get("mu", 0)
+                thr = g.get("threshold", 0)
+                dec = g.get("decision", "?")
+                icon = "+" if dec == "ACCEPT" and mu >= thr else "-"
+                lines.append(f"  [{icon}] {phase:18s} μ={mu:.2f}  seuil={thr:.1f}  {dec}")
+        except json.JSONDecodeError:
+            lines.append("  [-] soic-gates.json CORROMPU")
+    else:
+        lines.append("  [-] soic-gates.json MANQUANT (pipeline pas exécuté)")
+
+    # Tooling outputs
+    lines.append("\n  TOOLING (preflight)")
+    lines.append("  " + "-" * 46)
+    tooling = client_dir / "tooling"
+    expected = [
+        "lighthouse.json",
+        "a11y.json",
+        "deps.json",
+        "headers.json",
+        "ssl.json",
+        "osiris.json",
+    ]
+    if tooling.is_dir():
+        for name in expected:
+            f = tooling / name
+            if f.exists():
+                size = f.stat().st_size
+                lines.append(f"  [+] {name:20s} {size:6d}o")
+            else:
+                lines.append(f"  [-] {name:20s} MANQUANT")
+    else:
+        lines.append("  [-] tooling/ MANQUANT (preflight pas exécuté)")
+
+    # Verdict deploy
+    lines.append("\n" + "=" * 50)
+    ph5 = None
+    if gates_path.exists():
+        try:
+            gates = json.loads(gates_path.read_text())
+            ph5 = next((g for g in gates if g.get("phase") == "ph5-qa"), None)
+        except json.JSONDecodeError:
+            pass
+    if ph5 and ph5.get("decision") == "ACCEPT" and ph5.get("mu", 0) >= 8.5:
+        lines.append(f"Statut: DÉPLOYABLE — Ph5 μ={ph5['mu']:.2f} ≥ 8.5")
+    elif ph5:
+        lines.append(f"Statut: NON DÉPLOYABLE — Ph5 μ={ph5.get('mu', 0):.2f} < 8.5 ou non accepté")
+    else:
+        lines.append("Statut: PIPELINE INCOMPLET — Ph5 non atteinte")
+
+    return "\n".join(lines)
 
 
 def doctor_report() -> str:
