@@ -13,6 +13,7 @@ from nexos.auto_fixer import (
     _fix_legal_page,
     _fix_next_config,
     _fix_privacy_page,
+    _fix_readme,
     _fix_vercel_headers,
     _generate_legal_page_tsx,
     _inline_md_jsx,
@@ -34,11 +35,12 @@ class TestFixReport:
             vercel_headers_fixed=True,
             csp_added=True,
             csp_middleware_added=True,
+            readme_added=True,
             next_config_patched=True,
             privacy_page_added=True,
             legal_page_added=True,
         )
-        assert r.total_fixes == 8
+        assert r.total_fixes == 9
 
 
 class TestFixVercelHeaders:
@@ -415,6 +417,44 @@ class TestFixCspMiddleware:
         content = (tmp_path / "middleware.ts").read_text()
         # Les guillemets doubles dans la CSP doivent être échappés via json.dumps
         assert '\\"self\\"' in content
+
+
+class TestFixReadme:
+    """Tests _fix_readme (D5 — gain D2 documentation)."""
+
+    def test_creates_readme_when_missing(self, tmp_path):
+        report = FixReport()
+        _fix_readme(tmp_path, {"company": {"name": "TestCo"}}, report)
+        readme = tmp_path / "README.md"
+        assert readme.exists()
+        assert report.readme_added is True
+        content = readme.read_text()
+        assert "TestCo" in content
+        assert "Next.js" in content
+        assert "Loi 25" in content
+
+    def test_skips_when_readme_exists(self, tmp_path):
+        existing = tmp_path / "README.md"
+        existing.write_text("# Custom builder README")
+        report = FixReport()
+        _fix_readme(tmp_path, {"company": {"name": "TestCo"}}, report)
+        # Le README existant n'est PAS écrasé
+        assert existing.read_text() == "# Custom builder README"
+        assert report.readme_added is False
+
+    def test_fallback_company_name(self, tmp_path):
+        """Sans brief.company.name, utilise company_name top-level ou fallback."""
+        report = FixReport()
+        _fix_readme(tmp_path, {"company_name": "FromTopLevel"}, report)
+        content = (tmp_path / "README.md").read_text()
+        assert "FromTopLevel" in content
+
+    def test_ultimate_fallback_no_name(self, tmp_path):
+        """Brief vide → fallback générique 'Site web'."""
+        report = FixReport()
+        _fix_readme(tmp_path, {}, report)
+        content = (tmp_path / "README.md").read_text()
+        assert "Site web" in content
 
 
 class TestAutoFix:

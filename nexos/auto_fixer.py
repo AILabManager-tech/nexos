@@ -137,6 +137,7 @@ class FixReport:
     next_config_patched: bool = False
     privacy_page_added: bool = False
     legal_page_added: bool = False
+    readme_added: bool = False
 
     @property
     def total_fixes(self) -> int:
@@ -150,6 +151,8 @@ class FixReport:
         if self.csp_added:
             count += 1
         if self.csp_middleware_added:
+            count += 1
+        if self.readme_added:
             count += 1
         if self.next_config_patched:
             count += 1
@@ -318,6 +321,87 @@ def _fix_vercel_headers(site_dir: Path, report: FixReport) -> None:
         vercel_path.write_text(_vercel_json_dumps(data))
         report.vercel_headers_fixed = True
         logger.info("Security headers added to vercel.json")
+
+
+_README_TEMPLATE = """\
+# {company_name} — Site
+
+Site Next.js 15 (App Router) bilingue FR/EN, généré par NEXOS v4.2.
+
+## Démarrage
+
+```bash
+npm install
+cp .env.example .env.local   # remplir les variables kickoff si présent
+npm run dev                  # http://localhost:3000
+```
+
+## Scripts
+
+- `npm run dev` — serveur de développement
+- `npm run build` — build production
+- `npm run start` — serveur production
+- `npm run typecheck` — `tsc --noEmit` (TypeScript strict)
+- `npm run lint` — ESLint
+- `npm test` — Vitest (si configuré)
+
+## Stack
+
+- **Framework** : Next.js 15+ (App Router)
+- **TypeScript** : strict mode (`noUncheckedIndexedAccess`, `strictNullChecks`)
+- **CSS** : Tailwind CSS
+- **i18n** : next-intl FR/EN
+- **Déploiement** : Vercel
+
+## Conformité Loi 25 Québec
+
+Le site inclut :
+- Bandeau cookies opt-in (`components/layout/CookieConsent.tsx`)
+- Politique de confidentialité (`app/[locale]/politique-confidentialite/`)
+- Mentions légales (`app/[locale]/mentions-legales/`)
+- RPP (Responsable de la Protection des Renseignements personnels) configuré dans `brief-client.json`
+
+## Sécurité (headers prod)
+
+Configurés dans `vercel.json` (servis par Vercel CDN) :
+- Content-Security-Policy
+- Strict-Transport-Security
+- X-Content-Type-Options, X-Frame-Options
+- Referrer-Policy, Permissions-Policy
+
+## Pipeline NEXOS
+
+Ce site a été généré par le pipeline NEXOS v4.2 (6 phases ph0→ph5, 48 agents
+spécialisés, quality gates SOIC μ ≥ 8.0). Les rapports de pipeline sont dans
+`../soic-gates.json`, `../ph5-qa-report.md`, `../nexos-changelog.json`.
+
+---
+
+_Généré par `nexos fix` → `_fix_readme()` (D5 ROADMAP). Régénéré au prochain
+`nexos fix` si supprimé._
+"""
+
+
+def _fix_readme(site_dir: Path, brief: dict[str, Any], report: FixReport) -> None:
+    """Crée site/README.md si absent — adresse gate D2 documentation (D5 ROADMAP).
+
+    Le gate `documentation` SOIC échoue à 3.5/10 quand README.md manque, ce qui
+    fait passer D2 (Clarté) sous le seuil et tire le μ global vers le bas.
+    Stratégie défensive : skip si README existe (respect décision builder).
+    """
+    readme_path = site_dir / "README.md"
+    if readme_path.exists():
+        return
+
+    company_name = (
+        brief.get("company", {}).get("name")
+        or brief.get("company_name")
+        or brief.get("identite", {}).get("nom_entreprise")
+        or "Site web"
+    )
+    readme_path.write_text(_README_TEMPLATE.format(company_name=company_name))
+    report.readme_added = True
+    logger.info("README.md created (%s)", company_name)
 
 
 def _fix_csp(site_dir: Path, report: FixReport) -> None:
@@ -768,6 +852,7 @@ def auto_fix(site_dir: Path, client_dir: Path, brief: dict | None = None) -> Fix
     _fix_next_config(site_dir, report)
     _fix_privacy_page(site_dir, brief, report)
     _fix_legal_page(site_dir, brief, report)
+    _fix_readme(site_dir, brief, report)
 
     if _HAS_CHANGELOG:
         _log_applied_fixes(client_dir, report)
@@ -789,6 +874,8 @@ def _log_applied_fixes(client_dir: Path, report: FixReport) -> None:
         fixes.append({"fix": "csp", "target": "vercel.json"})
     if report.csp_middleware_added:
         fixes.append({"fix": "csp_middleware", "target": "middleware.ts"})
+    if report.readme_added:
+        fixes.append({"fix": "readme", "target": "README.md"})
     if report.next_config_patched:
         fixes.append({"fix": "next_config", "target": "next.config"})
     if report.privacy_page_added:

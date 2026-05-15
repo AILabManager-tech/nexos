@@ -81,5 +81,28 @@
       "fixes": 1,
       "build_pass": true
     }
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-15T08:32:33",
+    "agent": "auto_fixer"
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-05-15T08:32:37",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "readme",
+      "target": "README.md"
+    }
+  },
+  {
+    "event": "cli_fix",
+    "timestamp": "2026-05-15T08:32:46",
+    "agent": "cli",
+    "details": {
+      "fixes": 1,
+      "build_pass": true
+    }
   }
 ]
