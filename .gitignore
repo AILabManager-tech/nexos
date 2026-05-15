@@ -56,3 +56,4 @@ clients/table-de-marguerite/site/.next/
 clients/table-de-marguerite/site/.env
 clients/table-de-marguerite/site/.env.local
 clients/table-de-marguerite/site/next-env.d.ts
+.gstack/
