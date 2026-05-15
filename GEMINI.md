@@ -261,9 +261,41 @@ core-v3 -> ~/projects/ai/ainova-os-v3
 osiris  -> ~/osiris-scanner
 ```
 
+## DISCIPLINE DE SESSION — ROADMAP.md (regle obligatoire, tous LLM)
+
+Tout LLM (Claude / Codex / Gemini) qui ouvre une session NEXOS doit suivre cette discipline.
+
+### En ouverture de session
+
+1. Lire `ROADMAP.md` a la racine du repo **avant toute autre action metier**.
+2. Reprendre le contexte : items P1-P4 ouverts, sessions anterieures, anti-patterns identifies.
+3. Annoncer a l'utilisateur la priorite courante (P1 par defaut) et confirmer l'objectif de session.
+
+### En cloture de session (avant de rendre la main)
+
+1. Mettre a jour `ROADMAP.md` :
+   - **Section "Etat actuel"** : nouvelle date "Derniere mise a jour" + metriques sante fraiches (tests verts, build status, lighthouse si touche).
+   - **Section "Items dette ouverts"** : marquer + les items resolus (avec leur commit SHA et la date), ajouter les nouveaux items decouverts en chemin, re-prioriser si pertinent.
+   - **Section "Historique des sessions notables"** : ajouter une entree `### YYYY-MM-DD — Titre court (cli)` avec bullets accomplissements + decouvertes.
+2. Commit dedie :
+   ```
+   docs(roadmap): update post session YYYY-MM-DD
+   ```
+3. Ne JAMAIS push automatique (cf regle absolue) — annoncer le commit a l'utilisateur, lui laisser la decision push.
+
+### Pourquoi cette regle
+
+Sans cette discipline, `ROADMAP.md` se perime en 2 sessions et perd sa valeur de continuite multi-CLI. Le doc est le point d'entree unique pour Claude/Codex/Gemini — s'il ne reflete pas la realite, chaque nouvelle session redemarre a zero et recree la meme dette.
+
+Une session purement exploratoire (sans changement de code) doit **quand meme** :
+- Mettre a jour "Derniere mise a jour" + identite LLM
+- Ajouter une entree historique breve ("exploration sans modification, conclusions : ...")
+
+Cette regle a la meme autorite que les regles absolues securite / Loi 25 / git push.
+
 ## COORDINATION MULTI-CLI
 
 NEXOS supporte 3 CLI hotes. Ce fichier (GEMINI.md) est lu automatiquement par Gemini CLI.
 Les fichiers equivalents : `CLAUDE.md` (Claude Code) et `AGENTS.md` (Codex CLI).
-Les regles metier (securite, Loi 25, SOIC, phases) sont identiques dans les 3 fichiers.
+Les regles metier (securite, Loi 25, SOIC, phases, **discipline ROADMAP.md**) sont identiques dans les 3 fichiers.
 Seul le role et le style d'interaction different selon le CLI.

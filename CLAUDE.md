@@ -218,11 +218,43 @@ Tout nouveau projet utilise les templates dans `templates/` :
 - `og-image.template.svg` — Image OG 1200×630 personnalisable
 - `ad-unit-component.tsx` — Composant AdSense réutilisable
 
+## DISCIPLINE DE SESSION — ROADMAP.md (règle obligatoire, tous LLM)
+
+Tout LLM (Claude / Codex / Gemini) qui ouvre une session NEXOS doit suivre cette discipline.
+
+### En ouverture de session
+
+1. Lire `ROADMAP.md` à la racine du repo **avant toute autre action métier**.
+2. Reprendre le contexte : items P1-P4 ouverts, sessions antérieures, anti-patterns identifiés.
+3. Annoncer à l'utilisateur la priorité courante (P1 par défaut) et confirmer l'objectif de session.
+
+### En clôture de session (avant de rendre la main)
+
+1. Mettre à jour `ROADMAP.md` :
+   - **Section "État actuel"** : nouvelle date "Dernière mise à jour" + métriques santé fraîches (tests verts, build status, lighthouse si touché).
+   - **Section "Items dette ouverts"** : marquer ✅ les items résolus (avec leur commit SHA et la date), ajouter les nouveaux items découverts en chemin, re-prioriser si pertinent.
+   - **Section "Historique des sessions notables"** : ajouter une entrée `### YYYY-MM-DD — Titre court (cli)` avec bullets accomplissements + découvertes.
+2. Commit dédié :
+   ```
+   docs(roadmap): update post session YYYY-MM-DD
+   ```
+3. Ne JAMAIS push automatique (cf règle absolue) — annoncer le commit à l'utilisateur, lui laisser la décision push.
+
+### Pourquoi cette règle
+
+Sans cette discipline, `ROADMAP.md` se périme en 2 sessions et perd sa valeur de continuité multi-CLI. Le doc est le point d'entrée unique pour Claude/Codex/Gemini — s'il ne reflète pas la réalité, chaque nouvelle session redémarre à zéro et recrée la même dette.
+
+Une session purement exploratoire (sans changement de code) doit **quand même** :
+- Mettre à jour "Dernière mise à jour" + identité LLM
+- Ajouter une entrée historique brève (« exploration sans modification, conclusions : ... »)
+
+Cette règle a la même autorité que les règles absolues sécurité / Loi 25 / git push.
+
 ## COORDINATION MULTI-CLI
 
 NEXOS supporte 3 CLI hôtes. Ce fichier (CLAUDE.md) est lu automatiquement par Claude Code.
 Les fichiers équivalents : `AGENTS.md` (Codex CLI) et `GEMINI.md` (Gemini CLI).
-Les règles métier (sécurité, Loi 25, SOIC, phases) sont identiques dans les 3 fichiers.
+Les règles métier (sécurité, Loi 25, SOIC, phases, **discipline ROADMAP.md**) sont identiques dans les 3 fichiers.
 Seul le rôle et le style d'interaction diffèrent selon le CLI.
 
 ## CHANGEMENTS v4.2.0
