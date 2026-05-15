@@ -57,3 +57,7 @@ clients/table-de-marguerite/site/.env
 clients/table-de-marguerite/site/.env.local
 clients/table-de-marguerite/site/next-env.d.ts
 .gstack/
+
+# Osiris scanner runtime artifacts (P7+B1)
+osiris_history.db
+reports/
