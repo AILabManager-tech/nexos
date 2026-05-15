@@ -249,3 +249,25 @@ def test_purge_subblock_ss_unavailable() -> None:
     with patch.object(port_allocator.subprocess, "run", side_effect=FileNotFoundError("ss")):
         killed = purge_subblock(NEXOS_BUFFER)
     assert killed == []
+
+
+# ---------------------------------------------------------------------------
+# Intégration preflight (callsite ROADMAP P3)
+# ---------------------------------------------------------------------------
+
+
+def test_preflight_find_free_port_uses_nexos_engine() -> None:
+    """Régression P3 : `_find_free_port` retourne TOUJOURS un port NEXOS_ENGINE.
+
+    Avant ce fix, `_find_free_port` faisait `socket.bind(('', 0))` ce qui
+    pioche dans 32768-60999 (zone éphémère kernel interdite). Ce test
+    ancre le comportement : peu importe l'état du sous-bloc, le port
+    retourné doit être dans 20100-20199.
+    """
+    from orchestrator.preflight import _find_free_port
+
+    port = _find_free_port()
+    assert NEXOS_ENGINE.start <= port <= NEXOS_ENGINE.end, (
+        f"port={port} hors NEXOS_ENGINE ({NEXOS_ENGINE.start}-{NEXOS_ENGINE.end}) "
+        "— viole P3 et ~/.claude/CLAUDE.md user"
+    )

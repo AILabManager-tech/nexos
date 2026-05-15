@@ -18,6 +18,12 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
+from nexos.port_allocator import (
+    NEXOS_ENGINE,
+    SubblockSaturatedError,
+    allocate_port,
+)
+
 from ._shared import LOGS_DIR, NEXOS_ROOT, TOOLS_DIR, _get_default_profile, say
 
 _SCAN_SCRIPTS: list[tuple[str, str, int]] = [
@@ -89,10 +95,13 @@ def run_soic_gate(phase: str, client_dir: Path, profile=None) -> tuple[bool, flo
 
 
 def _find_free_port() -> int:
-    """Find a free TCP port on localhost."""
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind(("", 0))
-        return s.getsockname()[1]
+    """Allocate a free TCP port in the NEXOS_ENGINE subblock (20100-20199).
+
+    Raises SubblockSaturatedError if all ports in the subblock are taken;
+    the caller should fall back to skipping preflight rather than silently
+    landing in the kernel ephemeral range (cf. P3 / `~/.claude/CLAUDE.md` user).
+    """
+    return allocate_port(NEXOS_ENGINE)
 
 
 def run_preflight(site_dir: Path, client_dir: Path) -> dict[str, Path]:
@@ -127,7 +136,15 @@ def run_preflight(site_dir: Path, client_dir: Path) -> dict[str, Path]:
             return results
 
     # 3. Start local Next.js server
-    port = _find_free_port()
+    try:
+        port = _find_free_port()
+    except SubblockSaturatedError as exc:
+        say(f"[red]✗ NEXOS_ENGINE saturé — {exc}[/]")
+        say(
+            "[yellow]  Hint: `bash tools/alloc-port.sh NEXOS_ENGINE --purge` "
+            "pour libérer la zone, puis relancer le pipeline.[/]"
+        )
+        return results
     local_url = f"http://localhost:{port}"
     say(f"[cyan]  Starting Next.js on port {port}...[/]")
     server_proc = None
