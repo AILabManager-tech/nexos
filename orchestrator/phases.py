@@ -410,6 +410,17 @@ def run_pipeline(
 
     save_gate_history(client_dir / "soic-gates.json", gate_history)
 
+    # Item N chantier 5 (P1) : injection du score SOIC officiel dans
+    # ph5-qa-report.md — substitue [[SOIC_MU]], [[SOIC_VERDICT]], etc.
+    # avec les valeurs déterministes calculées par GateEngine.
+    # SOIC = source de vérité unique (cf CLAUDE.md "Source de vérité Ph5").
+    ph5_report_path = client_dir / "ph5-qa-report.md"
+    if ph5_report_path.exists():
+        from .score_injection import inject_soic_scores
+
+        if inject_soic_scores(ph5_report_path, client_dir):
+            say("[cyan]  Score SOIC injecté dans ph5-qa-report.md[/]")
+
     # Item 3 chantier 4 : reconciliation Ph4 ↔ Ph5 — détecter si Ph4 ment.
     from .reconciliation import run_reconciliation_step
 

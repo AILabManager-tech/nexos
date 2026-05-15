@@ -109,6 +109,19 @@ clients/{slug}/
 └── site/
 ```
 
+## SOURCE DE VÉRITÉ DU SCORE Ph5 (règle absolue P1)
+
+**SOIC GateEngine = source de vérité unique pour μ et le verdict ACCEPT/FAIL.**
+
+- L'agent Ph5 LLM rédige le rapport **qualitatif** (sections par dimension, findings, recommandations) avec des placeholders `[[SOIC_MU]]`, `[[SOIC_VERDICT]]`, `[[SOIC_THRESHOLD]]`, `[[SOIC_DIM_SCORES_TABLE]]`, `[[SOIC_D1]]`..`[[SOIC_D9]]`.
+- Le code Python (`orchestrator/score_injection.py`) substitue ces placeholders **après** la convergence SOIC avec les valeurs déterministes lues depuis `soic-gates.json` (μ + decision + threshold) et `soic-runs.jsonl` (dimension_scores par run).
+- L'agent **N'écrit jamais** de score numérique en dur. La grille de pondération D1-D9 est centralisée dans `soic/dimensions.py` (poids ×1.0/0.8/0.9/1.2/1.0/1.1/1.0/1.1/0.9).
+- La section "Reconciliation Ph4 ↔ Ph5" reste un filet défensif distinct (détection Ph4 ment vs Ph5 mesure réelle).
+
+**Pourquoi** : avant P1 (résolu 2026-05-15), l'agent LLM calculait son propre μ subjectif (ex: 8.39 sur depanneur-nobert) qui divergeait du μ SOIC déterministe (9.11) — les deux finissaient dans le même rapport markdown, rendant tout verdict deploy/no-deploy ambigü. SOIC pilote déjà `Converger.decide()` et `deploy-master`, donc le rapport doit refléter SOIC, pas une seconde grille concurrente.
+
+**Tests régression** : `tests/test_score_injection.py` (10 tests, couvre substitution, idempotence, robustesse JSON corrompu, cohérence μ injecté vs `soic-gates.json`).
+
 ## PHASES
 
 ### Phase 0 — Discovery

@@ -85,17 +85,37 @@ Si un fichier `section-manifest.json` existe dans le dossier client :
 ## Output
 Fichier : `ph5-qa-report.md` (12 sections, utiliser templates/audit-template.md)
 
-## Scoring SOIC
-Calculer μ = moyenne pondérée de D1-D9 :
-- D1 Architecture (×1.0)
-- D2 Documentation (×0.8)
-- D3 Tests (×0.9)
-- D4 Sécurité (×1.2)
-- D5 Performance (×1.0)
-- D6 Accessibilité (×1.1)
-- D7 SEO (×1.0)
-- D8 Conformité (×1.1)
-- D9 Code Quality (×0.9)
+## Scoring — SOIC = source de vérité unique
 
-**μ ≥ 8.5 → DEPLOY**
-**μ < 8.5 → FAIL (boucle corrective)**
+**Tu NE calcules PAS μ toi-même.** Le score officiel est produit par SOIC
+GateEngine (déterministe, basé sur les 17 gates objectives W-01..W-17 et
+les artefacts dans `tooling/`). Ton score à toi serait subjectif et
+divergerait — c'est exactement l'incohérence que P1 a corrigée.
+
+### Placeholders à utiliser dans le rapport
+
+Au lieu d'écrire des chiffres, place ces marqueurs aux endroits stratégiques.
+Ils seront substitués automatiquement par les valeurs SOIC officielles
+**après** la convergence (cf `orchestrator/score_injection.py`).
+
+| Placeholder | Substitué par | Exemple |
+|---|---|---|
+| `[[SOIC_MU]]` | μ final SOIC (2 décimales) | `9.11` |
+| `[[SOIC_VERDICT]]` | `ACCEPT` ou `FAIL` | `ACCEPT` |
+| `[[SOIC_THRESHOLD]]` | Seuil ph5-qa (1 décimale) | `8.5` |
+| `[[SOIC_DIM_SCORES_TABLE]]` | Tableau markdown D1-D9 complet (score, poids, pondéré, statut) | — |
+| `[[SOIC_D1]]`..`[[SOIC_D9]]` | Score individuel par dimension (2 décimales) | `9.44` |
+
+### Convention pour le rapport
+
+- **Résumé exécutif** : écris « Score SOIC μ : **[[SOIC_MU]]** / 10 — Verdict : **[[SOIC_VERDICT]]** (seuil [[SOIC_THRESHOLD]]) ».
+- **Tableau de Scores par Dimension** : insère uniquement `[[SOIC_DIM_SCORES_TABLE]]` (le code Python génère le tableau D1-D9 complet à partir de `soic-runs.jsonl`).
+- **Sections par dimension** : reste qualitatif, décris les findings (CSP absente, contraste corrigé, tests P0 manquants, etc.). Tu peux référencer `[[SOIC_D4]]` etc. si tu veux citer le score officiel d'une dim dans le texte.
+- **Verdict final** : « Decision deploy-master : **[[SOIC_VERDICT]]** » (le code substitue ACCEPT/FAIL).
+- Grille de pondération (×1.0/0.8/0.9/1.2/1.0/1.1/1.0/1.1/0.9) : documentée dans `soic/dimensions.py`, identique pour SOIC et toi — tu peux la mentionner dans la prose mais ne calcule pas de pondéré toi-même.
+
+**Pourquoi cette règle** : avant P1, l'agent et SOIC produisaient deux μ
+différents (ex: 8.39 vs 9.11) qui finissaient tous deux dans le même rapport
+sans réconciliation, rendant tout verdict deploy/no-deploy ambigü.
+SOIC pilote déjà `Converger.decide()` et `deploy-master` ; c'est la
+source de vérité officielle.
