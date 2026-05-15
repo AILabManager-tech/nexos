@@ -3,7 +3,14 @@
 import subprocess
 from unittest.mock import MagicMock, patch
 
-from nexos.tooling_manager import _parse_version, check_tool, doctor_report, ensure_tooling
+from nexos.tooling_manager import (
+    _client_status_row,
+    _parse_version,
+    check_tool,
+    doctor_all_clients_report,
+    doctor_report,
+    ensure_tooling,
+)
 
 
 class TestParseVersion:
@@ -109,3 +116,104 @@ class TestDoctorReport:
     def test_report_includes_clients(self):
         report = doctor_report()
         assert "CLIENTS" in report
+
+
+class TestDoctorAllClients:
+    """Rapport tabulaire multi-clients (P4e)."""
+
+    def test_returns_string(self):
+        report = doctor_all_clients_report()
+        assert isinstance(report, str)
+        assert len(report) > 0
+
+    def test_includes_header(self):
+        report = doctor_all_clients_report()
+        assert "All Clients" in report
+        # Colonnes attendues
+        assert "Client" in report
+        assert "Brief" in report
+        assert "Site" in report
+        assert "Gates" in report
+        assert "Ph5" in report
+        assert "Deploy" in report
+
+    def test_deployable_count_line(self):
+        """Footer indique combien de clients sont déployables."""
+        report = doctor_all_clients_report()
+        assert "Déployables" in report
+        # Format : "X/Y"
+        assert "/" in report.split("Déployables")[-1]
+
+    def test_includes_known_clients(self):
+        """Au moins quelques clients connus apparaissent dans le rapport."""
+        report = doctor_all_clients_report()
+        # depanneur-nobert est notre client de référence — doit toujours être présent
+        assert "depanneur-nobert" in report
+
+    def test_client_status_row_missing_brief(self, tmp_path, monkeypatch):
+        """Client sans brief → status 'missing'."""
+        monkeypatch.chdir(tmp_path)
+        (tmp_path / "clients" / "ghost").mkdir(parents=True)
+        row = _client_status_row("ghost")
+        assert row["slug"] == "ghost"
+        assert row["brief"] == "missing"
+        assert row["site"] == "missing"
+
+    def test_client_status_row_with_brief_and_site(self, tmp_path, monkeypatch):
+        """Client avec brief + site → status 'ok'."""
+        import json as _json
+
+        monkeypatch.chdir(tmp_path)
+        client_dir = tmp_path / "clients" / "alpha"
+        client_dir.mkdir(parents=True)
+        (client_dir / "brief-client.json").write_text(_json.dumps({"company_name": "Alpha"}))
+        (client_dir / "site").mkdir()
+        (client_dir / "site" / "package.json").write_text("{}")
+        row = _client_status_row("alpha")
+        assert row["brief"] == "ok"
+        assert row["site"] == "ok"
+
+    def test_client_status_row_deploy_ready(self, tmp_path, monkeypatch):
+        """Ph5 ACCEPT μ ≥ 8.5 → deploy READY."""
+        import json as _json
+
+        monkeypatch.chdir(tmp_path)
+        client_dir = tmp_path / "clients" / "beta"
+        client_dir.mkdir(parents=True)
+        (client_dir / "soic-gates.json").write_text(
+            _json.dumps([{"phase": "ph5-qa", "mu": 9.2, "threshold": 8.5, "decision": "ACCEPT"}])
+        )
+        row = _client_status_row("beta")
+        assert row["ph5_mu"] == "9.20"
+        assert row["deploy"] == "READY"
+
+    def test_client_status_row_deploy_below_threshold(self, tmp_path, monkeypatch):
+        """Ph5 ACCEPT mais μ < 8.5 → deploy BELOW."""
+        import json as _json
+
+        monkeypatch.chdir(tmp_path)
+        client_dir = tmp_path / "clients" / "gamma"
+        client_dir.mkdir(parents=True)
+        (client_dir / "soic-gates.json").write_text(
+            _json.dumps([{"phase": "ph5-qa", "mu": 8.0, "threshold": 8.5, "decision": "ACCEPT"}])
+        )
+        row = _client_status_row("gamma")
+        assert "BELOW" in row["deploy"]
+
+    def test_client_status_row_corrupted_gates(self, tmp_path, monkeypatch):
+        """Gates JSON corrompu → status 'corrupt' (pas de crash)."""
+        monkeypatch.chdir(tmp_path)
+        client_dir = tmp_path / "clients" / "delta"
+        client_dir.mkdir(parents=True)
+        (client_dir / "soic-gates.json").write_text("{ not valid json")
+        row = _client_status_row("delta")
+        assert row["gates"] == "corrupt"
+
+    def test_skips_underscore_directories(self, tmp_path, monkeypatch):
+        """Dossiers commençant par _ (archive, fixtures) ignorés."""
+        monkeypatch.chdir(tmp_path)
+        (tmp_path / "clients" / "_ARCHIVE").mkdir(parents=True)
+        (tmp_path / "clients" / "real-client").mkdir()
+        report = doctor_all_clients_report()
+        assert "_ARCHIVE" not in report
+        assert "real-client" in report

@@ -140,9 +140,9 @@ def test_main_doctor_runs_without_pipeline(
 
     doctor_called = {"value": False}
 
-    def _fake_doctor(client: str | None = None) -> None:
-        # Signature mise à jour pour matcher run_doctor(client=None) après
-        # ajout du flag --client (audit dette 2026-05-15 item K, commit 0c6f1fa).
+    def _fake_doctor(client: str | None = None, all_clients: bool = False) -> None:
+        # Signature mise à jour pour matcher run_doctor(client=None, all_clients=False)
+        # après ajout des flags --client (item K) puis --all-clients (P4e).
         doctor_called["value"] = True
 
     # `from nexos.cli_commands import run_doctor` est lazy dans main()

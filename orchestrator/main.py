@@ -43,7 +43,10 @@ def main(argv: list[str] | None = None) -> int:
         if _NEXOS_V4:
             from nexos.cli_commands import run_doctor
 
-            run_doctor(client=getattr(args, "client", None))
+            run_doctor(
+                client=getattr(args, "client", None),
+                all_clients=getattr(args, "all_clients", False),
+            )
         else:
             say("[red]nexos doctor requiert les modules v4.0 (nexos/)[/]")
         return 0

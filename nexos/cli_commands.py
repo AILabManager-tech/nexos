@@ -48,9 +48,27 @@ def say(*args: Any, **kwargs: Any) -> None:
     console.print(*args, **kwargs)
 
 
-def run_doctor(client: str | None = None) -> None:
-    """Exécute le diagnostic système, ou ciblé sur un client si `client` fourni."""
-    from nexos.tooling_manager import doctor_client_report, doctor_report
+def run_doctor(client: str | None = None, all_clients: bool = False) -> None:
+    """Exécute le diagnostic système, ou ciblé sur un client si `client` fourni.
+
+    Avec `all_clients=True`, produit un rapport tabulaire de tous les clients
+    (un client par ligne) — utile pour visibilité opérationnelle multi-clients.
+    """
+    from nexos.tooling_manager import (
+        doctor_all_clients_report,
+        doctor_client_report,
+        doctor_report,
+    )
+
+    if all_clients:
+        say(
+            Panel(
+                doctor_all_clients_report(),
+                title="[bold cyan]nexos doctor --all-clients[/]",
+                border_style="cyan",
+            )
+        )
+        return
 
     if client:
         say(
@@ -60,8 +78,9 @@ def run_doctor(client: str | None = None) -> None:
                 border_style="cyan",
             )
         )
-    else:
-        say(Panel(doctor_report(), title="[bold cyan]nexos doctor[/]", border_style="cyan"))
+        return
+
+    say(Panel(doctor_report(), title="[bold cyan]nexos doctor[/]", border_style="cyan"))
 
 
 def _load_payload_json(payload_path: Path) -> dict[str, Any]:

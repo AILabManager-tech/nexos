@@ -326,6 +326,117 @@ def doctor_client_report(slug: str) -> str:
     return "\n".join(lines)
 
 
+def _client_status_row(slug: str) -> dict[str, str]:
+    """Snapshot une-ligne d'un client (utilisé par doctor_all_clients_report).
+
+    Retourne un dict avec : slug, brief, site, gates_count, ph5_mu, ph5_decision,
+    deploy_status. Toutes les valeurs sont des strings prêtes à afficher.
+    """
+    import json
+    from pathlib import Path
+
+    client_dir = Path("clients") / slug
+    row: dict[str, str] = {
+        "slug": slug,
+        "brief": "—",
+        "site": "—",
+        "gates": "—",
+        "ph5_mu": "—",
+        "deploy": "—",
+    }
+
+    if not client_dir.is_dir():
+        return row
+
+    # Brief
+    brief_path = client_dir / "brief-client.json"
+    if brief_path.exists():
+        try:
+            json.loads(brief_path.read_text())
+            row["brief"] = "ok"
+        except json.JSONDecodeError:
+            row["brief"] = "corrupt"
+    else:
+        row["brief"] = "missing"
+
+    # Site
+    if (client_dir / "site" / "package.json").exists():
+        row["site"] = "ok"
+    else:
+        row["site"] = "missing"
+
+    # Gates + Ph5
+    gates_path = client_dir / "soic-gates.json"
+    if gates_path.exists():
+        try:
+            gates = json.loads(gates_path.read_text())
+            if isinstance(gates, list):
+                row["gates"] = str(len(gates))
+                ph5 = next((g for g in gates if g.get("phase") == "ph5-qa"), None)
+                if ph5:
+                    mu = ph5.get("mu", 0)
+                    decision = ph5.get("decision", "?")
+                    row["ph5_mu"] = f"{mu:.2f}"
+                    if decision == "ACCEPT" and mu >= 8.5:
+                        row["deploy"] = "READY"
+                    elif decision == "ACCEPT":
+                        row["deploy"] = "BELOW (μ<8.5)"
+                    else:
+                        row["deploy"] = decision
+        except json.JSONDecodeError:
+            row["gates"] = "corrupt"
+
+    return row
+
+
+def doctor_all_clients_report() -> str:
+    """Rapport tabulaire de tous les clients (un par ligne).
+
+    Visibilité opérationnelle : voir d'un coup d'œil quels clients sont prêts
+    à déployer, lesquels ont un brief manquant, lesquels n'ont pas tourné le
+    pipeline.
+    """
+    from pathlib import Path
+
+    clients_dir = Path("clients")
+    if not clients_dir.is_dir():
+        return "NEXOS Doctor — All Clients\nErreur: dossier clients/ introuvable"
+
+    slugs = sorted(
+        d.name for d in clients_dir.iterdir() if d.is_dir() and not d.name.startswith(("_", "."))
+    )
+
+    rows = [_client_status_row(slug) for slug in slugs]
+
+    # Largeurs colonnes
+    slug_w = max((len(r["slug"]) for r in rows), default=10)
+    slug_w = max(slug_w, len("Client"))
+
+    lines = [
+        f"NEXOS v4.2 — Doctor All Clients ({len(rows)} client{'s' if len(rows) != 1 else ''})",
+        "=" * (slug_w + 60),
+    ]
+    # Deploy column : 14 chars couvre "ABORT_PLATEAU" (13) sans wrap
+    header = f"  {'Client':<{slug_w}}  {'Brief':<8}  {'Site':<8}  {'Gates':<6}  {'Ph5 μ':<7}  {'Deploy':<14}"
+    lines.append(header)
+    lines.append("  " + "-" * (len(header) - 2))
+
+    deployable_count = 0
+    for row in rows:
+        if row["deploy"] == "READY":
+            deployable_count += 1
+        deploy_str = row["deploy"][:14]  # Truncate défensif si verdict custom > 14 chars
+        lines.append(
+            f"  {row['slug']:<{slug_w}}  {row['brief']:<8}  {row['site']:<8}  "
+            f"{row['gates']:<6}  {row['ph5_mu']:<7}  {deploy_str:<14}"
+        )
+
+    lines.append("")
+    lines.append(f"  Déployables (Ph5 μ ≥ 8.5 + ACCEPT) : {deployable_count}/{len(rows)}")
+
+    return "\n".join(lines)
+
+
 def doctor_report() -> str:
     """Retourne un rapport complet de l'état du système (pour `nexos doctor`)."""
     lines = ["NEXOS v4.0 — Doctor Report", "=" * 50]

@@ -145,6 +145,11 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Cibler un client spécifique (slug). Sans flag : diagnostic plateforme global.",
     )
+    sp_doctor.add_argument(
+        "--all-clients",
+        action="store_true",
+        help="Rapport tabulaire de tous les clients (un par ligne).",
+    )
 
     sp_module = subparsers.add_parser("module", help="Registre modulaire NEXOS")
     module_subparsers = sp_module.add_subparsers(dest="module_action", required=True)
