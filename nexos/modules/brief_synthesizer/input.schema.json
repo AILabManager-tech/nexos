@@ -45,6 +45,22 @@
     },
     "mission": {
       "type": "object"
+    },
+    "sector": {
+      "type": "string",
+      "description": "Secteur d'activité (ex: epicerie, avocat, clinique). Lu par pattern_prerecommender au top-level brief.",
+      "minLength": 1
+    },
+    "tags": {
+      "type": "array",
+      "description": "Étiquettes libres (multi-valeurs) pour catégorisation interne / SaaS preview.",
+      "items": { "type": "string", "minLength": 1 },
+      "maxItems": 20
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes libres opérateur — pas utilisé par le pipeline, conservé tel quel.",
+      "maxLength": 2000
     }
   }
 }

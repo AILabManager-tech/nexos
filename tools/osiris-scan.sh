@@ -48,6 +48,16 @@ if [ ! -f "$OSIRIS_PATH/scanner.py" ]; then
     exit 0
 fi
 
+# B1 fix : Osiris a besoin de son venv (playwright + reportlab + aiohttp) et de
+# ses ressources file-relative (blocklists/, calibration/) pour activer tous
+# les axes. Si .venv/bin/python existe dans OSIRIS_PATH, on l'utilise — sinon
+# fallback vers python3 système (axes Intrusion + Légalité échoueront).
+if [ -x "$OSIRIS_PATH/.venv/bin/python" ]; then
+    OSIRIS_PYTHON="$OSIRIS_PATH/.venv/bin/python"
+else
+    OSIRIS_PYTHON="python3"
+fi
+
 _validate_json() {
     echo "$1" | python3 -c "import json,sys; json.loads(sys.stdin.read())" >/dev/null 2>&1
 }
@@ -72,6 +82,15 @@ fi
 WORK_DIR=$(mktemp -d)
 trap 'rm -rf "$WORK_DIR"' EXIT
 
+# B1 fix : symlinker les ressources file-relative du scanner dans WORK_DIR
+# (blocklists/trackers.json, calibration/sites.txt, etc.). Sans ça, les axes
+# Intrusion (blocklist) et Légalité (loi 25 engine) échouent silencieusement.
+for resource in blocklists calibration axes; do
+    if [ -d "$OSIRIS_PATH/$resource" ]; then
+        ln -s "$OSIRIS_PATH/$resource" "$WORK_DIR/$resource" 2>/dev/null || true
+    fi
+done
+
 start=$(date +%s)
 attempt=1
 last_error="never attempted"
@@ -89,7 +108,7 @@ while [ "$attempt" -le "$OSIRIS_MAX_RETRIES" ]; do
     # Run scanner depuis le WORK_DIR pour que reports/ soit écrit là
     # stderr/stdout du scanner = bruit Rich/logs, capturé en tampon pour diagnostic
     stderr_file=$(mktemp)
-    (cd "$WORK_DIR" && timeout "$OSIRIS_TIMEOUT_S" python3 "$OSIRIS_PATH/scanner.py" \
+    (cd "$WORK_DIR" && timeout "$OSIRIS_TIMEOUT_S" "$OSIRIS_PYTHON" "$OSIRIS_PATH/scanner.py" \
         --url "$URL" \
         --output report \
         --mode "$OSIRIS_MODE" \

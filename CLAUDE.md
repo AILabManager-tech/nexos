@@ -293,9 +293,20 @@ Seul le rôle et le style d'interaction diffèrent selon le CLI.
 - `docs/adr/` : 6 Architecture Decision Records
 - `docs/adding-agents.md`, `docs/runbook.md`, `docs/env.md`
 
-## SYMLINKS
+## DÉPENDANCES EXTERNES (résolution sibling layout monorepo)
+
+NEXOS s'appuie sur deux composants frères dans le monorepo `NEXOS_PLATFORM/` :
 
 ```
-core-v3 → ~/projects/ai/ainova-os-v3
-osiris  → ~/osiris-scanner
+NEXOS_PLATFORM/
+├── nexos_v.3.0/   ← ce repo (moteur de fabrication)
+├── soic_v3/       ← quality engine (consommé via symlink relatif `soic/`)
+└── osiris/        ← scanner sobriété/sécurité (résolu via sibling depuis tools/)
 ```
+
+| Composant | Résolution | Override env |
+|---|---|---|
+| **SOIC** | Symlink `soic/ → ../soic_v3` (présent dans le repo) | — |
+| **Osiris** | Sibling auto-détecté par `tools/osiris-scan.sh` (cherche `../../osiris/scanner.py`) | `OSIRIS_PATH` |
+
+Pas de symlink `osiris` ni `core-v3` à la racine. Le pattern sibling-via-`SCRIPT_DIR/../../osiris` est défensif et fonctionne tant que les deux repos sont voisins dans `NEXOS_PLATFORM/`.

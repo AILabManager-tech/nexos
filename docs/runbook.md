@@ -72,6 +72,7 @@ Niveaux : `DEBUG | INFO | WARNING | ERROR`. Défaut : `INFO`.
 | `pa11y` | `npm install -g pa11y` |
 | Python < 3.10 | Mettre à jour Python **ou** utiliser un venv 3.10+ |
 | `uv` | `pip install uv` ou `curl -LsSf https://astral.sh/uv/install.sh | sh` |
+| `mypy` | Activer venv : `source .venv/bin/activate`. Sur Python 3.12 système (PEP 668), `pip install mypy` global est refusé ; le repo fournit `.venv/bin/mypy`. Le test `test_mypy_passes_on_nexos_package` détecte automatiquement `.venv/bin/mypy` en priorité (fallback PATH). |
 
 ## Incident — `import soic` échoue
 
