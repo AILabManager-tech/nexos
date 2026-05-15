@@ -11,7 +11,7 @@ export default function OpenGraphImage() {
         style={{
           width: '100%',
           height: '100%',
-          background: 'linear-gradient(135deg, #1A2B3C 0%, #243D54 100%)',
+          background: 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
@@ -36,7 +36,7 @@ export default function OpenGraphImage() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#1A2B3C',
+              color: '#2A1810',
               fontSize: 64,
               fontWeight: 700,
             }}
@@ -47,7 +47,7 @@ export default function OpenGraphImage() {
             style={{
               fontSize: 64,
               fontWeight: 700,
-              color: '#FFFFFF',
+              color: '#FFF8E7',
             }}
           >
             Dépanneur Nobert
@@ -56,7 +56,7 @@ export default function OpenGraphImage() {
         <div
           style={{
             fontSize: 48,
-            color: '#FFFFFF',
+            color: '#FFF8E7',
             lineHeight: 1.2,
             maxWidth: 900,
             display: 'flex',

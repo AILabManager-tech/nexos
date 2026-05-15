@@ -1,15 +1,15 @@
 {
-  "url": "http://localhost:59513",
+  "url": "http://localhost:59693",
   "x-content-type-options": "nosniff",
   "x-frame-options": "DENY",
   "referrer-policy": "strict-origin-when-cross-origin",
   "permissions-policy": "camera=(), microphone=(), geolocation=(self)",
   "x-dns-prefetch-control": "on",
   "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
-  "link": "<http://localhost:59513/fr>; rel=\"alternate\"; hreflang=\"fr\", <http://localhost:59513/en>; rel=\"alternate\"; hreflang=\"en\", <http://localhost:59513/>; rel=\"alternate\"; hreflang=\"x-default\"",
+  "link": "<http://localhost:59693/fr>; rel=\"alternate\"; hreflang=\"fr\", <http://localhost:59693/en>; rel=\"alternate\"; hreflang=\"en\", <http://localhost:59693/>; rel=\"alternate\"; hreflang=\"x-default\"",
   "location": "/fr",
-  "set-cookie": "NEXT_LOCALE=fr; Path=/; Expires=Mon, 10 May 2027 15:07:24 GMT; Max-Age=31536000; SameSite=lax",
-  "date": "Sun, 10 May 2026 15:07:24 GMT",
+  "set-cookie": "NEXT_LOCALE=fr; Path=/; Expires=Fri, 14 May 2027 04:40:05 GMT; Max-Age=31536000; SameSite=lax",
+  "date": "Thu, 14 May 2026 04:40:05 GMT",
   "connection": "keep-alive",
   "keep-alive": "timeout=5",
   "x-middleware-rewrite": "/fr",
@@ -18,7 +18,7 @@
   "x-nextjs-prerender": "1",
   "x-nextjs-stale-time": "300",
   "cache-control": "s-maxage=31536000",
-  "etag": "\"lxojniv77j2qyw\"",
+  "etag": "\"9893t00puy2qyw\"",
   "content-type": "text/html; charset=utf-8",
   "content-length": "129220"
 }

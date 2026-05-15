@@ -1,249 +1,221 @@
 {
   "$schema": "nexos-ph2/responsive-strategy/v1",
-  "generated_at": "2026-05-10T00:00:00Z",
+  "generated_at": "2026-05-14T06:15:00Z",
   "client_slug": "depanneur-nobert",
-  "based_on": [
-    "wireframes.json (24 sections, mapping S-001..S-024)",
-    "design-tokens.json (typo scale Major Third + spacing)",
-    "ph0 §4.4 (clientele voisinage = trafic mobile dominant)",
-    "brief.context (clientele tous ages 8-80, lisibilite senior critique)"
-  ],
-  "_constraints": {
-    "approach": "mobile-first",
-    "min_touch_target_px": 48,
-    "no_horizontal_scroll_mobile": true,
-    "zoom_200_functional": true,
-    "wcag_2_5_8_target_size": "minimum"
-  },
+  "iteration_soic": 2,
   "approach": "mobile-first",
+  "based_on": [
+    "wireframes.json (24 sections × responsive descriptions)",
+    "design-tokens.json (breakpoints_mirror + spacing.section_padding)",
+    "ph0-discovery-report.md §6.4 layout (mobile-first cible 65+ + 70% recherches mobiles secteur)"
+  ],
   "breakpoints": {
-    "_base_mobile": {"max_width": "639px", "usage": "iPhone SE 375 -> 639px (gros telephones)"},
-    "sm": {"min_width": "640px", "usage": "Tablettes portrait, gros telephones paysage"},
-    "md": {"min_width": "768px", "usage": "Tablettes paysage (iPad)"},
-    "lg": {"min_width": "1024px", "usage": "Desktop standard (laptops)"},
-    "xl": {"min_width": "1280px", "usage": "Grand desktop"},
-    "2xl": {"min_width": "1536px", "usage": "Ultra-wide (rare, max-w-7xl bornee)"}
+    "sm": {"min_width": "640px", "usage": "Téléphones paysage, petites tablettes portrait", "tailwind_prefix": "sm:"},
+    "md": {"min_width": "768px", "usage": "Tablettes portrait/paysage (iPad mini, iPad)", "tailwind_prefix": "md:"},
+    "lg": {"min_width": "1024px", "usage": "Desktop standard (MacBook 13, écrans bureau classiques)", "tailwind_prefix": "lg:"},
+    "xl": {"min_width": "1280px", "usage": "Grand desktop / max-w-7xl container", "tailwind_prefix": "xl:"},
+    "2xl": {"min_width": "1536px", "usage": "Ultra-wide (rarement utilisé — design centré sur lg/xl)", "tailwind_prefix": "2xl:"}
   },
   "navigation": {
     "mobile": {
-      "type": "hamburger-slide-in-from-right",
-      "trigger": "Bouton hamburger (Lucide Menu icon, 48x48 px touch target) en haut a droite du header",
-      "behavior": "Slide-in depuis la droite (translateX), overlay backdrop semi-transparent (rgba(26,43,60,0.85)) sous le panneau",
-      "close_methods": ["Bouton X (Lucide X icon, 48x48)", "Clic sur overlay backdrop", "Touche Escape", "Swipe-right (optionnel)"],
-      "items_layout": "Liste verticale full-width, padding-y 16px par item (≥48px height assure), separateurs subtle border",
-      "cta_position": "CTA primaire 'Voir les promotions' en bas du panneau, full-width, fond accent",
-      "lang_switcher_position": "Sous les nav items, avant le CTA, deux boutons FR/EN side-by-side",
-      "a11y": [
-        "focus-trap dans le panneau ouvert (lib focus-trap-react ou impl native)",
-        "aria-expanded sur le trigger hamburger",
-        "aria-controls pointe vers l'id du panneau",
-        "aria-modal='true' sur le panneau ouvert",
-        "Premier focus sur le bouton X a l'ouverture",
-        "Restauration du focus sur le hamburger a la fermeture"
-      ]
+      "type": "hamburger-slide-in-right",
+      "trigger": "Bouton hamburger top-right (Menu Lucide 24 px, touch target 48×48)",
+      "behavior": "Slide-in depuis la droite, overlay #2A1810 alpha 0.50 backdrop, panneau white surface plein hauteur w-80",
+      "close": "Bouton X top-right + clic sur overlay + touche Escape",
+      "items": "Liste verticale full-width avec py-4 px-6 par item, font-heading text-lg (lisible 65+)",
+      "cta": "CTA accent 'Voir les promotions' en bas du menu, full-width sticky",
+      "lang_switcher": "Bas du panneau (FR / EN), séparateur border-strong au-dessus",
+      "a11y": "focus-trap dans le menu ouvert, aria-expanded sur trigger, focus auto sur premier item à l'ouverture"
     },
     "tablet": {
-      "type": "hamburger (memes regles que mobile)",
-      "breakpoint_switch": "lg (1024px) — basculement vers desktop horizontal",
-      "rationale": "4 items + LangSwitcher = trop encombre sur tablet portrait. Mieux vaut keep hamburger jusqu'a 1024px."
+      "type": "hamburger-keep (768px-1023px)",
+      "breakpoint_threshold": "md → lg",
+      "note": "Hamburger conservé jusqu'à lg=1024px car 4 items main nav + lang switcher + logo = trop pour tablettes portrait sans sacrifier le touch target"
     },
     "desktop": {
-      "type": "horizontal-sticky-shrink-on-scroll",
-      "breakpoint": "lg (1024px)",
-      "behavior_default": "Header haut (h-20), logo wordmark + 4 nav links + CTA accent + LangSwitcher",
-      "behavior_scrolled": "Header shrink (h-16), shadow-sm, transition 200ms (Trigger : window.scrollY > 32px)",
-      "max_items_visible": 6,
-      "active_link_indicator": "Underline accent or 2px sous le link de la route courante (next-intl pathname compare)",
-      "promotions_highlight_badge": "Badge accent or 'Cette semaine' a cote du link Promotions (signal visuel KPI primaire)"
+      "type": "horizontal-sticky",
+      "breakpoint": "lg (1024px+)",
+      "items": ["Accueil", "Promotions", "Produits", "Nous joindre"],
+      "behavior": "Sticky top-0 au scroll (shrink + shadow on scroll > 10px), CTA accent 'Promos' inline à droite, lang switcher à côté",
+      "max_items": 5,
+      "logo_height": "40 px (h-10)",
+      "header_total_height": "64 px (h-16)"
     }
   },
   "grid_strategy": {
-    "container": {
-      "default": "max-w-7xl mx-auto",
-      "padding_x": "px-4 sm:px-6 lg:px-8",
-      "_rationale": "Padding progressif evite les bords trop colles sur tablet"
+    "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "promo_cards_grid": {
+      "mobile": "grid-cols-1 gap-4",
+      "tablet": "grid-cols-2 gap-6",
+      "desktop": "grid-cols-3 gap-8",
+      "_applies_to": ["S-002 PromotionsHighlight", "S-010 PromotionsList"]
     },
-    "section_padding_y": {
-      "mobile": "py-12 (48px)",
-      "tablet": "py-16 (64px)",
-      "desktop": "py-20 (80px)"
+    "category_cards_grid": {
+      "mobile": "grid-cols-2 gap-3",
+      "tablet": "grid-cols-4 gap-4",
+      "desktop": "grid-cols-4 gap-6",
+      "_applies_to": ["S-003 CategoriesProduits"]
     },
-    "cards_grid": {
-      "promotions_homepage_top3": {
-        "mobile": "grid-cols-1 gap-4",
-        "tablet": "grid-cols-2 gap-6",
-        "desktop": "grid-cols-3 gap-6"
-      },
-      "promotions_full_list": {
-        "mobile": "grid-cols-1 gap-4",
-        "tablet": "grid-cols-2 gap-6",
-        "desktop": "grid-cols-3 gap-6"
-      },
-      "categories_4_icons": {
-        "mobile": "grid-cols-2 gap-3",
-        "tablet": "grid-cols-4 gap-4",
-        "desktop": "grid-cols-4 gap-6"
-      },
-      "produits_galerie_per_category": {
-        "mobile": "grid-cols-2 gap-3",
-        "tablet": "grid-cols-3 gap-4",
-        "desktop": "grid-cols-4 gap-4",
-        "xl": "xl:grid-cols-6 gap-4"
-      },
-      "testimonials_voisinage": {
-        "mobile": "flex overflow-x-auto snap-x snap-mandatory gap-4 (carousel scroll natif)",
-        "tablet": "grid-cols-2 gap-6",
-        "desktop": "grid-cols-3 gap-6"
-      }
+    "testimonial_carousel": {
+      "mobile": "flex overflow-x-auto snap-x snap-mandatory (1 visible + peek du suivant)",
+      "tablet": "grid-cols-2 gap-4",
+      "desktop": "grid-cols-3 gap-6",
+      "_applies_to": ["S-004 SocialProofVoisinage"]
     },
-    "split_2_cols": {
-      "infos_pratiques": {"mobile": "grid-cols-1", "desktop": "grid-cols-2 gap-12"},
-      "story_brand": {"mobile": "grid-cols-1", "desktop": "grid-cols-2 gap-12 items-center"},
-      "coordonnees_horaires": {"mobile": "grid-cols-1 gap-6", "desktop": "grid-cols-2 gap-12"}
+    "info_split_grid": {
+      "mobile": "grid-cols-1 gap-8 (stack)",
+      "desktop": "grid-cols-2 gap-12",
+      "_applies_to": ["S-005 InfosPratiques", "S-006 StoryBrand", "S-019 CoordonneesHoraires"]
+    },
+    "product_gallery_grid": {
+      "mobile": "grid-cols-2 gap-3",
+      "tablet": "grid-cols-3 gap-4",
+      "desktop": "grid-cols-4 gap-4",
+      "wide": "lg:grid-cols-6 gap-4 (xl optionnel)",
+      "_applies_to": ["S-015 ProduitsGalerie"]
     },
     "content_width": {
-      "long_form_legal": "max-w-3xl mx-auto (S-023, S-024)",
-      "form_centered": "max-w-2xl mx-auto (S-021 ContactForm, S-007 Newsletter)",
-      "faq_accordion": "max-w-3xl mx-auto",
-      "section_text_blocks": "max-w-prose (65ch)",
-      "hero_overlay_text": "max-w-2xl (text-only width on hero)"
+      "text_blocks_prose": "max-w-3xl mx-auto (~65ch) — pages légales S-023/S-024",
+      "full_sections": "max-w-7xl mx-auto",
+      "hero": "full-width edge-to-edge (no max-width)",
+      "form_contact": "max-w-2xl mx-auto",
+      "newsletter": "max-w-xl mx-auto"
     }
   },
   "typography_scaling": {
-    "_strategy": "Mobile-first avec sm:/lg: pour passer du mobile compact au desktop scale Major Third complet.",
-    "h1": "text-3xl sm:text-4xl lg:text-h1 (3xl=1.875rem -> 4xl=2.25rem -> h1=3.815rem)",
-    "h2": "text-2xl sm:text-3xl lg:text-h2 (2xl=1.5rem -> 3xl=1.875rem -> h2=3.052rem)",
-    "h3": "text-xl sm:text-2xl lg:text-h3 (xl=1.25rem -> 2xl=1.5rem -> h3=2.441rem)",
+    "h1": "text-3xl sm:text-4xl lg:text-h1 (mobile 1.875rem → desktop 3.052rem)",
+    "h2": "text-2xl sm:text-3xl lg:text-h2 (mobile 1.5rem → desktop 2.441rem)",
+    "h3": "text-xl sm:text-2xl lg:text-h3",
     "h4": "text-lg sm:text-xl",
-    "body": "text-base (1rem) — minimum 16 px sur tous breakpoints",
-    "body_lg": "text-base lg:text-lg (paragraphes intro, body StoryBrand)",
+    "body": "text-base (1rem = 16 px — minimum cible 65+)",
+    "body_lg": "text-lg (1.125rem — pour InfosPratiques + ContactHero adresse/téléphone)",
+    "ui_label": "text-sm font-medium tracking-wider",
     "small": "text-sm",
-    "caption": "text-xs lg:text-sm",
-    "_senior_friendly_overrides": {
-      "contact_address_phone_S018_S019": "text-xl lg:text-2xl (S-018, S-019) — clientele 80 ans, lisibilite critique",
-      "form_labels_S021_S007": "text-base lg:text-lg (visibilite formulaires)",
-      "_zoom_200_check": "Body 16px x 200% = 32px confortable. Touch targets 48px x 200% = 96px (largement OK)."
-    }
+    "_a11y": "Aucun texte < 14 px. Adresse/téléphone S-018/S-019 en text-2xl (1.5rem ~ 24 px) pour 80 ans."
   },
   "image_strategy": {
-    "hero_S001": {
-      "mobile": "aspect-[4/5] object-cover, focal point center (overlay dense pour text)",
-      "tablet": "aspect-[3/2] object-cover",
-      "desktop": "aspect-[21/9] object-cover, min-h-[80vh]",
+    "hero_image_s001": {
+      "mobile": "aspect-[4/3], object-cover, object-center",
+      "tablet": "aspect-[16/9], object-cover",
+      "desktop": "aspect-[21/9] OU bg-cover full-viewport min-h-[80vh]",
       "loading": "eager (above-the-fold)",
-      "sizes": "100vw"
+      "sizes": "100vw",
+      "priority": true
     },
-    "card_promotions_S002_S010": {
+    "portrait_story_s006": {
+      "mobile": "aspect-[4/5] full-width",
+      "desktop": "aspect-[4/5] max-w-md",
+      "loading": "lazy",
+      "sizes": "(max-width: 768px) 100vw, 50vw"
+    },
+    "promo_card_image": {
       "all_breakpoints": "aspect-[16/9] object-cover",
-      "loading": "lazy (sauf top 3 sur S-002 qui peuvent etre eager si visibles above-the-fold)",
-      "sizes": "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+      "loading": "lazy (sauf 3 premières featured = eager)",
+      "sizes": "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
+      "_applies_to": ["S-002", "S-010"]
     },
-    "card_produits_S015": {
-      "all_breakpoints": "aspect-square (1:1) object-cover",
+    "product_card_image": {
+      "all_breakpoints": "aspect-square object-contain (produits centrés)",
+      "loading": "lazy (sauf premier rang ProduitsGalerie = eager)",
+      "sizes": "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw",
+      "max_kb": 500,
+      "_applies_to": ["S-015"]
+    },
+    "avatar_testimonial": {
+      "all_breakpoints": "64×64 rounded-full",
       "loading": "lazy",
-      "sizes": "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+      "_applies_to": ["S-004"]
     },
-    "story_brand_portrait_S006": {
-      "all_breakpoints": "aspect-[4/5] object-cover",
-      "loading": "lazy",
-      "sizes": "(max-width: 1024px) 100vw, 50vw"
-    },
-    "testimonial_avatar_S004": {
-      "all_breakpoints": "aspect-square rounded-full w-16 h-16 object-cover",
-      "loading": "lazy",
-      "sizes": "64px"
-    },
-    "maps_placeholder_S020": {
+    "maps_placeholder": {
       "mobile": "aspect-[4/3]",
       "desktop": "aspect-[16/9]",
       "loading": "lazy",
-      "sizes": "(max-width: 1024px) 100vw, 60vw"
+      "_applies_to": ["S-020 — before consent"]
     },
-    "_global_rules": {
-      "format_priority": ["avif", "webp", "jpg"],
-      "default_quality": 80,
-      "next_image_required": "Toutes les images via next/image (jamais <img>)",
-      "blur_placeholder": "blurDataURL pour images au-dessus du fold (hero, top promos)"
-    }
+    "default_format": "WebP avec fallback JPG, AVIF si supporté",
+    "default_quality": 80,
+    "blur_placeholder": "blurDataURL via next/image (génération automatique avec next-build)"
   },
   "touch_targets": {
-    "min_size_px": 48,
-    "tailwind_class": "min-h-[48px] min-w-[48px] (ou h-12 w-12 pour icones seules)",
-    "spacing_between_targets_px": 8,
+    "min_size": "48×48 px (h-12 w-12 en Tailwind, ou padding combiné)",
+    "min_spacing_between": "8 px (gap-2 minimum)",
     "applies_to": [
-      "Tous boutons (Button.tsx variant primary/accent/ghost)",
-      "Liens de navigation (Header desktop ET mobile)",
-      "Hamburger trigger + close X",
-      "LangSwitcher FR/EN",
-      "tel: links (S-018, S-019)",
-      "Toggles accordion FAQ (S-011, S-016)",
-      "Bouton 'Charger la carte' (S-020)",
-      "Sticky CTA mobile et desktop (S-008)",
-      "Cards cliquables entieres (CategoriesProduits S-003)"
+      "Boutons CTA (py-3 px-6 minimum = 48+ px touchable)",
+      "Liens nav (py-3 px-4)",
+      "Icônes interactives (h-12 w-12 avec padding interne)",
+      "Toggle hamburger (h-12 w-12)",
+      "Checkboxes (h-5 w-5 avec label associé augmentant la zone)",
+      "Accordion summary FAQ (py-4)",
+      "Cards (entirely clickable wrapped in <Link>)"
     ],
-    "_compliance": "WCAG 2.5.8 Target Size (Minimum) + iOS HIG 44pt = 44px ; Material Design 48dp. NEXOS = 48px partout."
+    "_wcag_ref": "WCAG 2.5.8 Target Size — cible AAA = 24×24, NEXOS impose 48 cible 65+"
   },
   "content_adaptation": {
-    "tables_horaires_S019": {
-      "mobile": "table-fixed (jour 40%, heures 60%), text-base, lisible sans scroll horizontal",
-      "desktop": "table-auto, text-lg",
-      "_no_overflow_scroll_needed": "Table 2 colonnes simple — pas besoin d'overflow"
+    "tables": {
+      "horaires_s005_s019": "Stacked sur mobile (block layout avec data-label CSS) ou conservée avec overflow-x-auto si nécessaire — préférer conservation sémantique th/td + scope='row'",
+      "_a11y": "Caption visible obligatoire"
     },
-    "long_form_legal_S023_S024": {
-      "mobile": "prose prose-sm px-4 (lecture 1 colonne, leading-relaxed)",
+    "long_text_legal_s023_s024": {
+      "mobile": "prose prose-sm px-4",
       "tablet": "prose prose-base max-w-2xl mx-auto",
-      "desktop": "prose prose-lg max-w-3xl mx-auto"
+      "desktop": "prose prose-lg max-w-3xl mx-auto",
+      "_note": "Pas de troncation avec 'Read more' — Loi 25 exige lecture intégrale"
     },
-    "forms_S007_S021": {
-      "mobile": "Stack vertical 100% width, labels au-dessus des inputs",
-      "desktop": "Email + tel sur meme ligne (md:grid-cols-2 gap-4) pour S-021, reste en stack"
+    "forms_layout": {
+      "newsletter_s007": {
+        "mobile": "Stack vertical (input full-width → submit full-width → checkbox sous)",
+        "tablet": "Inline (input flex-1 + submit) + checkbox sous",
+        "desktop": "Idem tablet, max-w-xl mx-auto"
+      },
+      "contact_s021": {
+        "mobile": "Stack vertical complet",
+        "tablet+": "Email + téléphone sur même ligne (md:grid-cols-2), reste stack"
+      }
     },
     "footer": {
-      "mobile": "Stack vertical : 3 colonnes deviennent 3 sections superposees, separees par border-t",
-      "tablet": "grid-cols-2 (Le depanneur + Infos pratiques | Legal Loi 25)",
-      "desktop": "grid-cols-3 gap-8"
-    },
-    "anchor_nav_produits_S014": {
-      "mobile": "Overflow-x-auto, scroll-snap-type-x-mandatory, snap-start sur chaque ancre",
-      "desktop": "Inline justify-center, no-scroll"
+      "mobile": "Accordéons par colonne (Plan / Contact / Légal / Suivez-nous)",
+      "tablet": "2 colonnes",
+      "desktop": "4 colonnes inline"
     }
   },
-  "scroll_behavior": {
-    "smooth_scroll_anchors": "scroll-smooth sur html, scroll-mt-20 lg:scroll-mt-24 (offset header sticky) sur cibles d'ancres",
-    "sticky_header_threshold_px": 32,
-    "sticky_subnav_offset_top": "Header height (16 mobile, 20 desktop)",
-    "back_to_top": "Hidden — pas necessaire sur pages sub-7-sections (pas de scroll long sauf legal)"
+  "anti_horizontal_scroll": {
+    "rule": "Aucune page ne doit avoir de scroll horizontal sur mobile (sauf carousels intentionnels avec scroll-snap = S-004 mobile et S-014 mobile)",
+    "implementation": "overflow-x-hidden sur <body>, audit visuel Ph5",
+    "test_breakpoint": "375px (iPhone SE)"
+  },
+  "zoom_200_percent": {
+    "rule": "Layout fonctionnel à 200% zoom sur 1280×800 (WCAG 1.4.4 Resize text + 1.4.10 Reflow)",
+    "implementation": "rem-based sizing, max-width fluide, jamais de positioning absolu pour layout principal",
+    "_a11y_cible_65+": "Test obligatoire 200% pour Ph5"
   },
   "testing_checklist": {
     "devices": [
-      "iPhone SE (375 x 667)",
-      "iPhone 14 Pro (393 x 852)",
-      "iPad portrait (768 x 1024)",
-      "iPad paysage (1024 x 768)",
-      "MacBook 13 (1280 x 800)",
-      "Desktop FHD (1920 x 1080)"
+      "iPhone SE (375 × 667) — minimum acceptable",
+      "iPhone 14 / 15 (390 × 844)",
+      "Pixel 7 (412 × 915)",
+      "iPad mini portrait (768 × 1024)",
+      "iPad paysage (1024 × 768)",
+      "MacBook 13 (1280 × 800)",
+      "Desktop 1920 × 1080"
     ],
-    "orientation": "Portrait ET paysage testees pour tablettes",
-    "zoom_levels": ["100%", "150%", "200%"],
-    "browsers": ["Safari iOS", "Chrome Android", "Firefox Desktop", "Safari macOS", "Edge Windows"],
-    "specific_checks": [
-      "Hamburger nav focus-trap fonctionnel au clavier",
-      "Sticky CTA hidden sur /promotions",
-      "Sticky subnav S-014 active state correct",
-      "tel: links cliquables sur mobile, pas de cassure desktop",
-      "Maps placeholder S-020 ne charge PAS l'iframe avant consent",
-      "Cookie consent S-008 pas masque par sticky CTA mobile",
-      "Hero overlay maintient ratio AA sur les zones de texte meme sur image claire"
-    ]
+    "orientation": "Portrait ET paysage pour tablettes",
+    "zoom": "Test 100%, 150%, 200%",
+    "reduced_motion": "Test avec prefers-reduced-motion: reduce activé",
+    "high_contrast": "Test Windows High Contrast Mode (forced-colors)"
+  },
+  "performance_implications": {
+    "image_responsive_sizes": "next/image avec attribute sizes correct = -40% poids transféré sur mobile vs desktop default",
+    "css_purge": "Tailwind 3.4 JIT purge = bundle CSS ≤ 30 KB minifié gzippé",
+    "responsive_layout_no_jank": "Aucune animation de layout (height/width). Tout transform/opacity (cf. interactions.json)"
   },
   "checklist": {
-    "mobile_first": true,
+    "mobile_first_documented": true,
     "navigation_mobile_desktop_defined": true,
-    "grids_per_content_type": true,
-    "touch_targets_48_min": true,
-    "images_sizes_attribute": true,
-    "no_horizontal_scroll": true,
-    "zoom_200_functional": true,
-    "senior_friendly_overrides": true
+    "grid_adaptive_per_content_type": true,
+    "touch_targets_48px_min": true,
+    "images_sizes_attribute_planned": true,
+    "no_horizontal_scroll_except_intentional_carousels": true,
+    "zoom_200_percent_supported": true,
+    "warm_palette_alignment": true
   }
 }

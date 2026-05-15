@@ -3,16 +3,25 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #1a2b3c;
-  --color-primary-hover: #243d54;
+  --color-primary: #8b4513;
+  --color-primary-hover: #a0522d;
+  --color-primary-active: #6b3510;
   --color-accent: #ffd700;
-  --color-secondary: #b2b2b2;
-  --color-background: #ffffff;
-  --color-background-alt: #f4f6f8;
+  --color-accent-hover: #e6c200;
+  --color-secondary: #6b4f3c;
+  --color-background: #fff8e7;
+  --color-background-alt: #ffffff;
+  --color-background-muted: #f5edd8;
   --color-surface: #ffffff;
-  --color-text: #1a2b3c;
-  --color-text-muted: #475569;
-  --color-border: #d1d5db;
+  --color-surface-sunken: #fff8e7;
+  --color-text: #2a1810;
+  --color-text-secondary: #6b4f3c;
+  --color-text-muted: #8b7355;
+  --color-text-on-accent: #2a1810;
+  --color-text-on-primary: #ffffff;
+  --color-text-inverse: #fff8e7;
+  --color-border: #d4c5a9;
+  --color-border-strong: #a89878;
 }
 
 html {
@@ -50,7 +59,7 @@ h3 {
   top: -100px;
   left: 0;
   background: var(--color-primary);
-  color: var(--color-surface);
+  color: var(--color-text-on-primary);
   padding: 0.75rem 1rem;
   z-index: 100;
   transition: top 0.15s ease;

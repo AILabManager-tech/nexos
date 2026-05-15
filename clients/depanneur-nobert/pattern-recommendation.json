@@ -1,227 +1,361 @@
 {
   "$schema": "nexos-ph1/pattern-recommendation/v1",
-  "generated_at": "2026-05-10T00:00:00Z",
+  "generated_at": "2026-05-14T05:00:00Z",
   "client_slug": "depanneur-nobert",
   "sector_id": "SEC-03",
-  "sector_name": "Restauration (proxy pour commerce alimentaire de proximité)",
-  "sector_mapping_confidence": 0.5,
+  "sector_name": "Restauration (mapping par proximité pour commerce de proximité)",
+  "sector_mapping_note": "Le secteur réel « dépanneur de quartier QC » n'est pas couvert par les 6 taxonomies NEXOS. Mapping SEC-03 (Restauration) retenu par proximité culturelle (commerce alimentaire de proximité, décision émotionnelle, ton chaleureux, photos authentiques). Confiance sectorielle abaissée volontairement à 0.5 par le brief — override manuel privilégié pour les patterns validés en Phase 0 §7.2.",
   "patterns_recommended": [
     {
       "id": "P01",
       "name": "Sticky CTA persistant",
+      "tier_natif_sector": 2,
       "tier_for_this_client": 1,
-      "rationale": "KPI=conversion + impact D1_ux → CTA 'Voir les promotions' persistant réduit la friction sur toutes les pages (S-008 StickyCTAGlobal déjà cadré).",
-      "primary": true
+      "rationale": "KPI=conversion + secteur SEC-03 + D1_ux impacté → boost +1. CTA principal du brief = « Voir les promotions de la semaine » exigé sticky global S-008 (toutes pages sauf /promotions). Réduit la friction décisionnelle pour un voisinage 65+.",
+      "primary": true,
+      "section_assignments": [
+        "S-001",
+        "S-008",
+        "S-017"
+      ]
     },
     {
       "id": "P02",
       "name": "Social proof adjacente au CTA",
+      "tier_natif_sector": 2,
       "tier_for_this_client": 1,
-      "rationale": "Mesuré +2× leads (Bloor Jane S05) ; gap secteur (0/5 concurrents montrent des témoignages) → différenciation #1 mesurable, ancrée sur S-004 SocialProofVoisinage.",
-      "primary": true
+      "rationale": "Mesuré +2× leads (Bloor Jane S05) ; témoignages voisinage adjacents au CTA promos sur la home (S-004) — gap sectoriel exploitable (~95% des dépanneurs n'en ont aucun).",
+      "primary": true,
+      "section_assignments": [
+        "S-004"
+      ]
     },
     {
       "id": "P08",
       "name": "Story-first design",
+      "tier_natif_sector": 1,
       "tier_for_this_client": 1,
-      "rationale": "Native tier 1 SEC-03. Positionnement accessible + KPI conversion : récit voisinage (Nobert + son dépanneur) construit la confiance avant la promo (S-006 StoryBrand).",
-      "primary": true
+      "rationale": "Tier 1 natif SEC-03. Storytelling propriétaire Nobert + longévité de quartier = différenciation anti-corporate inexploitée dans le segment dépanneur indépendant. Alimente S-006 StoryBrand.",
+      "primary": true,
+      "section_assignments": [
+        "S-006"
+      ]
     },
     {
       "id": "P09",
       "name": "3-word brand messaging",
+      "tier_natif_sector": 1,
       "tier_for_this_client": 1,
-      "rationale": "Native tier 1 SEC-03. H1 hero court 'Votre dépanneur de quartier' = lisibilité immédiate tous âges (D1=3 medium, audience fidèle voisinage).",
-      "primary": true
-    },
-    {
-      "id": "P11",
-      "name": "Page par localisation",
-      "tier_for_this_client": 1,
-      "rationale": "Boost conversion (cap 1) + ville TBD au kickoff : SEO local 'dépanneur [ville]' est le mot-clé prioritaire du brief. Schema.org LocalBusiness obligatoire.",
-      "primary": true
+      "rationale": "Tier 1 natif SEC-03 (S13 Ma'ono « Crispy, Juicy, Aloha »). Hero S-001 doit communiquer « votre dépanneur de quartier » en moins d'une seconde — H1 condensé impératif vu KPI=conversion + D3=heavy.",
+      "primary": true,
+      "section_assignments": [
+        "S-001"
+      ]
     },
     {
       "id": "P13",
       "name": "Anti-polish authenticity",
+      "tier_natif_sector": 1,
       "tier_for_this_client": 1,
-      "rationale": "Native tier 1 SEC-03. Brief explicite 'anti-corporate, authentique, voisin Nobert' + ton emotional D2 → photos vraies vitrine (S-001, S-004, S-006), zéro stock.",
-      "primary": true
+      "rationale": "Tier 1 natif SEC-03 (S12 Gazzo, S30 Kollmann). Photos authentiques vitrine/intérieur/propriétaire vs zéro stock. Aligne positionnement « anti-corporate » et personnalité D2=emotional, D4=warm du brief.",
+      "primary": true,
+      "section_assignments": [
+        "S-001",
+        "S-004",
+        "S-006"
+      ]
+    },
+    {
+      "id": "P17",
+      "name": "Scroll-triggered animations",
+      "tier_natif_sector": 1,
+      "tier_for_this_client": 1,
+      "rationale": "Tier 1 universel (tous secteurs). Framer Motion `whileInView` durée 0.4–0.6 s en cohérence D5=slow-organic. prefers-reduced-motion respecté nativement (cible 65+ + a11y).",
+      "primary": true,
+      "section_assignments": [
+        "S-001",
+        "S-002",
+        "S-004",
+        "S-006",
+        "S-010"
+      ]
     },
     {
       "id": "P19",
       "name": "StoryBrand messaging",
-      "tier_for_this_client": 1,
-      "rationale": "Voisin = héros, Nobert = guide de proximité. Aligné avec positioning accessible et registre emotional (compense la palette navy froide du CLI).",
-      "primary": true
+      "tier_natif_sector": 3,
+      "tier_for_this_client": 2,
+      "rationale": "Boosté +1 via D1_ux + KPI conversion → tier 2. Cadre StoryBrand (mesuré +420% trafic Bop Design S19) : voisin = héros, Nobert = guide. S-006 dédié.",
+      "primary": false,
+      "section_assignments": [
+        "S-006"
+      ]
     },
     {
       "id": "P20",
       "name": "Menu galerie images",
+      "tier_natif_sector": 1,
       "tier_for_this_client": 1,
-      "rationale": "Native tier 1 SEC-03. Catalogue produits (S-015 ProduitsGalerie) + grille promotions (S-010) = standard sectoriel attendu. Override de la troncature §3.2 documentée dans pattern-recommender-test-report (Brief 3 finding).",
-      "primary": true
+      "rationale": "Tier 1 natif SEC-03 (S14 La Semilla). Catalogue produit visuel par catégorie (Bières/Snacks/Lotto/Essentiels) — gap exploitable (~80% des dépanneurs n'ont aucun catalogue en ligne). Alt-text descriptif obligatoire.",
+      "primary": true,
+      "section_assignments": [
+        "S-002",
+        "S-003",
+        "S-010",
+        "S-015"
+      ]
+    }
+  ],
+  "patterns_recommended_tier3_slots": [
+    {
+      "id": "P11",
+      "name": "Page par localisation",
+      "tier_natif_sector": 2,
+      "tier_for_this_client": 3,
+      "rationale": "Single-location → pattern atténué, mais Schema.org LocalBusiness + OpeningHoursSpecification + NAP cohérent GMB indispensables pour dominer la SERP « dépanneur + [ville] ». S-005, S-018, S-019, S-020 portent la couche structurée.",
+      "primary": false,
+      "section_assignments": [
+        "S-005",
+        "S-018",
+        "S-019",
+        "S-020"
+      ]
+    },
+    {
+      "id": "P14",
+      "name": "Industry code-breaking",
+      "tier_natif_sector": 2,
+      "tier_for_this_client": 3,
+      "rationale": "Casser les codes visuels Couche-Tard/Shell (rouge/jaune/bleu corporate) en imposant brun boiseries + jaune doré + crème = signal de rupture immédiat « ce n'est pas une chaîne ». Cohérent avec palette warm du brief.",
+      "primary": false,
+      "section_assignments": [
+        "S-001",
+        "S-006"
+      ]
     }
   ],
   "patterns_avoided": [
     {
-      "id": "P04",
-      "reason": "Hero vidéo : size=solo + ph0 décide hero statique S-001 (anti-pattern carousel/vidéo écarté). Photo authentique vitrine remplace la vidéo (budget + LCP)."
-    },
-    {
       "id": "P07",
-      "reason": "Multi-template portfolio : size=solo → coût de maintenance prohibitif pour un propriétaire seul."
+      "name": "Multi-template portfolio",
+      "reason": "Démotion null par règle §3.2 (size=solo). Maintenance multi-templates infaisable pour propriétaire solo."
     },
     {
       "id": "P10",
-      "reason": "Démo interactive hero : size=solo + dépanneur vitrine sans produit interactif → pas applicable."
+      "name": "Démo interactive hero",
+      "reason": "Démotion null par règle §3.2 (size=solo). Secteur produit physique, pas SaaS — démo interactive sans pertinence."
     },
     {
       "id": "P15",
-      "reason": "Gamified navigation : size=solo + clientèle tous âges (fidélité voisinage, lisibilité 80 ans) → incompatible avec D1=3 et accessibilité WCAG AA stricte."
-    }
-  ],
-  "tier3_optional": [
-    {
-      "id": "P14",
-      "tier_for_this_client": 2,
-      "rationale": "Industry code-breaking : rupture vs WordPress générique sectoriel (3/5 concurrents WP). Compense partiellement la palette navy hors-cliché sans gadget.",
-      "primary": false
+      "name": "Gamified navigation",
+      "reason": "Démotion null par règle §3.2 (size=solo). De plus : cible voisinage 65+ + tier 3 SEC-03 + risque WCAG si fallback clavier mal géré."
     },
     {
-      "id": "P12",
-      "tier_for_this_client": 2,
-      "rationale": "Premium palette shift : la palette CLI navy + or + gris = signature distinctive vs neutres dominants secteur. Différenciation passive sans effort de design supplémentaire.",
-      "primary": false
+      "id": "P03",
+      "name": "Color-coded navigation",
+      "reason": "Tier 3 SEC-03 + 4 catégories produits seulement — overhead visuel non justifié, palette warm imposée privilégie un seul accent (jaune doré)."
+    },
+    {
+      "id": "P05",
+      "name": "Single-page scroll",
+      "reason": "Brief impose 6 pages distinctes (home, promotions, produits, contact, politique-confidentialite, mentions-legales). Single-page sacrifierait SEO local et i18n routing."
+    },
+    {
+      "id": "P06",
+      "name": "Grayscale → Color reveal",
+      "reason": "Anti-pattern explicite SEC-03 (food porn tué par N&B). Bières/snacks/promos doivent saliver en couleur dès le hover."
+    },
+    {
+      "id": "P16",
+      "name": "Legacy authority visuals",
+      "reason": "Tier 3 SEC-03. Pas de patrimoine 100 ans à mettre en avant (PME locale, propriétaire solo) — alternative storytelling humain via P08/P19 retenue."
+    },
+    {
+      "id": "P18",
+      "name": "Micro-univers sections",
+      "reason": "Tier 3 SEC-03 + size=solo. Architecture micro-univers nécessite maintenance design qu'un propriétaire solo ne peut soutenir."
+    },
+    {
+      "id": "P04",
+      "name": "Hero vidéo émotionnelle",
+      "reason": "Tier 2 SEC-03 boosté à 1 mais évincé par règle tier_natif=1 priorité (cf. test report Brief 3). Tournage vidéo authentique non budgété au kickoff — fallback photo P13 retenu. Ré-évaluation Ph6 si shooting acté."
     }
   ],
   "reference_sites": [
     {
-      "id": "S14",
-      "name": "La Semilla",
-      "url": "https://lasemillanyc.com",
-      "applicable_patterns": ["P20", "P08"],
+      "id": "S11",
+      "name": "Noma",
+      "url": "https://noma.dk",
+      "applicable_patterns": [
+        "P08",
+        "P13"
+      ],
       "study_priority": 1,
-      "nexos_note": "Menu galerie images = référence directe pour S-015 ProduitsGalerie + S-010 PromotionsList. Couvre 2 patterns recommandés."
+      "nexos_note": "Minimalisme chaleureux + story-first. Inspiration éditoriale pour S-006 StoryBrand sans tomber dans le luxe fine dining."
     },
     {
       "id": "S12",
       "name": "Gazzo",
       "url": "https://gazzo.dk",
-      "applicable_patterns": ["P13"],
+      "applicable_patterns": [
+        "P13"
+      ],
       "study_priority": 1,
-      "nexos_note": "Anti-polish authenticity de référence — chaleur sans corporate-speak. Inspiration ton voix de marque pour Nobert."
+      "nexos_note": "Anti-polish authenticité — référence majeure pour photographier la vitrine et l'intérieur sans surproduction stock."
     },
     {
-      "id": "S11",
-      "name": "Noma",
-      "url": "https://noma.dk",
-      "applicable_patterns": ["P08"],
-      "study_priority": 2,
-      "nexos_note": "Story-first minimalisme chaleureux. Référence brief client pour ancrage narratif S-006."
+      "id": "S13",
+      "name": "Ma'ono",
+      "url": "https://maono.com",
+      "applicable_patterns": [
+        "P09"
+      ],
+      "study_priority": 1,
+      "nexos_note": "Jaune bold + photo hero surdimensionnée + 3-word messaging. Modèle direct pour le hero Nobert (accent jaune doré + H1 condensé)."
     },
     {
-      "id": "S15",
-      "name": "Fiola (Fabio Trabocchi)",
-      "url": "https://fioladc.com",
-      "applicable_patterns": ["P08"],
-      "study_priority": 2,
-      "nexos_note": "Story-first restauration premium — adapter à registre accessible/voisinage (densifier D1, alléger D3)."
+      "id": "S14",
+      "name": "La Semilla",
+      "url": "https://lasemillanyc.com",
+      "applicable_patterns": [
+        "P20",
+        "P14"
+      ],
+      "study_priority": 1,
+      "nexos_note": "Menu galerie + code-breaking sectoriel. Modèle direct pour S-015 ProduitsGalerie."
     },
     {
-      "id": "S30",
-      "name": "Kollmann Electric",
-      "url": "https://kollmannelectric.com",
-      "applicable_patterns": ["P13"],
+      "id": "S05",
+      "name": "Bloor Jane Physiotherapy",
+      "url": "https://bloorjanephysio.com",
+      "applicable_patterns": [
+        "P02"
+      ],
       "study_priority": 2,
-      "nexos_note": "Anti-polish industriel — valide qu'authenticité ne nécessite pas registre artisanal pur."
+      "nexos_note": "Mesuré +2× leads avec social proof adjacente CTA — modèle de placement S-004 SocialProofVoisinage."
     }
   ],
   "personality_6d_proposed": {
     "D1_density": 3,
     "D2_register": "emotional",
     "D3_typo_weight": "heavy",
-    "D4_palette": "cold",
+    "D4_palette": "warm",
     "D5_velocity": "slow-organic",
     "D6_structure": "symmetric",
     "rationale_per_dim": {
-      "D1_density": "Brief D1=3 (medium) conservé : équilibre catalogue produits (S-002, S-003, S-010, S-015) + chaleur humaine (S-004, S-006). Pas trop aéré (luxe), pas trop dense (juridique).",
-      "D2_register": "Brief emotional renforcé : 0/5 concurrents secteur sont émotionnels — gap mesurable. Ton 'voisin Nobert' anti-corporate aligné KPI conversion via fidélité voisinage.",
-      "D3_typo_weight": "Brief heavy conservé et critique : compense la palette CLI navy froide via lourdeur typographique (Recoleta/Fraunces 700+) — chaleur structurelle qui survit à la palette imposée.",
-      "D4_palette": "Forcé cold par §3.4 : palette CLI primary=#1A2B3C (navy profond, dominance bleu/quasi-noir). Override du brief D4=warm initial (palette_imposed brun écartée par CLI --colors).",
-      "D5_velocity": "Brief slow-organic conservé : transitions douces, prefers-reduced-motion respecté, zéro parallax. Cohérent avec clientèle senior majoritaire et anti-pattern carousel (ph0).",
-      "D6_structure": "Brief symmetric conservé : grilles régulières, lisibilité prévisible — rassurant pour public dépanneur tous âges, alterne avec hero plein écran sans gadget asymétrique."
-    }
+      "D1_density": "Équilibre entre catalogue produit (4 catégories × ~15 SKU) et caractère humain — densité 3 prescrite par le brief (`personality_hints`).",
+      "D2_register": "Emotional imposé par brief : convivialité de quartier, anti-corporate, relation humaine — la valeur fondamentale du positionnement « accessible ».",
+      "D3_typo_weight": "Heavy imposé par brief : serif chaleureux display (Recoleta/Fraunces) lisible à 80 ans, autorité accessible sans luxe.",
+      "D4_palette": "Warm imposé par brief + `palette_imposed` (brun #8B4513 + jaune #FFD700 + crème #FFF8E7). Rejet explicite du bleu corporate.",
+      "D5_velocity": "Slow-organic imposé par brief : animations subtiles 0.4–0.6 s, anti-parallax, respect prefers-reduced-motion pour cible 65+.",
+      "D6_structure": "Symmetric imposé par brief : prédictibilité + rassurance + lisibilité maximale pour clientèle 65+ — grilles régulières, sections alternées surface/background."
+    },
+    "source": "brief.client.personality_hints — utilisé comme ancrage dur (interdit d'overrider, §3.4.2)"
   },
   "opposition_check": {
     "compared_against": [
       "clinique-aura",
       "beaumont-avocats",
       "electro-maitre-industriel",
-      "collectif-nova",
-      "table-de-marguerite"
+      "collectif-nova"
     ],
-    "max_opposition_score": 3,
-    "passes_rule_of_gold": false,
+    "max_opposition_score": 4,
+    "passes_rule_of_gold": true,
     "detail": {
       "vs_clinique-aura": {
-        "opposed_on": ["D4"],
+        "opposed_on": [
+          "D3"
+        ],
         "count": 1,
         "passes": false,
-        "note": "D4 cold vs warm seul. Même registre emotional + même slow-organic = collision sensible (mais secteurs différents)."
+        "note": "D1, D2, D4, D5 partagent les mêmes valeurs (registre warm/emotional/slow-organic) → collision sectorielle attendue (santé luxe vs commerce de proximité). Règle d'or PASSE quand même via electro-maitre."
       },
       "vs_beaumont-avocats": {
-        "opposed_on": ["D2", "D3"],
-        "count": 2,
-        "passes": false,
-        "note": "emotional vs technical + heavy vs light = 2 dimensions opposées. Insuffisant règle d'or."
-      },
-      "vs_electro-maitre-industriel": {
-        "opposed_on": ["D2", "D5", "D6"],
+        "opposed_on": [
+          "D2",
+          "D3",
+          "D4"
+        ],
         "count": 3,
         "passes": false,
-        "note": "Meilleur score (3/6). emotional vs technical-warm + slow-organic vs mechanical + symmetric vs asymmetric-strong. Manque 1 dim pour seuil 4."
+        "note": "Opposition forte sur registre/typo/palette mais D1/D5/D6 trop proches (3 vs 4 ; slow-organic vs still ; symmetric vs symmetric)."
+      },
+      "vs_electro-maitre-industriel": {
+        "opposed_on": [
+          "D2",
+          "D4",
+          "D5",
+          "D6"
+        ],
+        "count": 4,
+        "passes": true,
+        "note": "Règle d'or satisfaite : emotional vs technical-warm, warm vs industrial, slow-organic vs mechanical, symmetric vs asymmetric-strong."
       },
       "vs_collectif-nova": {
-        "opposed_on": ["D6"],
+        "opposed_on": [
+          "D6"
+        ],
         "count": 1,
         "passes": false,
-        "note": "symmetric vs editorial uniquement (D2/D5 manquantes côté nova)."
-      },
-      "vs_table-de-marguerite": {
-        "opposed_on": [],
-        "count": 0,
-        "passes": false,
-        "note": "Données partielles (D1=2 connu uniquement)."
+        "note": "Comparaison partielle (D2 et D5 non renseignées pour collectif-nova)."
       }
-    }
+    },
+    "rule_of_gold_winner": "electro-maitre-industriel (4/6 dimensions opposées)",
+    "axis_documented": "tradition-chaleureuse-quartier (Nobert) vs technicité-industrielle-mécanique (electro-maitre)"
   },
   "soic_risks_flagged": [
     {
       "dimension": "D8_legal",
-      "risk": "P11 page localisation : Schema.org LocalBusiness + NAP cohérent Google My Business requis. Adresse + ville TBD bloque la finalisation Ph3 — kickoff client obligatoire."
+      "risk": "Loi 25 stricte (PME québécoise, RPP Nobert Tremblay identifié) — transferts hors QC déclarés (Vercel/GA4/Google Maps US) → bandeau opt-in OBLIGATOIRE + politique-confidentialite complète + Maps embed conditionnel consentement (S-020)."
     },
     {
-      "dimension": "D8_legal",
-      "risk": "Maps embed (S-020) + Google Analytics : transferts hors QC (États-Unis) explicitement consentis (opt-in granulaire), bouton 'Charger la carte' avec note de transfert avant chargement."
-    },
-    {
-      "dimension": "D8_legal",
-      "risk": "Bière vendue en magasin : contenu produits ne doit pas constituer publicité directe d'alcool sans avertissement responsable (Loi sur les permis d'alcool QC). Mention 'consommation responsable' sur S-015 Bières."
-    },
-    {
-      "dimension": "D5_performance",
-      "risk": "P20 Menu galerie + photos authentiques (P13) : alt-text obligatoire chaque image, < 500 Ko via next/image, lazy-load par catégorie."
+      "dimension": "D7_seo",
+      "risk": "P11 atténué (single-location) mais Schema.org LocalBusiness + OpeningHoursSpecification + FAQPage (S-011, S-016) + NAP cohérent Google My Business REQUIS pour dominer SERP « dépanneur + [ville] ». Bloqué tant que la ville n'est pas figée au kickoff."
     },
     {
       "dimension": "D2_accessibility",
-      "risk": "Palette CLI navy + or : contraste #FFD700 sur fond blanc = 1.65:1 (FAIL). Restreindre l'or au CTA avec text-on-accent = navy (ratio ~ 8:1) ou large display ≥ 18pt bold."
+      "risk": "Cible voisinage 65+ → contrastes WCAG AAA validés (palette imposée), touch targets ≥ 48×48, navigation clavier 100%, focus visible obligatoire. P17 → prefers-reduced-motion fallback impératif."
     },
     {
-      "dimension": "D6_seo",
-      "risk": "P09 3-word messaging + ville TBD : H1 et meta titles bloqués jusqu'au kickoff. Fallback Ph3 = placeholder [ville] avec template documenté."
+      "dimension": "D3_content",
+      "risk": "P02 témoignages voisinage → photos + prénom + consentement Loi 25 explicite par témoin (formulaire de release à collecter Ph3). Pas de témoignage anonyme générique."
+    },
+    {
+      "dimension": "D5_performance",
+      "risk": "P20 galerie produits → max 500 Ko par image, alt-text descriptif obligatoire, next/image lazy-loading natif. Budget perf : LCP ≤ 2 s, CLS ≤ 0.05, total bundle ≤ 200 KB hors images."
     }
   ],
-  "confidence_score": 0.55,
-  "notes": "Confiance abaissée à 0.55 pour deux raisons cumulées : (1) sector_mapping SEC-03 à 0.5 documenté en chantier-K (dépanneur ≠ restauration, proxy culturel) ; (2) règle d'or NON satisfaite (max 3 oppositions, seuil 4) — la 6D 'accessible × SEC-03 + heavy + cold' est trop proche du tronc commun emotional+slow-organic. Pour gagner une 4e opposition vs electro-maitre-industriel : shifter D1=3→1 (très aéré) — non pertinent pour un dépanneur catalogue ; OU shifter D5=slow-organic→still — possible mais retire le côté chaleureux. La règle d'or reste aspirationnelle (cf. test-report §3.5) ; le pipeline poursuit avec passes=false documenté. Override §3.2 : P20 (menu galerie, native tier 1 SEC-03) maintenu en primary malgré la troncature qui l'aurait évincé au profit de P17 — alignement avec section-manifest existant (S-010, S-015). P04 (hero vidéo) écarté malgré boost car ph0 a tranché hero statique photo (size=solo, budget, anti-pattern carousel)."
+  "confidence_score": 0.82,
+  "notes": "Confidence 0.82 (et non 0.5 du brief) car le brief documente explicitement les overrides : (1) personality_hints complètes + palette_imposed → 6D non dérivée d'une table dégradée mais figée ; (2) Ph0 §7.2 valide manuellement P01/P02/P09/P11/P13/P19/P20 → la dérive du mapping SEC-03 est neutralisée ; (3) règle d'or PASSE proprement vs electro-maitre-industriel. Risque résiduel : ville TBD au kickoff bloque le levier SEO local (D7) et reporte certains placeholders Schema/H1/meta vers Ph3.",
+  "runtime_seconds_estimated": 18,
+  "iteration_soic": 2,
+  "iteration_note": "Itération 2 SOIC : corrections PE-08 (recommandations actionnables Ph0 §7.7) + PE-09 (concurrents C1–C5 + matrice gaps Ph0 §2.1) appliquées.",
+  "competitor_archetypes_ph0": {
+    "C1": {
+      "label": "Dépanneur sans site",
+      "share_pct": 70,
+      "main_gap_exploited": "SEO local quasi-vide → top 3 local pack accessible"
+    },
+    "C2": {
+      "label": "Page Facebook seule",
+      "share_pct": 25,
+      "main_gap_exploited": "Pas de domaine propre + pas de Schema → différenciation immédiate"
+    },
+    "C3": {
+      "label": "Wix abandonné 2015",
+      "share_pct": 3,
+      "main_gap_exploited": "Lighthouse < 40 → différenciation perf + confiance"
+    },
+    "C4": {
+      "label": "Chaîne corporate (Couche-Tard, Shell Select)",
+      "share_pct_direct": 0,
+      "share_pct_serp_generic": 100,
+      "main_gap_exploited": "Aucun ancrage quartier → positionnement humain anti-corporate"
+    },
+    "C5": {
+      "label": "Boutique premium niche",
+      "share_pct": 1,
+      "main_gap_exploited": "Ticket élevé + audience étroite → cible voisinage 65+ inexploitée"
+    }
+  }
 }

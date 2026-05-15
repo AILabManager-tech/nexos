@@ -3,8 +3,10 @@
   "generated_at": "2026-04-28T00:00:00Z",
   "client_slug": "depanneur-nobert",
   "phase_origin": "ph1-strategy",
-  "last_updated_at": "2026-05-10T20:00:00Z",
+  "last_updated_at": "2026-05-14T12:00:00-04:00",
   "last_updated_phase": "ph5-qa",
+  "iteration_soic": 2,
+  "iteration_note": "Itération 2 SOIC : Ph4 rerun aligné palette warm (Ph2 itération 2). Patches P4i2-001 (tailwind+globals warm brun #8B4513/jaune #FFD700/crème #FFF8E7) + P4i2-002 (icon/apple-icon/OG/manifest warm) + P4i2-003 (Next.js 15.5.15 → 15.5.18, fix HIGH DoS GHSA-8h8q-6873-q5fj). Build PASS 23 routes. Composants React/i18n inchangés (tokens propagés via Tailwind config). status=audited de Ph5 préservé.",
   "total_sections": 24,
   "sections": [
     {
@@ -31,10 +33,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -58,10 +60,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -84,10 +86,10 @@
       "priority": "high",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -111,10 +113,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -138,10 +140,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -165,10 +167,10 @@
       "priority": "high",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -189,10 +191,10 @@
       "priority": "high",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -215,10 +217,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -242,10 +244,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -269,10 +271,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -294,10 +296,10 @@
       "priority": "medium",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -317,10 +319,10 @@
       "priority": "medium",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -343,10 +345,10 @@
       "priority": "high",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -366,10 +368,10 @@
       "priority": "high",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -394,10 +396,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -419,10 +421,10 @@
       "priority": "medium",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -444,10 +446,10 @@
       "priority": "medium",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -471,10 +473,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -498,10 +500,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -525,10 +527,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -550,10 +552,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -573,10 +575,10 @@
       "priority": "high",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -596,10 +598,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     },
     {
@@ -619,10 +621,10 @@
       "priority": "critical",
       "lifecycle": {
         "ph1_planned": "2026-04-28T00:00:00Z",
-        "ph2_designed": "2026-05-10T00:00:00Z",
-        "ph3_content_ready": "2026-05-10T00:00:00Z",
-        "ph4_built": "2026-05-10T00:00:00Z",
-        "ph5_audited": "2026-05-10T20:00:00Z"
+        "ph2_designed": "2026-05-14T06:25:00Z",
+        "ph3_content_ready": "2026-05-14T07:05:00Z",
+        "ph4_built": "2026-05-14T08:30:00Z",
+        "ph5_audited": "2026-05-14T12:00:00-04:00"
       }
     }
   ]

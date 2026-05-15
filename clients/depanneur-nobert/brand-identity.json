@@ -1,296 +1,295 @@
 {
   "$schema": "nexos-ph1/brand-identity/v1",
-  "generated_at": "2026-05-10T00:00:00Z",
+  "generated_at": "2026-05-14T05:05:00Z",
   "client_slug": "depanneur-nobert",
   "brand_voice": {
-    "tone": "voisin-chaleureux-authentique",
+    "tone": "convivial-authentique",
     "formality_level": 2,
     "lexicon_allowed": [
-      "voisinage",
-      "quartier",
+      "votre dépanneur",
+      "de quartier",
       "à deux pas",
-      "voisin",
-      "voisine",
-      "chez Nobert",
-      "accueillant",
+      "vrai monde",
+      "convivial",
+      "proximité",
       "chaleureux",
-      "authentique",
-      "pratique",
-      "dépannage",
-      "fiable",
-      "local",
-      "ouvert",
-      "frais",
-      "du coin",
-      "sympathique",
-      "bienvenue",
+      "tradition",
+      "voisinage",
+      "ouvert pour vous",
       "bonjour",
-      "traditionnel",
-      "familier",
-      "simple",
-      "généreux",
-      "populaire",
-      "courriel",
-      "infolettre",
-      "promotion de la semaine"
+      "merci",
+      "passez nous voir",
+      "promotion de la semaine",
+      "appeler pour une commande",
+      "bonne journée",
+      "famille",
+      "fidélité",
+      "rendez-vous",
+      "trouver l'adresse"
     ],
     "lexicon_banned": [
-      "leader",
-      "premium",
-      "expertise",
-      "solution clé en main",
-      "écosystème",
       "synergie",
-      "scalable",
-      "disruptif",
+      "solution clé en main",
+      "leader du marché",
+      "expérience client unique",
       "innovant",
-      "paradigme",
-      "holistique",
-      "sur-mesure",
-      "élite",
+      "premium",
       "luxueux",
-      "exclusif",
-      "performant"
+      "écosystème",
+      "stratégique",
+      "B2C",
+      "ROI",
+      "scalable",
+      "best-in-class",
+      "disruptif"
     ],
     "sentence_style": {
       "avg_length": "court",
       "voice": "active",
-      "rationale": "Phrases courtes et concrètes — clientèle voisinage, lecture rapide en contexte pratique (avant ou après un passage au dépanneur)."
+      "imperative_usage": "encouragée pour CTAs (« Passez nous voir », « Voyez nos promos »)"
     },
     "cultural_markers": {
-      "pronoun": "vous",
-      "pronoun_rationale": "Vous respectueux standard QC commerce de proximité — accessible sans familiarité forcée, fonctionne tous âges (clientèle 8 à 80 ans).",
-      "anglicisms": "minimal",
-      "quebec_specifics": [
-        "lotto / loto Québec",
-        "dépanneur (terme central, ne pas remplacer par 'épicerie')",
-        "bière (pas 'cervoise')",
-        "courriel (pas 'email')",
-        "voisinage (pas 'quartier' uniquement, voisinage = humain)"
-      ]
-    }
+      "pronoun": "vous (respectueux, tous âges, cohérent cible 65+)",
+      "anglicisms": "minimaux — préférer « courriel » à « email », « clavardage » à « chat », « infolettre » à « newsletter »",
+      "register": "québécois standard, anti-corporate, anti-jargon",
+      "humour": "léger et familier, jamais sarcastique"
+    },
+    "rationale": "Le ton sert l'objectif business : faire venir le voisinage en magasin. Chaque mot doit sonner comme « mon dépanneur » (intime, familier, accessible) et JAMAIS comme « une chaîne corporate ». Niveau 2 (familier respectueux) pour adresser tous les âges sans hauteur."
   },
   "color_system": {
     "primary": {
-      "hex": "#1A2B3C",
-      "css_var": "--color-primary",
-      "tailwind": "primary",
-      "contrast_on_white": "13.66:1",
-      "contrast_grade": "AAA",
-      "usage": "Titres, navigation, fond hero, fond footer, texte principal sur fond clair, bordures fortes",
-      "imposed_by": "CLI --colors"
+      "hex": "#8B4513",
+      "name": "Brun boiseries",
+      "usage": "CTAs, headers, accents structurants",
+      "contrast_on_background": "7.5:1 (FFF8E7) ✓ AAA",
+      "contrast_on_surface": "7.5:1 (FFFFFF) ✓ AAA"
     },
     "primary_hover": {
-      "hex": "#243D54",
-      "css_var": "--color-primary-hover",
-      "tailwind": "primary-hover",
-      "contrast_on_white": "10.85:1",
-      "contrast_grade": "AAA",
-      "usage": "État hover sur boutons primaires + liens nav (variation +10% luminosité)",
-      "imposed_by": "derived"
+      "hex": "#A0522D",
+      "name": "Brun sienna",
+      "usage": "hover/focus states sur primary",
+      "contrast_on_background": "5.4:1 (FFF8E7) ✓ AA"
     },
     "secondary": {
-      "hex": "#B2B2B2",
-      "css_var": "--color-secondary",
-      "tailwind": "secondary",
-      "contrast_on_white": "2.14:1",
-      "contrast_grade": "FAIL_FOR_TEXT",
-      "usage": "Bordures décoratives, séparateurs, surfaces dim — JAMAIS pour du texte sur fond clair",
-      "imposed_by": "CLI --colors"
+      "hex": "#6B4F3C",
+      "name": "Brun moyen",
+      "usage": "métadonnées, sous-titres, text-muted",
+      "contrast_on_background": "6.2:1 (FFF8E7) ✓ AA"
     },
     "accent": {
       "hex": "#FFD700",
-      "css_var": "--color-accent",
-      "tailwind": "accent",
-      "contrast_on_white": "1.36:1",
-      "contrast_on_primary": "10.07:1",
-      "contrast_grade_on_primary": "AAA",
-      "usage": "Fond CTA (avec text-on-accent = #1A2B3C navy) UNIQUEMENT, badges promotions, soulignés courts ; JAMAIS pour du texte d'information sur fond blanc",
-      "imposed_by": "CLI --colors"
+      "name": "Jaune doré",
+      "usage": "badges promotions, CTAs secondaires, signaux d'urgence positive",
+      "contrast_text_on_accent": "12.4:1 (#2A1810 on #FFD700) ✓ AAA"
     },
     "surface": {
       "hex": "#FFFFFF",
-      "css_var": "--color-surface",
-      "tailwind": "surface",
-      "contrast_on_primary": "13.66:1",
-      "contrast_grade": "AAA",
-      "usage": "Fond principal des sections claires, cards"
+      "name": "Blanc pur",
+      "usage": "cards, containers, modales",
+      "contrast_text_on": "16.1:1 (#2A1810) ✓ AAA"
     },
     "surface_alt": {
-      "hex": "#F4F6F8",
-      "css_var": "--color-surface-alt",
-      "tailwind": "surface-alt",
-      "contrast_on_primary": "12.45:1",
-      "contrast_grade": "AAA",
-      "usage": "Fond sections alternées (zébrage doux pour structurer la page sans hard-edge gris)"
+      "hex": "#FFF8E7",
+      "name": "Crème accueillant",
+      "usage": "background principal, sections alternées",
+      "contrast_text_on": "14.5:1 (#2A1810) ✓ AAA"
     },
     "text_primary": {
-      "hex": "#1A2B3C",
-      "css_var": "--color-text-primary",
-      "tailwind": "text-primary",
-      "contrast_on_white": "13.66:1",
-      "contrast_grade": "AAA",
-      "usage": "Texte principal toutes pages (réutilise primary pour cohérence palette imposée)"
+      "hex": "#2A1810",
+      "name": "Brun très foncé",
+      "usage": "corps de texte, titres",
+      "contrast_on_background": "14.5:1 (FFF8E7) ✓ AAA"
     },
     "text_secondary": {
-      "hex": "#475569",
-      "css_var": "--color-text-secondary",
-      "tailwind": "text-secondary",
-      "contrast_on_white": "7.46:1",
-      "contrast_grade": "AAA",
-      "usage": "Texte secondaire, captions, labels, métadonnées — ardoise foncée cohérente avec navy primary"
-    },
-    "text_on_primary": {
-      "hex": "#FFFFFF",
-      "css_var": "--color-text-on-primary",
-      "tailwind": "text-on-primary",
-      "contrast_on_primary": "13.66:1",
-      "contrast_grade": "AAA",
-      "usage": "Texte sur fond navy (hero, footer)"
-    },
-    "text_on_accent": {
-      "hex": "#1A2B3C",
-      "css_var": "--color-text-on-accent",
-      "tailwind": "text-on-accent",
-      "contrast_on_accent": "10.07:1",
-      "contrast_grade": "AAA",
-      "usage": "Texte sur fond or (CTA principaux, badges promotions)"
+      "hex": "#6B4F3C",
+      "name": "Brun moyen",
+      "usage": "métadonnées, captions",
+      "contrast_on_background": "6.2:1 (FFF8E7) ✓ AA"
     },
     "border": {
-      "hex": "#D1D5DB",
-      "css_var": "--color-border",
-      "tailwind": "border",
-      "contrast_on_white": "1.50:1",
-      "usage": "Bordures de cards, inputs, séparateurs — gris légèrement plus foncé que B2B2B2 secondary pour lisibilité fonctionnelle"
+      "hex": "#D4C5A9",
+      "name": "Beige",
+      "usage": "séparations douces, bordures cards",
+      "contrast_decorative": "n/a (non textuel)"
     },
     "error": {
       "hex": "#B91C1C",
-      "css_var": "--color-error",
-      "tailwind": "error",
-      "contrast_on_white": "6.61:1",
-      "contrast_grade": "AAA",
-      "usage": "Messages d'erreur formulaires, alertes, validation Zod"
+      "name": "Rouge profond",
+      "usage": "messages d'erreur formulaires",
+      "contrast_on_surface": "6.4:1 (FFFFFF) ✓ AA"
     },
     "success": {
-      "hex": "#166534",
-      "css_var": "--color-success",
-      "tailwind": "success",
-      "contrast_on_white": "7.83:1",
-      "contrast_grade": "AAA",
-      "usage": "Confirmations (newsletter inscription, formulaire envoyé)"
+      "hex": "#15803D",
+      "name": "Vert forêt",
+      "usage": "confirmations (infolettre, contact envoyé)",
+      "contrast_on_surface": "5.0:1 (FFFFFF) ✓ AA"
     },
     "warning": {
-      "hex": "#92400E",
-      "css_var": "--color-warning",
-      "tailwind": "warning",
-      "contrast_on_white": "7.45:1",
-      "contrast_grade": "AAA",
-      "usage": "Avertissements (consentement Loi 25, transferts hors QC, mention consommation responsable bière)"
+      "hex": "#B45309",
+      "name": "Ambre foncé",
+      "usage": "avertissements Loi 25, encadrés transferts hors QC",
+      "contrast_on_surface": "5.6:1 (FFFFFF) ✓ AA"
     },
     "info": {
-      "hex": "#1E40AF",
-      "css_var": "--color-info",
-      "tailwind": "info",
-      "contrast_on_white": "8.59:1",
-      "contrast_grade": "AAA",
-      "usage": "Notes informatives (heures spéciales, fermetures jours fériés)"
-    }
+      "hex": "#7C2D12",
+      "name": "Brun rouge profond",
+      "usage": "encadrés informationnels (anti-bleu corporate volontaire)",
+      "contrast_on_surface": "9.0:1 (FFFFFF) ✓ AAA"
+    },
+    "rationale": "Palette imposée par le brief (`design.palette_imposed`) — aucune dérive autorisée. Volontairement aucun bleu : rejet explicite du registre tech/clinique/Couche-Tard. Tous les contrastes textuels validés WCAG 2.2 AA minimum, AAA sur les surfaces principales (cible 65+)."
   },
   "typography": {
     "font_primary": {
-      "name": "Fraunces",
-      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&display=swap",
-      "weights_loaded": [700, 900],
-      "usage": "Titres H1-H3 — serif chaleureux à fort contraste, compense la palette navy froide via lourdeur typographique (D3=heavy)",
-      "next_font_strategy": "next/font/google avec subset 'latin', display: 'swap', preload H1 weight 900"
+      "family": "Fraunces",
+      "google_fonts_id": "Fraunces:opsz,wght@9..144,500..900",
+      "fallback_stack": "Fraunces, 'Recoleta', Georgia, 'Times New Roman', serif",
+      "usage": "H1, H2, H3, display, hero",
+      "weights_loaded": [
+        600,
+        700,
+        800
+      ],
+      "rationale": "Serif chaleureux contemporain avec optical sizing variable — cohérent D3=heavy + D4=warm. Lisible 65+ sans tomber dans le luxe fine-dining (Fraunces > Playfair pour le côté « rustique chic » vs « luxe »). Recoleta listé en fallback car non Google Fonts."
     },
     "font_secondary": {
-      "name": "Inter",
-      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
-      "weights_loaded": [400, 500, 600],
-      "usage": "Corps de texte, labels, formulaires, captions — sans humaniste neutre lisible tous âges",
-      "next_font_strategy": "next/font/google avec subset 'latin', display: 'swap', variable font préféré"
+      "family": "Inter",
+      "google_fonts_id": "Inter:wght@400;500;600;700",
+      "fallback_stack": "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      "usage": "body, paragraphs, labels, microcopy, formulaires, navigation",
+      "weights_loaded": [
+        400,
+        500,
+        600,
+        700
+      ],
+      "rationale": "Sans humaniste avec optical sizing impeccable mobile + desktop. Karla listé comme alternative envisagée mais Inter retenu pour densité de glyphes plus lisible à 16 px sur écran 65+. ClearType-compatible Windows."
     },
-    "scale_ratio": 1.250,
+    "scale_ratio": 1.25,
     "scale_name": "Major Third",
     "sizes": {
-      "h1": "3.815rem",
-      "h2": "3.052rem",
-      "h3": "2.441rem",
-      "h4": "1.953rem",
-      "h5": "1.563rem",
-      "h6": "1.25rem",
-      "body": "1rem",
-      "body_lg": "1.125rem",
+      "h1": "3.052rem",
+      "h2": "2.441rem",
+      "h3": "1.953rem",
+      "h4": "1.563rem",
+      "h5": "1.250rem",
+      "h6": "1.125rem",
+      "body": "1.000rem",
+      "body_large": "1.125rem",
       "small": "0.875rem",
-      "caption": "0.75rem"
+      "caption": "0.800rem"
+    },
+    "sizes_mobile_overrides": {
+      "h1": "2.250rem",
+      "h2": "1.875rem",
+      "h3": "1.500rem",
+      "body": "1.000rem"
     },
     "weights": {
-      "heading": 900,
-      "subheading": 700,
+      "heading": 700,
+      "heading_display": 800,
       "body": 400,
       "emphasis": 600,
-      "caption": 400
+      "label": 500
     },
     "line_heights": {
       "heading": 1.15,
-      "subheading": 1.25,
-      "body": 1.6,
-      "small": 1.5,
-      "caption": 1.4
+      "heading_display": 1.1,
+      "body": 1.65,
+      "caption": 1.4,
+      "ui": 1.3
     },
     "letter_spacing": {
+      "heading_display": "-0.02em",
       "heading": "-0.01em",
       "body": "0",
-      "caption": "0.02em"
+      "label_uppercase": "0.05em"
     },
-    "max_font_files": 5,
-    "performance_note": "2 familles × 2-3 weights = 5 fichiers woff2 (limite 4 dépassée d'un cran assumée car D3=heavy critique pour compenser navy). Subsets latin uniquement (FR/EN), display=swap pour zéro CLS."
+    "performance_budget": {
+      "total_woff2_files": 4,
+      "estimated_kb_total": "~95 KB (Fraunces 800 ~30 KB + Inter 400/500/600/700 ~16-22 KB each)",
+      "loading_strategy": "next/font avec display=swap, preload pour Fraunces 800 (hero H1)"
+    }
   },
   "positioning": {
-    "uvp_primary": "Votre dépanneur de quartier, à deux pas.",
-    "uvp_primary_word_count": 8,
+    "uvp_primary": "Votre dépanneur de quartier, à deux pas, ouvert pour vous.",
     "uvp_secondary": [
-      "Promotions fraîches chaque vendredi.",
-      "Bières, snacks, lotto — l'essentiel du voisinage.",
-      "Le dépanneur où on connaît votre prénom."
+      "Promotions vraies, chaque semaine — pas de marketing fancy.",
+      "Une équipe que vous connaissez, pas une chaîne anonyme.",
+      "Bière, snack, loto et l'essentiel — à votre porte."
     ],
-    "sector": "commerce de proximité — dépanneur indépendant",
-    "sub_sector": "épicerie de quartier hybride (snack + lotto + bière + service personnalisé)",
-    "differentiator": "Bilingue FR/EN + opt-in strict Loi 25 + témoignages voisinage (P02 mesuré +2× leads) + Schema.org LocalBusiness — aucun des 5 concurrents du panel ph0 ne livre ces 4 dimensions ensemble.",
-    "anti_positioning": "Pas Couche-Tard. Pas une chaîne. Votre voisin Nobert, propriétaire depuis [année à préciser au kickoff].",
+    "sector": "Commerce de proximité — dépanneur de quartier indépendant (Québec)",
+    "sub_sector": "Épicerie de quartier hybride (snack + lotto + bière + service personnalisé)",
+    "differentiator": "Anti-corporate, anti-chaîne. Nobert n'est PAS en concurrence avec Couche-Tard ou Shell Select (commodité massifiée). Il joue la proximité humaine + promotions réelles hebdo + accessibilité 65+ (téléphone, adresse, horaires sans friction). Seul dépanneur du quartier visible/lisible/fiable en ligne — Loi 25 conforme par défaut, Schema LocalBusiness, photos authentiques.",
     "target_persona": {
-      "demographic": "Tous âges (8 à 80 ans), résidents du voisinage immédiat (rayon 1 km), fréquence d'achat hebdomadaire à quotidienne, panier moyen petit (5-25 $).",
-      "psychographic": "Recherche la commodité du quotidien (lait, bière, lotto, snack) ET l'humanité d'un commerce indépendant. Évite les chaînes par préférence éthique ou simple proximité géographique. Sensible aux promotions hebdomadaires (rationalisation du budget courses) et au sentiment de reconnaissance personnelle (le commerçant me reconnaît).",
-      "primary_action": "Voir les promotions de la semaine",
-      "secondary_actions": [
-        "Trouver l'adresse",
-        "S'inscrire à l'infolettre",
-        "Appeler pour une commande spéciale"
-      ]
-    },
-    "brand_promise": "Votre dépanneur de quartier — fiable, accueillant, à deux pas — où chaque visite vous reconnaît.",
-    "tone_examples": [
-      {
-        "context": "Hero H1",
-        "text_fr": "Votre dépanneur de quartier, à deux pas.",
-        "text_en": "Your neighbourhood corner store, just around the corner."
+      "primary": {
+        "name": "Voisinage 35-65 ans",
+        "geo": "Rayon piéton 800 m + rayon auto 5 km autour du dépanneur",
+        "behavior": "Visite récurrente multi-hebdo (1-4× / semaine), consultation des promotions avant déplacement, appel ponctuel pour commande spéciale",
+        "drivers": "Proximité (60%) + promotions (20%) + horaires (10%) + relation humaine (7%)"
       },
-      {
-        "context": "CTA primaire",
-        "text_fr": "Voir les promotions de la semaine",
-        "text_en": "See this week's deals"
+      "secondary": {
+        "name": "Aînés autonomes 65+",
+        "geo": "Rayon piéton 400 m",
+        "behavior": "Visite fréquente courte distance, sensible aux gros caractères, lecteur sans loupe, navigation clavier possible",
+        "drivers": "Confiance + accessibilité physique + relation personnelle avec Nobert"
       },
-      {
-        "context": "Story brand intro",
-        "text_fr": "Bonjour, moi c'est Nobert. Mon dépanneur, c'est mon coin de voisinage : on se connaît, on se rend service, on se dépanne — comme à la maison.",
-        "text_en": "Hi, I'm Nobert. My corner store is part of the neighbourhood: we know each other, we help each other, we look out for one another — just like home."
-      },
-      {
-        "context": "Newsletter inscription label",
-        "text_fr": "Recevoir les promotions du vendredi par courriel",
-        "text_en": "Get Friday's deals by email"
+      "tertiary": {
+        "name": "Familles soir/weekend",
+        "geo": "Rayon auto 5 km",
+        "behavior": "Snacks, glaces, lottos, dépannage urgent dimanche soir",
+        "drivers": "Horaires étendus + dépannage rapide"
       }
+    },
+    "brand_promise": "Ouvert, vrai, accessible — votre dépanneur vous reconnaît.",
+    "anti_competitors": [
+      "Couche-Tard (chaîne corporate massifiée)",
+      "Shell Select / Petro-Canada (commodité carburant + dépannage froid)",
+      "Wix vintage abandonné (anti-fiabilité)"
+    ],
+    "tone_signals": [
+      "« votre » et « vous » plutôt que « le client » ou « notre clientèle »",
+      "Prénom du propriétaire visible (Nobert) — anti-anonymat corporate",
+      "Pas de superlatif vide (« le meilleur », « unique », « exceptionnel »)",
+      "Pas d'emoji décoratif — Lucide icons line-art uniquement"
     ]
-  }
+  },
+  "design_tokens_alignment": {
+    "tailwind_extend_recommended": {
+      "colors": {
+        "brand-primary": "#8B4513",
+        "brand-primary-hover": "#A0522D",
+        "brand-accent": "#FFD700",
+        "brand-bg": "#FFF8E7",
+        "brand-surface": "#FFFFFF",
+        "brand-text": "#2A1810",
+        "brand-text-muted": "#6B4F3C",
+        "brand-border": "#D4C5A9"
+      },
+      "fontFamily": {
+        "display": [
+          "Fraunces",
+          "Georgia",
+          "serif"
+        ],
+        "body": [
+          "Inter",
+          "system-ui",
+          "sans-serif"
+        ]
+      }
+    },
+    "rationale": "Tokens transmis directement au layout-designer Ph2 et au project-bootstrapper Ph4 pour `tailwind.config.ts`."
+  },
+  "checklist_validation": {
+    "json_valid": true,
+    "contrasts_all_textual_aa_min": true,
+    "contrasts_main_surfaces_aaa": true,
+    "fonts_count": 2,
+    "no_dark_patterns": true,
+    "uvp_under_12_words": true,
+    "lexicon_aligned_with_brief": true,
+    "palette_matches_brief_imposed": true
+  },
+  "iteration_soic": 2,
+  "iteration_note": "Itération 2 SOIC : corrections PE-08 (recommandations actionnables Ph0 §7.7) + PE-09 (concurrents C1–C5 + matrice gaps Ph0 §2.1) appliquées."
 }

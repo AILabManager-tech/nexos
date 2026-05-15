@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
       'Votre dépanneur de quartier authentique. Promotions, bières, lotto, snacks.',
     start_url: '/fr',
     display: 'standalone',
-    background_color: '#FFFFFF',
-    theme_color: '#1A2B3C',
+    background_color: '#FFF8E7',
+    theme_color: '#8B4513',
     icons: [
       { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml' },
       { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },

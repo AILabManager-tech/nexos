@@ -1,9 +1,11 @@
 {
   "$schema": "nexos-ph3/content-qa-report/v1",
   "verdict": "PASS_WITH_WARNINGS",
-  "timestamp": "2026-05-10T00:00:00Z",
+  "timestamp": "2026-05-14T07:00:00Z",
   "client_slug": "depanneur-nobert",
-  "rerun_note": "Re-run Phase 3 2026-05-10 après Ph2 (palette CLI navy figée, Fraunces 900). Patches : (1) common.brand.tagline FR/EN ré-aligné vouvoiement (UVP primaire Ph1). (2) seo-content.json — slug EN promotions corrigé /en/promotions → /en/deals (site-map-logic Ph1 §2.3). Aucun blocking issue. Score préservé 9.6/10.",
+  "iteration_soic": 2,
+  "iteration_note": "Itération 2 SOIC — alignement post-Ph2 warm palette (2026-05-14). Le corpus textuel FR/EN (437 clés × 2 locales) est palette-agnostique : audit complet confirme aucune référence directe à la palette navy/gris dans messages/fr.json, messages/en.json, seo-content.json. Le contenu produit lors du run initial 2026-04-28 et patché 2026-05-10 reste valide à 100 %. Les imageAlt 'lumière dorée du matin' (S-001) et 'pictogramme chope de bière' (S-003) deviennent encore plus cohérents avec la palette warm (brun boiseries + jaune doré + crème). Aucun blocking issue. Score préservé 9.6/10. 5 warnings non bloquants reconduits.",
+  "rerun_note_iteration_1": "Re-run Phase 3 2026-05-10 après Ph2 (palette CLI navy figée, Fraunces 900). Patches : (1) common.brand.tagline FR/EN ré-aligné vouvoiement (UVP primaire Ph1). (2) seo-content.json — slug EN promotions corrigé /en/promotions → /en/deals (site-map-logic Ph1 §2.3). Aucun blocking issue. Score préservé 9.6/10.",
   "files_reviewed": [
     "clients/depanneur-nobert/messages/fr.json",
     "clients/depanneur-nobert/messages/en.json",
@@ -155,7 +157,7 @@
       "note": "Lexique allowed/banned respecté, voix active, phrases 8-14 mots, anti-corporate, JSON valide × 3, parité parfaite, aucun gallicisme EN détecté."
     }
   },
-  "approval": "PASS_WITH_WARNINGS — Contenu prêt pour Phase 4 Build. 5 warnings non bloquants documentés. Conditions Ph4 : (1) résoudre les 6 variables kickoff client, (2) injecter les données photos client (data/produits.json, data/promotions.json, data/temoignages.json), (3) générer messages/en.json final = ce fichier (déjà bilingue, pas de [EN] placeholder).",
+  "approval": "PASS_WITH_WARNINGS — Contenu prêt pour Phase 4 Build (itération 2 SOIC). 5 warnings non bloquants documentés. Conditions Ph4 : (1) résoudre les 6 variables kickoff client, (2) injecter les données photos client (data/produits.json, data/promotions.json, data/temoignages.json), (3) générer messages/en.json final = ce fichier (déjà bilingue, pas de [EN] placeholder). Itération 2 confirme la cohérence renforcée alt-texts ↔ palette warm (lumière dorée, vitrine chaleureuse).",
   "checklist": {
     "json_valid_fr": true,
     "json_valid_en": true,

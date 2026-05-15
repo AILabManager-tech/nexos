@@ -1,43 +1,43 @@
 [
   {
     "phase": "ph0-discovery",
-    "mu": 8.163742690058479,
+    "mu": 7.725146198830409,
     "threshold": 7.0,
     "converged": true,
     "iterations": 1,
     "decision": "ACCEPT",
     "abort_reason": "",
-    "timestamp": "2026-05-10T10:08:04.770918"
+    "timestamp": "2026-05-13T23:49:44.832239"
   },
   {
     "phase": "ph1-strategy",
-    "mu": 8.163742690058479,
+    "mu": 9.883040935672515,
     "threshold": 8.0,
     "converged": true,
-    "iterations": 1,
+    "iterations": 2,
     "decision": "ACCEPT",
     "abort_reason": "",
-    "timestamp": "2026-05-10T10:24:42.996412"
+    "timestamp": "2026-05-14T00:11:02.504055"
   },
   {
     "phase": "ph2-design",
-    "mu": 8.163742690058479,
+    "mu": 9.883040935672515,
     "threshold": 8.0,
     "converged": true,
     "iterations": 1,
     "decision": "ACCEPT",
     "abort_reason": "",
-    "timestamp": "2026-05-10T10:43:05.402658"
+    "timestamp": "2026-05-14T00:26:47.017881"
   },
   {
     "phase": "ph3-content",
-    "mu": 8.777777777777777,
+    "mu": 9.269005847953217,
     "threshold": 8.0,
     "converged": true,
     "iterations": 1,
     "decision": "ACCEPT",
     "abort_reason": "",
-    "timestamp": "2026-05-10T10:53:52.947771"
+    "timestamp": "2026-05-14T00:32:18.112500"
   },
   {
     "phase": "ph4-build",
@@ -47,16 +47,16 @@
     "iterations": 1,
     "decision": "ACCEPT",
     "abort_reason": "",
-    "timestamp": "2026-05-10T11:07:08.030028"
+    "timestamp": "2026-05-14T00:39:50.420297"
   },
   {
     "phase": "ph5-qa",
-    "mu": 9.467078189300413,
+    "mu": 8.777366255144035,
     "threshold": 8.5,
     "converged": true,
     "iterations": 1,
     "decision": "ACCEPT",
     "abort_reason": "",
-    "timestamp": "2026-05-10T11:19:37.313541"
+    "timestamp": "2026-05-14T01:07:41.172572"
   }
 ]

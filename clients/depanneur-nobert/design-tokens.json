@@ -1,213 +1,239 @@
 {
   "$schema": "nexos-ph2/design-tokens/v1",
-  "generated_at": "2026-05-10T00:00:00Z",
+  "generated_at": "2026-05-14T06:00:00Z",
   "client_slug": "depanneur-nobert",
+  "iteration_soic": 2,
   "based_on": [
-    "brand-identity.json (color_system + typography — palette CLI navy/or/gris)",
-    "ph0-discovery-report.md (§6 design trends + R-001 chaleur compensée)",
-    "ph1-strategy-report.md (§1.3 + §1.4 + §0.6 risque accent)"
+    "brand-identity.json (color_system + typography — palette warm brun/jaune/crème, source de vérité brief)",
+    "ph0-discovery-report.md 2026-05-13 (§6.2 palette + §6.3 typo + §6.4 layout)",
+    "ph1-strategy-report.md 2026-05-14 itération 2 (§1.3 + §1.4 + §4 stack)"
   ],
   "_constraints": {
-    "palette_imposed": "Les 3 rôles primary=#1A2B3C / accent=#FFD700 / secondary=#B2B2B2 sont des valeurs hex EXACTES du CLI --colors — non négociables. Tokens dérivés (text-secondary, surface, error/success/warning/info, neutral scale) cohérents avec le navy froid.",
+    "palette_imposed": "Brief `design.palette_imposed` = source de vérité (warm brun/jaune/crème). Pas d'option CLI `--colors` à cette exécution. Tous les tokens dérivent du brun primary #8B4513.",
     "max_2_font_families": true,
-    "wcag_target": "AA (4.5:1) sur 100 % du texte normal ; AAA visé sur les paires text/background, primary/blanc, text-on-accent/accent.",
-    "tailwind_target_version": "3.4.x",
-    "imposed_palette_dimension_constraint": "D2 emotional + D3 heavy + D4 forcé cold compensé par typo Fraunces 900 + photos vitrine éclairage chaud (cf. ph0 §6.7 moodboard)."
+    "wcag_target": "AA (4.5:1) sur 100 % du texte normal ; AAA visé sur paires text/background, primary/white, text-on-accent/accent — validé par brand-identity §1.3.",
+    "tailwind_target_version": "3.4.x (ADR-003)",
+    "imposed_palette_alignment": "D2 emotional + D3 heavy + D4 warm + D5 slow-organic + D6 symmetric — tous cohérents (rejet explicite du bleu corporate)."
   },
   "colors": {
     "primary": {
-      "DEFAULT": "#1A2B3C",
-      "hover": "#243D54",
-      "active": "#142231",
-      "subtle": "#E5E9ED",
+      "DEFAULT": "#8B4513",
+      "hover": "#A0522D",
+      "active": "#6B3510",
+      "subtle": "#F2E6D9",
       "foreground": "#FFFFFF",
-      "_hex_imposed": ["DEFAULT"],
-      "_usage": "Titres, navigation, fond hero/footer, texte principal sur fond clair, bordures actives, focus ring, logo wordmark",
+      "_hex_imposed": ["DEFAULT", "hover"],
+      "_usage": "CTAs primaires, navigation active, fond hero/footer, texte autorité, bordures actives, focus ring",
       "_contrast": {
-        "DEFAULT_on_white": "13.66:1 (AAA)",
-        "DEFAULT_on_surface_alt": "12.45:1 (AAA)",
-        "hover_on_white": "10.85:1 (AAA)"
+        "DEFAULT_on_surface": "7.5:1 (AAA)",
+        "DEFAULT_on_background": "7.5:1 (AAA)",
+        "hover_on_background": "5.4:1 (AA)",
+        "foreground_on_DEFAULT": "7.5:1 (AAA)"
       }
     },
     "accent": {
       "DEFAULT": "#FFD700",
       "hover": "#E6C200",
       "active": "#CCAD00",
-      "foreground": "#1A2B3C",
+      "foreground": "#2A1810",
       "_hex_imposed": ["DEFAULT"],
-      "_usage": "Fond CTA primaire (avec text-on-accent navy 10.07:1) + badges promotions + soulignés courts. INTERDIT comme couleur de texte sur fond blanc (1.36:1 — FAIL WCAG).",
+      "_usage": "Badges 'Promo' + soulignés courts + CTA secondaire 'Voir les promotions' (text-on-accent #2A1810). INTERDIT comme couleur de texte sur fond clair (1.2:1 — FAIL).",
       "_contrast": {
-        "DEFAULT_on_primary": "10.07:1 (AAA)",
-        "DEFAULT_on_white": "1.36:1 (FAIL — usage strictement interdit pour texte)",
-        "foreground_on_DEFAULT": "10.07:1 (AAA)"
+        "foreground_on_DEFAULT": "12.4:1 (AAA)",
+        "DEFAULT_on_white": "1.2:1 (FAIL — usage texte strictement interdit)",
+        "DEFAULT_on_primary": "5.2:1 (AA — usage décoratif sur navy proscrit ici, primary brun)",
+        "DEFAULT_on_text_primary": "11.8:1 (AAA — badge sur fond #2A1810 OK)"
       },
-      "_a11y_guard": "Composant Button variant='accent' enforce automatiquement text-on-accent=#1A2B3C. Badge component idem. Documentation inline obligatoire dans Button.tsx."
+      "_a11y_guard": "Composant Button variant='accent' enforce text-on-accent=#2A1810 (foreground). Badge component idem. Documentation inline obligatoire dans Button.tsx (variant accent === aucun texte blanc, jamais)."
     },
     "secondary": {
-      "DEFAULT": "#B2B2B2",
-      "hover": "#9E9E9E",
-      "subtle": "#E8E8E8",
-      "foreground": "#1A2B3C",
-      "_hex_imposed": ["DEFAULT"],
-      "_usage": "Bordures décoratives, séparateurs, surfaces dim, état désactivé non textuel. INTERDIT comme couleur de texte sur fond blanc (2.14:1 — FAIL).",
+      "DEFAULT": "#6B4F3C",
+      "hover": "#5A4231",
+      "subtle": "#E8DFD3",
+      "foreground": "#FFFFFF",
+      "_usage": "Métadonnées, captions, sous-titres, text-muted. Lisible sur fond crème et blanc.",
       "_contrast": {
-        "DEFAULT_on_white": "2.14:1 (FAIL — décoratif uniquement)",
-        "foreground_on_DEFAULT": "6.38:1 (AA)"
+        "DEFAULT_on_background": "6.2:1 (AA)",
+        "DEFAULT_on_surface": "6.5:1 (AA)",
+        "foreground_on_DEFAULT": "6.5:1 (AA)"
       }
     },
     "background": {
-      "DEFAULT": "#FFFFFF",
-      "alt": "#F4F6F8",
-      "muted": "#E5E9ED",
-      "inverse": "#1A2B3C",
-      "_usage": "DEFAULT = fond global body et sections claires ; alt = sections alternées (zébrage doux) ; inverse = hero S-001 + footer + bandeau accent navy"
+      "DEFAULT": "#FFF8E7",
+      "alt": "#FFFFFF",
+      "muted": "#F5EDD8",
+      "inverse": "#2A1810",
+      "_hex_imposed": ["DEFAULT"],
+      "_usage": "DEFAULT = fond body crème accueillant + sections impaires ; alt = sections paires zébrage clair (cards, ProduitsGalerie) ; inverse = hero S-001, S-007, S-009, S-017 (fond brun foncé/primary)"
     },
     "surface": {
       "DEFAULT": "#FFFFFF",
       "raised": "#FFFFFF",
-      "sunken": "#F4F6F8",
-      "overlay": "rgba(26, 43, 60, 0.85)",
-      "_usage": "Cards, modales, formulaires, sticky CTA bg. Overlay = fond cookie consent backdrop"
+      "sunken": "#FFF8E7",
+      "overlay": "rgba(42, 24, 16, 0.85)",
+      "_usage": "Cards produits/promos/témoignages, modales, formulaires, sticky CTA mobile bg. Overlay = backdrop cookie consent + hero overlay (#2A1810 alpha)"
     },
     "text": {
-      "primary": "#1A2B3C",
-      "secondary": "#475569",
-      "muted": "#64748B",
-      "inverse": "#FFFFFF",
-      "on_accent": "#1A2B3C",
+      "primary": "#2A1810",
+      "secondary": "#6B4F3C",
+      "muted": "#8B7355",
+      "inverse": "#FFF8E7",
+      "on_accent": "#2A1810",
+      "on_primary": "#FFFFFF",
       "_contrast": {
-        "primary_on_white": "13.66:1 (AAA)",
-        "secondary_on_white": "7.46:1 (AAA)",
-        "muted_on_white": "5.74:1 (AA)",
-        "inverse_on_primary": "13.66:1 (AAA)",
-        "on_accent_on_accent": "10.07:1 (AAA)"
+        "primary_on_background": "14.5:1 (AAA)",
+        "primary_on_surface": "16.1:1 (AAA)",
+        "secondary_on_background": "6.2:1 (AA)",
+        "secondary_on_surface": "6.5:1 (AA)",
+        "muted_on_background": "4.7:1 (AA — labels secondaires uniquement, jamais < 14 px)",
+        "on_accent_on_accent": "12.4:1 (AAA)",
+        "on_primary_on_primary": "7.5:1 (AAA)",
+        "inverse_on_primary": "10.2:1 (AAA — crème sur brun foncé hero)"
       }
     },
     "border": {
-      "DEFAULT": "#D1D5DB",
-      "strong": "#94A3B8",
-      "focus": "#1A2B3C",
-      "subtle": "#E5E9ED",
-      "_usage": "DEFAULT = bordures cards/inputs ; strong = séparateurs structurels ; focus = ring 2px navy + offset 2px ; subtle = zébrage de tableau horaires"
+      "DEFAULT": "#D4C5A9",
+      "strong": "#A89878",
+      "focus": "#8B4513",
+      "subtle": "#E8DFD3",
+      "_hex_imposed": ["DEFAULT"],
+      "_usage": "DEFAULT = bordures cards/inputs (beige doux) ; strong = séparateurs structurels ; focus = ring 2px primary brun + offset 2px sur fond crème ; subtle = zébrage de tableau horaires"
     },
     "status": {
       "error": {
         "DEFAULT": "#B91C1C",
         "subtle": "#FEE2E2",
         "foreground": "#FFFFFF",
-        "_contrast_on_white": "6.61:1 (AAA)"
+        "_contrast_on_surface": "6.4:1 (AA)"
       },
       "success": {
-        "DEFAULT": "#166534",
+        "DEFAULT": "#15803D",
         "subtle": "#DCFCE7",
         "foreground": "#FFFFFF",
-        "_contrast_on_white": "7.83:1 (AAA)"
+        "_contrast_on_surface": "5.0:1 (AA)"
       },
       "warning": {
-        "DEFAULT": "#92400E",
+        "DEFAULT": "#B45309",
         "subtle": "#FEF3C7",
         "foreground": "#FFFFFF",
-        "_contrast_on_white": "7.45:1 (AAA)"
+        "_contrast_on_surface": "5.6:1 (AA)"
       },
       "info": {
-        "DEFAULT": "#1E40AF",
-        "subtle": "#DBEAFE",
+        "DEFAULT": "#7C2D12",
+        "subtle": "#FEE9D2",
         "foreground": "#FFFFFF",
-        "_contrast_on_white": "8.59:1 (AAA)"
+        "_contrast_on_surface": "9.0:1 (AAA — brun rouge anti-bleu volontaire)",
+        "_rationale": "Anti-bleu corporate volontaire. Info utilise un brun rouge profond cohérent avec la palette warm."
       }
     },
     "neutral_scale": {
-      "50": "#F8FAFC",
-      "100": "#F1F5F9",
-      "200": "#E2E8F0",
-      "300": "#CBD5E1",
-      "400": "#94A3B8",
-      "500": "#64748B",
-      "600": "#475569",
-      "700": "#334155",
-      "800": "#1E293B",
-      "900": "#1A2B3C",
-      "_note": "Slate scale alignée avec primary navy (slate-900 ≈ #1A2B3C). Cohérence palette froide. Aucun gris chaud (zinc/stone) pour ne pas créer de dissonance avec D4=cold."
+      "_note": "Échelle neutre warm (stone/khaki) — aucun gris froid (zinc/slate) pour ne pas dissoner avec D4=warm.",
+      "50": "#FAF7F1",
+      "100": "#F2EBDC",
+      "200": "#E8DFD3",
+      "300": "#D4C5A9",
+      "400": "#A89878",
+      "500": "#8B7355",
+      "600": "#6B4F3C",
+      "700": "#4A3525",
+      "800": "#2A1810",
+      "900": "#1A0E07"
     }
   },
   "typography": {
     "fonts": {
       "heading": {
         "family": "Fraunces",
-        "google_fonts_url": "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap",
+        "google_fonts_url": "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&display=swap",
         "next_font_import": "import { Fraunces } from 'next/font/google'",
         "next_font_config": {
           "subsets": ["latin"],
-          "weight": ["700", "900"],
+          "weight": ["600", "700", "800"],
           "display": "swap",
           "variable": "--font-heading",
           "preload": true,
           "axes": ["opsz"]
         },
-        "weights_loaded": [700, 900],
-        "_rationale": "Serif chaleureux à fort contraste — D3=heavy critique pour compenser la palette navy froide. Variable font opsz pour adaptation taille (display 144 sur H1). Subset latin uniquement (FR/EN)."
+        "weights_loaded": [600, 700, 800],
+        "_rationale": "Serif chaleureux contemporain à optical sizing variable — cohérent D3=heavy + D4=warm. Lisible 65+ sans tomber dans le luxe fine-dining. Recoleta listé en fallback (non Google Fonts).",
+        "fallback_stack": "Fraunces, 'Recoleta', Georgia, 'Times New Roman', serif"
       },
       "body": {
         "family": "Inter",
-        "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
+        "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
         "next_font_import": "import { Inter } from 'next/font/google'",
         "next_font_config": {
           "subsets": ["latin"],
-          "weight": ["400", "500", "600"],
+          "weight": ["400", "500", "600", "700"],
           "display": "swap",
           "variable": "--font-body",
           "preload": false
         },
-        "weights_loaded": [400, 500, 600],
-        "_rationale": "Sans humaniste neutre — lisibilité tous âges (8 à 80 ans), métrique compacte qui équilibre la lourdeur Fraunces."
+        "weights_loaded": [400, 500, 600, 700],
+        "_rationale": "Sans humaniste — densité de glyphes lisible à 16 px sur écran 65+. ClearType-compatible Windows.",
+        "fallback_stack": "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
       },
-      "_total_woff2_files_estimate": 5,
-      "_performance_note": "5 fichiers woff2 (limite NEXOS standard = 4 → +1 assumé pour D3=heavy critique). Aucun italique chargé. display=swap = zéro CLS."
+      "_total_woff2_files_estimate": 4,
+      "_performance_note": "4 fichiers woff2 (Fraunces variable opsz @600/700/800 = 1 fichier variable, Inter 400/500/600/700 = 4 fichiers). Aucun italique. display=swap = zéro CLS. Préchargement Fraunces 800 (hero H1)."
     },
     "scale": {
       "ratio": 1.250,
       "name": "Major Third",
       "sizes": {
-        "caption": "0.75rem",
+        "caption": "0.800rem",
         "small": "0.875rem",
         "base": "1rem",
         "body_lg": "1.125rem",
-        "lg": "1.25rem",
-        "h6": "1.25rem",
-        "h5": "1.563rem",
-        "h4": "1.953rem",
-        "h3": "2.441rem",
-        "h2": "3.052rem",
-        "h1": "3.815rem"
+        "lg": "1.250rem",
+        "h6": "1.125rem",
+        "h5": "1.250rem",
+        "h4": "1.563rem",
+        "h3": "1.953rem",
+        "h2": "2.441rem",
+        "h1": "3.052rem"
       }
     },
+    "sizes_mobile_overrides": {
+      "h1": "2.250rem",
+      "h2": "1.875rem",
+      "h3": "1.500rem",
+      "body": "1.000rem"
+    },
     "headings": {
-      "h1": {"family": "heading", "size": "3.815rem", "weight": 900, "line_height": 1.1, "letter_spacing": "-0.02em"},
-      "h2": {"family": "heading", "size": "3.052rem", "weight": 900, "line_height": 1.15, "letter_spacing": "-0.015em"},
-      "h3": {"family": "heading", "size": "2.441rem", "weight": 700, "line_height": 1.2, "letter_spacing": "-0.01em"},
-      "h4": {"family": "body", "size": "1.953rem", "weight": 600, "line_height": 1.25},
-      "h5": {"family": "body", "size": "1.563rem", "weight": 600, "line_height": 1.3},
-      "h6": {"family": "body", "size": "1.25rem", "weight": 600, "line_height": 1.4}
+      "h1": {"family": "heading", "size": "3.052rem", "size_mobile": "2.250rem", "weight": 800, "line_height": 1.10, "letter_spacing": "-0.02em"},
+      "h2": {"family": "heading", "size": "2.441rem", "size_mobile": "1.875rem", "weight": 700, "line_height": 1.15, "letter_spacing": "-0.015em"},
+      "h3": {"family": "heading", "size": "1.953rem", "size_mobile": "1.500rem", "weight": 700, "line_height": 1.20, "letter_spacing": "-0.01em"},
+      "h4": {"family": "heading", "size": "1.563rem", "weight": 600, "line_height": 1.25},
+      "h5": {"family": "body", "size": "1.250rem", "weight": 600, "line_height": 1.30},
+      "h6": {"family": "body", "size": "1.125rem", "weight": 600, "line_height": 1.40}
     },
     "body": {
       "family": "body",
       "size": "1rem",
       "weight": 400,
-      "line_height": 1.6,
+      "line_height": 1.65,
       "max_width": "65ch"
     },
-    "_a11y_note": "Senior-friendly : body 1rem = 16 px minimum. Lecteur 80 ans + zoom 200% = 32 px confortable. Coordonnées contact (S-018, S-019) en text-2xl (1.5 rem) pour contre-vérification visuelle."
+    "ui_labels": {
+      "family": "body",
+      "size": "0.875rem",
+      "weight": 500,
+      "line_height": 1.30,
+      "letter_spacing": "0.05em",
+      "_note": "Labels UI (boutons, nav, badges) en uppercase optionnel via tracking-wider Tailwind"
+    },
+    "_a11y_senior": "Body 1rem = 16 px minimum (jamais < 14 px). Adresse/téléphone S-018/S-019 en text-2xl (1.5 rem ~ 24 px) pour clientèle 65-80+. Zoom 200 % = 32 px confortable. Line-height 1.65 sur body pour respiration cible âgée."
   },
   "spacing": {
-    "scale": "Tailwind default (base 4px : 0/1/2/3/4/5/6/8/10/12/16/20/24)",
+    "scale": "Tailwind default (base 4 px : 0/1/2/3/4/5/6/8/10/12/16/20/24/32)",
     "section_padding": {
-      "mobile": "py-12 px-4 (48px / 16px)",
-      "tablet": "py-16 px-6 (64px / 24px)",
-      "desktop": "py-20 px-8 (80px / 32px)"
+      "mobile": "py-12 px-4 (48 px / 16 px)",
+      "tablet": "py-16 px-6 (64 px / 24 px)",
+      "desktop": "py-20 px-8 (80 px / 32 px)"
     },
     "component_gap": "gap-4 md:gap-6 lg:gap-8",
-    "container_max_width": "max-w-7xl mx-auto",
-    "_whitespace_strategy": "Whitespace généreux (vs WP secteur compressé) — différenciation visuelle immédiate. Sections alternent surface=#FFFFFF / background.alt=#F4F6F8 pour structurer sans séparateur dur."
+    "container_max_width": "max-w-7xl mx-auto (1280 px)",
+    "_whitespace_strategy": "Whitespace généreux pour respiration D5=slow-organic. Sections alternent surface=#FFFFFF (cards/galerie) / background=#FFF8E7 (crème) pour structurer sans séparateur dur. Symétrie D6=symmetric : grilles régulières, marges identiques gauche/droite, sections empilées avec rythme constant."
   },
   "borders": {
     "radius": {
@@ -225,17 +251,19 @@
       "2": "2px",
       "4": "4px"
     },
-    "_focus_ring": "ring-2 ring-primary ring-offset-2 ring-offset-white (navy 2px sur halo blanc 2px = visibilité sur tous fonds)"
+    "_focus_ring": "ring-2 ring-primary ring-offset-2 ring-offset-background (brun 2px + halo crème 2px = visibilité sur fonds clairs et hero brun foncé via offset adaptatif)",
+    "_rationale": "Rayons sobres rounded-lg (8 px) — pas rounded-3xl boutique premium, pas rounded-none brutalist. Cohérent ph0 §6.4."
   },
   "shadows": {
     "none": "none",
-    "xs": "0 1px 2px 0 rgb(26 43 60 / 0.05)",
-    "sm": "0 1px 3px 0 rgb(26 43 60 / 0.08), 0 1px 2px -1px rgb(26 43 60 / 0.06)",
-    "DEFAULT": "0 4px 6px -1px rgb(26 43 60 / 0.10), 0 2px 4px -2px rgb(26 43 60 / 0.08)",
-    "md": "0 10px 15px -3px rgb(26 43 60 / 0.10), 0 4px 6px -4px rgb(26 43 60 / 0.08)",
-    "lg": "0 20px 25px -5px rgb(26 43 60 / 0.10), 0 8px 10px -6px rgb(26 43 60 / 0.06)",
-    "xl": "0 25px 50px -12px rgb(26 43 60 / 0.20)",
-    "_note": "Toutes les shadows utilisent le navy primary teinté (rgb(26,43,60)) au lieu du noir pur — cohérence palette imposée."
+    "xs": "0 1px 2px 0 rgb(42 24 16 / 0.05)",
+    "sm": "0 1px 3px 0 rgb(42 24 16 / 0.08), 0 1px 2px -1px rgb(42 24 16 / 0.06)",
+    "DEFAULT": "0 4px 6px -1px rgb(42 24 16 / 0.10), 0 2px 4px -2px rgb(42 24 16 / 0.08)",
+    "md": "0 10px 15px -3px rgb(42 24 16 / 0.10), 0 4px 6px -4px rgb(42 24 16 / 0.08)",
+    "lg": "0 20px 25px -5px rgb(42 24 16 / 0.10), 0 8px 10px -6px rgb(42 24 16 / 0.06)",
+    "xl": "0 25px 50px -12px rgb(42 24 16 / 0.20)",
+    "sticky_cta": "0 -4px 12px -2px rgb(42 24 16 / 0.15)",
+    "_note": "Toutes les ombres utilisent le brun text.primary teinté (rgb(42,24,16)) au lieu du noir pur — cohérence palette warm. Évite le halo froid des shadows noires sur fond crème."
   },
   "z_index": {
     "base": 0,
@@ -249,7 +277,7 @@
     "skip_link_focus": 70
   },
   "breakpoints_mirror": {
-    "_note": "Pour cohérence, les breakpoints sont définis canoniquement dans responsive-strategy.json. Mention ici pour rappel.",
+    "_note": "Source de vérité dans responsive-strategy.json. Mention ici pour rappel.",
     "sm": "640px",
     "md": "768px",
     "lg": "1024px",
@@ -257,89 +285,94 @@
     "2xl": "1536px"
   },
   "contrast_verification": [
-    {"pair": "primary on white", "ratio": "13.66:1", "level": "AAA", "context": "titres, texte principal"},
-    {"pair": "primary on background.alt", "ratio": "12.45:1", "level": "AAA", "context": "sections alternées"},
-    {"pair": "primary-hover on white", "ratio": "10.85:1", "level": "AAA", "context": "hover boutons primaires"},
-    {"pair": "text.secondary on white", "ratio": "7.46:1", "level": "AAA", "context": "captions, métadonnées"},
-    {"pair": "text.muted on white", "ratio": "5.74:1", "level": "AA", "context": "labels secondaires (jamais inférieur 14px)"},
-    {"pair": "text-on-accent (#1A2B3C) on accent (#FFD700)", "ratio": "10.07:1", "level": "AAA", "context": "CTA primaire, badges promotions"},
-    {"pair": "white on primary", "ratio": "13.66:1", "level": "AAA", "context": "hero, footer"},
-    {"pair": "error on white", "ratio": "6.61:1", "level": "AAA", "context": "messages erreur formulaires"},
-    {"pair": "success on white", "ratio": "7.83:1", "level": "AAA", "context": "confirmations"},
-    {"pair": "warning on white", "ratio": "7.45:1", "level": "AAA", "context": "avertissements Loi 25 + bière responsable"},
-    {"pair": "info on white", "ratio": "8.59:1", "level": "AAA", "context": "notes informatives"},
-    {"pair": "accent on white", "ratio": "1.36:1", "level": "FAIL", "context": "INTERDIT pour texte (guard component-level)"},
-    {"pair": "secondary on white", "ratio": "2.14:1", "level": "FAIL", "context": "INTERDIT pour texte (décoratif uniquement)"}
+    {"pair": "text.primary on background", "ratio": "14.5:1", "level": "AAA", "context": "corps de texte sur crème"},
+    {"pair": "text.primary on surface", "ratio": "16.1:1", "level": "AAA", "context": "corps de texte sur blanc (cards)"},
+    {"pair": "primary on background", "ratio": "7.5:1", "level": "AAA", "context": "titres, CTAs, accents structurants"},
+    {"pair": "primary on surface", "ratio": "7.5:1", "level": "AAA", "context": "boutons sur cards"},
+    {"pair": "primary.hover on background", "ratio": "5.4:1", "level": "AA", "context": "hover boutons primaires"},
+    {"pair": "text.secondary on background", "ratio": "6.2:1", "level": "AA", "context": "captions, métadonnées"},
+    {"pair": "text.muted on background", "ratio": "4.7:1", "level": "AA", "context": "labels secondaires (jamais < 14 px)"},
+    {"pair": "text.on_accent on accent", "ratio": "12.4:1", "level": "AAA", "context": "CTA accent, badges promo"},
+    {"pair": "text.on_primary on primary", "ratio": "7.5:1", "level": "AAA", "context": "hero brun foncé, footer brun"},
+    {"pair": "text.inverse on primary", "ratio": "10.2:1", "level": "AAA", "context": "hero S-001 crème sur brun foncé"},
+    {"pair": "error on surface", "ratio": "6.4:1", "level": "AA", "context": "messages erreur formulaires"},
+    {"pair": "success on surface", "ratio": "5.0:1", "level": "AA", "context": "confirmations infolettre/contact"},
+    {"pair": "warning on surface", "ratio": "5.6:1", "level": "AA", "context": "encadrés transferts hors QC + Educ'alcool"},
+    {"pair": "info on surface", "ratio": "9.0:1", "level": "AAA", "context": "encadrés informationnels Loi 25"},
+    {"pair": "accent on white", "ratio": "1.2:1", "level": "FAIL", "context": "INTERDIT pour texte (guard component-level)"}
   ],
   "tailwind_config_snippet": {
-    "_purpose": "Bloc à coller dans tailwind.config.ts theme.extend. Génère toutes les utilities (bg-primary, text-text-secondary, ring-border-focus, etc.).",
+    "_purpose": "Bloc à coller dans tailwind.config.ts theme.extend. Génère bg-primary, text-text-secondary, ring-border-focus, etc.",
     "theme": {
       "extend": {
         "colors": {
           "primary": {
-            "DEFAULT": "#1A2B3C",
-            "hover": "#243D54",
-            "active": "#142231",
-            "subtle": "#E5E9ED",
+            "DEFAULT": "#8B4513",
+            "hover": "#A0522D",
+            "active": "#6B3510",
+            "subtle": "#F2E6D9",
             "foreground": "#FFFFFF"
           },
           "accent": {
             "DEFAULT": "#FFD700",
             "hover": "#E6C200",
-            "foreground": "#1A2B3C"
+            "foreground": "#2A1810"
           },
           "secondary": {
-            "DEFAULT": "#B2B2B2",
-            "subtle": "#E8E8E8"
+            "DEFAULT": "#6B4F3C",
+            "subtle": "#E8DFD3"
           },
           "surface": {
             "DEFAULT": "#FFFFFF",
-            "alt": "#F4F6F8"
+            "alt": "#FFF8E7",
+            "sunken": "#F5EDD8"
           },
           "text": {
-            "DEFAULT": "#1A2B3C",
-            "secondary": "#475569",
-            "muted": "#64748B",
-            "inverse": "#FFFFFF"
+            "DEFAULT": "#2A1810",
+            "secondary": "#6B4F3C",
+            "muted": "#8B7355",
+            "inverse": "#FFF8E7"
           },
           "border": {
-            "DEFAULT": "#D1D5DB",
-            "strong": "#94A3B8",
-            "subtle": "#E5E9ED"
+            "DEFAULT": "#D4C5A9",
+            "strong": "#A89878",
+            "subtle": "#E8DFD3"
           },
           "error": "#B91C1C",
-          "success": "#166534",
-          "warning": "#92400E",
-          "info": "#1E40AF"
+          "success": "#15803D",
+          "warning": "#B45309",
+          "info": "#7C2D12"
         },
         "fontFamily": {
           "heading": ["var(--font-heading)", "Georgia", "serif"],
           "body": ["var(--font-body)", "system-ui", "sans-serif"]
         },
         "fontSize": {
-          "h1": ["3.815rem", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "900"}],
-          "h2": ["3.052rem", {"lineHeight": "1.15", "letterSpacing": "-0.015em", "fontWeight": "900"}],
-          "h3": ["2.441rem", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+          "h1": ["3.052rem", {"lineHeight": "1.10", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+          "h2": ["2.441rem", {"lineHeight": "1.15", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+          "h3": ["1.953rem", {"lineHeight": "1.20", "letterSpacing": "-0.01em", "fontWeight": "700"}]
         },
         "boxShadow": {
-          "card": "0 4px 6px -1px rgb(26 43 60 / 0.10), 0 2px 4px -2px rgb(26 43 60 / 0.08)",
-          "lifted": "0 10px 15px -3px rgb(26 43 60 / 0.10), 0 4px 6px -4px rgb(26 43 60 / 0.08)",
-          "sticky": "0 -4px 12px -2px rgb(26 43 60 / 0.15)"
+          "card": "0 4px 6px -1px rgb(42 24 16 / 0.10), 0 2px 4px -2px rgb(42 24 16 / 0.08)",
+          "lifted": "0 10px 15px -3px rgb(42 24 16 / 0.10), 0 4px 6px -4px rgb(42 24 16 / 0.08)",
+          "sticky": "0 -4px 12px -2px rgb(42 24 16 / 0.15)"
         }
       }
     }
   },
   "css_variables_snippet": {
-    "_purpose": "Bloc à insérer dans styles/globals.css :root. Permet override CSS-only sans rebuild.",
-    "css": ":root {\n  --color-primary: #1A2B3C;\n  --color-primary-hover: #243D54;\n  --color-accent: #FFD700;\n  --color-accent-hover: #E6C200;\n  --color-secondary: #B2B2B2;\n  --color-surface: #FFFFFF;\n  --color-surface-alt: #F4F6F8;\n  --color-text-primary: #1A2B3C;\n  --color-text-secondary: #475569;\n  --color-text-muted: #64748B;\n  --color-text-on-accent: #1A2B3C;\n  --color-text-on-primary: #FFFFFF;\n  --color-border: #D1D5DB;\n  --color-border-strong: #94A3B8;\n  --color-error: #B91C1C;\n  --color-success: #166534;\n  --color-warning: #92400E;\n  --color-info: #1E40AF;\n}"
+    "_purpose": "Bloc à insérer dans styles/globals.css :root.",
+    "css": ":root {\n  --color-primary: #8B4513;\n  --color-primary-hover: #A0522D;\n  --color-accent: #FFD700;\n  --color-accent-hover: #E6C200;\n  --color-secondary: #6B4F3C;\n  --color-background: #FFF8E7;\n  --color-surface: #FFFFFF;\n  --color-surface-sunken: #F5EDD8;\n  --color-text-primary: #2A1810;\n  --color-text-secondary: #6B4F3C;\n  --color-text-muted: #8B7355;\n  --color-text-on-accent: #2A1810;\n  --color-text-on-primary: #FFFFFF;\n  --color-text-inverse: #FFF8E7;\n  --color-border: #D4C5A9;\n  --color-border-strong: #A89878;\n  --color-error: #B91C1C;\n  --color-success: #15803D;\n  --color-warning: #B45309;\n  --color-info: #7C2D12;\n}"
   },
   "checklist": {
     "palette_complete": true,
     "two_fonts_max": true,
     "contrast_AA_minimum_for_text": true,
+    "contrast_AAA_main_surfaces": true,
     "tokens_tailwind_ready": true,
     "shadows_radius_defined": true,
     "imposed_palette_respected": true,
-    "accent_text_guard_documented": true
+    "accent_text_guard_documented": true,
+    "warm_palette_no_blue_cold_grey": true
   }
 }

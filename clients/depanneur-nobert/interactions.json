@@ -1,309 +1,301 @@
 {
   "$schema": "nexos-ph2/interactions/v1",
-  "generated_at": "2026-05-10T00:00:00Z",
+  "generated_at": "2026-05-14T06:10:00Z",
   "client_slug": "depanneur-nobert",
+  "iteration_soic": 2,
   "based_on": [
-    "wireframes.json (24 sections)",
-    "design-tokens.json (durations + easing)",
-    "stack-decision.json (Framer Motion ^11 inclus, ADR-002 scope <=12 elements animes/page)",
-    "ph1 §0.4 D5=slow-organic + D2=emotional"
+    "design-tokens.json (durées + easing + shadows warm)",
+    "wireframes.json (sections + composants)",
+    "pattern-recommendation.json (P17 scroll-triggered + D5=slow-organic)"
   ],
-  "_constraints": {
-    "library": "framer-motion ^11 (~15 KB gz)",
-    "animation_budget_per_viewport_max": 3,
-    "max_animations_per_page": 12,
-    "prefers_reduced_motion_required": true,
-    "gpu_only_props": ["opacity", "transform", "filter (limite)"],
-    "duration_max_ms_single_animation": 500,
-    "no_infinite_animations": "Sauf indicateurs de chargement (spinner, skeleton)"
-  },
   "animation_library": "framer-motion",
+  "_animation_library_version": "11.x (ADR-001)",
   "global_settings": {
-    "reduced_motion_strategy": "useReducedMotion() hook de framer-motion utilise dans CHAQUE composant anime. Si true -> opacity uniquement (pas de translate/scale).",
+    "reduced_motion": "OBLIGATOIRE — chaque animation a un fallback statique. Cible 65+ + a11y WCAG 2.3.3. Détection via Framer Motion `useReducedMotion()` + MediaQueryList native.",
     "duration_scale": {
       "instant": "100ms",
       "fast": "200ms",
-      "normal": "300ms",
-      "slow": "500ms"
+      "normal": "400ms",
+      "slow": "600ms",
+      "_rationale": "Durées calibrées D5=slow-organic (0.4–0.6 s). Normal = 400 ms (vs 300 ms standard) pour cohérence palette warm + clientèle âgée."
     },
     "easing": {
       "default": "ease-out",
       "enter": "cubic-bezier(0.0, 0.0, 0.2, 1)",
       "exit": "cubic-bezier(0.4, 0.0, 1, 1)",
-      "spring_soft": {"type": "spring", "stiffness": 200, "damping": 25, "mass": 1},
-      "spring_snappy": {"type": "spring", "stiffness": 300, "damping": 30}
+      "organic": "cubic-bezier(0.33, 1, 0.68, 1)",
+      "spring_soft": {"type": "spring", "stiffness": 220, "damping": 26, "mass": 1.0}
     },
-    "_velocity_d5_alignment": "D5=slow-organic -> easing 'enter' privilegie + duree 'normal' (300ms) par defaut. Pas de bounces lourds, pas de transitions a > 500ms."
+    "performance_constraint": "Animer UNIQUEMENT opacity et transform (GPU-accelerated). JAMAIS width/height/top/left/margin/padding."
   },
   "page_transitions": {
-    "type": "fade-only",
-    "enter": {"opacity": [0, 1], "duration": "300ms", "easing": "enter"},
-    "exit": {"opacity": [1, 0], "duration": "200ms", "easing": "exit"},
-    "reduced_motion": "Transition instantanee (opacity 1 sans animation)",
-    "_note": "Framer Motion AnimatePresence dans layout root. Pas d'effets directionnels (slide) — incompatible avec D5=slow-organic et clientele senior."
+    "type": "fade",
+    "enter": {"opacity": [0, 1], "duration": 300, "easing": "enter"},
+    "exit": {"opacity": [1, 0], "duration": 200, "easing": "exit"},
+    "reduced_motion": {"type": "instant", "_note": "Transition immédiate sans animation"},
+    "_a11y": "Conserve scrollPosition='top' sur navigation client-side (Next 15 default)"
   },
   "scroll_animations": [
     {
-      "id": "fade-in-up-section",
-      "name": "Fade-in section au scroll",
-      "trigger": "Element entre dans le viewport (50% visible) — useInView avec margin '0px 0px -10% 0px'",
-      "applies_to": [
-        "S-002 PromotionsHighlight cards (stagger)",
-        "S-003 CategoriesProduits cards (stagger)",
-        "S-004 SocialProofVoisinage testimonials (stagger)",
-        "S-006 StoryBrand text + photo",
-        "S-010 PromotionsList cards (stagger, batch de 6 max)"
-      ],
+      "name": "fade-in-up",
+      "trigger": "Élément entre dans le viewport (50% visible, IntersectionObserver root margin -10%)",
+      "library_method": "framer-motion `whileInView` + `viewport={once: true, margin: '-10%'}`",
       "animation": {
-        "from": {"opacity": 0, "y": 16},
+        "from": {"opacity": 0, "y": 20},
         "to": {"opacity": 1, "y": 0},
-        "duration": "500ms",
-        "easing": "enter",
-        "stagger_children_ms": 80
+        "duration": 500,
+        "easing": "organic",
+        "stagger_children": 100
       },
-      "reduced_motion": {
-        "from": {"opacity": 0},
-        "to": {"opacity": 1},
-        "duration": "200ms"
-      },
-      "_perf_guard": "Anime UNIQUEMENT le premier passage (once: true). Pas de re-trigger au scroll inverse."
+      "applies_to_components": [
+        "PromotionsHighlight (S-002 cards)",
+        "CategoriesProduits (S-003 cards)",
+        "SocialProofVoisinage (S-004 témoignages)",
+        "StoryBrand (S-006 photo + texte)",
+        "PromotionsList (S-010 cards)",
+        "ProduitsGalerie (S-015 cards par section ancrée)"
+      ],
+      "reduced_motion": {"from": {"opacity": 0}, "to": {"opacity": 1}, "duration": 200, "stagger_children": 0}
     },
     {
-      "id": "header-shrink-on-scroll",
-      "name": "Header shrink au scroll desktop",
-      "trigger": "window.scrollY > 32px (debounced rAF)",
-      "applies_to": ["components/layout/Header.tsx (desktop only, lg breakpoint)"],
+      "name": "fade-in-photo",
+      "trigger": "Photo hero ou portrait entre dans le viewport",
+      "library_method": "framer-motion `motion.div` avec initial/animate",
       "animation": {
-        "h_from": "h-20",
-        "h_to": "h-16",
-        "shadow_from": "shadow-none",
-        "shadow_to": "shadow-sm",
-        "duration": "200ms",
-        "easing": "default"
+        "from": {"opacity": 0, "scale": 1.02},
+        "to": {"opacity": 1, "scale": 1.0},
+        "duration": 600,
+        "easing": "organic"
       },
-      "reduced_motion": "Transition instantanee (toggle de classes sans transition CSS)",
-      "_note": "CSS transition sur height (h-) — exception au principe 'opacity/transform only' car height-only sur header est performant et necessaire ici. Will-change: 'height' sur le wrapper."
+      "applies_to_components": [
+        "Hero (S-001 background photo)",
+        "StoryBrand (S-006 portrait propriétaire)"
+      ],
+      "reduced_motion": {"from": {"opacity": 0}, "to": {"opacity": 1}, "duration": 300}
     }
   ],
   "hover_interactions": [
     {
-      "id": "button-primary-hover",
-      "name": "Hover boutons primaires (Button variant='primary')",
-      "target": "Button.tsx variant='primary' (bg-primary)",
+      "name": "button-accent-hover",
+      "target": "Bouton CTA accent (jaune) — Hero/Sticky/SocialProof/CrossSell",
       "animation": {
-        "bg_from": "bg-primary",
-        "bg_to": "bg-primary-hover",
-        "transform": "translateY(-1px)",
+        "background_color_token": "accent.DEFAULT → accent.hover (#FFD700 → #E6C200)",
+        "scale": 1.02,
+        "shadow": "shadow-lifted",
+        "duration": 200,
+        "easing": "default"
+      },
+      "reduced_motion": "Background-color uniquement (pas de scale)"
+    },
+    {
+      "name": "button-primary-hover",
+      "target": "Bouton primary brun — InfosPratiques/Contact/CrossSellProduits",
+      "animation": {
+        "background_color_token": "primary.DEFAULT → primary.hover (#8B4513 → #A0522D)",
         "shadow": "shadow-md",
-        "duration": "200ms"
+        "duration": 200
       },
-      "reduced_motion": "Background-color change uniquement, pas de translate"
+      "reduced_motion": "Background-color uniquement"
     },
     {
-      "id": "button-accent-hover",
-      "name": "Hover CTA accent or",
-      "target": "Button.tsx variant='accent' (S-001 hero, S-008 sticky, S-004 cta-adjacent)",
+      "name": "button-ghost-hover",
+      "target": "Bouton ghost-on-dark (Hero secondary) + ghost-primary (PromotionsHighlight see all)",
       "animation": {
-        "bg_from": "bg-accent",
-        "bg_to": "bg-accent-hover",
-        "transform": "scale(1.02)",
-        "shadow": "shadow-lg",
-        "duration": "200ms"
+        "background": "rgba(255,248,231,0.10) → rgba(255,248,231,0.20)",
+        "border_color": "border-strong",
+        "duration": 200
       },
-      "reduced_motion": "Background-color change uniquement",
-      "_critical": "CTA primaire KPI — feedback hover rassurant sans excessif"
+      "reduced_motion": "Background opacity uniquement"
     },
     {
-      "id": "card-hover-lift",
-      "name": "Hover lift cards (promos, categories, testimonials)",
-      "target": "Card.tsx (S-002, S-003, S-010, S-004, S-012)",
+      "name": "card-hover",
+      "target": "Cards de promotions (S-002, S-010), categories (S-003), témoignages (S-004), produits (S-015)",
       "animation": {
-        "transform": "translateY(-4px)",
-        "shadow_from": "shadow-card",
-        "shadow_to": "shadow-lifted",
-        "duration": "200ms"
+        "y": -4,
+        "shadow": "shadow-lifted",
+        "duration": 200,
+        "easing": "default"
       },
-      "reduced_motion": "Border-color change : border -> border-strong"
+      "reduced_motion": "Border-color change uniquement (border → border-strong)"
     },
     {
-      "id": "nav-link-hover",
-      "name": "Hover nav links desktop",
-      "target": "Header desktop nav links",
+      "name": "link-underline-hover",
+      "target": "Liens textuels (nav, footer, prose article)",
       "animation": {
-        "text_from": "text-white",
-        "text_to": "text-accent",
-        "underline_height": "0px -> 2px",
-        "underline_color": "accent",
-        "duration": "150ms"
+        "underline_offset": "2px → 4px",
+        "underline_thickness": "1px → 2px",
+        "duration": 150
       },
-      "reduced_motion": "Color + underline visible immediatement (pas d'animation hauteur)"
+      "reduced_motion": "Underline statique (text-decoration: underline always)"
     }
   ],
   "focus_interactions": {
-    "ring_style": "ring-2 ring-primary ring-offset-2 ring-offset-white",
-    "ring_on_dark_bg": "ring-2 ring-accent ring-offset-2 ring-offset-primary (sur hero, footer, newsletter section)",
-    "behavior": "Visible UNIQUEMENT en navigation clavier (focus-visible:ring-2 ; pas focus:ring)",
-    "skip_link": {
-      "label": "Aller au contenu principal",
-      "target_id": "#main",
-      "visibility": "sr-only par defaut, visible focus:not-sr-only:absolute:top-4:left-4:z-skip-link-focus:bg-primary:text-white:px-4:py-2:rounded"
-    },
-    "_a11y_critical": "Focus visible doit etre lisible sur TOUS les fonds (white, surface-alt, primary navy, accent or)"
+    "style": "ring-2 ring-primary ring-offset-2 ring-offset-background",
+    "behavior": "Visible UNIQUEMENT en navigation clavier (:focus-visible) — Tailwind focus-visible: utility",
+    "skip_link": "Lien 'Aller au contenu principal' visible au premier Tab, position: absolute top-0 left-0 transform -translate-y-full focus:translate-y-0",
+    "_a11y_notes": [
+      "Ring 2px primary (#8B4513) sur halo background (#FFF8E7) = 7.5:1 vs surface = visible toutes situations",
+      "Sur fond primary (hero), ring switch automatique vers ring-offset-primary"
+    ]
   },
   "loading_states": {
-    "skeleton_promotions_list": {
-      "target": "S-010 PromotionsList pendant ISR revalidation",
-      "type": "Shimmer effect",
-      "tailwind": "bg-neutral-200 animate-pulse rounded",
-      "structure": "12 placeholders (image + 3 lignes de texte)",
-      "reduced_motion": "Fond neutral-200 statique, sans pulse"
+    "skeleton": {
+      "type": "Pulse opacity sur placeholders warm",
+      "color": "bg-border-subtle animate-pulse",
+      "applies_to": ["Cards promotions (avant ISR weekly refresh)", "Cards produits (galerie)"],
+      "reduced_motion": "Fond statique bg-border-subtle sans animation"
     },
-    "spinner_form_submit": {
-      "target": "S-021 ContactForm + S-007 NewsletterCTA bouton submit",
-      "type": "Lucide Loader2 + animate-spin",
-      "duration": "infinite tant que pending",
-      "reduced_motion": "Texte 'Envoi en cours...' sans rotation"
+    "spinner": {
+      "type": "Rotation simple SVG (Loader2 Lucide)",
+      "color": "text-primary",
+      "duration": "1s linear infinite",
+      "applies_to": ["Submit form (newsletter, contact)"],
+      "reduced_motion": "Texte 'Chargement…' sans animation"
     },
-    "progressive_image_blur": {
-      "target": "Hero S-001 + top promos S-002",
-      "type": "next/image blurDataURL placeholder -> fade vers image nette",
-      "duration": "300ms",
-      "reduced_motion": "Pas de fade — image apparait instantanement quand chargee"
+    "image_blur": {
+      "type": "next/image blurDataURL + transition opacity",
+      "duration": 300,
+      "_note": "Lazy loading natif next/image — flou → image nette quand chargée"
     }
   },
   "form_interactions": {
     "input_focus": {
-      "behavior": "Border-color change (border -> primary) + ring-2 ring-primary/20",
-      "duration": "150ms",
-      "reduced_motion": "Color change immediat, pas de ring transition"
+      "border": "border → border-primary",
+      "ring": "ring-2 ring-primary ring-offset-1",
+      "duration": 150
     },
-    "validation_success": {
-      "icon": "Lucide CheckCircle2",
-      "color": "success",
-      "animation": "fade-in 200ms a droite du champ",
-      "reduced_motion": "Icon visible immediatement"
+    "input_invalid": {
+      "border": "border-error",
+      "icon": "AlertCircle Lucide en absolute right-3",
+      "shake": {
+        "keyframes": "translateX(0) → -4px → 4px → -2px → 2px → 0",
+        "duration": 300,
+        "iterations": 1,
+        "reduced_motion": "Pas de shake — border-error suffit"
+      }
     },
-    "validation_error": {
-      "icon": "Lucide AlertCircle",
-      "color": "error",
-      "animation": "shake horizontal (translateX -4 / +4 / -2 / 0, 250ms total) + fade-in du message rouge sous le champ",
-      "reduced_motion": "Pas de shake — juste icon + message visible immediatement",
-      "_a11y": "aria-invalid + aria-describedby vers le message d'erreur, role='alert' sur le message"
+    "input_valid": {
+      "icon": "CheckCircle2 Lucide text-success fade-in 200ms"
     },
     "submit_loading": {
-      "behavior": "Bouton disabled (cursor-not-allowed, opacity 70) + spinner inline + label change vers 'Envoi en cours...'",
-      "duration": "tant que pending"
+      "button_state": "disabled + opacity-70 + cursor-wait",
+      "spinner_inline": "Loader2 animate-spin"
     },
     "submit_success": {
-      "behavior": "Bouton replace par bandeau succes (background success/10, border-l-4 border-success, icon + message)",
-      "auto_focus_message": true,
-      "_a11y": "role='status' aria-live='polite' sur le bandeau"
+      "checkmark": "CheckCircle2 text-success scale-in 300ms easing=organic",
+      "message_fade_in": "fade-in 200ms",
+      "_reduced_motion": "Scale skipped, opacity uniquement"
     },
-    "honeypot": {
-      "behavior": "Input visuellement cache (position absolute -9999px) + tabindex=-1 + aria-hidden",
-      "_security": "Si rempli => rejet silencieux server-side (pas d'erreur visible cote bot)"
+    "submit_error": {
+      "message_fade_in": "fade-in 200ms + aria-live='assertive'"
+    },
+    "consent_required_emphasis": {
+      "_note": "Pas de pré-coche, pas de dark pattern. Si submit sans consent → focus auto sur checkbox + scroll into view + message d'erreur Loi 25 explicite."
     }
   },
   "navigation_interactions": {
-    "hamburger_morph": {
-      "from_state": "3 barres horizontales (Menu icon)",
-      "to_state": "X (croix) lorsque ouvert",
-      "animation": "Cross-fade des 2 icons (opacity)",
-      "duration": "150ms",
-      "reduced_motion": "Toggle instantane"
+    "hamburger_open": {
+      "morph": "3 barres → croix (Menu → X Lucide, fade crossfade 200ms)",
+      "reduced_motion": "Icône change instantanément (cross-fade désactivé)"
     },
-    "menu_panel_slide": {
-      "from": "translateX(100%)",
-      "to": "translateX(0)",
-      "duration": "300ms",
+    "mobile_menu_slide": {
+      "type": "Slide-in depuis la droite (translate-x-full → translate-x-0)",
+      "duration": 300,
       "easing": "enter",
-      "reduced_motion": "Affichage instantane (pas de slide)"
+      "overlay": "rgba(42,24,16,0.50) fade-in 200ms",
+      "reduced_motion": "Apparition immédiate sans slide (opacity uniquement, duration 150ms)",
+      "focus_trap": "Activé à l'ouverture (Focus Trap React)",
+      "close_triggers": ["X button", "Escape key", "click overlay"]
     },
-    "backdrop_fade": {
+    "scroll_header": {
+      "type": "Shadow + backdrop-blur on scroll > 10px",
+      "duration": 200,
+      "_implementation": "useScroll Framer Motion + transform-only (pas de height change)"
+    },
+    "lang_switcher": {
+      "type": "Dropdown petit fade-in 150ms",
+      "reduced_motion": "Instant"
+    }
+  },
+  "sticky_cta_appearance": {
+    "component": "StickyCTA (S-008)",
+    "trigger_desktop": "scroll > 600px (viewport visible après hero)",
+    "trigger_mobile": "Toujours visible bottom (full-width bar)",
+    "animation": {
+      "from": {"opacity": 0, "y": 24},
+      "to": {"opacity": 1, "y": 0},
+      "duration": 300,
+      "easing": "enter"
+    },
+    "hover": {"scale": 1.05, "duration": 200},
+    "reduced_motion": {"from": {"opacity": 0}, "to": {"opacity": 1}, "duration": 200}
+  },
+  "category_subnav_active_indicator": {
+    "component": "ProduitsCategoriesNav (S-014)",
+    "library_method": "framer-motion `layoutId='active-anchor-underline'` (smooth slide entre ancres actives)",
+    "trigger": "IntersectionObserver sur les sections #bieres / #snacks / #lotto / #essentiels",
+    "animation": {
+      "underline_color": "accent.DEFAULT (#FFD700)",
+      "duration": 300,
+      "easing": "spring_soft"
+    },
+    "reduced_motion": "Underline statique sur l'ancre active (pas de slide animé)"
+  },
+  "consent_banner_animation": {
+    "component": "CookieConsent (root layout)",
+    "appear": {
+      "from": {"opacity": 0, "y": 24},
+      "to": {"opacity": 1, "y": 0},
+      "duration": 400,
+      "easing": "enter",
+      "_delay_ms": 1500,
+      "_a11y": "Apparaît après 1.5 s pour ne pas bloquer le LCP. Le bandeau ne capture pas le focus tant que l'utilisateur n'interagit pas (option Personnaliser)."
+    },
+    "dismiss": {
+      "from": {"opacity": 1, "y": 0},
+      "to": {"opacity": 0, "y": 24},
+      "duration": 300
+    },
+    "reduced_motion": "Apparition / disparition opacity uniquement"
+  },
+  "maps_consent_button": {
+    "component": "MapsEmbed (S-020)",
+    "before_click": "Placeholder image + bouton primary",
+    "after_click_load": {
       "from": {"opacity": 0},
       "to": {"opacity": 1},
-      "duration": "200ms"
+      "duration": 300,
+      "_note": "Iframe Google Maps lazy + fade-in à la fin du chargement"
     },
-    "lang_switcher_active_indicator": {
-      "type": "Underline accent or sous le code de langue actif",
-      "transition": "Pas d'animation (passif visuel)"
-    }
+    "reduced_motion": "Apparition instantanée"
   },
-  "specific_section_interactions": [
-    {
-      "manifest_id": "S-004",
-      "interaction": "carousel-scroll-snap-mobile",
-      "behavior": "Scroll horizontal natif (overflow-x-auto snap-x snap-mandatory). Pas d'autoplay, pas de fleches custom — le scroll natif suffit",
-      "_anti_pattern_avoided": "Carousel autoplay (ChaLou ph0 §4.2) interdit"
+  "accordion_faq": {
+    "components": ["PromotionsFAQ (S-011)", "ProduitsFAQ (S-016)"],
+    "expand_animation": {
+      "library_method": "framer-motion AnimatePresence + auto height (avec layout)",
+      "from": {"opacity": 0, "height": 0},
+      "to": {"opacity": 1, "height": "auto"},
+      "duration": 250,
+      "easing": "enter"
     },
-    {
-      "manifest_id": "S-008",
-      "interaction": "sticky-cta-show-on-scroll",
-      "behavior": "Affiche apres scroll > 240px (apres le hero), masque sur les pages exclues. Animation fade+slide-up 300ms a l'apparition",
-      "reduced_motion": "Affichage instantane sans slide"
-    },
-    {
-      "manifest_id": "S-011",
-      "interaction": "accordion-faq-open",
-      "behavior": "Click ou Enter -> expand body. Animation height: auto via framer-motion (layout animation). Premier item ouvert par defaut.",
-      "duration": "200ms",
-      "reduced_motion": "Toggle instantane sans transition height",
-      "_a11y": "<button aria-expanded='true|false' aria-controls='panel-id'> + <div role='region' id='panel-id'>"
-    },
-    {
-      "manifest_id": "S-014",
-      "interaction": "active-anchor-on-scroll",
-      "behavior": "IntersectionObserver sur les 4 sections ancrees. Underline accent or sur l'ancre active dans la sticky subnav",
-      "reduced_motion": "Pas d'animation underline, juste color change"
-    },
-    {
-      "manifest_id": "S-020",
-      "interaction": "maps-load-on-consent",
-      "behavior": "Click bouton 'Charger la carte' -> remplace placeholder par iframe (fade-in 300ms). Set cookie_consent.functional = true pour cette session",
-      "_a11y": "Apres click : focus deplace sur l'iframe + announcement live region 'Carte chargee'"
-    },
-    {
-      "manifest_id": "S-021",
-      "interaction": "textarea-counter",
-      "behavior": "Counter caractere live sous le textarea (0 / 2000) — text-secondary, change vers warning si > 1800, error si > 2000",
-      "_perf": "Pas d'animation, juste affichage texte mis a jour onChange"
-    }
-  ],
-  "performance_budget_per_page": {
-    "home": {
-      "estimated_animated_elements": 11,
-      "breakdown": "1 hero fade-in + 3 promos cards + 4 categories + 1 cta-adjacent button + sticky CTA + scroll-snap testimonials",
-      "within_budget": true
-    },
-    "promotions": {
-      "estimated_animated_elements": 8,
-      "breakdown": "1 hero + 6 cards stagger (premier batch visible) + 1 accordion FAQ",
-      "within_budget": true
-    },
-    "produits": {
-      "estimated_animated_elements": 10,
-      "breakdown": "1 hero + 4 sections fade-in + sticky subnav + scroll active indicator + accordion FAQ + cross-sell CTA",
-      "within_budget": true
-    },
-    "contact": {
-      "estimated_animated_elements": 6,
-      "breakdown": "1 hero + form input focus + maps placeholder fade + RPP callout fade-in",
-      "within_budget": true
-    },
-    "legal_pages": {
-      "estimated_animated_elements": 0,
-      "breakdown": "Aucune animation sur pages legales (lecture serieuse, pas d'attention detournement)",
-      "within_budget": true
-    }
+    "_a11y": "aria-expanded sur le bouton trigger, aria-controls vers la zone révélée, Enter/Space pour toggle",
+    "reduced_motion": "Toggle instantané (display block/none) — pas d'animation height"
+  },
+  "performance_safeguards": {
+    "max_simultaneous_animations": 3,
+    "use_will_change_for": ["Cards hover", "StickyCTA appearance"],
+    "preconnect_no_animation_assets": "n/a",
+    "_check_inp": "Cible INP ≤ 200 ms — animations GPU-only (opacity/transform) garantissent"
   },
   "checklist": {
-    "reduced_motion_per_animation": true,
-    "gpu_only_animated_props": true,
-    "duration_coherent": true,
-    "focus_visible_keyboard": true,
+    "every_animation_has_reduced_motion_fallback": true,
+    "only_opacity_and_transform_animated": true,
+    "durations_consistent_with_d5_slow_organic": true,
+    "focus_visible_keyboard_only": true,
     "loading_states_defined": true,
     "form_interactions_complete": true,
-    "max_animations_per_page_respected": true,
-    "no_infinite_animations_except_loaders": true
+    "skip_link_present": true,
+    "consent_banner_no_dark_pattern": true,
+    "warm_palette_alignment": true
   }
 }

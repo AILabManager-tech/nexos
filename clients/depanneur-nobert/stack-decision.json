@@ -1,239 +1,345 @@
 {
   "$schema": "nexos-ph1/stack-decision/v1",
-  "generated_at": "2026-05-10T00:00:00Z",
+  "generated_at": "2026-05-14T05:20:00Z",
   "client_slug": "depanneur-nobert",
   "stack": {
     "framework": {
       "name": "Next.js",
       "version": "15.x",
       "router": "App Router",
-      "reason": "Standard NEXOS imposé (brief.design.stack_imposed.framework=nextjs). SSR + ISR + SEO natif requis pour mots-clés [ville] et FAQ structurée."
+      "rendering_strategy": "Hybride : SSG par défaut + ISR weekly sur /promotions (revalidate 604800 s) + ISR monthly sur /produits (revalidate 2592000 s)",
+      "reason": "Standard NEXOS — imposé par brief.design.stack_imposed.framework. Performance SEO native, hybride SSG/ISR adapté au cycle hebdo des promotions."
     },
     "language": {
       "name": "TypeScript",
       "version": "5.x",
       "strict_mode": true,
-      "config_flags": ["noUncheckedIndexedAccess", "strictNullChecks", "exactOptionalPropertyTypes"],
-      "reason": "Standard NEXOS imposé. Type safety obligatoire pour formulaires Loi 25 et schémas Zod."
+      "tsconfig_flags": {
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "exactOptionalPropertyTypes": true
+      },
+      "reason": "Standard NEXOS — type safety obligatoire. Aucun `any`."
     },
     "css": {
       "name": "Tailwind CSS",
       "version": "3.4.x",
-      "reason": "Standard NEXOS imposé (brief.design.stack_imposed.css=tailwind). Utility-first + purge auto. Version 3.4 retenue (vs 4.x) pour compatibilité Next.js 15 production éprouvée et plugins typography/forms.",
-      "plugins": ["@tailwindcss/typography (pages légales S-023, S-024)", "@tailwindcss/forms (FORM-NEWSLETTER, FORM-CONTACT)"]
+      "version_decision": "Tailwind 3.4 retenu plutôt que 4.x — stabilité prouvée + écosystème plugins (@tailwindcss/forms, @tailwindcss/typography) mature. Migration v4 planifiée sur autre client pilote.",
+      "reason": "Imposé brief.design.stack_imposed.css. Utility-first cohérent avec design tokens warm imposés."
     },
     "i18n": {
       "name": "next-intl",
-      "version": "latest (^3.x)",
-      "locales": ["fr", "en"],
+      "version": "3.x",
+      "locales": [
+        "fr",
+        "en"
+      ],
       "default_locale": "fr",
-      "routing_strategy": "path-prefix avec pathnames mapping (/fr/promotions ↔ /en/deals)",
-      "reason": "Standard NEXOS imposé. Slugs FR ≠ EN documentés dans site-map-logic.json — next-intl supporte le pathnames mapping nativement."
+      "locale_prefix_strategy": "always",
+      "slugs_translated": true,
+      "reason": "Standard NEXOS + imposé brief — integration App Router native, type-safe via TypedMessages."
     },
     "testing": {
-      "unit": "Vitest",
-      "component": "@testing-library/react",
-      "e2e": "non requis Ph4 (site vitrine 6 pages, budget solo)",
-      "reason": "Standard NEXOS — Vitest pour utils (jsonld builder, slug helpers), RTL pour composants critiques (CookieConsent, FORM-CONTACT, LangSwitcher)."
+      "unit": "Vitest 1.x",
+      "component": "@testing-library/react 16.x",
+      "e2e": "Playwright (optionnel, Ph5 si budget)",
+      "coverage_target": "70% lignes / 60% branches (cohérent NEXOS v4.2)",
+      "reason": "Standard NEXOS — Vitest ESM natif, vitesse 3-5× Jest."
+    },
+    "linter_formatter": {
+      "eslint": "eslint-config-next + plugin:jsx-a11y/recommended",
+      "prettier": "3.x avec prettier-plugin-tailwindcss",
+      "rationale": "jsx-a11y obligatoire pour cible 65+ et WCAG AA"
+    },
+    "images": {
+      "component": "next/image",
+      "format_preference": [
+        "avif",
+        "webp",
+        "png"
+      ],
+      "loader": "default (Vercel optimized)",
+      "lazy_loading_default": true,
+      "reason": "Standard NEXOS — galerie produits S-015 = optimisation critique."
+    },
+    "fonts": {
+      "component": "next/font/google",
+      "fonts_loaded": [
+        "Fraunces (display)",
+        "Inter (body)"
+      ],
+      "preload": [
+        "Fraunces 800 (hero H1)"
+      ],
+      "display": "swap",
+      "self_hosting": true,
+      "reason": "Standard NEXOS — zero CLS. 2 familles dans la limite (4 woff2 max)."
     },
     "deployment": {
       "provider": "Vercel",
-      "reason": "Standard NEXOS imposé (brief.design.stack_imposed.deploy=vercel + brief.site.hosting=vercel). CI/CD natif Next.js, preview deployments par PR, ISR weekly pour /promotions natif Vercel."
-    },
-    "node_runtime": {
-      "version": ">=20.x",
-      "reason": "Compatibilité Next.js 15 + native fetch + ESM"
-    },
-    "package_manager": {
-      "name": "npm",
-      "reason": "Standard NEXOS install_nexos.sh — pas de pnpm/yarn imposé"
+      "plan_target": "Pro ou Hobby selon budget client",
+      "edge_regions": "Auto (privilégier iad1 / cle1 pour QC)",
+      "preview_deploys": "branche → URL preview automatique",
+      "reason": "Imposé brief.design.stack_imposed.deploy. CI/CD natif Next.js."
     }
   },
   "optional_additions": [
     {
       "name": "Framer Motion",
-      "version": "^11.x",
-      "reason": "P17 scroll-triggered animations recommandé tier 1 + brief D5=slow-organic. Fade-in subtil au scroll, prefers-reduced-motion respecté.",
-      "impact_bundle_kb": 15,
+      "version": "11.x",
+      "reason": "Patterns P17 (scroll animations) + P02 (social proof reveal) requis. D5=slow-organic exige spring physics.",
+      "impact_kb": "~15 KB gzipped",
       "decision": "include",
-      "scope": "subset import (`framer-motion/lazy` ou tree-shaking explicite, pas l'API complète)",
-      "guardrails": [
-        "Limiter à ≤ 12 éléments animés / page (anti-pattern P17 : '> 100 éléments → CLS catastrophique')",
-        "Hook useReducedMotion() — désactiver toute animation si prefers-reduced-motion=reduce",
-        "Pas de parallax (D5=slow-organic, pas mechanical)"
-      ]
+      "condition": "P17 retenu en pattern-recommendation",
+      "adr_ref": "ADR-001"
     },
     {
       "name": "React Hook Form",
-      "version": "^7.x",
-      "reason": "Validation client FORM-NEWSLETTER + FORM-CONTACT — UX zod-friendly + zéro re-render inutile",
-      "impact_bundle_kb": 9,
-      "decision": "include"
+      "version": "7.x",
+      "reason": "2 formulaires (FORM-NEWSLETTER + FORM-CONTACT) avec validation type-safe et messages localisés Loi 25.",
+      "impact_kb": "~9 KB gzipped",
+      "decision": "include",
+      "adr_ref": "ADR-002"
     },
     {
       "name": "Zod",
-      "version": "^3.x",
-      "reason": "Validation server-side + client-side commune (POST /api/contact, /api/newsletter). Schémas partagés.",
-      "impact_bundle_kb": 12,
-      "decision": "include"
-    },
-    {
-      "name": "@hookform/resolvers",
-      "version": "^3.x",
-      "reason": "Bridge RHF ↔ Zod",
-      "impact_bundle_kb": 2,
-      "decision": "include"
+      "version": "3.x",
+      "reason": "Validation des schemas formulaires + des fichiers data/promotions.json (sécurité parsing).",
+      "impact_kb": "~8 KB gzipped (tree-shaken)",
+      "decision": "include",
+      "adr_ref": "ADR-002"
     },
     {
       "name": "lucide-react",
-      "version": "^0.4xx",
-      "reason": "Icônes brief.design (S-003 CategoriesProduits 4 cards). Tree-shakeable, import par icône.",
-      "impact_bundle_kb": "≤ 1 par icône importée",
-      "decision": "include",
-      "scope": "Maximum 12 icônes utilisées (tree-shaking strict, pas d'import barrel)"
+      "version": "0.4xx",
+      "reason": "Icônes Lucide imposées CLAUDE.md (catégories produits S-003, nav, social).",
+      "impact_kb": "~1-2 KB par icône importée (tree-shaking ESM)",
+      "decision": "include"
     },
     {
-      "name": "DOMPurify",
-      "version": "^3.x",
-      "reason": "Si besoin d'innerHTML quelque part (légal HTML rendu via MD→HTML), sanitize obligatoire (CLAUDE.md: 'JAMAIS de dangerouslySetInnerHTML sans DOMPurify')",
-      "impact_bundle_kb": 22,
-      "decision": "conditional",
-      "condition": "Inclure UNIQUEMENT si pages légales rendues via dangerouslySetInnerHTML. Sinon préférer JSX statique (cf. fix A-006 récent du codebase). Recommandation : JSX statique → exclure DOMPurify."
+      "name": "@tailwindcss/forms",
+      "version": "0.5.x",
+      "reason": "Reset forms + base styling formulaires (S-007, S-021).",
+      "impact_kb": "0 (plugin build-time)",
+      "decision": "include"
+    },
+    {
+      "name": "@tailwindcss/typography",
+      "version": "0.5.x",
+      "reason": "Style auto des pages légales S-023, S-024 (templates markdown → HTML rendu via prose class).",
+      "impact_kb": "0 (plugin build-time)",
+      "decision": "include"
     }
   ],
   "explicitly_rejected": [
     {
-      "name": "jQuery",
-      "reason": "Obsolète, incompatible React + 90 KB"
+      "name": "Tailwind CSS 4.x",
+      "reason": "Trop récent — plugins critiques (@tailwindcss/forms, @tailwindcss/typography) pas tous stables sur v4. Risque inutile pour PME single-pipeline.",
+      "reconsider_when": "v4 + plugins ≥ 6 mois en stable"
     },
     {
-      "name": "styled-components / Emotion",
-      "reason": "Runtime CSS-in-JS — impact perf SSR + pas Tailwind compatible"
+      "name": "jQuery / Wix runtime / Squarespace",
+      "reason": "Standards anti-NEXOS — patterns secteur dominants (~85%) cassés vs Next.js 15."
+    },
+    {
+      "name": "styled-components / emotion (CSS-in-JS runtime)",
+      "reason": "Impact perf SSR + incompatibilité partielle Server Components. Tailwind suffit."
     },
     {
       "name": "Pages Router",
-      "reason": "Legacy — App Router est le standard Next.js 15"
+      "reason": "Legacy. App Router seul cohérent NEXOS v4.2."
     },
     {
-      "name": "Mailchimp / SendGrid SDK client-side",
-      "reason": "API key côté client interdite (CLAUDE.md). Si infolettre choisit Mailchimp, intégration via API route /api/newsletter server-side uniquement."
+      "name": "Redux / Zustand",
+      "reason": "Aucun état global complexe (vitrine 6 pages). useState + Server Components suffisent."
     },
     {
-      "name": "Google Analytics gtag.js automatique",
-      "reason": "Ne se charge JAMAIS avant consentement opt-in (Loi 25). Implémentation via lib/analytics avec gate sur cookie consent."
+      "name": "Sanity / Contentful / Strapi CMS",
+      "reason": "Vitrine PME single-page-per-route avec contenus stables. Promotions = JSON commit. Surcoût licence + maintenance non justifié."
     },
     {
-      "name": "react-google-maps / @react-google-maps/api",
-      "reason": "Maps embed via iframe natif uniquement (S-020) avec consent gate — pas de SDK qui charge des scripts tiers avant consentement."
+      "name": "Mapbox / MapLibre",
+      "reason": "Google Maps déjà déclaré au brief (third_parties). Switch alourdirait sans bénéfice — Maps embed conditionnel suffit."
+    },
+    {
+      "name": "GTM / Tag Manager",
+      "reason": "Surcouche scripts pénalise LCP. GA4 directement via script natif gated par consent."
+    },
+    {
+      "name": "axios / fetch wrapper",
+      "reason": "fetch natif Next 15 suffit pour 2 API routes internes."
     }
   ],
   "security_config": {
-    "next_config": {
+    "next_config_mjs": {
       "poweredByHeader": false,
-      "reactStrictMode": true,
-      "headers_strategy": "Définis dans vercel.json (template NEXOS) + middleware pour CSP nonce-based",
-      "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
-        { "key": "X-DNS-Prefetch-Control", "value": "on" }
-      ]
+      "compress": true,
+      "images": {
+        "formats": [
+          "image/avif",
+          "image/webp"
+        ],
+        "remotePatterns": []
+      }
+    },
+    "vercel_headers": {
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+      "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+      "Content-Security-Policy": "généré par agent csp-generator Ph4 (nonce-based pour scripts, hash pour inline styles minimaux)",
+      "source_file": "templates/vercel-headers.template.json adapté"
     },
     "csp_strategy": {
-      "approach": "Nonce-based CSP via middleware",
-      "directives": {
+      "mode": "report-only en preview, enforce en prod",
+      "directives_planned": {
         "default-src": "'self'",
-        "script-src": "'self' 'nonce-{NONCE}' https://www.googletagmanager.com https://www.google-analytics.com",
-        "img-src": "'self' data: https://www.google-analytics.com https://maps.gstatic.com https://maps.googleapis.com",
-        "frame-src": "'self' https://www.google.com https://maps.google.com",
-        "connect-src": "'self' https://www.google-analytics.com",
-        "style-src": "'self' 'unsafe-inline' https://fonts.googleapis.com",
-        "font-src": "'self' https://fonts.gstatic.com",
-        "form-action": "'self'",
-        "frame-ancestors": "'none'",
-        "base-uri": "'self'",
-        "object-src": "'none'"
-      },
-      "loi25_note": "Google Analytics et Maps autorisés en CSP, MAIS gating consentement applicatif les empêche de se charger avant opt-in."
+        "script-src": "'self' 'nonce-{generated}' https://www.googletagmanager.com (gated consent)",
+        "img-src": "'self' data: https://*.google.com (Maps tiles gated)",
+        "frame-src": "https://www.google.com (Maps iframe gated consent)",
+        "connect-src": "'self' https://www.google-analytics.com (gated consent)",
+        "font-src": "'self' data:",
+        "style-src": "'self' 'unsafe-inline' (Tailwind + Framer Motion inline)"
+      }
     },
-    "rate_limiting": {
-      "POST /api/newsletter": "1 req / IP / 5 min",
-      "POST /api/contact": "3 req / IP / heure",
-      "implementation": "@vercel/edge ou middleware avec Upstash Redis si volume — sinon in-memory simple Map (vu volume voisinage faible)"
+    "api_routes_security": {
+      "/api/newsletter": "honeypot + rate-limit 5 req/min/IP + Zod validation + sanitization",
+      "/api/contact": "honeypot + rate-limit 5 req/min/IP + Zod validation + sanitization + courriel via service tier (Resend ou SendGrid via API key serveur uniquement)"
     },
-    "secrets_management": {
-      "approach": "Vercel env vars (production + preview)",
-      "files": [".env.example commitable, .env.local gitignored",
-                ".env vide commit interdit"],
-      "ci_check": "scan secrets dans pre-commit (ggshield ou trufflehog) si activé"
-    }
+    "secrets_management": ".env.local (gitignored) + Vercel Environment Variables. Aucune clé côté client."
   },
   "performance_budget": {
-    "lcp_target_seconds": 2.5,
-    "lcp_target_seconds_mobile_4g": 3.0,
-    "inp_target_ms": 200,
-    "cls_target": 0.1,
-    "total_bundle_kb_first_load": 250,
-    "image_max_kb": 500,
-    "fonts_max_files": 5,
-    "rationale": "Cible Lighthouse Performance ≥ 90. Trafic dépanneur = mobile dominant (clientèle voisinage), 4G fréquent."
+    "bundle_size_target_total_first_load": "≤ 200 KB gzipped (home)",
+    "lighthouse_targets": {
+      "performance": "≥ 90",
+      "accessibility": "100",
+      "best_practices": "100",
+      "seo": "100"
+    },
+    "lcp_target": "≤ 2.0 s",
+    "cls_target": "≤ 0.05",
+    "inp_target": "≤ 200 ms",
+    "tbt_target": "≤ 200 ms",
+    "page_weight_targets": {
+      "home": "≤ 400 KB total (hero image incluse)",
+      "promotions": "≤ 800 KB (cards images)",
+      "produits": "≤ 1.5 MB (galerie, lazy)",
+      "contact": "≤ 300 KB"
+    }
   },
   "adr_log": [
     {
       "id": "ADR-001",
-      "title": "Tailwind CSS 3.4 plutôt que 4.x",
+      "title": "Inclusion de Framer Motion pour P17 (scroll animations) + P02 (social proof reveal)",
       "status": "accepted",
-      "context": "Le standard NEXOS pointe Tailwind 4.x. Cependant, Tailwind 4 (alpha/beta selon date) introduit des breaking changes (CSS-first config, lightningcss) qui ne sont pas encore stabilisés en production Next.js 15.",
-      "decision": "Rester sur Tailwind 3.4 LTS jusqu'à stabilisation v4 sur Vercel. Migration possible Ph2 ultérieure sans impact design tokens.",
-      "consequences": "+ stabilité production confirmée, écosystème plugins (typography, forms) compatible. — Pas d'accès aux features v4 (CSS-only config, container queries natifs).",
-      "alternatives_considered": ["Tailwind 4.x", "UnoCSS"]
+      "context": "Pattern P17 retenu (tier 1 universel) + P02 (mesuré +2× leads). Le brief impose D5=slow-organic (transitions longues, spring physics) — CSS animations seules ne couvrent pas les besoins de spring + viewport trigger.",
+      "decision": "Framer Motion 11.x. Import sélectif (`motion.div`, `AnimatePresence`, `useReducedMotion`). Tree-shaking ESM strict.",
+      "alternatives_considered": [
+        "CSS animations + IntersectionObserver natif : couvre 80% des besoins mais demande beaucoup de code custom pour spring physics + variants",
+        "GSAP : ~70 KB, payant pour usage commercial — exclus",
+        "react-spring : ~15 KB mais API moins ergonomique, communauté moins active que Framer Motion"
+      ],
+      "consequences": [
+        "+15 KB bundle gzipped",
+        "Support prefers-reduced-motion natif (`useReducedMotion`) obligatoire",
+        "Limite à ~20 composants animés simultanément pour éviter CLS"
+      ]
     },
     {
       "id": "ADR-002",
-      "title": "Framer Motion inclus malgré size=solo",
+      "title": "React Hook Form + Zod pour formulaires (FORM-NEWSLETTER + FORM-CONTACT)",
       "status": "accepted",
-      "context": "Brief size=solo + size budget perf. Framer Motion ajoute 15 KB. Mais P17 (scroll animations) tier 1 et D5=slow-organic critique au registre.",
-      "decision": "Inclure Framer Motion avec scope strict : ≤ 12 éléments animés/page, useReducedMotion() systématique, pas de parallax.",
-      "consequences": "+ Différenciation visuelle vs WordPress générique. Animation = signe de modernité non-intrusive. — +15 KB bundle, vigilance LCP/CLS Ph5.",
-      "alternatives_considered": ["CSS animations pures (suffisant pour fade-in mais limite spring physics)", "GSAP (lourd, licence commerciale)"]
+      "context": "2 formulaires avec validation Loi 25 (consentement explicite + champs requis + messages localisés FR/EN).",
+      "decision": "RHF 7 + Zod 3, schemas dans `lib/validation/forms.ts` typés via `z.infer<typeof Schema>`. Messages d'erreur i18n via next-intl.",
+      "alternatives_considered": [
+        "Formik + Yup : plus lourd, moins type-safe",
+        "Native HTML5 validation : insuffisante pour messages localisés et logique de consentement",
+        "Server Actions + Zod sans RHF : viable mais perd l'UX d'erreurs inline en temps réel"
+      ],
+      "consequences": [
+        "+17 KB bundle gzipped (RHF + Zod)",
+        "Schemas Zod aussi utilisés pour valider data/promotions.json côté server (réutilisation)"
+      ]
     },
     {
       "id": "ADR-003",
-      "title": "Pages légales en JSX statique (pas dangerouslySetInnerHTML)",
+      "title": "Tailwind 3.4 plutôt que Tailwind 4",
       "status": "accepted",
-      "context": "Le codebase a récemment fixé A-006 (auto_fixer génère JSX au lieu de HTML innerHTML). Les pages S-023 et S-024 sont rendues via composant LegalDocBody.",
-      "decision": "Pages légales rendues en JSX TypeScript directement, pas via MD→HTML→innerHTML. DOMPurify exclu du bundle.",
-      "consequences": "+ Pas de risque XSS, pas de DOMPurify (-22 KB), templates Loi 25 typés. — Édition contenu nécessite modif fichier .tsx (pas de CMS), acceptable pour site solo Nobert.",
-      "alternatives_considered": ["MDX (overhead)", "MD parser + DOMPurify (perf + risk)"]
+      "context": "Tailwind 4 sorti récemment ; certains plugins critiques (@tailwindcss/forms, @tailwindcss/typography) ne sont pas tous stables sur v4.",
+      "decision": "Tailwind 3.4.x avec design tokens warm imposés dans tailwind.config.ts.",
+      "alternatives_considered": [
+        "Tailwind 4.x : reporté à un autre client pilote ; risque inutile pour PME"
+      ],
+      "consequences": [
+        "Stabilité maximale",
+        "Migration v4 prévue Ph6+ si bénéfice mesurable"
+      ]
     },
     {
       "id": "ADR-004",
-      "title": "Maps embed gated par consent applicatif (pas SDK)",
+      "title": "ISR weekly sur /promotions plutôt que CMS dynamique",
       "status": "accepted",
-      "context": "S-020 MapsEmbed doit charger Google Maps. SDK @react-google-maps/api charge des scripts tiers avant consentement = violation Loi 25.",
-      "decision": "iframe natif Google Maps avec placeholder image + bouton 'Charger la carte (Google Maps - États-Unis)'. iframe injectée seulement après click utilisateur explicite.",
-      "consequences": "+ Conforme opt-in strict Loi 25 + transparence transfert hors QC + zéro CLS au chargement initial. — UX 1-click supplémentaire (acceptable pour conformité).",
-      "alternatives_considered": ["@react-google-maps/api avec consent gate (complexité)", "OpenStreetMap (Leaflet, mais perte précision adresse)"]
+      "context": "Promotions changent chaque semaine (vendredi). Propriétaire solo non technique = workflow mise à jour critique pour la durabilité.",
+      "decision": "Phase 1 : `data/promotions.json` versionné Git + `revalidate=604800` ISR. Phase 2 (Ph6+) : interface admin légère (App Router admin route protégée par mot de passe + écriture JSON) si Nobert souhaite éviter Git.",
+      "alternatives_considered": [
+        "Sanity / Contentful : surcoût licence ($15-30/mois) + setup complexe pour un propriétaire solo",
+        "Markdown front-matter via Contentlayer : déprécié, abandonné",
+        "Google Sheets + API : fragile en prod, latence"
+      ],
+      "consequences": [
+        "KPI #1 (promos hebdo) dépend d'un workflow simple Git OR interface admin Ph6",
+        "Documenter la procédure Ph5 dans CLIENT_DOC.md remis au propriétaire"
+      ]
     },
     {
       "id": "ADR-005",
-      "title": "ISR weekly /promotions plutôt que SSG ou SSR",
+      "title": "Google Maps embed conditionnel au consentement (S-020) plutôt que iframe directe",
       "status": "accepted",
-      "context": "Promotions hebdomadaires mises à jour chaque vendredi. SSG impose un rebuild complet ; SSR impose une charge serveur récurrente.",
-      "decision": "export const revalidate = 604800 (7 jours). Vercel ISR sert le cache pendant 7 jours, regénère en background le vendredi.",
-      "consequences": "+ Perf optimale (cache CDN), 0 charge serveur sauf vendredi, mise à jour propriétaire via redéploiement. — Le propriétaire (Nobert) doit redéployer (ou trigger revalidate via webhook) pour pousser une promo intra-semaine. À documenter Ph5.",
-      "alternatives_considered": ["SSG full rebuild (lent)", "SSR (charge serveur)", "On-demand revalidation only (complexité initiale)"]
+      "context": "Brief déclare transfert hors QC (Google Maps US) — Loi 25 art. 12 exige consentement éclairé avant déclenchement du transfert.",
+      "decision": "Placeholder image statique (capture Maps) + bouton 'Charger la carte (Google Maps - États-Unis)' avec note de transfert. iframe Maps injectée uniquement après consent_category=maps_third_party=true.",
+      "alternatives_considered": [
+        "Mapbox / MapLibre : transfert États-Unis aussi (Mapbox) ou hébergement self (MapLibre + tuiles) — surcoût injustifié",
+        "Lien externe vers Maps : pas de transfert mais perte UX 'voir la carte sur place'",
+        "OpenStreetMap iframe : pas de transfert Google mais perte signal GMB + qualité tiles inférieure en zone urbaine QC"
+      ],
+      "consequences": [
+        "Charge UX supplémentaire pour utilisateur consentant (1 clic en plus)",
+        "Différenciation Loi 25 explicite (vs ~25% du secteur qui embed sans consent)"
+      ]
     }
   ],
-  "dependency_count_estimated": 8,
-  "max_dependencies_production": 10,
-  "compliance_check": {
-    "loi25_ready": true,
-    "wcag_2_2_aa_targetable": true,
-    "headers_complete": true,
-    "csp_planned": true,
-    "audit_npm_target": "0 high/critical au moment du build Ph4"
-  }
+  "dependency_count_check": {
+    "production_dependencies_estimated": [
+      "next",
+      "react",
+      "react-dom",
+      "next-intl",
+      "framer-motion",
+      "react-hook-form",
+      "zod",
+      "lucide-react",
+      "@tailwindcss/forms (build-time)",
+      "@tailwindcss/typography (build-time)"
+    ],
+    "total_runtime_deps_excluding_next_ecosystem": 6,
+    "max_allowed": 10,
+    "passes": true
+  },
+  "checklist_validation": {
+    "json_valid": true,
+    "stack_fully_documented_with_versions": true,
+    "optional_additions_justified": true,
+    "rejected_dependencies_documented": true,
+    "security_headers_configured": true,
+    "csp_strategy_defined": true,
+    "bundle_impact_estimated": true,
+    "adr_per_non_standard_choice": true,
+    "powered_by_header_disabled": true,
+    "ts_strict_mode_enforced": true
+  },
+  "iteration_soic": 2,
+  "iteration_note": "Itération 2 SOIC : corrections PE-08 (recommandations actionnables Ph0 §7.7) + PE-09 (concurrents C1–C5 + matrice gaps Ph0 §2.1) appliquées."
 }

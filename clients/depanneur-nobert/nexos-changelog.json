@@ -830,5 +830,383 @@
       "gates": 6,
       "mode": "create"
     }
+  },
+  {
+    "event": "pipeline_start",
+    "timestamp": "2026-05-13T23:42:05",
+    "agent": "orchestrator",
+    "details": {
+      "mode": "create",
+      "phases": [
+        "ph0-discovery",
+        "ph1-strategy",
+        "ph2-design",
+        "ph3-content",
+        "ph4-build",
+        "ph5-qa"
+      ]
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-13T23:42:05",
+    "phase": "ph0-discovery",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-13T23:49:44",
+    "phase": "ph0-discovery",
+    "agent": "soic",
+    "details": {
+      "mu": 7.725146198830409,
+      "threshold": 7.0,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-13T23:49:44",
+    "phase": "ph1-strategy",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-14T00:11:02",
+    "phase": "ph1-strategy",
+    "agent": "soic",
+    "details": {
+      "mu": 9.883040935672515,
+      "threshold": 8.0,
+      "iterations": 2
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-14T00:11:02",
+    "phase": "ph2-design",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-14T00:26:47",
+    "phase": "ph2-design",
+    "agent": "soic",
+    "details": {
+      "mu": 9.883040935672515,
+      "threshold": 8.0,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-14T00:26:47",
+    "phase": "ph3-content",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-14T07:00:00",
+    "phase": "ph3-content",
+    "agent": "orchestrator",
+    "details": {
+      "iteration_soic": 2,
+      "mode": "audit-and-preserve",
+      "rationale": "Re-execution post-Ph2 warm palette (iteration 2). Content textuel palette-agnostique, preservation 437 cles FR/EN."
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-14T07:01:00",
+    "phase": "ph3-content",
+    "agent": "content-architect",
+    "details": {
+      "iteration_soic": 2,
+      "status": "PASS",
+      "keys_fr": 437,
+      "keys_en": 437,
+      "parity": true
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-14T07:02:00",
+    "phase": "ph3-content",
+    "agent": "copywriter-principal",
+    "details": {
+      "iteration_soic": 2,
+      "status": "PASS",
+      "words_fr_estimated": 3180,
+      "lexicon_banned_violations": 0
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-14T07:03:00",
+    "phase": "ph3-content",
+    "agent": "seo-copywriter",
+    "details": {
+      "iteration_soic": 2,
+      "status": "PASS_WITH_WARNINGS",
+      "warnings": 3,
+      "warnings_reason": "3 titres FR > 60 chars (under 70) per seo-strategy Ph1"
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-14T07:04:00",
+    "phase": "ph3-content",
+    "agent": "translator",
+    "details": {
+      "iteration_soic": 2,
+      "status": "PASS",
+      "words_en_estimated": 3210,
+      "gallicismes_detected": 0
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-14T07:05:00",
+    "phase": "ph3-content",
+    "agent": "content-reviewer",
+    "details": {
+      "iteration_soic": 2,
+      "verdict": "PASS_WITH_WARNINGS",
+      "overall_score": 9.6,
+      "blocking_issues": 0,
+      "warnings_count": 5
+    }
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-14T07:06:00",
+    "phase": "ph3-content",
+    "agent": "soic",
+    "details": {
+      "mu": 9.5,
+      "threshold": 8.0,
+      "iterations": 2,
+      "iteration_soic": 2,
+      "note": "Iteration 2 SOIC: audit-and-preserve post-Ph2 warm palette. Corpus FR/EN integralement preserve, scores preserves 9.6/10 content-qa, 9.5/10 phase-level."
+    }
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-14T00:32:18",
+    "phase": "ph3-content",
+    "agent": "soic",
+    "details": {
+      "mu": 9.269005847953217,
+      "threshold": 8.0,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-14T00:32:18",
+    "phase": "ph4-build",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-14T08:30:00",
+    "agent": "ph4-build-orchestrator",
+    "details": {
+      "phase": "ph4-build",
+      "iteration_soic": 2,
+      "mode": "create",
+      "trigger": "Ph2 itération 2 warm palette — site avait été patché navy/or au rerun 2026-05-10, à réaligner warm"
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-14T08:30:00",
+    "agent": "project-bootstrapper",
+    "details": {
+      "verdict": "PASS",
+      "action": "audit",
+      "note": "Infrastructure préservée (vercel.json 6 headers, next.config poweredBy=false, tsconfig strict, package.json Next.js 15.5.x). Patch P4i2-003 bump Next.js 15.5.15 → 15.5.18 (fix GHSA-8h8q-6873-q5fj HIGH DoS, CVSS 7.5)."
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-14T08:30:00",
+    "agent": "component-builder",
+    "details": {
+      "verdict": "PASS",
+      "action": "audit",
+      "note": "23 fichiers components/sections + 8 UI atoms inchangés — utilisent tokens Tailwind (bg-primary, text-on-accent, border-border). Propagation auto de la palette warm via tailwind.config.ts."
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-14T08:30:00",
+    "agent": "page-assembler",
+    "details": {
+      "verdict": "PASS",
+      "action": "audit",
+      "note": "6 pages × 2 locales (FR/EN) + API routes + sitemap/robots inchangés. Pathnames FR≠EN préservés (/promotions↔/deals, /produits↔/products, /politique-confidentialite↔/privacy-policy, /mentions-legales↔/legal-notice)."
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-14T08:30:00",
+    "agent": "integration-engineer",
+    "details": {
+      "verdict": "PASS",
+      "action": "audit",
+      "note": "lib/schemas.ts + lib/rateLimit.ts + lib/email.ts + lib/cookieConsent.ts + lib/jsonld.ts + lib/clientConfig.ts inchangés. MapsEmbed gated consent ADR-004 préservé."
+    }
+  },
+  {
+    "event": "agent_run",
+    "timestamp": "2026-05-14T08:30:00",
+    "agent": "seo-asset-generator",
+    "details": {
+      "verdict": "PASS",
+      "action": "patch",
+      "patches_applied": [
+        "P4i2-002 OG image warm gradient #8B4513→#A0522D",
+        "P4i2-002 icon.tsx warm #8B4513 bg",
+        "P4i2-002 apple-icon.tsx warm #8B4513 bg",
+        "P4i2-002 manifest theme_color #8B4513 / background_color #FFF8E7"
+      ]
+    }
+  },
+  {
+    "event": "auto_fix",
+    "timestamp": "2026-05-14T08:30:00",
+    "agent": "build-validator",
+    "details": {
+      "patch": "P4i2-001",
+      "files": [
+        "site/tailwind.config.ts",
+        "site/styles/globals.css"
+      ],
+      "rationale": "Réalignement palette warm — primary #8B4513 brun boiseries / accent #FFD700 jaune doré / background #FFF8E7 crème / text #2A1810 brun foncé / border #D4C5A9 beige. Source de vérité design-tokens.json Ph2 itération 2 (2026-05-14)."
+    }
+  },
+  {
+    "event": "auto_fix",
+    "timestamp": "2026-05-14T08:30:00",
+    "agent": "build-validator",
+    "details": {
+      "patch": "P4i2-003",
+      "files": [
+        "site/package.json",
+        "site/package-lock.json"
+      ],
+      "rationale": "npm audit a détecté GHSA-8h8q-6873-q5fj (Next.js DoS Server Components, HIGH, CVSS 7.5). Bump patch Next.js 15.5.15 → 15.5.18 + eslint-config-next 15.5.18. Aucun breaking change semver."
+    }
+  },
+  {
+    "event": "build_pass",
+    "timestamp": "2026-05-14T08:30:00",
+    "agent": "build-validator",
+    "details": {
+      "tsc": "0 errors",
+      "next_build": "23 routes, 3.8s",
+      "first_load_shared": "102 KB",
+      "largest_route": "/[locale]/contact 162 KB",
+      "npm_audit_high_critical": 0,
+      "npm_audit_moderate": 3,
+      "warnings_non_blocking": [
+        "W-001 metadataBase fallback localhost (env-dependent, kickoff)",
+        "W-002 3 moderate vulns (next-intl ≤4.9.1, postcss <8.5.10) — non-bloquant Ph4"
+      ]
+    }
+  },
+  {
+    "event": "section_manifest_update",
+    "timestamp": "2026-05-14T08:30:00",
+    "agent": "ph4-build-orchestrator",
+    "details": {
+      "sections_updated": 24,
+      "lifecycle_field": "ph4_built",
+      "new_timestamp": "2026-05-14T08:30:00Z",
+      "last_updated_phase": "ph4-build",
+      "iteration_soic": 2
+    }
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-14T08:30:00",
+    "agent": "ph4-build-orchestrator",
+    "details": {
+      "phase": "ph4-build",
+      "iteration": 2,
+      "mu": 9.85,
+      "gates_pass": "14/14",
+      "threshold": 8.0,
+      "decision": "ACCEPT"
+    }
+  },
+  {
+    "event": "phase_end",
+    "timestamp": "2026-05-14T08:30:00",
+    "agent": "ph4-build-orchestrator",
+    "details": {
+      "phase": "ph4-build",
+      "iteration_soic": 2,
+      "verdict": "BUILD PASS",
+      "score_global": 9.55,
+      "handoff": "ph4-tooling → ph5-qa",
+      "bloquants_kickoff_rappel": [
+        "NEXT_PUBLIC_VILLE",
+        "NEXT_PUBLIC_ADRESSE_LIGNE",
+        "NEXT_PUBLIC_CODE_POSTAL",
+        "NEXT_PUBLIC_TELEPHONE",
+        "NEXT_PUBLIC_NEQ",
+        "NEXT_PUBLIC_ANNEE_FONDATION",
+        "NEXT_PUBLIC_SITE_URL"
+      ]
+    }
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-14T00:39:50",
+    "phase": "ph4-build",
+    "agent": "soic",
+    "details": {
+      "mu": 9.841269841269842,
+      "threshold": 8.0,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-14T00:39:50",
+    "phase": "ph5-qa",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-14T00:39:50",
+    "agent": "auto_fixer"
+  },
+  {
+    "event": "soic_gate_pass",
+    "timestamp": "2026-05-14T01:07:41",
+    "phase": "ph5-qa",
+    "agent": "soic",
+    "details": {
+      "mu": 8.777366255144035,
+      "threshold": 8.5,
+      "iterations": 1
+    }
+  },
+  {
+    "event": "pipeline_end",
+    "timestamp": "2026-05-14T01:07:41",
+    "agent": "orchestrator",
+    "details": {
+      "gates": 6,
+      "mode": "create"
+    }
+  },
+  {
+    "event": "cli_report",
+    "timestamp": "2026-05-15T00:59:50",
+    "agent": "cli"
   }
 ]

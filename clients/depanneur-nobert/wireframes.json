@@ -1,29 +1,32 @@
 {
   "$schema": "nexos-ph2/wireframes/v1",
-  "generated_at": "2026-05-10T00:00:00Z",
+  "generated_at": "2026-05-14T06:05:00Z",
   "client_slug": "depanneur-nobert",
+  "iteration_soic": 2,
   "based_on": [
-    "section-manifest.json (24 sections immutables)",
-    "site-map-logic.json (routes, nav, formulaires)",
-    "brand-identity.json (palette + typo)",
-    "pattern-recommendation.json (P01/P02/P09/P11/P13/P19/P20)"
+    "section-manifest.json (24 sections, status=audited Ph5 préservé)",
+    "site-map-logic.json (routes /fr & /en, slugs traduits, nav 4 items)",
+    "brand-identity.json (palette warm + Fraunces/Inter + UVP)",
+    "pattern-recommendation.json (P01/P02/P08/P09/P13/P17/P19/P20 + tier3 P11/P14)"
   ],
   "_constraints": {
     "max_sections_per_page": 7,
     "h1_unique_per_page": true,
     "above_the_fold_cta_required_on_homepage": true,
     "i18n_keys_referenced": true,
-    "manifest_alignment": "Chaque section référence son manifest_id S-NNN et son component_name (1:1 avec scaffold-plan)"
+    "manifest_alignment": "Chaque section référence son manifest_id S-NNN et son component_name (1:1 avec scaffold-plan.json)",
+    "palette_alignment": "warm brun #8B4513 + accent jaune #FFD700 + crème #FFF8E7 (aucun bleu corporate)"
   },
   "pages": [
     {
       "page": "home",
-      "route_fr": "/",
+      "route_fr": "/fr",
       "route_en": "/en",
       "i18n_namespace_root": "home",
       "above_the_fold_section": "S-001",
       "total_sections": 7,
       "estimated_scroll_depth_viewports": 5.5,
+      "sticky_cta_visible": true,
       "sections": [
         {
           "manifest_id": "S-001",
@@ -31,27 +34,30 @@
           "order": 1,
           "component": "Hero",
           "i18n_namespace": "home.hero",
-          "layout": "full-width-image-overlay",
+          "layout": "full-width-image-overlay-left-aligned",
           "content": {
             "h1": "{home.hero.title}",
+            "h1_example_fr": "Votre dépanneur de quartier à [ville].",
             "subtitle": "{home.hero.subtitle}",
-            "cta_primary": {"label": "{home.hero.cta_primary}", "href": "/promotions", "variant": "accent"},
-            "cta_secondary": {"label": "{home.hero.cta_secondary}", "href": "#infos-pratiques", "variant": "ghost-on-dark"},
-            "background_image": "/images/hero-vitrine.jpg (photo authentique vitrine eclairage chaud — compense navy froid)",
-            "overlay": "linear-gradient(180deg, rgba(26,43,60,0.55) 0%, rgba(26,43,60,0.85) 100%)"
+            "subtitle_example_fr": "Promotions fraîches chaque vendredi. Ouvert pour vous.",
+            "cta_primary": {"label": "{home.hero.cta_primary}", "label_example_fr": "Voir les promotions de la semaine", "href": "/fr/promotions", "variant": "accent"},
+            "cta_secondary": {"label": "{home.hero.cta_secondary}", "label_example_fr": "Trouver l'adresse", "href": "/fr/contact#coordonnees", "variant": "ghost-on-dark"},
+            "background_image": "/images/hero-vitrine.webp (photo authentique vitrine éclairage chaud) ; fallback Unsplash thématique court terme",
+            "overlay": "linear-gradient(180deg, rgba(42,24,16,0.55) 0%, rgba(42,24,16,0.85) 100%)"
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n| [LOGO Wordmark] [Accueil][Promos*][Produits][Contact] [FR/EN] |\n+----------------------------------------------------------+\n|                                                            |\n|   [Photo vitrine eclairee — overlay navy 55-85%]          |\n|                                                            |\n|   [H1 Fraunces 900]                                       |\n|   Votre depanneur de quartier,                            |\n|   a deux pas. (a [ville])                                 |\n|                                                            |\n|   [P Inter 400] Promotions fraiches chaque vendredi.       |\n|                                                            |\n|   [CTA OR navy text]              [CTA ghost blanc border] |\n|   > Voir les promotions           Trouver l'adresse       |\n|                                                            |\n|                                                v scroll    |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [LOGO Wordmark]  [Accueil][Promos*][Produits][Contact] [FR/EN] |\n+----------------------------------------------------------+\n|                                                          |\n|   [Photo vitrine eclairee — overlay brun 55%->85%]      |\n|                                                          |\n|   [H1 Fraunces 800]                                     |\n|   Votre depanneur de quartier                            |\n|   a [ville].                                             |\n|                                                          |\n|   [P Inter 400 text-inverse] Promos fraiches             |\n|   chaque vendredi. Ouvert pour vous.                     |\n|                                                          |\n|   [CTA JAUNE text brun]         [CTA ghost border creme] |\n|   > Voir les promotions          Trouver l'adresse       |\n|                                                          |\n|                                                v scroll  |\n+----------------------------------------------------------+",
           "responsive": {
-            "mobile": "Stack vertical, H1 text-3xl, CTA primary full-width, CTA secondary outline full-width sous le primary",
-            "tablet": "H1 text-4xl, CTAs inline (gap-4)",
-            "desktop": "H1 text-h1 (3.815rem), max-w-2xl texte a gauche, CTAs inline gap-6"
+            "mobile": "Stack vertical, H1 text-3xl (~2.25rem), CTA accent full-width, CTA secondaire outline full-width sous le primary, gap-3",
+            "tablet": "H1 text-4xl, CTAs inline gap-4, padding y-16",
+            "desktop": "H1 text-h1 (3.052rem), max-w-2xl texte aligné à gauche, CTAs inline gap-6, min-h-[80vh]"
           },
-          "tailwind_hints": "relative isolate min-h-[80vh] lg:min-h-[88vh] flex items-center bg-primary text-white",
+          "tailwind_hints": "relative isolate min-h-[70vh] lg:min-h-[80vh] flex items-center bg-text-primary text-text-inverse [background-image:url(/images/hero-vitrine.webp)] bg-cover bg-center",
           "patterns_realized": ["P01", "P09", "P13"],
           "a11y_notes": [
             "H1 unique pour la home",
-            "Image hero a alt-text descriptif (cf. asset-plan)",
-            "Overlay opacity >= 0.55 garantit white sur image = ratio AA meme sur zones claires"
+            "Image hero avec alt descriptif (cf. asset-plan)",
+            "Overlay opacity ≥ 0.55 garantit crème sur image = ratio AAA (10.2:1) sur zones même claires",
+            "CTAs touch target ≥ 48 px (py-3 px-6)"
           ]
         },
         {
@@ -60,22 +66,28 @@
           "order": 2,
           "component": "PromotionsHighlight",
           "i18n_namespace": "home.promotionsHighlight",
-          "layout": "grid-3-cards-on-light-bg",
+          "layout": "grid-3-cards-on-surface-bg",
           "content": {
             "h2": "{home.promotionsHighlight.title}",
+            "h2_example_fr": "Promotions de la semaine",
             "subtitle": "{home.promotionsHighlight.subtitle}",
-            "cards": "Top 3 promotions de la semaine — Card avec image (16/9), Badge accent or 'Promo', titre produit, ancien/nouveau prix, dates de validite",
-            "cta_link": {"label": "{home.promotionsHighlight.see_all}", "href": "/promotions", "variant": "ghost"}
+            "subtitle_example_fr": "Mises à jour chaque vendredi.",
+            "cards": "Top 3 promotions (lecture data/promotions.json featured=true) — Card avec image 16/9 + Badge accent jaune 'Promo' + titre produit Fraunces 700 + ancien prix barré (text-muted) + nouveau prix text-primary text-2xl + 'Valide jusqu'au {date}'",
+            "cta_link": {"label": "{home.promotionsHighlight.see_all}", "label_example_fr": "Voir toutes les promotions", "href": "/fr/promotions", "variant": "ghost-primary"}
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|         [H2] Promotions de la semaine                      |\n|         [P]  Mises a jour chaque vendredi                  |\n|                                                            |\n|  +----------+  +----------+  +----------+                  |\n|  | [IMG]    |  | [IMG]    |  | [IMG]    |                  |\n|  | [Badge]  |  | [Badge]  |  | [Badge]  |                  |\n|  | Titre    |  | Titre    |  | Titre    |                  |\n|  | 2,99 $   |  | 4,49 $   |  | 1,99 $   |                  |\n|  | val. ven |  | val. ven |  | val. ven |                  |\n|  +----------+  +----------+  +----------+                  |\n|                                                            |\n|         > Voir toutes les promotions                       |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg surface blanc]                                       |\n|         [H2 Fraunces 700] Promotions de la semaine       |\n|         [P secondary] Mises a jour chaque vendredi       |\n|                                                          |\n|  +----------+  +----------+  +----------+                |\n|  | [IMG]    |  | [IMG]    |  | [IMG]    |                |\n|  | [Badge*] |  | [Badge*] |  | [Badge*] |                |\n|  | Titre    |  | Titre    |  | Titre    |                |\n|  | 2,99 $   |  | 4,49 $   |  | 1,99 $   |                |\n|  | val. ven |  | val. ven |  | val. ven |                |\n|  +----------+  +----------+  +----------+                |\n|                                                          |\n|         > Voir toutes les promotions                     |\n+----------------------------------------------------------+",
           "responsive": {
-            "mobile": "1 colonne (stack), gap-4",
-            "tablet": "2 colonnes",
+            "mobile": "1 colonne (stack), gap-4, cards rounded-lg",
+            "tablet": "2 colonnes gap-6",
             "desktop": "3 colonnes, gap-8"
           },
-          "tailwind_hints": "bg-surface-alt py-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
-          "patterns_realized": ["P20"],
-          "a11y_notes": ["Badge a contraste AAA (text-on-accent navy)", "Prix a plusieurs polices = visible sans dependre couleur seule"]
+          "tailwind_hints": "bg-surface py-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8",
+          "patterns_realized": ["P17", "P20"],
+          "a11y_notes": [
+            "Badge accent : background #FFD700 + text #2A1810 (AAA 12.4:1)",
+            "Prix affichés en text + line-through CSS — pas dépendant couleur seule",
+            "Cards focusables au clavier (Tab) avec ring-2 ring-primary visible"
+          ]
         },
         {
           "manifest_id": "S-003",
@@ -83,18 +95,24 @@
           "order": 3,
           "component": "CategoriesProduits",
           "i18n_namespace": "home.categories",
-          "layout": "grid-4-cards-icon",
+          "layout": "grid-4-cards-icon-on-background",
           "content": {
             "h2": "{home.categories.title}",
-            "categories": "4 cards : Bieres (Beer Lucide), Snacks (Cookie Lucide), Lotto (Ticket Lucide), Essentiels (ShoppingBasket Lucide). Lien vers /produits#categorie."
+            "h2_example_fr": "Tout ce qu'il vous faut, à deux pas",
+            "categories": [
+              {"key": "bieres", "icon": "Beer", "label": "{home.categories.bieres}", "href": "/fr/produits#bieres"},
+              {"key": "snacks", "icon": "Cookie", "label": "{home.categories.snacks}", "href": "/fr/produits#snacks"},
+              {"key": "lotto", "icon": "Ticket", "label": "{home.categories.lotto}", "href": "/fr/produits#lotto"},
+              {"key": "essentiels", "icon": "ShoppingBasket", "label": "{home.categories.essentiels}", "href": "/fr/produits#essentiels"}
+            ]
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|         [H2] Tout ce qu'il vous faut, a deux pas           |\n|                                                            |\n|  +--------+  +--------+  +--------+  +--------+           |\n|  |  [icn] |  |  [icn] |  |  [icn] |  |  [icn] |           |\n|  | Bieres |  | Snacks |  | Lotto  |  |Essent. |           |\n|  | >      |  | >      |  | >      |  | >      |           |\n|  +--------+  +--------+  +--------+  +--------+           |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg creme background]                                    |\n|         [H2] Tout ce qu'il vous faut, a deux pas         |\n|                                                          |\n|  +--------+  +--------+  +--------+  +--------+         |\n|  | [Beer] |  |[Cookie]|  |[Ticket]|  |[Basket]|         |\n|  | Bieres |  | Snacks |  | Lotto  |  |Essent. |         |\n|  | >      |  | >      |  | >      |  | >      |         |\n|  +--------+  +--------+  +--------+  +--------+         |\n+----------------------------------------------------------+",
           "responsive": {
-            "mobile": "Grid 2x2 (grid-cols-2 gap-3)",
-            "tablet": "Grid 4x1 (grid-cols-4 gap-4)",
-            "desktop": "Grid 4x1 gap-6, hover lift -2px"
+            "mobile": "Grid 2×2 (grid-cols-2 gap-3), icônes 32 px",
+            "tablet": "Grid 4×1 (grid-cols-4 gap-4), icônes 40 px",
+            "desktop": "Grid 4×1 gap-6, icônes 48 px, hover lift -2px"
           },
-          "tailwind_hints": "bg-surface py-section grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6",
+          "tailwind_hints": "bg-background py-section grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6",
           "patterns_realized": ["P20"]
         },
         {
@@ -104,22 +122,27 @@
           "component": "SocialProofVoisinage",
           "i18n_namespace": "home.socialProof",
           "layout": "carousel-3-testimonials-with-cta-adjacent",
-          "_critical_pattern": "P02 — placement ADJACENT au CTA promotions est non negociable (mesure +2x leads).",
+          "_critical_pattern": "P02 — placement ADJACENT au CTA promotions est NON NÉGOCIABLE (mesure +2× leads Bloor Jane).",
           "content": {
             "h2": "{home.socialProof.title}",
+            "h2_example_fr": "Mes voisins en parlent",
             "subtitle": "{home.socialProof.subtitle}",
-            "testimonials": "3-5 temoignages voisinage (lecture data/temoignages.json) — photo prenom + citation courte + lieu (rue/quartier)",
-            "cta_adjacent": {"label": "{home.socialProof.cta}", "href": "/promotions", "variant": "accent"}
+            "testimonials": "3-5 témoignages voisinage (lecture data/temoignages.json) — photo prénom (avatar rond 64×64) + citation courte (≤ 200 chars) + lieu (rue/quartier). Consentement Loi 25 explicite par personne.",
+            "cta_adjacent": {"label": "{home.socialProof.cta}", "label_example_fr": "Voir les promotions de la semaine", "href": "/fr/promotions", "variant": "accent"}
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|         [H2] Mes voisins en parlent                        |\n|                                                            |\n|  +----------+  +----------+  +----------+                  |\n|  | [Marie]  |  | [Jean]   |  | [Sylvie] |                  |\n|  | « Une    |  | « C'est  |  | « Toujou |                  |\n|  | famille  |  | mon arr. |  | un sour. |                  |\n|  | comme »  |  | cafe »   |  | de Nob.» |                  |\n|  | rue Bel  |  | av. King |  | quartier |                  |\n|  +----------+  +----------+  +----------+                  |\n|                                                            |\n|         [CTA OR > Voir les promotions de la semaine]       |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg surface]                                             |\n|         [H2] Mes voisins en parlent                      |\n|                                                          |\n|  +----------+  +----------+  +----------+                |\n|  | [Marie]  |  | [Jean]   |  | [Sylvie] |                |\n|  | < Une    |  | < C'est  |  | < Toujou |                |\n|  | famille  |  | mon arr. |  | un sour. |                |\n|  | comme >  |  | cafe >   |  | de Nob. >|                |\n|  | rue Bel  |  | av. King |  | quartier |                |\n|  +----------+  +----------+  +----------+                |\n|                                                          |\n|         [CTA JAUNE > Voir les promotions de la semaine] |\n+----------------------------------------------------------+",
           "responsive": {
-            "mobile": "Carousel horizontal scroll-snap (1 visible, peek du suivant), CTA pleine largeur sous",
+            "mobile": "Carousel horizontal scroll-snap (1 visible + peek du suivant), CTA pleine largeur sous gap-6",
             "tablet": "Grid 2 colonnes + CTA pleine largeur",
-            "desktop": "Grid 3 colonnes + CTA centre sous (max-w-md mx-auto)"
+            "desktop": "Grid 3 colonnes + CTA centré sous (max-w-md mx-auto)"
           },
-          "tailwind_hints": "bg-surface-alt py-section",
-          "patterns_realized": ["P02", "P13"],
-          "a11y_notes": ["Carousel = scroll natif (pas autoplay) — WCAG 2.2.2 OK"]
+          "tailwind_hints": "bg-surface py-section",
+          "patterns_realized": ["P02", "P13", "P17"],
+          "a11y_notes": [
+            "Carousel = scroll natif (pas autoplay) — WCAG 2.2.2 OK",
+            "Citations en <blockquote> avec <cite> pour le prénom",
+            "Avatars ronds avec alt='{prénom}, voisin·e de [quartier]'"
+          ]
         },
         {
           "manifest_id": "S-005",
@@ -130,22 +153,24 @@
           "layout": "split-2-cols-info-map",
           "content": {
             "h2": "{home.infosPratiques.title}",
-            "left_block": "Adresse (text-2xl lisible 80 ans), telephone tel: link, table horaires (lundi-dim + jours feries)",
-            "right_block": "Maps placeholder + bouton 'Trouver l'adresse' (lien Google Maps directions)",
-            "cta": {"label": "{home.infosPratiques.cta}", "href": "/contact", "variant": "primary"}
+            "h2_example_fr": "Toujours ouvert quand vous en avez besoin",
+            "left_block": "Adresse text-2xl (lisible 80 ans) + téléphone tel: link text-2xl + table horaires semantique (lundi-dim + jours fériés)",
+            "right_block": "Maps placeholder static (image) + bouton 'Trouver l'adresse' → lien Google Maps directions (sans embed = pas de transfert)",
+            "cta": {"label": "{home.infosPratiques.cta}", "label_example_fr": "Nous joindre", "href": "/fr/contact", "variant": "primary"}
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n| [H2] Toujours ouvert quand vous en avez besoin             |\n|                                                            |\n|  +-----------------------+  +---------------------------+ |\n|  | [Adresse text-2xl]    |  | [MAPS placeholder static] |\n|  | 123 rue X, Ville      |  |                            |\n|  |                       |  | [Bouton 'Trouver]          |\n|  | tel: 418-XXX-XXXX     |  |  l'adresse']              |\n|  |                       |  |                            |\n|  | HORAIRES (table)      |  | (Maps chargee apres        |\n|  | Lun 7h-23h            |  |  consent applicatif)       |\n|  | Mar 7h-23h            |  |                            |\n|  | ...                   |  +---------------------------+ |\n|  | Dim 8h-22h            |                                 |\n|  +-----------------------+                                 |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg surface]                                             |\n| [H2] Toujours ouvert quand vous en avez besoin           |\n|                                                          |\n|  +-----------------------+  +---------------------------+|\n|  | [Adresse text-2xl]    |  | [MAPS placeholder static] ||\n|  | 123 rue X, Ville      |  |                           ||\n|  |                       |  | [Bouton 'Trouver]         ||\n|  | tel: 418-XXX-XXXX     |  |  l'adresse']              ||\n|  | (text-2xl)            |  |                           ||\n|  |                       |  | (Maps interactive sur     ||\n|  | HORAIRES (table)      |  |  /contact apres consent)  ||\n|  | Lun 7h-23h            |  +---------------------------+|\n|  | Mar 7h-23h            |                               |\n|  | ...                   |                               |\n|  | Dim 8h-22h            |                               |\n|  +-----------------------+                               |\n+----------------------------------------------------------+",
           "responsive": {
-            "mobile": "Stack vertical : info -> maps placeholder -> CTA",
+            "mobile": "Stack vertical : info → maps placeholder → CTA, padding-x-4",
             "tablet": "Stack vertical (lecture facile)",
-            "desktop": "Grid 2 colonnes, info left, map right, gap-12"
+            "desktop": "Grid 2 colonnes, info gauche, map droite, gap-12"
           },
           "tailwind_hints": "bg-surface py-section grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12",
           "patterns_realized": ["P11"],
           "a11y_notes": [
-            "Adresse en text-2xl + leading-snug pour clientele senior",
-            "Telephone tel: link, memes regles touch target >=48px",
-            "Table horaires semantique (th/td + scope='row')"
+            "Adresse en text-2xl + leading-snug pour clientèle senior",
+            "Téléphone tel: link, touch target ≥ 48 px (py-3 px-4)",
+            "Table horaires sémantique (th scope='row' + caption)",
+            "Jours fériés annoncés via aria-label distinct"
           ]
         },
         {
@@ -157,18 +182,19 @@
           "layout": "split-50-50-photo-text",
           "content": {
             "h2": "{home.storyBrand.title}",
-            "story_paragraph": "{home.storyBrand.body} — 80-120 mots, voisin = heros, Nobert = guide",
-            "portrait": "Photo authentique Nobert (a fournir au shooting) ou interieur depanneur, ratio 4:5",
-            "signature": "Signature manuscrite stylisee Fraunces italic (ou nom + 'proprietaire')"
+            "h2_example_fr": "Bonjour, moi c'est Nobert",
+            "story_paragraph": "{home.storyBrand.body} — 80-120 mots, cadre StoryBrand : voisin = héros, Nobert = guide local",
+            "portrait": "Photo authentique Nobert (à fournir au shooting Ph6) ou intérieur dépanneur ; ratio 4:5 ; alternative fallback Unsplash thématique 'small business owner authentic' court terme",
+            "signature": "Signature manuscrite stylisée Fraunces italic ou « — Nobert Tremblay, propriétaire »"
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|  +----------------+  +-------------------------------+    |\n|  |                |  | [H2] Bonjour, moi c'est Nobert|    |\n|  |  [PHOTO 4:5    |  |                                |    |\n|  |   proprietaire |  | [P] Mon depanneur, c'est mon  |    |\n|  |   ou interieur]|  | coin de voisinage : on se     |    |\n|  |                |  | connait, on se rend service... |    |\n|  |                |  |                                |    |\n|  |                |  | — Nobert, proprietaire        |    |\n|  +----------------+  +-------------------------------+    |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg background creme]                                    |\n|  +----------------+  +-------------------------------+   |\n|  |                |  | [H2] Bonjour, moi c'est Nobert|   |\n|  |  [PHOTO 4:5    |  |                               |   |\n|  |   proprietaire |  | [P] Mon depanneur, c'est mon  |   |\n|  |   ou interieur]|  | coin de voisinage : on se     |   |\n|  |                |  | connait, on se rend service.. |   |\n|  |                |  |                               |   |\n|  |                |  | - Nobert, proprietaire        |   |\n|  +----------------+  +-------------------------------+   |\n+----------------------------------------------------------+",
           "responsive": {
-            "mobile": "Stack : photo en haut (full-width), texte sous",
-            "tablet": "Stack centre max-w-2xl",
-            "desktop": "Grid 2 colonnes alternees (photo gauche = pair / droite = impair selon ordre dans page)"
+            "mobile": "Stack : photo en haut (full-width ratio 4:5), texte sous",
+            "tablet": "Stack centré max-w-2xl",
+            "desktop": "Grid 2 colonnes alternées (photo gauche), gap-8 items-center"
           },
-          "tailwind_hints": "bg-surface-alt py-section grid grid-cols-1 lg:grid-cols-2 gap-8 items-center",
-          "patterns_realized": ["P19", "P13"]
+          "tailwind_hints": "bg-background py-section grid grid-cols-1 lg:grid-cols-2 gap-8 items-center",
+          "patterns_realized": ["P08", "P13", "P19"]
         },
         {
           "manifest_id": "S-007",
@@ -179,39 +205,44 @@
           "layout": "centered-form-on-primary-bg",
           "content": {
             "h2": "{home.newsletter.title}",
+            "h2_example_fr": "Recevez les promos du vendredi",
             "subtitle": "{home.newsletter.subtitle}",
+            "subtitle_example_fr": "Une seule infolettre par semaine.",
             "form_fields": [
               {"type": "email", "label": "{home.newsletter.email_label}", "required": true, "placeholder": "votre@courriel.ca"},
               {"type": "checkbox", "label": "{home.newsletter.consent_label}", "required": true, "default_unchecked": true}
             ],
             "submit_label": "{home.newsletter.submit}",
-            "rgpd_note": "{home.newsletter.rpp_note} (lien vers /politique-confidentialite)"
+            "submit_label_example_fr": "M'inscrire",
+            "rgpd_note": "{home.newsletter.rpp_note} (lien vers /fr/politique-confidentialite)",
+            "rgpd_note_example_fr": "Rétention 12 mois. Désinscription en 1 clic. RPP : Nobert Tremblay."
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|         [bg navy primary, text inverse]                    |\n|                                                            |\n|         [H2 white] Recevez les promos du vendredi          |\n|         [P inverse-muted] Une seule infolettre par semaine |\n|                                                            |\n|         +-------------------------+ +-------------+        |\n|         | votre@courriel.ca       | | M'inscrire |        |\n|         +-------------------------+ +-------------+        |\n|                                                            |\n|         [ ] J'accepte de recevoir les promotions par...    |\n|                                                            |\n|         Retention 12 mois — RPP Nobert Tremblay            |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg primary brun, text inverse creme]                    |\n|                                                          |\n|         [H2 creme] Recevez les promos du vendredi        |\n|         [P creme/80] Une seule infolettre par semaine    |\n|                                                          |\n|         +-------------------------+ +-------------+      |\n|         | votre@courriel.ca       | | M'inscrire |      |\n|         +-------------------------+ +-------------+      |\n|                                                          |\n|         [ ] J'accepte de recevoir les promotions par...  |\n|                                                          |\n|         Retention 12 mois - RPP Nobert Tremblay          |\n+----------------------------------------------------------+",
           "responsive": {
-            "mobile": "Stack form vertical, button full-width",
-            "tablet": "Form inline (input flex-1 + button), checkbox sous",
-            "desktop": "Form inline max-w-xl mx-auto, checkbox + note centres"
+            "mobile": "Stack form vertical, button accent full-width sous l'input",
+            "tablet": "Form inline (input flex-1 + button accent), checkbox sous",
+            "desktop": "Form inline max-w-xl mx-auto, checkbox + note centrés"
           },
-          "tailwind_hints": "bg-primary text-white py-section text-center",
+          "tailwind_hints": "bg-primary text-text-inverse py-section text-center",
           "a11y_notes": [
-            "Checkbox NON cochee par defaut (Loi 25 art. 8.1 opt-in strict)",
-            "Label associe via htmlFor",
-            "aria-describedby vers le rgpd_note pour le champ email"
+            "Checkbox NON cochée par défaut (Loi 25 art. 8.1 opt-in strict)",
+            "Label associé via htmlFor",
+            "aria-describedby vers rgpd_note depuis le champ email",
+            "Bouton accent : enforce text-on-accent #2A1810 (jamais texte blanc)"
           ]
         }
       ]
     },
     {
       "page": "promotions",
-      "route_fr": "/promotions",
-      "route_en": "/deals",
+      "route_fr": "/fr/promotions",
+      "route_en": "/en/specials",
       "i18n_namespace_root": "promotions",
       "above_the_fold_section": "S-009",
       "total_sections": 4,
       "estimated_scroll_depth_viewports": 4.0,
       "sticky_cta_visible": false,
-      "_note_sticky": "S-008 hidden sur cette page (deja au CTA principal)",
+      "_note_sticky": "S-008 caché sur cette page (déjà au CTA principal)",
       "sections": [
         {
           "manifest_id": "S-009",
@@ -222,16 +253,19 @@
           "layout": "compact-hero-on-primary",
           "content": {
             "h1": "{promotions.hero.title}",
+            "h1_example_fr": "Promotions de la semaine",
             "subtitle": "{promotions.hero.subtitle}",
-            "update_date": "Mise a jour le vendredi {format_date}"
+            "subtitle_example_fr": "Vos économies du voisinage.",
+            "update_date_badge": "{promotions.hero.update_date}",
+            "update_date_example_fr": "Mise à jour le vendredi {format_date}"
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg primary navy]                                         |\n|                                                            |\n|   [H1 white] Promotions de la semaine                     |\n|   [P inverse-muted] Vos economies du voisinage             |\n|   [Badge accent] Mise a jour vendredi 9 mai               |\n|                                                            |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg primary brun]                                        |\n|                                                          |\n|   [H1 creme] Promotions de la semaine                    |\n|   [P creme/80] Vos economies du voisinage                |\n|   [Badge accent] Mise a jour vendredi 9 mai              |\n|                                                          |\n+----------------------------------------------------------+",
           "responsive": {
             "mobile": "py-12 px-4, H1 text-3xl",
             "tablet": "py-16",
             "desktop": "py-20, H1 text-h1"
           },
-          "tailwind_hints": "bg-primary text-white py-12 lg:py-20",
+          "tailwind_hints": "bg-primary text-text-inverse py-12 lg:py-20",
           "patterns_realized": ["P09"]
         },
         {
@@ -243,18 +277,18 @@
           "layout": "grid-cards-no-pagination",
           "content": {
             "data_source": "data/promotions.json (ISR weekly revalidate=604800)",
-            "card_structure": "Image (16/9 next/image) + Badge accent 'Promo' + titre + ancien prix barre + nouveau prix + 'Valide jusqu'au {date}'",
-            "filters": "Aucun filter UI v1 (catalog petit). Tri par 'featured' boolean puis date_added desc."
+            "card_structure": "Image (16/9 next/image) + Badge accent 'Promo' + titre Fraunces 700 + ancien prix barré (text-muted) + nouveau prix text-2xl text-primary + 'Valide jusqu'au {date}'",
+            "filters": "Aucun filter UI v1 (catalogue petit). Tri : featured=true d'abord, puis date_added desc.",
+            "_anti_pagination": "Pas de pagination (ph0 §4.2 anti-pattern)"
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|  +-------+ +-------+ +-------+ +-------+                   |\n|  | [IMG] | | [IMG] | | [IMG] | | [IMG] |                   |\n|  |[Badge]| |[Badge]| |[Badge]| |[Badge]|                   |\n|  | Titre | | Titre | | Titre | | Titre |                   |\n|  |2,99$  | |4,49$  | |5,99$  | |1,99$  |                   |\n|  |val.ven| |val.ven| |val.ven| |val.ven|                   |\n|  +-------+ +-------+ +-------+ +-------+                   |\n|  +-------+ +-------+ +-------+ +-------+                   |\n|  | ...   | | ...   | | ...   | | ...   |                   |\n|  +-------+ +-------+ +-------+ +-------+                   |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg surface blanc]                                       |\n|  +-------+ +-------+ +-------+ +-------+                 |\n|  | [IMG] | | [IMG] | | [IMG] | | [IMG] |                 |\n|  |[Badge]| |[Badge]| |[Badge]| |[Badge]|                 |\n|  | Titre | | Titre | | Titre | | Titre |                 |\n|  |2,99$  | |4,49$  | |5,99$  | |1,99$  |                 |\n|  |val.ven| |val.ven| |val.ven| |val.ven|                 |\n|  +-------+ +-------+ +-------+ +-------+                 |\n|  +-------+ +-------+ +-------+ +-------+                 |\n|  | ...   | | ...   | | ...   | | ...   |                 |\n|  +-------+ +-------+ +-------+ +-------+                 |\n+----------------------------------------------------------+",
           "responsive": {
             "mobile": "1 colonne",
             "tablet": "2 colonnes",
-            "desktop": "3 colonnes (4 si > 12 promos)",
-            "_anti_pattern": "Pas de pagination (sectoriel ph0 §4.2 anti-pattern Sprint)"
+            "desktop": "3 colonnes (4 si > 12 promos)"
           },
           "tailwind_hints": "bg-surface py-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
-          "patterns_realized": ["P20"]
+          "patterns_realized": ["P17", "P20"]
         },
         {
           "manifest_id": "S-011",
@@ -265,16 +299,21 @@
           "layout": "accordion-3-questions",
           "content": {
             "h2": "{promotions.faq.title}",
+            "h2_example_fr": "Questions fréquentes",
             "questions": [
-              "Quelle est la duree de validite des promotions ?",
-              "Puis-je reserver une promotion par telephone ?",
+              "Quelle est la durée de validité des promotions ?",
+              "Puis-je réserver une promotion par téléphone ?",
               "Faites-vous la livraison ?"
             ],
-            "jsonld": "FAQPage Schema.org genere inline (differenciation #1 AI Overviews)"
+            "jsonld": "FAQPage Schema.org généré inline (différenciation #1 AI Overviews)"
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|         [H2] Questions frequentes                          |\n|                                                            |\n|  v Quelle est la duree de validite des promotions ?       |\n|    Les promotions sont valides du vendredi 7h au jeudi    |\n|    soir 23h. Stock limite.                                |\n|                                                            |\n|  > Puis-je reserver une promotion par telephone ?         |\n|  > Faites-vous la livraison ?                              |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg background creme]                                    |\n|         [H2] Questions frequentes                        |\n|                                                          |\n|  v Quelle est la duree de validite des promotions ?     |\n|    Les promotions sont valides du vendredi 7h au jeudi  |\n|    soir 23h. Stock limite.                              |\n|                                                          |\n|  > Puis-je reserver une promotion par telephone ?       |\n|  > Faites-vous la livraison ?                            |\n+----------------------------------------------------------+",
           "responsive": {"mobile": "px-4 full-width", "desktop": "max-w-3xl mx-auto"},
-          "tailwind_hints": "bg-surface-alt py-section"
+          "tailwind_hints": "bg-background py-section",
+          "a11y_notes": [
+            "Accordion = <details>/<summary> natif ou Radix avec aria-expanded",
+            "Toggle au clic ET au clavier (Enter/Space)"
+          ]
         },
         {
           "manifest_id": "S-012",
@@ -285,10 +324,11 @@
           "layout": "banner-with-4-mini-categories",
           "content": {
             "h2": "{promotions.crossSell.title}",
-            "categories_preview": "4 mini-cards Bieres/Snacks/Lotto/Essentiels avec icones Lucide",
-            "cta": {"label": "{promotions.crossSell.cta}", "href": "/produits", "variant": "primary"}
+            "h2_example_fr": "Et tout le reste, à deux pas",
+            "categories_preview": "4 mini-cards Bières/Snacks/Lotto/Essentiels avec icônes Lucide",
+            "cta": {"label": "{promotions.crossSell.cta}", "label_example_fr": "Voir le catalogue complet", "href": "/fr/produits", "variant": "primary"}
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|         [H2] Et tout le reste, a deux pas                  |\n|                                                            |\n|   [icn] Bieres  [icn] Snacks  [icn] Lotto  [icn] Essent.  |\n|                                                            |\n|         [CTA primary] Voir le catalogue complet            |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg surface]                                             |\n|         [H2] Et tout le reste, a deux pas                |\n|                                                          |\n|   [icn] Bieres  [icn] Snacks  [icn] Lotto  [icn] Essent.|\n|                                                          |\n|         [CTA primary] Voir le catalogue complet          |\n+----------------------------------------------------------+",
           "responsive": {"mobile": "Stack categories grid-cols-2", "desktop": "Inline gap-8"},
           "tailwind_hints": "bg-surface py-section text-center"
         }
@@ -296,8 +336,8 @@
     },
     {
       "page": "produits",
-      "route_fr": "/produits",
-      "route_en": "/products",
+      "route_fr": "/fr/produits",
+      "route_en": "/en/products",
       "i18n_namespace_root": "produits",
       "above_the_fold_section": "S-013",
       "total_sections": 5,
@@ -313,12 +353,14 @@
           "layout": "compact-hero-with-anchor-nav",
           "content": {
             "h1": "{produits.hero.title}",
+            "h1_example_fr": "Tout ce qu'il vous faut, à deux pas",
             "subtitle": "{produits.hero.subtitle}",
+            "subtitle_example_fr": "Catalogue du voisinage.",
             "anchor_nav": ["#bieres", "#snacks", "#lotto", "#essentiels"]
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg primary]                                              |\n|   [H1] Tout ce qu'il vous faut, a deux pas                |\n|   [P]  Catalogue du voisinage                              |\n|                                                            |\n|   [Anchor] Bieres . Snacks . Lotto . Essentiels           |\n+----------------------------------------------------------+",
-          "responsive": {"mobile": "Anchors wrap horizontal scroll", "desktop": "Anchors centres inline"},
-          "tailwind_hints": "bg-primary text-white py-12 lg:py-16",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg primary brun]                                        |\n|   [H1 creme] Tout ce qu'il vous faut, a deux pas         |\n|   [P creme/80]  Catalogue du voisinage                   |\n|                                                          |\n|   [Anchor] Bieres . Snacks . Lotto . Essentiels          |\n+----------------------------------------------------------+",
+          "responsive": {"mobile": "Anchors wrap horizontal scroll", "desktop": "Anchors centrés inline"},
+          "tailwind_hints": "bg-primary text-text-inverse py-12 lg:py-16",
           "patterns_realized": ["P09"]
         },
         {
@@ -329,10 +371,10 @@
           "i18n_namespace": "produits.categoriesNav",
           "layout": "sticky-subnav-horizontal",
           "content": {
-            "anchors": "Bieres . Snacks . Lotto . Essentiels (sticky top-{header_height} sur scroll)",
-            "active_indicator": "Underline accent or sur l'ancre active (IntersectionObserver)"
+            "anchors": "Bières . Snacks . Lotto . Essentiels (sticky top-{header_height} sur scroll)",
+            "active_indicator": "Underline accent jaune sous l'ancre active (IntersectionObserver)"
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg surface, shadow-sm, sticky top-16]                    |\n|   [Bieres]  [Snacks]  [Lotto]  [Essentiels]               |\n|     ____                                                  |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg surface/95 backdrop-blur, shadow-sm, sticky top-16] |\n|   [Bieres]  [Snacks]  [Lotto]  [Essentiels]              |\n|     ____                                                 |\n+----------------------------------------------------------+",
           "responsive": {"mobile": "Overflow-x-auto scroll-snap", "desktop": "Inline justify-center"},
           "tailwind_hints": "sticky top-16 z-25 bg-surface/95 backdrop-blur-sm border-b border-border-subtle"
         },
@@ -345,23 +387,29 @@
           "layout": "4-sections-anchored-grid",
           "content": {
             "sections": [
-              {"anchor": "bieres", "h2": "Bieres", "warning_loi_alcool": "Avertissement consommation responsable Educ'alcool sous le H2"},
-              {"anchor": "snacks", "h2": "Snacks"},
-              {"anchor": "lotto", "h2": "Lotto"},
-              {"anchor": "essentiels", "h2": "Essentiels"}
+              {"anchor": "bieres", "h2": "{produits.galerie.bieres.title}", "warning_loi_alcool": "Avertissement Éduc'alcool consommation responsable sous le H2 (callout warning subtle)"},
+              {"anchor": "snacks", "h2": "{produits.galerie.snacks.title}"},
+              {"anchor": "lotto", "h2": "{produits.galerie.lotto.title}", "warning_lotto": "Avertissement Loto-Québec jeu responsable sous le H2"},
+              {"anchor": "essentiels", "h2": "{produits.galerie.essentiels.title}"}
             ],
-            "card_structure": "Image (1:1 next/image lazy) + nom produit + format + prix indicatif",
-            "alt_text_required": true
+            "card_structure": "Image (1:1 next/image lazy ≤ 500 Ko) + nom produit + format + prix indicatif",
+            "alt_text_required": true,
+            "_volume": "12-20 produits × 4 catégories = 48-80 cards. Alt-text descriptif obligatoire chacun."
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n| #bieres                                                    |\n|   [H2] Bieres                                              |\n|   ! Consommez de facon responsable — educalcool.qc.ca    |\n|   +-----+ +-----+ +-----+ +-----+ +-----+ +-----+         |\n|   |[IMG]| |[IMG]| |[IMG]| |[IMG]| |[IMG]| |[IMG]|         |\n|   |Nom  | |Nom  | |Nom  | |Nom  | |Nom  | |Nom  |         |\n|   |355mL| |6x355| |500mL| |...  | |...  | |...  |         |\n|   +-----+ +-----+ +-----+ +-----+ +-----+ +-----+         |\n| ----------------------------------------------------------- |\n| #snacks                                                    |\n|   [H2] Snacks                                              |\n|   +-----+ ... (idem)                                       |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| #bieres                                                  |\n|   [H2] Bieres                                            |\n|   ! Consommez de facon responsable - educalcool.qc.ca    |\n|   +-----+ +-----+ +-----+ +-----+ +-----+ +-----+        |\n|   |[IMG]| |[IMG]| |[IMG]| |[IMG]| |[IMG]| |[IMG]|        |\n|   |Nom  | |Nom  | |Nom  | |Nom  | |Nom  | |Nom  |        |\n|   |355mL| |6x355| |500mL| |...  | |...  | |...  |        |\n|   +-----+ +-----+ +-----+ +-----+ +-----+ +-----+        |\n| ---------------------------------------------------------|\n| #snacks                                                  |\n|   [H2] Snacks                                            |\n|   +-----+ ... (idem)                                     |\n+----------------------------------------------------------+",
           "responsive": {
             "mobile": "Grid grid-cols-2 gap-3",
             "tablet": "Grid grid-cols-3 gap-4",
             "desktop": "Grid grid-cols-4 lg:grid-cols-6 gap-4"
           },
           "tailwind_hints": "bg-surface py-section",
-          "patterns_realized": ["P20"],
-          "a11y_notes": ["Alt-text descriptif chaque produit", "Section bieres a un avertissement Loi sur les permis d'alcool QC"]
+          "patterns_realized": ["P17", "P20"],
+          "a11y_notes": [
+            "Alt-text descriptif obligatoire chaque produit (jamais 'image de...')",
+            "Section bières : avertissement Éduc'alcool en callout warning subtle (bg-warning/10 border-l-4 border-warning)",
+            "Section lotto : avertissement jeu responsable Loto-Québec idem",
+            "Lazy loading natif next/image sauf premier rang (eager)"
+          ]
         },
         {
           "manifest_id": "S-016",
@@ -372,16 +420,17 @@
           "layout": "accordion-3-questions",
           "content": {
             "h2": "{produits.faq.title}",
+            "h2_example_fr": "Questions fréquentes — produits",
             "questions": [
-              "Faites-vous des commandes speciales ?",
-              "Acceptez-vous les commandes par telephone ?",
+              "Faites-vous des commandes spéciales ?",
+              "Acceptez-vous les commandes par téléphone ?",
               "Avez-vous le permis pour la vente d'alcool ?"
             ],
             "jsonld": "FAQPage Schema.org"
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|         [H2] Questions frequentes — produits               |\n|  v Faites-vous des commandes speciales ?                  |\n|  > Acceptez-vous les commandes par telephone ?            |\n|  > Avez-vous le permis pour la vente d'alcool ?           |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg background creme]                                    |\n|         [H2] Questions frequentes - produits             |\n|  v Faites-vous des commandes speciales ?                |\n|  > Acceptez-vous les commandes par telephone ?          |\n|  > Avez-vous le permis pour la vente d'alcool ?         |\n+----------------------------------------------------------+",
           "responsive": {"mobile": "px-4", "desktop": "max-w-3xl mx-auto"},
-          "tailwind_hints": "bg-surface-alt py-section"
+          "tailwind_hints": "bg-background py-section"
         },
         {
           "manifest_id": "S-017",
@@ -392,20 +441,22 @@
           "layout": "banner-cta-on-primary",
           "content": {
             "h2": "{produits.crossSell.title}",
+            "h2_example_fr": "Promotions actives cette semaine",
             "subtitle": "{produits.crossSell.subtitle}",
-            "cta": {"label": "{produits.crossSell.cta}", "href": "/promotions", "variant": "accent"}
+            "subtitle_example_fr": "Économies fraîches du vendredi.",
+            "cta": {"label": "{produits.crossSell.cta}", "label_example_fr": "Voir les promotions de la semaine", "href": "/fr/promotions", "variant": "accent"}
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg primary navy]                                         |\n|         [H2 white] Promotions actives cette semaine        |\n|         [P] Economies fraiches du vendredi                 |\n|                                                            |\n|         [CTA OR > Voir les promotions de la semaine]      |\n+----------------------------------------------------------+",
-          "responsive": {"mobile": "py-12 stack centre", "desktop": "py-20"},
-          "tailwind_hints": "bg-primary text-white py-section text-center",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg primary brun]                                        |\n|         [H2 creme] Promotions actives cette semaine      |\n|         [P creme/80] Economies fraiches du vendredi      |\n|                                                          |\n|         [CTA JAUNE > Voir les promotions de la semaine]  |\n+----------------------------------------------------------+",
+          "responsive": {"mobile": "py-12 stack centré", "desktop": "py-20"},
+          "tailwind_hints": "bg-primary text-text-inverse py-section text-center",
           "patterns_realized": ["P01"]
         }
       ]
     },
     {
       "page": "contact",
-      "route_fr": "/contact",
-      "route_en": "/contact",
+      "route_fr": "/fr/contact",
+      "route_en": "/en/contact",
       "i18n_namespace_root": "contact",
       "above_the_fold_section": "S-018",
       "total_sections": 5,
@@ -421,13 +472,14 @@
           "layout": "compact-hero-with-large-coordinates",
           "content": {
             "h1": "{contact.hero.title}",
+            "h1_example_fr": "On vous attend au coin",
             "address_text2xl": "{contact.hero.address}",
             "phone_tel_link": "tel:{contact.hero.phone}",
-            "_a11y_senior": "Address + phone en text-2xl pour clientele 80 ans"
+            "_a11y_senior": "Adresse + téléphone en text-2xl pour clientèle 80 ans"
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg primary navy]                                         |\n|   [H1 white] On vous attend au coin                       |\n|                                                            |\n|   [text-2xl] 123 rue Exemple, Ville                       |\n|   [text-2xl] tel:418-XXX-XXXX                             |\n+----------------------------------------------------------+",
-          "responsive": {"mobile": "Stack centre py-12", "desktop": "py-20 max-w-4xl mx-auto"},
-          "tailwind_hints": "bg-primary text-white py-12 lg:py-20",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg primary brun]                                        |\n|   [H1 creme] On vous attend au coin                      |\n|                                                          |\n|   [text-2xl creme] 123 rue Exemple, Ville                |\n|   [text-2xl creme] tel:418-XXX-XXXX                      |\n+----------------------------------------------------------+",
+          "responsive": {"mobile": "Stack centré py-12", "desktop": "py-20 max-w-4xl mx-auto"},
+          "tailwind_hints": "bg-primary text-text-inverse py-12 lg:py-20",
           "patterns_realized": ["P11"]
         },
         {
@@ -438,18 +490,22 @@
           "i18n_namespace": "contact.coordonnees",
           "layout": "split-2-cols-coordinates-schedule",
           "content": {
-            "left_block": "Adresse + telephone + courriel + RPP (Nobert Tremblay)",
-            "right_block": "Table horaires semantique (th day, td hours), zebree surface-alt, Schema OpeningHoursSpecification injecte",
+            "left_block": "Adresse + téléphone + courriel + RPP (Nobert Tremblay) — chacun avec icône Lucide MapPin / Phone / Mail / Shield",
+            "right_block": "Table horaires sémantique (th day, td hours), zébrée surface/background, Schema OpeningHoursSpecification injecté",
             "jsonld": "OpeningHoursSpecification + ContactPoint"
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|   [H2] Coordonnees et horaires                             |\n|                                                            |\n|  +----------------------+  +----------------------+        |\n|  | [Adresse]            |  | HORAIRES (table)     |        |\n|  | 123 rue X, Ville     |  | Jour | Heures        |        |\n|  | [Tel]                |  | Lun  | 7h-23h        |        |\n|  | tel:418-XXX-XXXX     |  | Mar  | 7h-23h        |        |\n|  | [Courriel]           |  | Mer  | 7h-23h        |        |\n|  | info@dep-nobert.ca   |  | Jeu  | 7h-23h        |        |\n|  | [RPP]                |  | Ven  | 7h-23h        |        |\n|  | Nobert Tremblay      |  | Sam  | 8h-23h        |        |\n|  +----------------------+  | Dim  | 8h-22h        |        |\n|                            +----------------------+        |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg surface]                                             |\n|   [H2] Coordonnees et horaires                           |\n|                                                          |\n|  +----------------------+  +----------------------+      |\n|  | [MapPin] Adresse     |  | HORAIRES (table)     |      |\n|  | 123 rue X, Ville     |  | Jour | Heures        |      |\n|  | [Phone] Tel          |  | Lun  | 7h-23h        |      |\n|  | tel:418-XXX-XXXX     |  | Mar  | 7h-23h        |      |\n|  | [Mail] Courriel      |  | Mer  | 7h-23h        |      |\n|  | info@dep-nobert.ca   |  | Jeu  | 7h-23h        |      |\n|  | [Shield] RPP         |  | Ven  | 7h-23h        |      |\n|  | Nobert Tremblay      |  | Sam  | 8h-23h        |      |\n|  +----------------------+  | Dim  | 8h-22h        |      |\n|                            +----------------------+      |\n+----------------------------------------------------------+",
           "responsive": {
-            "mobile": "Stack vertical, table responsive (overflow-auto si trop large)",
+            "mobile": "Stack vertical, table responsive (overflow-x-auto si trop large)",
             "desktop": "Grid 2 colonnes gap-12"
           },
           "tailwind_hints": "bg-surface py-section grid grid-cols-1 lg:grid-cols-2 gap-8",
           "patterns_realized": ["P11"],
-          "a11y_notes": ["Table avec th scope='row' pour jours", "Caption table 'Horaires d'ouverture' (visible)"]
+          "a11y_notes": [
+            "Table avec th scope='row' pour jours",
+            "Caption table 'Horaires d'ouverture' (visible)",
+            "Icônes Lucide aria-hidden=true (texte porte le sens)"
+          ]
         },
         {
           "manifest_id": "S-020",
@@ -459,16 +515,20 @@
           "i18n_namespace": "contact.maps",
           "layout": "consent-gated-iframe",
           "content": {
-            "before_consent": "Image placeholder (public/images/maps-placeholder.jpg) + bouton 'Charger la carte (Google Maps — Etats-Unis)' + note transfert hors QC",
-            "after_consent": "Iframe Google Maps (lazy)",
-            "consent_key": "cookie_consent.functional || cookie_consent.marketing",
-            "warning_text": "Le chargement de la carte transmet votre IP a Google (Etats-Unis). Loi 25 art. 17."
+            "before_consent": "Image placeholder (public/images/maps-placeholder.webp — illustration carte stylisée palette warm) + bouton 'Charger la carte (Google Maps — États-Unis)' + note transfert hors QC",
+            "after_consent": "Iframe Google Maps (lazy + sandbox)",
+            "consent_key": "maps_third_party",
+            "warning_text": "Le chargement de la carte transmet votre IP à Google (États-Unis). Loi 25 art. 17."
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|         [H2] Trouvez-nous                                  |\n|                                                            |\n|  +----------------------------------------+               |\n|  | [Image placeholder mappy-style]        |               |\n|  |                                        |               |\n|  |   [! note] Charger la carte transmet  |               |\n|  |   votre IP a Google (Etats-Unis)       |               |\n|  |                                        |               |\n|  |   [Bouton primary] Charger la carte    |               |\n|  +----------------------------------------+               |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg background creme]                                    |\n|         [H2] Trouvez-nous                                |\n|                                                          |\n|  +----------------------------------------+              |\n|  | [Image placeholder mappy-style warm]   |              |\n|  |                                        |              |\n|  |   [! warning] Charger la carte         |              |\n|  |   transmet votre IP a Google (US)      |              |\n|  |                                        |              |\n|  |   [Bouton primary] Charger la carte    |              |\n|  +----------------------------------------+              |\n+----------------------------------------------------------+",
           "responsive": {"mobile": "Aspect-[4/3] full-width", "desktop": "Aspect-[16/9] max-w-5xl mx-auto"},
-          "tailwind_hints": "bg-surface-alt py-section",
+          "tailwind_hints": "bg-background py-section",
           "patterns_realized": ["P11"],
-          "a11y_notes": ["Bouton 'Charger la carte' a aria-describedby vers note transfert", "Iframe a title='Carte du Depanneur Nobert'"]
+          "a11y_notes": [
+            "Bouton 'Charger la carte' avec aria-describedby vers note transfert",
+            "Iframe title='Carte du Dépanneur Nobert'",
+            "Sandbox iframe = allow-scripts allow-same-origin (anti-XSS)"
+          ]
         },
         {
           "manifest_id": "S-021",
@@ -487,20 +547,22 @@
               {"name": "consent", "type": "checkbox", "required": true, "default_unchecked": true, "label": "{contact.form.consent}"}
             ],
             "submit_label": "{contact.form.submit}",
-            "validation": "Zod (lib/schemas/contact.ts) partage client+server",
-            "endpoint": "POST /api/contact"
+            "submit_label_example_fr": "Envoyer",
+            "validation": "Zod (lib/validation/forms.ts) — schema partagé client+server",
+            "endpoint": "POST /api/contact (rate-limit 5/min/IP)"
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|         [H2] Une question ? Une commande speciale ?       |\n|                                                            |\n|   [Label] Nom *                                            |\n|   +------------------------------------+                   |\n|   |                                    |                   |\n|   +------------------------------------+                   |\n|                                                            |\n|   [Label] Courriel *      [Label] Telephone (optionnel)   |\n|   +-----------------+    +------------------+              |\n|                                                            |\n|   [Label] Message *                                        |\n|   +------------------------------------+                   |\n|   |                                    |                   |\n|   |  (textarea 6 lignes)               |                   |\n|   +------------------------------------+                   |\n|   [Counter] 0 / 2000 caracteres                            |\n|                                                            |\n|   [ ] J'accepte que mes donnees soient utilisees pour     |\n|       repondre a mon message (Loi 25 art. 8.1)            |\n|                                                            |\n|   [CTA primary] Envoyer                                    |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg surface]                                             |\n|         [H2] Une question ? Une commande speciale ?      |\n|                                                          |\n|   [Label] Nom *                                          |\n|   +------------------------------------+                 |\n|   +------------------------------------+                 |\n|                                                          |\n|   [Label] Courriel *      [Label] Telephone (optionnel) |\n|   +-----------------+    +------------------+            |\n|                                                          |\n|   [Label] Message *                                      |\n|   +------------------------------------+                 |\n|   |  (textarea 6 lignes)               |                 |\n|   +------------------------------------+                 |\n|   [Counter] 0 / 2000 caracteres                          |\n|                                                          |\n|   [ ] J'accepte que mes donnees soient utilisees pour    |\n|       repondre a mon message (Loi 25 art. 8.1)          |\n|                                                          |\n|   [CTA primary] Envoyer                                  |\n+----------------------------------------------------------+",
           "responsive": {
             "mobile": "Stack vertical, fields full-width",
-            "desktop": "Email + tel sur la meme ligne (md:grid-cols-2)"
+            "desktop": "Email + tel sur la même ligne (md:grid-cols-2)"
           },
           "tailwind_hints": "bg-surface py-section max-w-2xl mx-auto",
           "a11y_notes": [
-            "Label associe via htmlFor",
+            "Label associé via htmlFor",
             "aria-invalid + aria-describedby sur erreur",
-            "Honeypot input visuellement cache ET aria-hidden + tabindex=-1",
-            "Consent checkbox NON cochee par defaut (Loi 25 strict)"
+            "Honeypot input visuellement caché ET aria-hidden + tabindex=-1",
+            "Consent checkbox NON cochée par défaut (Loi 25 strict)",
+            "Counter caractères avec aria-live='polite'"
           ]
         },
         {
@@ -509,22 +571,24 @@
           "order": 5,
           "component": "ContactNoteRPP",
           "i18n_namespace": "contact.rpp",
-          "layout": "callout-box-warning-tone",
+          "layout": "callout-box-info-tone",
           "content": {
             "h3": "{contact.rpp.title}",
-            "body": "Vous avez le droit d'acces, de rectification et de suppression de vos renseignements personnels. Contactez Nobert Tremblay (RPP) a nobert@depanneur-nobert.ca.",
-            "link": {"label": "{contact.rpp.link}", "href": "/politique-confidentialite"}
+            "h3_example_fr": "Vos droits Loi 25",
+            "body": "{contact.rpp.body}",
+            "body_example_fr": "Vous avez le droit d'accès, de rectification et de suppression de vos renseignements personnels. Contactez Nobert Tremblay (RPP) à nobert@depanneur-nobert.ca.",
+            "link": {"label": "{contact.rpp.link}", "label_example_fr": "Lire la politique de confidentialité complète", "href": "/fr/politique-confidentialite"}
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|  +-----------------------------------------------------+  |\n|  | [H3] Vos droits Loi 25                              |  |\n|  |                                                      |  |\n|  | Vous avez le droit d'acces, de rectification et de  |  |\n|  | suppression de vos renseignements personnels.       |  |\n|  | Contactez Nobert Tremblay (RPP) a                    |  |\n|  | nobert@depanneur-nobert.ca.                          |  |\n|  |                                                      |  |\n|  | > Lire la politique de confidentialite complete     |  |\n|  +-----------------------------------------------------+  |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n| [bg surface]                                             |\n|  +-----------------------------------------------------+ |\n|  | [bg info/10 border-l-4 border-info]                 | |\n|  | [H3] Vos droits Loi 25                              | |\n|  |                                                     | |\n|  | Vous avez le droit d'acces, de rectification et de  | |\n|  | suppression de vos renseignements personnels.       | |\n|  | Contactez Nobert Tremblay (RPP) a                   | |\n|  | nobert@depanneur-nobert.ca.                         | |\n|  |                                                     | |\n|  | > Lire la politique de confidentialite complete     | |\n|  +-----------------------------------------------------+ |\n+----------------------------------------------------------+",
           "responsive": {"mobile": "Full-width", "desktop": "max-w-3xl mx-auto"},
-          "tailwind_hints": "bg-warning/10 border-l-4 border-warning rounded-md p-6 max-w-3xl mx-auto"
+          "tailwind_hints": "bg-info/10 border-l-4 border-info rounded-md p-6 max-w-3xl mx-auto"
         }
       ]
     },
     {
       "page": "politique-confidentialite",
-      "route_fr": "/politique-confidentialite",
-      "route_en": "/privacy-policy",
+      "route_fr": "/fr/politique-confidentialite",
+      "route_en": "/en/privacy-policy",
       "i18n_namespace_root": "legal.privacy",
       "above_the_fold_section": "S-023",
       "total_sections": 1,
@@ -541,34 +605,34 @@
           "layout": "long-form-typographic-prose",
           "content": {
             "structure": [
-              "1. Identite du responsable (RPP Nobert Tremblay)",
-              "2. Renseignements collectes (courriel, telephone, navigation)",
-              "3. Finalites (infolettre, commandes, analytics)",
-              "4. Base legale (consentement explicite Loi 25)",
-              "5. Duree de conservation (12 mois infolettre, 6 mois telephone, 30 jours cookies analytics)",
-              "6. Transferts hors QC (US — Google Analytics, Google Maps, Vercel)",
-              "7. Vos droits (acces, rectification, suppression, opposition, portabilite)",
+              "1. Identité du responsable (RPP Nobert Tremblay)",
+              "2. Renseignements collectés (courriel, téléphone, navigation)",
+              "3. Finalités (infolettre, commandes, analytics)",
+              "4. Base légale (consentement explicite Loi 25)",
+              "5. Durée de conservation (12 mois infolettre, 6 mois téléphone, 30 j cookies analytics)",
+              "6. Transferts hors QC (États-Unis — GA4, Google Maps, Vercel)",
+              "7. Vos droits (accès, rectification, suppression, opposition, portabilité)",
               "8. Comment exercer vos droits (courriel RPP)",
-              "9. Procedure d'incident de confidentialite",
+              "9. Procédure d'incident de confidentialité",
               "10. Modifications de la politique",
               "11. Contact RPP"
             ],
-            "rendering": "JSX statique (ADR-003 — pas dangerouslySetInnerHTML)"
+            "rendering": "JSX statique (ADR sécurité — pas dangerouslySetInnerHTML)"
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|         [H1] Politique de confidentialite                  |\n|         Derniere mise a jour : 9 mai 2026                  |\n|                                                            |\n|   [H2] 1. Identite du responsable                         |\n|   [P]  Nobert Tremblay, proprietaire et RPP au sens de... |\n|                                                            |\n|   [H2] 2. Renseignements personnels collectes             |\n|   [UL] - Courriel (infolettre)                            |\n|        - Telephone (commandes)                            |\n|        - Navigation (cookies analytics opt-in)            |\n|                                                            |\n|   ... (sections 3-11)                                     |\n+----------------------------------------------------------+",
+          "wireframe_ascii": "+----------------------------------------------------------+\n|         [H1] Politique de confidentialite                |\n|         Derniere mise a jour : 14 mai 2026               |\n|                                                          |\n|   [H2] 1. Identite du responsable                        |\n|   [P]  Nobert Tremblay, proprietaire et RPP au sens de.. |\n|                                                          |\n|   [H2] 2. Renseignements personnels collectes            |\n|   [UL] - Courriel (infolettre)                           |\n|        - Telephone (commandes)                           |\n|        - Navigation (cookies analytics opt-in)           |\n|                                                          |\n|   ... (sections 3-11)                                    |\n+----------------------------------------------------------+",
           "responsive": {
             "mobile": "px-4 prose prose-sm",
             "tablet": "prose prose-base max-w-2xl mx-auto",
             "desktop": "prose prose-lg max-w-3xl mx-auto"
           },
-          "tailwind_hints": "bg-surface py-section prose prose-headings:font-heading prose-headings:text-primary mx-auto"
+          "tailwind_hints": "bg-surface py-section prose prose-headings:font-heading prose-headings:text-text-primary prose-a:text-primary mx-auto"
         }
       ]
     },
     {
       "page": "mentions-legales",
-      "route_fr": "/mentions-legales",
-      "route_en": "/legal-notice",
+      "route_fr": "/fr/mentions-legales",
+      "route_en": "/en/legal-notice",
       "i18n_namespace_root": "legal.notice",
       "above_the_fold_section": "S-024",
       "total_sections": 1,
@@ -585,25 +649,25 @@
           "layout": "long-form-typographic-prose",
           "content": {
             "structure": [
-              "1. Denomination sociale (Depanneur Nobert inc.)",
+              "1. Dénomination sociale (Dépanneur Nobert inc.)",
               "2. NEQ ([NEQ — kickoff])",
-              "3. Adresse du siege",
-              "4. Coordonnees (telephone, courriel)",
-              "5. Hebergeur (Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, Etats-Unis)",
-              "6. Propriete intellectuelle",
-              "7. Limitation de responsabilite"
+              "3. Adresse du siège",
+              "4. Coordonnées (téléphone, courriel)",
+              "5. Hébergeur (Vercel Inc., Covina, CA, États-Unis)",
+              "6. Propriété intellectuelle",
+              "7. Limitation de responsabilité"
             ],
-            "rendering": "JSX statique (ADR-003)"
+            "rendering": "JSX statique"
           },
-          "wireframe_ascii": "+----------------------------------------------------------+\n|         [H1] Mentions legales                              |\n|                                                            |\n|   [H2] 1. Denomination sociale                            |\n|   [P]  Depanneur Nobert inc.                              |\n|                                                            |\n|   [H2] 2. NEQ                                              |\n|   [P]  [NEQ a fournir kickoff]                            |\n|                                                            |\n|   ... (sections 3-7)                                      |\n+----------------------------------------------------------+",
-          "responsive": "Identique a S-023 (prose typographic)",
-          "tailwind_hints": "bg-surface py-section prose prose-headings:font-heading prose-headings:text-primary mx-auto"
+          "wireframe_ascii": "+----------------------------------------------------------+\n|         [H1] Mentions legales                            |\n|                                                          |\n|   [H2] 1. Denomination sociale                           |\n|   [P]  Depanneur Nobert inc.                             |\n|                                                          |\n|   [H2] 2. NEQ                                            |\n|   [P]  [NEQ a fournir kickoff]                           |\n|                                                          |\n|   ... (sections 3-7)                                     |\n+----------------------------------------------------------+",
+          "responsive": "Identique à S-023 (prose typographic)",
+          "tailwind_hints": "bg-surface py-section prose prose-headings:font-heading prose-headings:text-text-primary prose-a:text-primary mx-auto"
         }
       ]
     },
     {
       "page": "global",
-      "_note": "Sections globales chargees via layout (pas une page propre)",
+      "_note": "Sections globales chargées via root layout (pas une page propre)",
       "sections": [
         {
           "manifest_id": "S-008",
@@ -614,19 +678,33 @@
           "layout": "fixed-bottom-right-desktop-fullwidth-mobile",
           "content": {
             "label": "{common.stickyCta.label}",
-            "href": "/promotions",
+            "label_example_fr": "Voir les promotions de la semaine",
+            "href": "/fr/promotions",
             "variant": "accent",
-            "icon": "Sparkles (Lucide) ou Tag",
-            "hidden_on_routes": ["/promotions", "/deals", "/politique-confidentialite", "/privacy-policy", "/mentions-legales", "/legal-notice"]
+            "icon": "Tag (Lucide)",
+            "hidden_on_routes": [
+              "/fr/promotions",
+              "/en/specials",
+              "/fr/politique-confidentialite",
+              "/en/privacy-policy",
+              "/fr/mentions-legales",
+              "/en/legal-notice"
+            ],
+            "scroll_threshold_desktop_px": 600
           },
-          "wireframe_ascii": "Mobile (full-width bottom):                                  \n+----------------------------------------------------------+\n| [CTA OR > Voir les promotions de la semaine]              |\n+----------------------------------------------------------+\n\nDesktop (bottom-right floating):                             \n                                          +----------------+\n                                          | [> Promos OR]  |\n                                          +----------------+",
+          "wireframe_ascii": "Mobile (full-width bottom):                                  \n+----------------------------------------------------------+\n| [CTA JAUNE > Voir les promotions de la semaine]          |\n+----------------------------------------------------------+\n\nDesktop (bottom-right floating):                             \n                                          +----------------+\n                                          | [> Promos OR]  |\n                                          +----------------+",
           "responsive": {
-            "mobile": "fixed bottom-0 inset-x-0 z-30, full-width tap target",
-            "desktop": "fixed bottom-6 right-6 z-30 rounded-full shadow-lg"
+            "mobile": "fixed bottom-0 inset-x-0 z-30, full-width tap target, py-4",
+            "desktop": "fixed bottom-6 right-6 z-30 rounded-full shadow-lg, scale-100 hover:scale-105"
           },
-          "tailwind_hints": "fixed z-30 bg-accent text-text-on-accent font-semibold transition-transform",
+          "tailwind_hints": "fixed z-30 bg-accent text-text-on-accent font-semibold transition-transform shadow-sticky",
           "patterns_realized": ["P01"],
-          "a11y_notes": ["aria-label inclut 'lien vers la page promotions'", "Touch target >=48px assure par padding"]
+          "a11y_notes": [
+            "aria-label inclut 'lien vers la page promotions'",
+            "Touch target ≥ 48 px assuré par padding (py-4 mobile / py-3 desktop)",
+            "Apparition seulement après scroll > 600 px sur desktop (sinon redondance avec hero CTA)",
+            "Caché sur /promotions (CTA déjà au but)"
+          ]
         }
       ]
     }
@@ -639,6 +717,7 @@
     "cta_above_the_fold_homepage": true,
     "max_7_sections_per_page": true,
     "h1_unique_per_page": true,
-    "responsive_3_breakpoints_described": true
+    "responsive_3_breakpoints_described": true,
+    "warm_palette_alignment": true
   }
 }
