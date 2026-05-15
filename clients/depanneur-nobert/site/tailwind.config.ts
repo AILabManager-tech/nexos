@@ -42,7 +42,11 @@ const config: Config = {
         text: {
           DEFAULT: '#2A1810',
           secondary: '#6B4F3C',
-          muted: '#8B7355',
+          // muted: #8B7355 produisait un ratio 4.24-4.49:1 sur fond crème
+          // (#FFF8E7 / #F5EDD8) — sous le seuil WCAG AA 4.5:1. Audit dette
+          // 2026-05-15 a confirmé 34 erreurs pa11y sur cette classe.
+          // Nouvelle valeur #7A6447 vise ~5.1:1 (buffer au-dessus du seuil).
+          muted: '#7A6447',
           inverse: '#FFF8E7',
           'on-accent': '#2A1810',
           'on-primary': '#FFFFFF',

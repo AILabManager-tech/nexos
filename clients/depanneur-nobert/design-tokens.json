@@ -76,7 +76,7 @@
     "text": {
       "primary": "#2A1810",
       "secondary": "#6B4F3C",
-      "muted": "#8B7355",
+      "muted": "#7A6447",
       "inverse": "#FFF8E7",
       "on_accent": "#2A1810",
       "on_primary": "#FFFFFF",
@@ -291,7 +291,7 @@
     {"pair": "primary on surface", "ratio": "7.5:1", "level": "AAA", "context": "boutons sur cards"},
     {"pair": "primary.hover on background", "ratio": "5.4:1", "level": "AA", "context": "hover boutons primaires"},
     {"pair": "text.secondary on background", "ratio": "6.2:1", "level": "AA", "context": "captions, métadonnées"},
-    {"pair": "text.muted on background", "ratio": "4.7:1", "level": "AA", "context": "labels secondaires (jamais < 14 px)"},
+    {"pair": "text.muted on background", "ratio": "5.1:1", "level": "AA", "context": "labels secondaires (jamais < 14 px) — fix 2026-05-15 audit dette : ancien #8B7355 mesuré 4.24-4.49:1 réel, corrigé en #7A6447"},
     {"pair": "text.on_accent on accent", "ratio": "12.4:1", "level": "AAA", "context": "CTA accent, badges promo"},
     {"pair": "text.on_primary on primary", "ratio": "7.5:1", "level": "AAA", "context": "hero brun foncé, footer brun"},
     {"pair": "text.inverse on primary", "ratio": "10.2:1", "level": "AAA", "context": "hero S-001 crème sur brun foncé"},
@@ -330,7 +330,7 @@
           "text": {
             "DEFAULT": "#2A1810",
             "secondary": "#6B4F3C",
-            "muted": "#8B7355",
+            "muted": "#7A6447",
             "inverse": "#FFF8E7"
           },
           "border": {
