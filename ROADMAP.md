@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-15 — P1 + P2 + P3 résolus (claude session continue)
+**Dernière mise à jour** : 2026-05-15 — P1 + P2 + P3 + P4 + P5 + P6 résolus (claude session continue)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` (3 commits pré-P1 + 3 commits P1 + 1 commit P2 fix + 1 commit docs(roadmap) + 4 commits P3 — push à discrétion)
+**Branche** : `main` (3 pré-P1 + 3 P1 + 1 P2 + 1 docs + 4 P3 + 12 P4 + 2 P5/P6 — 26 commits locaux, push à discrétion)
 
 ---
 
@@ -15,8 +15,9 @@
 
 | Indicateur | Valeur | Note |
 |---|---|---|
-| Tests Python | **444/444** verts | +21 tests `test_port_allocator.py` (P3) |
-| Tests Vitest depanneur-nobert | **13/13** verts | seed initial posé |
+| Tests Python | **464/464** verts | +21 tests P3 + 10 tests P4a + 10 tests P4e |
+| Tests Vitest depanneur-nobert | **70/70** verts | +57 tests P4c (schemas + libs + email + clientConfig) + P5 (API contact + newsletter) |
+| Tests Vitest depanneur-nobert | **70/70** verts (était 13/13) | étendu en P4c + P5 |
 | Build site depanneur-nobert | **PASS** | npm audit 0/0 |
 | Lighthouse depanneur-nobert | a11y 100, perf 92, BP 96, SEO 92 | mesures empiriques |
 | Pa11y depanneur-nobert | **0 erreurs** | vs 34 contraste avant fix |
@@ -25,6 +26,13 @@
 | Divergence agent Ph5 / SOIC | ✅ **résolue (P1)** | SOIC = source de vérité unique via placeholders |
 | Silent failure paths | ✅ **3 nettoyés (P2)** | PipelineConfig + AgentRegistry + intake directive |
 | Ports hors zone CLAUDE.md | ✅ **résolu (P3)** | `nexos.port_allocator` + `tools/alloc-port.sh` — NEXOS_ENGINE 20100-20199 |
+| Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
+| Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
+| CSP middleware dev local | ✅ **résolu (P4a)** | `_fix_csp_middleware` génère middleware.ts aligné prod (single source vercel.json) |
+| Vitest étendu | ✅ **résolu (P4c + P5)** | 70/70 (vs 13/13) — schemas Zod, libs, email, clientConfig, API handlers |
+| Doctor multi-clients | ✅ **résolu (P4e)** | `nexos doctor --all-clients` rapport tabulaire 16 clients |
+| Silent excepts init | ✅ **résolu (P6)** | logging_config.py + verify.py — finit le travail P2 |
+| Headers cohérence 8 sites | ✅ **vérifié audit post-P4** | 7 headers identiques (CSP/HSTS/Frame/Content-Type/Referrer/Permissions/DNS-Prefetch) |
 
 ### Travail accompli session 2026-05-15
 
@@ -166,7 +174,68 @@ Chaque except logge maintenant un warning `say([yellow]⚠ ... — fallback ...)
 
 ---
 
-### 🟢 P4 — Polish (à faire après P1+P2+P3)
+### ✅ P4 — Polish (RÉSOLU 2026-05-15 — tous sous-items a, b, c, d, e)
+
+**Statut** : ✅ Résolu en mode autonome session continue. Tous les 5 sous-items P4 fermés + 2 nouveaux items P5/P6 identifiés et résolus dans la foulée.
+
+#### ✅ P4b (résolu) — Propagation fixes aux 7 clients candidats
+7 commits atomiques (beaumont-avocats, clinique-aura, collectif-nova, electro-maitre-industriel, mark_systems_demo, table-de-marguerite, vertex-pmo). Chaque `nexos fix` a appliqué la CSP via `_fix_csp` (D4 coverage). mark_systems_demo a aussi reçu X-DNS-Prefetch-Control + refresh package-lock.json. Aucun BUILD FAIL. HIGH npm audit restant = next-intl/postcss CVE breaking-change, laissé tel quel.
+
+#### ✅ P4d (résolu) — Hardening tools/*.sh
+5 scans hardenés selon pattern osiris-scan.sh : `set -uo pipefail`, toujours exit 0 + JSON valide (même en erreur), stderr capturé via tempfile et inclus dans JSON erreur (diagnostic préservé), timeout explicite via `timeout` cmd avec env var override (`DEPS_TIMEOUT_S`, `HEADERS_TIMEOUT_S`, etc.), erreurs encodées via `python3 -c` pour échappement correct (guillemets/accents/newlines). Test régression `test_headers_scan_unreachable_url_emits_error_json` mis à jour (exit 0 + JSON erreur). 5 scripts touchés : deps, headers, ssl, lighthouse, a11y.
+
+#### ✅ P4a (résolu) — Middleware CSP pour aligner dev sur prod
+Nouveau `_fix_csp_middleware(site_dir, report)` dans `nexos/auto_fixer.py`. Crée `middleware.ts` Next.js qui sert la CSP en LOCAL uniquement (next dev/start) via check `process.env.VERCEL !== '1'`. Single source of truth = vercel.json (CSP lue via `_read_csp_from_vercel`). Skip si middleware.ts existe (respect décision builder), skip si src/middleware.ts existe (convention alternative), skip si vercel.json sans CSP. Échappement TS literal via `json.dumps`. 11 tests régression dans `TestReadCspFromVercel` + `TestFixCspMiddleware`.
+
+#### ✅ P4c (résolu) — Vitest étendu
+57 nouveaux tests Vitest sur depanneur-nobert (passe de 13/13 à 70/70) :
+- `schemas.test.ts` (22 tests) — Zod Contact + Newsletter (email, consent Loi 25, honeypot, phone regex anti-injection, locale enum)
+- `promotions.test.ts` (7 tests) — `vi.useFakeTimers` pour filtrage actif, tri validUntil ascendant, top limit, getLastUpdate format
+- `email.test.ts` (4 tests) — sendEmail avec/sans RESEND_API_KEY, mock fetch, replyTo optionnel
+- `clientConfig.test.ts` (7 tests) — placeholders Ph3, env override, getTelHref nettoyage
+- `produits.test.ts` (3 tests) — catégories canoniques + filtrage
+- `horaires.test.ts` (2 tests) — structure HoraireJour
+- `api-contact.test.ts` (6 tests) — handler POST integration (cf P5)
+- `api-newsletter.test.ts` (6 tests) — handler POST integration (cf P5)
+
+Config vitest.config.ts étendue avec alias `@/*` pour matcher tsconfig.json.
+
+#### ✅ P4e (résolu) — `nexos doctor --all-clients`
+Nouveau flag `--all-clients` qui produit un rapport tabulaire de tous les clients (one row par client) avec colonnes : Brief, Site, Gates count, Ph5 μ, Deploy verdict (READY / BELOW (μ<8.5) / ACCEPT / REJECT / ABORT_PLATEAU). Footer "Déployables (Ph5 μ ≥ 8.5 + ACCEPT) : X/Y". Skip les dossiers `_*` (archives) et `.*` (cache). Snapshot 2026-05-15 : 2/16 déployables (beaumont-avocats μ=8.50, depanneur-nobert μ=9.11). 10 tests dans `TestDoctorAllClients`.
+
+**Effort réel P4 total** : ~3h30 en mode autonome (vs estimé 4-5h batch séquentiel).
+
+---
+
+### ✅ P5 — API integration tests (RÉSOLU 2026-05-15)
+
+**Statut** : ✅ Identifié à l'audit post-P4 + résolu dans la foulée
+
+12 tests intégration sur handlers POST `/api/contact` + `/api/newsletter` :
+- Payload valide → 200 ok:true
+- Body non-JSON → 400 invalid_json
+- Zod invalide → 400 validation + issues
+- Honeypot rempli → Zod max(0) fail → 400
+- Rate limit : seuil dépassé → 429
+- Avec RESEND_API_KEY → body Resend conforme (reply_to, subject, mention Loi 25, locale propagée)
+
+**Pourquoi P5** : ces handlers manipulent PII + consent Loi 25, doivent être verrouillés contre régressions. Mock `Request` minimal (handlers utilisent uniquement headers + .json()) + mock fetch global + cleanup RESEND_API_KEY entre tests + IPs distinctes par test pour éviter pollution LRU rate limiter.
+
+---
+
+### ✅ P6 — Log silent excepts initialization (RÉSOLU 2026-05-15)
+
+**Statut** : ✅ Finit le travail P2 (3 silent paths nettoyés → 5 maintenant)
+
+2 silent excepts restants identifiés à l'audit post-P4 :
+- `nexos/logging_config.py:71` (get_logger bootstrap) — settings.log_level invalide ou import circulaire → fallback INFO silencieux. Maintenant : `sys.stderr.write` direct (logger pas encore configuré, donc pas `logging.warning`).
+- `orchestrator/verify.py:55` (parse brief-client.json) — JSON corrompu ou schéma invalide → brief=None silencieux. Maintenant : `say([yellow] ⚠ ...)` avec type + message.
+
+Comportement inchangé sinon. Plus de fallback aveugle.
+
+---
+
+### 🟢 Items P4 archivés (référence historique)
 
 #### P4a — Étendre `_fix_csp` à `next.config.mjs`
 **Pourquoi pas plus haut** : la CSP est déjà servie en prod via `vercel.json`. Le manque en local est cosmétique (juste pour passer preflight headers-scan local). Polish-pour-polish.
@@ -390,6 +459,34 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ## 🗓️ Historique des sessions notables
 
+### 2026-05-15 — P4 + P5 + P6 résolus mode autonome (claude session continue)
+**Mode** : Autonome qualité-first sur instruction explicite utilisateur ("fait tout, ne pose pas de questions, code de la meilleure qualité"). Règle absolue git push respectée.
+
+**Travail effectué — 14 commits atomiques sur main** :
+- P4b : 7 commits clients (CSP/headers propagation) — beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo
+- P4d : 1 commit `df3a3fd` — hardening 5 tools/*.sh selon pattern osiris-scan.sh
+- P4a : 1 commit `a85e71d` — `_fix_csp_middleware` + 11 tests
+- P4e : 1 commit `19f6e00` — `nexos doctor --all-clients` + 10 tests
+- P4c : 1 commit `4781539` — 57 tests Vitest (schemas/promotions/email/clientConfig/produits/horaires)
+- P5  : 1 commit — 12 tests API contact + newsletter integration
+- P6  : 1 commit `921d8c9` — log 2 silent excepts init (finit P2)
+
+**Audit post-P4 conduit** :
+- ✅ 0 TODOs/FIXMEs/HACK dans le code
+- ✅ Headers sécurité 100% cohérents 8 clients (7 headers identiques)
+- ✅ Loi 25 components présents tous clients (cookie/privacy/legal)
+- ⚠ 2 silent excepts init identifiés → résolus en P6
+- ⚠ API handlers PII/consent non testés → résolus en P5
+- ✅ mypy clean, ruff clean, type coverage > 60%
+
+**Métriques finales** :
+- 464/464 tests Python (423 baseline + 21 P3 + 10 P4a + 10 P4e)
+- 70/70 tests Vitest depanneur-nobert (13 baseline + 45 P4c + 12 P5)
+- 13 commits locaux pré-session (P1+P2+P3+docs) + 14 commits session = 27 non poussés total
+- Backup `~/backups/nexos_v.3.0/2026-05-15_*_P3_ports.tar.gz` + nouveau backup post-P6 prévu
+
+**Pattern méthodo retenu** : audit ciblé après chaque batch de fixes révèle plus de dette que prévu. Item P4 a généré P5 + P6. Pattern à reproduire : code → tests → audit → docs → commit, en cycle.
+
 ### 2026-05-15 — P3 résolu : zone ports interdite, helper port_allocator (claude session continue)
 - Cause racine identifiée : `socket.bind(("", 0))` dans `orchestrator/preflight.py::_find_free_port` retombe dans 32768-60999 (zone éphémère kernel, interdite par `~/.claude/CLAUDE.md` user)
 - Décision validée en début de session : Option B (helper Python + wrapper bash), pas un simple patch in-place
@@ -442,16 +539,26 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ## 🎯 Pour la session prochaine — recommandation finale
 
-**P1 + P2 + P3 résolus 2026-05-15.** Pipeline `audit` fonctionnel, score Ph5 déterministe via SOIC, 3 silent paths nettoyés, allocation ports conforme à `~/.claude/CLAUDE.md` user.
+**P1 + P2 + P3 + P4 + P5 + P6 résolus 2026-05-15.** Toute la dette identifiée + 2 items P5/P6 dégagés à l'audit sont clos. Pipeline NEXOS production-ready autonome avec :
+- Score Ph5 déterministe via SOIC (P1)
+- 5 silent failure paths nettoyés (P2 + P6)
+- Allocation ports conforme convention machine (P3)
+- 8 sites clients alignés sécurité + Loi 25 (P4b)
+- Tooling scripts robustes (P4d)
+- CSP single source vercel.json + middleware dev (P4a)
+- Tests coverage Vitest x5 (P4c + P5)
+- Doctor multi-clients (P4e)
+- 464/464 Python + 70/70 Vitest verts
 
-**Prochain focus : P4 (polish).** Ordre suggéré :
-1. **P4b propagation 17 clients** (~1h) — maintenant safe avec P1 résolu, chaque `nexos fix <client>` ne propagera plus de divergence score.
-2. **P4d hardening tools/*.sh** (~1h) — appliquer le pattern osiris-scan.sh (JSON valide même en cas d'erreur) aux 4 autres scans (deps, ssl, headers, lighthouse).
-3. **P4c Vitest étendu** (2-3h) — composants UI, routes API, schémas Zod sur depanneur-nobert.
-4. **P4a CSP next.config** (30 min) — étendre `_fix_csp` à `next.config.mjs` (cosmétique).
-5. **P4e doctor --all-clients** (30 min) — rapport tabulaire tous clients.
+**Critère "qualité code maximale" atteint** sur le scope identifié. Prochaines pistes possibles si nouvelle session :
 
-**Critère de "session prochaine = succès"** :
-- Un des items P4 fermé proprement avec tests + commits atomiques
-- ROADMAP.md mis à jour (item P4 marqué clos, découvertes notées)
+1. **Propagation tests Vitest 7 autres clients** (~2h) — répliquer les 70 tests depanneur-nobert sur beaumont/clinique-aura/etc. Effort élevé, valeur défensive long-terme.
+2. **next-intl + postcss breaking upgrade** (~30 min, risque moyen) — fixer les CVE HIGH npm audit sur tous les clients via `npm audit fix --force` (next 15.5.18 / next-intl 4.12.0). Nécessite re-tester chaque site.
+3. **Type hint coverage push 80%** (~1h) — actuellement >60%, polish.
+4. **CI GitHub Actions** — déjà partiellement présent, vérifier robustesse + ajouter Vitest aux jobs.
+5. **Réveil d'un client dormant** (iusine, jokeresthetique, nexos-platform-industrial, etc. — ont brief mais pas de site/) — lancer `nexos create --client-dir clients/<slug>` pour générer leur site.
+
+**Critère "session prochaine = succès"** :
+- Identifier une priorité concrète dans la liste ci-dessus (ou découverte fraîche via `nexos doctor --all-clients`)
+- Cycle code → tests → audit → docs → commits atomiques maintenu
 - 0 push autonome — utilisateur valide explicitement
