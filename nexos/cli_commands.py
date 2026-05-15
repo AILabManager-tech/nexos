@@ -11,7 +11,12 @@ import json
 from pathlib import Path
 from typing import Any
 
-from nexos.auto_fixer import REQUIRED_HEADERS, auto_fix
+from nexos.auto_fixer import (
+    REQUIRED_HEADERS,
+    _resolve_app_root,
+    _resolve_components_dir,
+    auto_fix,
+)
 from nexos.brief_contract import normalize_brief
 from nexos.build_validator import (
     _check_critical_files,
@@ -258,8 +263,8 @@ def _dry_run_analysis(site_dir: Path, client_dir: Path) -> None:
     """Analyse ce qui serait corrigé sans appliquer."""
     findings: list[str] = []
 
-    # Cookie consent
-    components_dir = site_dir / "src" / "components"
+    # Cookie consent — utiliser le helper qui gère structure plate ET src/
+    components_dir = _resolve_components_dir(site_dir)
     has_consent = False
     if components_dir.exists():
         for f in components_dir.rglob("*"):
@@ -299,16 +304,14 @@ def _dry_run_analysis(site_dir: Path, client_dir: Path) -> None:
                 findings.append(f"{config_name}: poweredByHeader=true → changerait à false")
             break
 
-    # Pages légales
+    # Pages légales — utiliser _resolve_app_root qui gère plate ET src/
+    app_root = _resolve_app_root(site_dir)
     for page_name, label in [
         ("politique-confidentialite", "Politique confidentialité"),
         ("mentions-legales", "Mentions légales"),
     ]:
-        found = False
-        for base in ["src/app/[locale]", "src/app"]:
-            if (site_dir / base / page_name / "page.tsx").exists():
-                found = True
-                break
+        # Chercher dans variantes i18n et racine app/
+        found = any((app_root / sub / page_name / "page.tsx").exists() for sub in ["[locale]", ""])
         if not found:
             findings.append(f"Page {label} absente → générerait depuis template")
 
