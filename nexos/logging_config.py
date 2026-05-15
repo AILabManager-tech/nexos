@@ -68,7 +68,17 @@ def get_logger(name: str) -> logging.Logger:
             from nexos.config import settings
 
             configure_logging(settings.log_level)
-        except Exception:
+        except Exception as exc:
+            # Bootstrap : logger pas encore configuré → écrit en stderr brut.
+            # Sans cette trace, un settings.log_level invalide / import circulaire
+            # provoque une bascule silencieuse vers INFO et masque la cause (P6
+            # — finir le travail P2 de retrait des silent failure paths).
+            import sys
+
+            sys.stderr.write(
+                f"[nexos.logging_config] settings unavailable "
+                f"({type(exc).__name__}: {exc}) — falling back to INFO\n"
+            )
             configure_logging("INFO")
     return logging.getLogger(name)
 

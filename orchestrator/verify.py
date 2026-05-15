@@ -52,7 +52,15 @@ def verify_phase_output(phase: str, client_dir: Path) -> bool:
     if brief_path.exists():
         try:
             brief = load_runtime_brief(brief_path)
-        except Exception:
+        except Exception as exc:
+            # P6 — finir P2 : log explicite du fallback silent path.
+            # brief_path existait mais le parsing a échoué (JSON corrompu ou
+            # schéma invalide). On continue avec brief=None mais on signale
+            # la cause pour debug.
+            say(
+                f"[yellow]⚠ brief-client.json présent mais non chargeable "
+                f"({type(exc).__name__}: {exc}) — validation intake skip[/]"
+            )
             brief = None
     intake_issues = _validate_phase_against_intake(phase, content, brief)
     if intake_issues:
