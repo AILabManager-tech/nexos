@@ -38,5 +38,28 @@
       "fix": "legal_page",
       "target": "mentions-legales"
     }
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-15T05:08:12",
+    "agent": "auto_fixer"
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-05-15T05:08:14",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "csp",
+      "target": "vercel.json"
+    }
+  },
+  {
+    "event": "cli_fix",
+    "timestamp": "2026-05-15T05:08:24",
+    "agent": "cli",
+    "details": {
+      "fixes": 1,
+      "build_pass": true
+    }
   }
 ]
