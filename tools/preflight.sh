@@ -51,13 +51,19 @@ else
 fi
 
 # ── 4. pa11y (accessibilité) ──
+# AVANT (bug attrapé audit dette 2026-05-15) :
+# - écrivait dans pa11y.json alors que les agents Ph5 lisent a11y.json
+#   → mismatch silencieux, Ph5 lisait l'ancien a11y.json sans le savoir
+# - n'utilisait pas pa11y.config.json (--no-sandbox), donc Chrome crashait
+#   sur certaines machines et le JSON était vide (avec stderr supprimé)
+# Fix : passer par a11y-scan.sh qui a la bonne config + standard WCAG2AA.
 echo -n "[4/6] pa11y... "
 if command -v pa11y &>/dev/null; then
-    pa11y "$URL" --reporter json > "$TOOLING_DIR/pa11y.json" 2>/dev/null \
+    bash "$TOOLS_DIR/a11y-scan.sh" "$URL" > "$TOOLING_DIR/a11y.json" 2>/dev/null \
         && echo "✓" || echo "⚠ partial"
 else
     echo "⚠ non installé (npm i -g pa11y)"
-    echo '[]' > "$TOOLING_DIR/pa11y.json"
+    echo '[]' > "$TOOLING_DIR/a11y.json"
 fi
 
 # ── 5. testssl.sh ──
