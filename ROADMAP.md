@@ -262,7 +262,72 @@ Comportement inchangé sinon. Plus de fallback aveugle.
 
 ---
 
-### 🔴 P8 — Bugs réels à corriger (NOTÉS 2026-05-15)
+### ✅ Quick wins D3 + D4 + D6 + B1 + D5 (RÉSOLUS 2026-05-15 session continue)
+
+**Commits locaux non poussés** :
+- `0778398` chore: D3 + D4 + D6 + B1 Osiris deps externes — symlinks doc fixés, mypy via venv, brief-synthesizer sector/tags/notes, Osiris venv + symlinks ressources (axes Intrusion + Légalité activés, 8/8 axes mesurés au lieu de 6/8)
+- `653a7ce` chore(gitignore): ignore Osiris runtime artifacts
+- `9471e18` state(depanneur-nobert): sync runtime snapshot
+- `5e05951` ci(hardening): Vitest job matrix client sites
+- D5 : `_fix_readme(site_dir, brief, report)` ajouté dans `nexos/auto_fixer.py` + propagation 3 clients (beaumont/collectif-nova/vertex-pmo). Mesure beaumont : μ 6.82 → 7.32 (+0.50).
+
+468/468 tests Python verts, 70/70 Vitest depanneur-nobert.
+
+---
+
+### 🔄 P8/P9 — REPLAN POST-CODEX CONSULT (2026-05-15)
+
+**Codex consult session `019e2baf`** (challenge mode) a invalidé 2 hypothèses Claude :
+
+#### Q1 Refactor `auto_fixer.py` Protocol+toposort → **REJETÉ**
+Codex : "your proposed Protocol + applies + topo sort is architectural ceremony for a file that still has only one real execution path. The current problem is not lack of plugin architecture; it is hidden coupling and weak observability."
+
+**Vrai problème** : `_fix_vercel_headers` + `_fix_csp` + `_fix_csp_middleware` touchent vercel.json. Aucun test d'idempotence ne vérifie qu'on peut re-run `auto_fix()` N fois sans corruption.
+
+**Approche revisée** (1-2h vs 4-6h Protocol) :
+```python
+FIXER_ORDER: list[tuple[str, Callable]] = [
+    ("cookie_consent", _fix_cookie_consent),
+    ("npm_audit", _fix_npm_audit),
+    ("vercel_headers", _fix_vercel_headers),
+    ("csp", _fix_csp),
+    ("csp_middleware", _fix_csp_middleware),  # requires csp
+    ("next_config", _fix_next_config),
+    ("privacy_page", _fix_privacy_page),
+    ("legal_page", _fix_legal_page),
+    ("readme", _fix_readme),
+]
+```
++ tests d'idempotence (run 3x = même résultat) + tests file-ownership (qui touche quoi).
+
+#### Q2 ABORT_PLATEAU recovery → **REJETÉ stratégie C mix**
+Codex : "switching models is a weak hypothesis until you know why plateau happens. If the SOIC failure is caused by missing structured inputs, bad validator incentives, impossible thresholds, or phase prompts that do not expose exact failing assertions, another model will likely produce different-looking failure with the same score."
+
+**4e option ratée par Claude — dimension-scoped remediation** : si D8 (Loi 25) échoue, router vers legal fixer. Si D4 (sécurité), vers security fixer. **Pas re-run la phase entière**.
+
+**Approche revisée** (6-9h structurée) :
+1. **Instrumentation plateau** (2-4h) : log plateau cause par dimension, failed assertions, phase, output diff
+2. **Enriched retry seule** (3-5h) : injecter SOIC findings dans le prompt next phase
+3. **Dimension-scoped fixers** : extension auto_fixer pour les dimensions échouant régulièrement
+4. **Switch model = mesuré fallback** après 10-20 plateau samples observés
+
+#### Plan révisé pour prochaine session
+
+| # | Item | Avant Codex | Après Codex | Effort |
+|---|---|---|---|---|
+| **P8.1** | Refactor `auto_fixer.py` | Protocol toposort | FIXER_ORDER tuple + idempotency tests | 1-2h |
+| **P8.2** | B3 ABORT_PLATEAU | Stratégie C mix | Instrumentation cause + 1 enriched retry | 2-4h |
+| **P8.3** | Dimension-scoped fixers | (manquait) | Nouveau : si D8 fail → legal, D4 → security | 3-5h |
+| **P8.4** | B4 onboard 6 dormants | Aveugle | Couvert par instrumentation P8.2 (on saura pourquoi) | 1-3h (downstream P8.2) |
+| **D1** | Vitest matrix 7 clients | Inchangé | Mécanique, OK tel quel | 2h |
+| **B2** | CVE HIGH upgrade | Inchangé | Test sur depanneur seul puis propager | 1-2h |
+| **D2** | Osiris dimension D10 SOIC | Inchangé | Pondération SOIC + Osiris | 2-3h |
+
+**Économie nette estimée** : ~5h de scaffolding évitées, redirigées vers valeur observable (instrumentation + idempotency).
+
+---
+
+### 🔴 P8 — Bugs réels à corriger (NOTÉS 2026-05-15, replan post-Codex)
 
 **Statut** : 🔴 Identifiés à l'audit post-stabilisation. **Aucun bloquant pour exploitation actuelle.**
 

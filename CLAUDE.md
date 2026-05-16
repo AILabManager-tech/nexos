@@ -263,6 +263,36 @@ Une session purement exploratoire (sans changement de code) doit **quand même**
 
 Cette règle a la même autorité que les règles absolues sécurité / Loi 25 / git push.
 
+## MODE ÉCONOMIE DE TOKENS (activé pour sessions à coût-conscience)
+
+Quand l'utilisateur demande "mode économie tokens" ou équivalent, applique ces règles :
+
+1. **Pas de Read complet quand offset/limit ciblé suffit.** Avant chaque Read, demande-toi : "ai-je besoin du fichier entier ?". Si non, utiliser `offset` + `limit` avec valeurs précises (ex: lire lignes 80-120, pas 1-200).
+
+2. **Pas de TaskCreate pour < 3 étapes.** Le tooling de tâches coûte des tokens : skip pour les opérations triviales (1-2 fixes simples).
+
+3. **Pas de re-Read d'un fichier dans la même session.** Le harness track l'état des fichiers ; si tu as déjà Edit/Write, ne re-Read pas pour vérifier.
+
+4. **Bash avec `head -N` / `tail -N` / `| head -20`** pour limiter sortie de commandes verbeuses (find, grep, ls, git log).
+
+5. **Commits groupés thématiquement** (ex: "quick wins D3+D4+D6") plutôt que 1 commit par fix. Réduit overhead Git + pre-commit hook re-runs.
+
+6. **Pas d'agent (Task tool) sauf pour exploration > 3 fichiers.** Le coût de spawn agent est élevé ; préférer Read direct + Grep ciblé.
+
+7. **Réponse utilisateur compacte.** Tableaux courts, listes denses, pas de redite. Ne pas répéter ce qui est dans la dernière réponse.
+
+8. **Préférer `gbrain search`** si disponible (cf section "GBrain" du préambule de session) over Grep multi-passes. Gbrain est sémantique, donc moins de tentatives répétées.
+
+9. **Réutiliser le contexte session sans réexplorer.** Si une analyse est dans le scrollback (ex: liste de clients, structure d'un module), ne pas la régénérer.
+
+10. **Codex consult max 1 fois par session** sauf si la conversation Codex est continuée via session ID (`.context/codex-session-id`). Chaque nouveau consult = 20-30k tokens externes.
+
+11. **Pas de "review preview" avant write.** Confiance dans Edit/Write — le harness retournera une erreur si l'écriture échoue, pas besoin de Read derrière.
+
+Ces règles **NE remplacent PAS** les règles absolues (no push, no deploy, no `--no-verify`, validation user requise pour risques). Elles s'ajoutent comme guidelines secondaires.
+
+---
+
 ## COORDINATION MULTI-CLI
 
 NEXOS supporte 3 CLI hôtes. Ce fichier (CLAUDE.md) est lu automatiquement par Claude Code.
