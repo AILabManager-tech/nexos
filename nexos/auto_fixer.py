@@ -959,9 +959,11 @@ def auto_fix(
     # Sélection des fixers à appliquer. `dimensions=None` conserve le
     # comportement P8.1 (tous les fixers, ordre figé). `dimensions=set()`
     # est un cas légitime distinct (filtre explicite = rien à faire).
+    selected: list[Fixer]
+    scope: list[str]
     if dimensions is None:
         selected = FIXER_ORDER
-        scope = "all"
+        scope = ["all"]
     else:
         selected = fixers_for_dimensions(dimensions)
         scope = sorted(set(dimensions))
@@ -969,7 +971,9 @@ def auto_fix(
     logger.info("Auto-fix starting (scope=%s, %d fixer(s))", scope, len(selected))
 
     if _HAS_CHANGELOG:
-        details = {"scope": scope, "fixer_count": len(selected)} if dimensions is not None else None
+        details: dict[str, Any] | None = (
+            {"scope": scope, "fixer_count": len(selected)} if dimensions is not None else None
+        )
         log_event(
             client_dir,
             EventType.AUTOFIX_START,
