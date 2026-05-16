@@ -15,7 +15,7 @@ import json
 import re
 import shutil
 import subprocess
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -816,21 +816,33 @@ def _markdown_to_jsx_children(md: str, indent: str = "        ") -> str:
 # ── Pipeline d'exécution ──────────────────────────────────────────────
 
 
+# Dimensions SOIC valides (D1-D9). Toute valeur hors cet ensemble dans un
+# `Fixer.dimension` est une erreur de configuration détectée au load des tests
+# (`test_fixer_dimensions_are_valid_soic`).
+_VALID_SOIC_DIMENSIONS: frozenset[str] = frozenset({f"D{i}" for i in range(1, 10)})
+
+
 @dataclass(frozen=True)
 class Fixer:
-    """Métadonnées d'un fix automatique D4/D8.
+    """Métadonnées d'un fix automatique D4/D8 (et D2 — readme).
 
-    `name`   : identifiant stable (utilisé dans le changelog + tests régression).
-    `target` : fichier (ou chemin court) que ce fix touche. Permet les tests
-               file-ownership et explicite quels fixers se partagent un même
-               fichier (cf. `vercel.json` touché par `vercel_headers` puis `csp`).
-    `apply`  : adapter à signature unifiée `(site_dir, brief, report)`. Les
-               fixers qui n'utilisent pas `brief` l'ignorent dans leur adapter
-               — la signature des fonctions `_fix_*` sous-jacentes ne change pas.
+    `name`      : identifiant stable (utilisé dans le changelog + tests régression).
+    `target`    : fichier (ou chemin court) que ce fix touche. Permet les tests
+                  file-ownership et explicite quels fixers se partagent un même
+                  fichier (cf. `vercel.json` touché par `vercel_headers` puis `csp`).
+    `dimension` : dimension SOIC primaire ciblée par ce fix (P8.3). Permet le
+                  routing dimension-scoped déclenché par `ENRICHED_RETRY` —
+                  un fixer reste rattaché à UNE dimension primaire, même si
+                  certains gates secondaires en bénéficient indirectement.
+                  Doit appartenir à `_VALID_SOIC_DIMENSIONS` ({D1..D9}).
+    `apply`     : adapter à signature unifiée `(site_dir, brief, report)`. Les
+                  fixers qui n'utilisent pas `brief` l'ignorent dans leur adapter
+                  — la signature des fonctions `_fix_*` sous-jacentes ne change pas.
     """
 
     name: str
     target: str
+    dimension: str
     apply: Callable[[Path, dict, FixReport], None]
 
 
@@ -847,21 +859,59 @@ class Fixer:
 # Les adapters lambda forwardent vers les `_fix_*` du module — la résolution
 # de nom Python étant tardive, le monkeypatching de `nexos.auto_fixer._fix_*`
 # dans les tests continue de fonctionner.
+# Dimension primaire de chaque fixer (P8.3) :
+# - D2 (Documentation)       : readme
+# - D4 (Sécurité)            : npm_audit, vercel_headers, csp, csp_middleware, next_config
+# - D8 (Conformité légale)   : cookie_consent, privacy_page, legal_page
+#
+# `cookie_consent` est rattaché à D8 (consentement Loi 25) plutôt qu'à D4,
+# car le gate W-14 (D8) FAIL sans bannière opt-in. La même bannière contribue
+# secondairement à D4 (réduction surface trackers) mais le routing
+# dimension-scoped doit cibler le gate primaire.
 FIXER_ORDER: list[Fixer] = [
-    Fixer("cookie_consent", "layout.tsx", lambda s, _b, r: _fix_cookie_consent(s, r)),
-    Fixer("npm_audit", "package-lock.json", lambda s, _b, r: _fix_npm_audit(s, r)),
-    Fixer("vercel_headers", "vercel.json", lambda s, _b, r: _fix_vercel_headers(s, r)),
-    Fixer("csp", "vercel.json", lambda s, _b, r: _fix_csp(s, r)),
-    Fixer("csp_middleware", "middleware.ts", lambda s, _b, r: _fix_csp_middleware(s, r)),
-    Fixer("next_config", "next.config.mjs", lambda s, _b, r: _fix_next_config(s, r)),
+    Fixer("cookie_consent", "layout.tsx", "D8", lambda s, _b, r: _fix_cookie_consent(s, r)),
+    Fixer("npm_audit", "package-lock.json", "D4", lambda s, _b, r: _fix_npm_audit(s, r)),
+    Fixer("vercel_headers", "vercel.json", "D4", lambda s, _b, r: _fix_vercel_headers(s, r)),
+    Fixer("csp", "vercel.json", "D4", lambda s, _b, r: _fix_csp(s, r)),
+    Fixer("csp_middleware", "middleware.ts", "D4", lambda s, _b, r: _fix_csp_middleware(s, r)),
+    Fixer("next_config", "next.config.mjs", "D4", lambda s, _b, r: _fix_next_config(s, r)),
     Fixer(
         "privacy_page",
         "politique-confidentialite/page.tsx",
+        "D8",
         lambda s, b, r: _fix_privacy_page(s, b, r),
     ),
-    Fixer("legal_page", "mentions-legales/page.tsx", lambda s, b, r: _fix_legal_page(s, b, r)),
-    Fixer("readme", "README.md", lambda s, b, r: _fix_readme(s, b, r)),
+    Fixer(
+        "legal_page",
+        "mentions-legales/page.tsx",
+        "D8",
+        lambda s, b, r: _fix_legal_page(s, b, r),
+    ),
+    Fixer("readme", "README.md", "D2", lambda s, b, r: _fix_readme(s, b, r)),
 ]
+
+
+def fixers_for_dimensions(dimensions: Iterable[str]) -> list[Fixer]:
+    """Sous-ensemble de `FIXER_ORDER` pour les dimensions données (P8.3).
+
+    L'ordre de retour suit strictement `FIXER_ORDER`, ce qui préserve les
+    dépendances inter-fixers documentées en P8.1 (csp après vercel_headers,
+    csp_middleware après csp). Une dimension absente de `FIXER_ORDER` (ex: D1,
+    D3, D5, D6, D7, D9 — pas encore couvertes) ne lève pas : la liste est
+    simplement vide pour cette dimension. Cet écart est journalisé en amont
+    par le call site pour identifier les gaps de couverture en P9+.
+
+    Args:
+        dimensions: dimensions SOIC à cibler (ex: {"D4", "D8"}). Une chaîne
+            unique fonctionne aussi (Python itère sur ses caractères), mais
+            on attend conventionnellement un `set[str]` ou `tuple[str, ...]`.
+
+    Returns:
+        Sous-liste de `FIXER_ORDER`, ordre préservé. `[]` si aucune dimension
+        ne correspond ou si `dimensions` est vide.
+    """
+    target = set(dimensions)
+    return [f for f in FIXER_ORDER if f.dimension in target]
 
 
 # ── Fonction principale ───────────────────────────────────────────────

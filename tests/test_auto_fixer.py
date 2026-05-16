@@ -9,6 +9,7 @@ from unittest.mock import patch
 import pytest
 
 from nexos.auto_fixer import (
+    _VALID_SOIC_DIMENSIONS,
     DEFAULT_CSP,
     FIXER_ORDER,
     REQUIRED_HEADERS,
@@ -27,6 +28,7 @@ from nexos.auto_fixer import (
     _markdown_to_jsx_children,
     _read_csp_from_vercel,
     auto_fix,
+    fixers_for_dimensions,
 )
 
 
@@ -583,6 +585,114 @@ class TestFixerOrder:
                 p.stop()
 
         assert call_order == [f.name for f in FIXER_ORDER]
+
+
+class TestFixerDimensions:
+    """P8.3 — chaque Fixer porte sa dimension SOIC primaire, et le helper
+    `fixers_for_dimensions()` permet de filtrer FIXER_ORDER pour le routing
+    dimension-scoped déclenché par ENRICHED_RETRY (cf. PlateauDiagnosis).
+
+    Invariants verrouillés :
+    1. Chaque Fixer a une dimension non-vide ∈ {D1..D9}.
+    2. Le mapping nom→dimension est figé (changement = breaking, doit être conscient).
+    3. Le filtrage par dimension préserve l'ordre global de FIXER_ORDER.
+    4. Les dimensions bloquantes D4 et D8 sont effectivement couvertes.
+    """
+
+    def test_every_fixer_has_a_dimension(self):
+        for fixer in FIXER_ORDER:
+            assert isinstance(fixer.dimension, str)
+            assert fixer.dimension, f"Fixer {fixer.name!r} sans dimension"
+
+    def test_fixer_dimensions_are_valid_soic(self):
+        """Chaque dimension annotée doit être une vraie dimension SOIC (D1..D9).
+        Détecte les fautes de frappe ("D04", "D-4", "d4") qui rendraient le
+        fixer invisible au routing dimension-scoped."""
+        for fixer in FIXER_ORDER:
+            assert fixer.dimension in _VALID_SOIC_DIMENSIONS, (
+                f"Fixer {fixer.name!r} : dimension {fixer.dimension!r} "
+                f"hors {sorted(_VALID_SOIC_DIMENSIONS)}"
+            )
+
+    def test_fixer_dimensions_are_stable_mapping(self):
+        """Mapping nom→dimension figé : tout changement ici doit être un acte
+        conscient (et casser ce test rappelle de mettre à jour le routing
+        ENRICHED_RETRY + la doc CLAUDE.md)."""
+        mapping = {f.name: f.dimension for f in FIXER_ORDER}
+        assert mapping == {
+            "cookie_consent": "D8",
+            "npm_audit": "D4",
+            "vercel_headers": "D4",
+            "csp": "D4",
+            "csp_middleware": "D4",
+            "next_config": "D4",
+            "privacy_page": "D8",
+            "legal_page": "D8",
+            "readme": "D2",
+        }
+
+    def test_fixers_for_dimensions_d4_subset_in_global_order(self):
+        """Filtrer sur D4 retourne les 5 fixers sécurité dans l'ordre déclaré
+        de FIXER_ORDER (npm_audit puis vercel_headers puis csp etc.)."""
+        names = [f.name for f in fixers_for_dimensions({"D4"})]
+        assert names == ["npm_audit", "vercel_headers", "csp", "csp_middleware", "next_config"]
+
+    def test_fixers_for_dimensions_d8_subset_in_global_order(self):
+        """Filtrer sur D8 retourne les 3 fixers Loi 25 (cookie_consent d'abord
+        car position globale 0, puis privacy_page, puis legal_page)."""
+        names = [f.name for f in fixers_for_dimensions({"D8"})]
+        assert names == ["cookie_consent", "privacy_page", "legal_page"]
+
+    def test_fixers_for_dimensions_d2_subset(self):
+        names = [f.name for f in fixers_for_dimensions({"D2"})]
+        assert names == ["readme"]
+
+    def test_fixers_for_dimensions_multi_preserves_global_order(self):
+        """Multi-dimensions : l'ordre global de FIXER_ORDER est préservé,
+        pas l'ordre des dimensions demandées. Ex: D8 + D4 doit donner
+        cookie_consent (idx 0) avant npm_audit (idx 1) etc."""
+        names = [f.name for f in fixers_for_dimensions({"D8", "D4"})]
+        assert names == [
+            "cookie_consent",  # D8 mais position 0 dans FIXER_ORDER
+            "npm_audit",
+            "vercel_headers",
+            "csp",
+            "csp_middleware",
+            "next_config",
+            "privacy_page",
+            "legal_page",
+        ]
+
+    def test_fixers_for_dimensions_unknown_returns_empty(self):
+        """Dimension hors {D1..D9} ou non couverte : retourne [] sans erreur.
+        Cas d'usage : plateau sur D5 (Performance) — aucun fixer disponible
+        aujourd'hui, le call site logge le gap et continue sans crash."""
+        assert fixers_for_dimensions({"DXX"}) == []
+        assert fixers_for_dimensions({"D5"}) == []  # gap de couverture connu
+        assert fixers_for_dimensions({"D1", "D3", "D6", "D7", "D9"}) == []
+
+    def test_fixers_for_dimensions_empty_iterable_returns_empty(self):
+        assert fixers_for_dimensions(set()) == []
+        assert fixers_for_dimensions([]) == []
+        assert fixers_for_dimensions(()) == []
+
+    def test_blocking_dimensions_d4_d8_have_at_least_one_fixer(self):
+        """Les dimensions bloquantes SOIC (cf. soic/converger.py _BLOCKING_DIMENSIONS)
+        DOIVENT avoir au moins un fixer disponible. Sinon, un plateau bloquant
+        sur D4 ou D8 ne pourrait jamais être auto-corrigé sans intervention LLM."""
+        for blocking in ("D4", "D8"):
+            assert fixers_for_dimensions({blocking}), (
+                f"Dimension bloquante {blocking} sans fixer — régression critique P8.3"
+            )
+
+    def test_fixer_dimension_filtering_is_deterministic(self):
+        """Deux appels successifs avec la même dimension retournent la même
+        liste, même Fixer objects (frozen=True, donc identité préservée)."""
+        a = fixers_for_dimensions({"D4"})
+        b = fixers_for_dimensions({"D4"})
+        assert a == b
+        for fa, fb in zip(a, b, strict=True):
+            assert fa is fb  # même instance Fixer (FIXER_ORDER est une const)
 
 
 def _build_minimal_site(site_dir: Path) -> None:
