@@ -15,6 +15,7 @@ import json
 import re
 import shutil
 import subprocess
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -812,12 +813,67 @@ def _markdown_to_jsx_children(md: str, indent: str = "        ") -> str:
     return "\n".join(jsx_lines)
 
 
+# ── Pipeline d'exécution ──────────────────────────────────────────────
+
+
+@dataclass(frozen=True)
+class Fixer:
+    """Métadonnées d'un fix automatique D4/D8.
+
+    `name`   : identifiant stable (utilisé dans le changelog + tests régression).
+    `target` : fichier (ou chemin court) que ce fix touche. Permet les tests
+               file-ownership et explicite quels fixers se partagent un même
+               fichier (cf. `vercel.json` touché par `vercel_headers` puis `csp`).
+    `apply`  : adapter à signature unifiée `(site_dir, brief, report)`. Les
+               fixers qui n'utilisent pas `brief` l'ignorent dans leur adapter
+               — la signature des fonctions `_fix_*` sous-jacentes ne change pas.
+    """
+
+    name: str
+    target: str
+    apply: Callable[[Path, dict, FixReport], None]
+
+
+# Ordre d'exécution explicite des fixers (P8.1, refactor post-codex challenge
+# 2026-05-15). Toute dépendance entre fixers est encodée par la position dans
+# cette liste — pas de topo-sort dynamique :
+#
+#   - `csp` requiert `vercel_headers` : la CSP est ajoutée au bloc global
+#     `/(.*)` créé par `_fix_vercel_headers` si vercel.json était absent.
+#   - `csp_middleware` requiert `csp` : il lit la CSP via
+#     `_read_csp_from_vercel`, donc le header doit être présent au moment où
+#     le middleware est généré.
+#
+# Les adapters lambda forwardent vers les `_fix_*` du module — la résolution
+# de nom Python étant tardive, le monkeypatching de `nexos.auto_fixer._fix_*`
+# dans les tests continue de fonctionner.
+FIXER_ORDER: list[Fixer] = [
+    Fixer("cookie_consent", "layout.tsx", lambda s, _b, r: _fix_cookie_consent(s, r)),
+    Fixer("npm_audit", "package-lock.json", lambda s, _b, r: _fix_npm_audit(s, r)),
+    Fixer("vercel_headers", "vercel.json", lambda s, _b, r: _fix_vercel_headers(s, r)),
+    Fixer("csp", "vercel.json", lambda s, _b, r: _fix_csp(s, r)),
+    Fixer("csp_middleware", "middleware.ts", lambda s, _b, r: _fix_csp_middleware(s, r)),
+    Fixer("next_config", "next.config.mjs", lambda s, _b, r: _fix_next_config(s, r)),
+    Fixer(
+        "privacy_page",
+        "politique-confidentialite/page.tsx",
+        lambda s, b, r: _fix_privacy_page(s, b, r),
+    ),
+    Fixer("legal_page", "mentions-legales/page.tsx", lambda s, b, r: _fix_legal_page(s, b, r)),
+    Fixer("readme", "README.md", lambda s, b, r: _fix_readme(s, b, r)),
+]
+
+
 # ── Fonction principale ───────────────────────────────────────────────
 
 
 def auto_fix(site_dir: Path, client_dir: Path, brief: dict | None = None) -> FixReport:
     """
-    Applique tous les auto-fixes D4/D8.
+    Applique tous les auto-fixes D4/D8 dans l'ordre de `FIXER_ORDER`.
+
+    Idempotent : un second appel sur le même site ne doit produire aucun fix
+    supplémentaire (`report.total_fixes == 0`) et ne pas modifier les fichiers.
+    Cf. `tests/test_auto_fixer.py::TestIdempotence`.
 
     Args:
         site_dir: Répertoire du site Next.js (contient package.json)
@@ -844,15 +900,8 @@ def auto_fix(site_dir: Path, client_dir: Path, brief: dict | None = None) -> Fix
     if _HAS_CHANGELOG:
         log_event(client_dir, EventType.AUTOFIX_START, agent="auto_fixer")
 
-    _fix_cookie_consent(site_dir, report)
-    _fix_npm_audit(site_dir, report)
-    _fix_vercel_headers(site_dir, report)
-    _fix_csp(site_dir, report)
-    _fix_csp_middleware(site_dir, report)
-    _fix_next_config(site_dir, report)
-    _fix_privacy_page(site_dir, brief, report)
-    _fix_legal_page(site_dir, brief, report)
-    _fix_readme(site_dir, brief, report)
+    for fixer in FIXER_ORDER:
+        fixer.apply(site_dir, brief, report)
 
     if _HAS_CHANGELOG:
         _log_applied_fixes(client_dir, report)

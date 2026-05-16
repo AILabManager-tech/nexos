@@ -1,12 +1,19 @@
 """Tests pour nexos.auto_fixer."""
 
+import dataclasses
 import json
+from pathlib import Path
+from typing import ClassVar
 from unittest.mock import patch
+
+import pytest
 
 from nexos.auto_fixer import (
     DEFAULT_CSP,
+    FIXER_ORDER,
     REQUIRED_HEADERS,
     TEMPLATES_DIR,
+    Fixer,
     FixReport,
     _fix_cookie_consent,
     _fix_csp_middleware,
@@ -491,3 +498,241 @@ class TestAutoFix:
         # Should not raise — brief loaded from file
         report = auto_fix(site_dir, client_dir, brief=None)
         assert isinstance(report, FixReport)
+
+
+# ── P8.1 : pipeline + idempotence ────────────────────────────────────
+
+
+class TestFixerOrder:
+    """`FIXER_ORDER` est la source de vérité du pipeline auto-fix (P8.1).
+
+    L'ordre est volontairement linéaire et hardcodé — pas de topo-sort. Ces
+    tests verrouillent les invariants : noms exposés, dépendances entre
+    fixers (csp après vercel_headers, csp_middleware après csp), et
+    file-ownership pour les fichiers touchés par plusieurs fixers.
+    """
+
+    def test_fixer_order_is_a_list_of_fixers(self):
+        assert isinstance(FIXER_ORDER, list)
+        assert all(isinstance(f, Fixer) for f in FIXER_ORDER)
+        # frozen=True : on ne peut pas muter un Fixer publié
+        with pytest.raises(dataclasses.FrozenInstanceError):
+            FIXER_ORDER[0].name = "mutated"  # type: ignore[misc]
+
+    def test_fixer_names_are_unique_and_stable(self):
+        names = [f.name for f in FIXER_ORDER]
+        assert names == [
+            "cookie_consent",
+            "npm_audit",
+            "vercel_headers",
+            "csp",
+            "csp_middleware",
+            "next_config",
+            "privacy_page",
+            "legal_page",
+            "readme",
+        ]
+        assert len(set(names)) == len(names)
+
+    def test_csp_runs_after_vercel_headers(self):
+        """`_fix_csp` ajoute la CSP au bloc `/(.*)` créé par `_fix_vercel_headers`.
+        Inverser l'ordre ferait sortir un warning « missing global headers block »."""
+        names = [f.name for f in FIXER_ORDER]
+        assert names.index("vercel_headers") < names.index("csp")
+
+    def test_csp_middleware_runs_after_csp(self):
+        """`_fix_csp_middleware` lit la CSP via `_read_csp_from_vercel` — le
+        header doit déjà être présent au moment où le middleware est généré."""
+        names = [f.name for f in FIXER_ORDER]
+        assert names.index("csp") < names.index("csp_middleware")
+
+    def test_vercel_json_is_shared_by_vercel_headers_then_csp(self):
+        """Documenté explicitement : 2 fixers touchent vercel.json, dans cet ordre."""
+        owners = [f.name for f in FIXER_ORDER if f.target == "vercel.json"]
+        assert owners == ["vercel_headers", "csp"]
+
+    def test_targets_are_non_empty_strings(self):
+        for fixer in FIXER_ORDER:
+            assert isinstance(fixer.target, str) and fixer.target.strip()
+
+    def test_auto_fix_iterates_in_declared_order(self, tmp_path):
+        """`auto_fix` doit appeler les fixers dans l'ordre de `FIXER_ORDER`,
+        pas dans un ordre fonction-par-fonction codé en dur."""
+        call_order: list[str] = []
+
+        def _make_recorder(name: str):
+            def _record(*_args, **_kwargs):
+                call_order.append(name)
+
+            return _record
+
+        patches = [
+            patch(f"nexos.auto_fixer._fix_{f.name}", _make_recorder(f.name)) for f in FIXER_ORDER
+        ]
+        client_dir = tmp_path / "client"
+        client_dir.mkdir()
+        site_dir = tmp_path / "site"
+        site_dir.mkdir()
+
+        for p in patches:
+            p.start()
+        try:
+            auto_fix(site_dir, client_dir, brief={"company_name": "Test"})
+        finally:
+            for p in patches:
+                p.stop()
+
+        assert call_order == [f.name for f in FIXER_ORDER]
+
+
+def _build_minimal_site(site_dir: Path) -> None:
+    """Site Next.js minimal (App Router i18n) utilisé par les tests d'idempotence.
+
+    Volontairement très réduit : juste de quoi laisser chaque fixer s'appliquer
+    sans crasher (layout.tsx pour cookie consent, next.config.mjs pour le patch
+    poweredByHeader, app/[locale] pour les pages légales).
+    """
+    locale_dir = site_dir / "app" / "[locale]"
+    locale_dir.mkdir(parents=True)
+    (locale_dir / "layout.tsx").write_text(
+        'import "./globals.css";\n'
+        "export default function Layout({ children }) {\n"
+        "  return (\n"
+        "    <html>\n"
+        "      <body>\n"
+        "        {children}\n"
+        "      </body>\n"
+        "    </html>\n"
+        "  );\n"
+        "}\n"
+    )
+    (site_dir / "next.config.mjs").write_text(
+        "const nextConfig = {\n  reactStrictMode: true,\n};\nexport default nextConfig;\n"
+    )
+    (site_dir / "package.json").write_text('{"name": "test-site", "version": "1.0.0"}\n')
+    (site_dir / "components").mkdir()
+
+
+@patch("nexos.auto_fixer._fix_npm_audit")
+class TestIdempotence:
+    """`auto_fix()` doit être idempotent : ré-appliquer le pipeline N fois sur
+    le même site ne doit (a) ajouter aucun fix au-delà du premier passage,
+    (b) ne pas dupliquer de contenu (headers, imports, balises JSX), et
+    (c) laisser tous les fichiers bit-identiques entre run 2 et run N (P8.1).
+
+    `_fix_npm_audit` est mocké globalement pour éviter un subprocess npm sur
+    un site sans node_modules (subprocess capture l'erreur mais reste lent).
+    """
+
+    BRIEF: ClassVar[dict] = {
+        "company_name": "TestCo",
+        "legal": {
+            "rpp_name": "Jean Test",
+            "rpp_title": "DPO",
+            "rpp_email": "rpp@test.example",
+            "neq": "1234567890",
+        },
+    }
+
+    def _setup(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        _build_minimal_site(site)
+        client = tmp_path / "client"
+        client.mkdir()
+        return site, client
+
+    def test_total_fixes_drops_to_zero_after_first_run(self, _mock_npm, tmp_path):
+        site, client = self._setup(tmp_path)
+        report1 = auto_fix(site, client, brief=self.BRIEF)
+        report2 = auto_fix(site, client, brief=self.BRIEF)
+        report3 = auto_fix(site, client, brief=self.BRIEF)
+        assert report1.total_fixes >= 1, "Premier run doit appliquer au moins 1 fix"
+        assert report2.total_fixes == 0, "Second run doit être no-op"
+        assert report3.total_fixes == 0, "Troisième run doit aussi être no-op"
+
+    def test_files_are_bit_identical_across_runs(self, _mock_npm, tmp_path):
+        site, client = self._setup(tmp_path)
+        auto_fix(site, client, brief=self.BRIEF)
+
+        watched = [
+            "vercel.json",
+            "middleware.ts",
+            "next.config.mjs",
+            "app/[locale]/layout.tsx",
+            "app/[locale]/politique-confidentialite/page.tsx",
+            "app/[locale]/mentions-legales/page.tsx",
+            "README.md",
+        ]
+        snapshots = {f: (site / f).read_bytes() for f in watched if (site / f).exists()}
+        assert snapshots, "Au moins un fichier doit avoir été créé par le premier run"
+
+        for _ in range(2):
+            auto_fix(site, client, brief=self.BRIEF)
+
+        for relpath, expected in snapshots.items():
+            current = (site / relpath).read_bytes()
+            assert current == expected, f"{relpath} a changé entre run 1 et run 3"
+
+    def test_vercel_headers_no_duplicate_keys(self, _mock_npm, tmp_path):
+        site, client = self._setup(tmp_path)
+        for _ in range(3):
+            auto_fix(site, client, brief=self.BRIEF)
+
+        data = json.loads((site / "vercel.json").read_text())
+        global_block = next(b for b in data["headers"] if b["source"] == "/(.*)")
+        keys = [h["key"] for h in global_block["headers"]]
+        assert len(keys) == len(set(keys)), (
+            f"Headers dupliqués dans vercel.json après 3 passes : {keys}"
+        )
+
+    def test_csp_appears_exactly_once_in_vercel(self, _mock_npm, tmp_path):
+        site, client = self._setup(tmp_path)
+        for _ in range(3):
+            auto_fix(site, client, brief=self.BRIEF)
+
+        data = json.loads((site / "vercel.json").read_text())
+        global_block = next(b for b in data["headers"] if b["source"] == "/(.*)")
+        csp_headers = [
+            h for h in global_block["headers"] if h["key"].lower() == "content-security-policy"
+        ]
+        assert len(csp_headers) == 1, f"CSP devrait apparaître 1 fois, vu {len(csp_headers)}"
+
+    def test_cookie_consent_injected_exactly_once(self, _mock_npm, tmp_path):
+        site, client = self._setup(tmp_path)
+        for _ in range(3):
+            auto_fix(site, client, brief=self.BRIEF)
+
+        layout = (site / "app" / "[locale]" / "layout.tsx").read_text()
+        assert layout.count("<CookieConsent") == 1, (
+            "<CookieConsent /> doit apparaître exactement 1 fois"
+        )
+        assert layout.count("import { CookieConsent }") == 1, (
+            "L'import CookieConsent doit apparaître exactement 1 fois"
+        )
+
+    def test_next_config_powered_by_added_once(self, _mock_npm, tmp_path):
+        site, client = self._setup(tmp_path)
+        for _ in range(3):
+            auto_fix(site, client, brief=self.BRIEF)
+
+        content = (site / "next.config.mjs").read_text()
+        assert content.count("poweredByHeader: false") == 1
+        assert "poweredByHeader: true" not in content
+
+    def test_middleware_csp_value_matches_vercel(self, _mock_npm, tmp_path):
+        """Le middleware.ts généré localement doit refléter la CSP de vercel.json
+        (single source of truth). Re-runner ne doit pas désync les deux."""
+        site, client = self._setup(tmp_path)
+        for _ in range(3):
+            auto_fix(site, client, brief=self.BRIEF)
+
+        vercel_data = json.loads((site / "vercel.json").read_text())
+        global_block = next(b for b in vercel_data["headers"] if b["source"] == "/(.*)")
+        csp_in_vercel = next(
+            h["value"] for h in global_block["headers"] if h["key"] == "Content-Security-Policy"
+        )
+
+        middleware = (site / "middleware.ts").read_text()
+        # CSP encodée en JSON literal — guillemets simples préservés
+        assert csp_in_vercel in middleware or json.dumps(csp_in_vercel)[1:-1] in middleware
