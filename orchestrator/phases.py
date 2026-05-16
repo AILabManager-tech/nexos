@@ -330,13 +330,25 @@ def run_pipeline(
             from soic.iterator import PhaseIterator
             from soic.persistence import RunStore
 
+            from .plateau_recovery import make_plateau_auto_fix_hook
+
             store = RunStore(client_dir)
+            # P8.3 — dimension-scoped auto-fix on Decision.ENRICHED_RETRY.
+            # Hook factory captures state via explicit args (no closure trap).
             iterator = PhaseIterator(
                 phase=phase,
                 client_dir=str(client_dir),
                 max_iter=4,
                 store=store,
                 site_dir=str(site_dir) if site_dir else None,
+                on_enriched_retry=make_plateau_auto_fix_hook(
+                    phase=phase,
+                    site_dir=site_dir,
+                    client_dir=client_dir,
+                    mode=mode,
+                    say=say,
+                    brief_loader=lambda p, _m=mode: load_runtime_brief(p, mode=_m),
+                ),
             )
 
             ctx = RerunContext(
