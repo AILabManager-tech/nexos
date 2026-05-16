@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-15 — P8.1 résolu (claude session continue)
+**Dernière mise à jour** : 2026-05-15 — P8.1 + P8.2 résolus (claude session continue)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` (26 + P8.1 commits locaux, push à discrétion)
+**Branche** : `main` (26 + P8.1 + P8.2 commits locaux, push à discrétion ; SOIC `550631c` côté `soic_v3`)
 
 ---
 
@@ -15,7 +15,7 @@
 
 | Indicateur | Valeur | Note |
 |---|---|---|
-| Tests Python | **482/482** verts | +14 tests P8.1 (FIXER_ORDER + idempotence) |
+| Tests Python | **489/489** verts | +14 P8.1 (FIXER_ORDER + idempotence) +7 P8.2 (ENRICHED_RETRY + PlateauDiagnosis) |
 | Tests Vitest depanneur-nobert | **70/70** verts | +57 tests P4c (schemas + libs + email + clientConfig) + P5 (API contact + newsletter) |
 | Tests Vitest depanneur-nobert | **70/70** verts (était 13/13) | étendu en P4c + P5 |
 | Build site depanneur-nobert | **PASS** | npm audit 0/0 |
@@ -27,8 +27,9 @@
 | Silent failure paths | ✅ **3 nettoyés (P2)** | PipelineConfig + AgentRegistry + intake directive |
 | Ports hors zone CLAUDE.md | ✅ **résolu (P3)** | `nexos.port_allocator` + `tools/alloc-port.sh` — NEXOS_ENGINE 20100-20199 |
 | Osiris API désynchronisée | ✅ **résolu (P7)** | `osiris-scan.sh` adapté à `--url --output report`, scan production OK |
-| Bugs réels notés (audit) | 🔴 **P8 ouvert** (3 items B1-B4 restants) | P8.1 résolu — FIXER_ORDER + idempotence. Reste B2 CVE / B3 ABORT_PLATEAU / B4 dormants |
+| Bugs réels notés (audit) | 🔴 **P8 ouvert** (2 items restants) | P8.1 + P8.2 résolus. Reste B2 CVE HIGH / B4 6 clients dormants |
 | Auto-fixer idempotent | ✅ **résolu (P8.1)** | `FIXER_ORDER: list[Fixer]` + 14 tests régression (ordre + file-ownership + idempotence run 3×) |
+| ABORT_PLATEAU recovery | ✅ **résolu (P8.2)** | `Decision.ENRICHED_RETRY` + `PlateauDiagnosis` injecté dans feedback avant abort (1 retry par run) |
 | Dette technique notée | 🟡 **P9 ouvert** (6 items D1-D6) | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
 | Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
@@ -317,7 +318,7 @@ Codex : "switching models is a weak hypothesis until you know why plateau happen
 | # | Item | Avant Codex | Après Codex | Effort | Statut |
 |---|---|---|---|---|---|
 | **P8.1** | Refactor `auto_fixer.py` | Protocol toposort | FIXER_ORDER tuple + idempotency tests | 1-2h | ✅ résolu 2026-05-15 |
-| **P8.2** | B3 ABORT_PLATEAU | Stratégie C mix | Instrumentation cause + 1 enriched retry | 2-4h | — |
+| **P8.2** | B3 ABORT_PLATEAU | Stratégie C mix | Instrumentation cause + 1 enriched retry | 2-4h | ✅ résolu 2026-05-15 |
 | **P8.3** | Dimension-scoped fixers | (manquait) | Nouveau : si D8 fail → legal, D4 → security | 3-5h | — |
 | **P8.4** | B4 onboard 6 dormants | Aveugle | Couvert par instrumentation P8.2 (on saura pourquoi) | 1-3h (downstream P8.2) | — |
 | **D1** | Vitest matrix 7 clients | Inchangé | Mécanique, OK tel quel | 2h | — |
@@ -349,6 +350,49 @@ Codex : "switching models is a weak hypothesis until you know why plateau happen
 **Validation** : 482/482 tests Python verts (468 baseline + 14 nouveaux), ruff check + format clean.
 
 **Effort réel** : ~45 min (refactor 15 min + tests 25 min + ruff fixes 5 min).
+
+---
+
+### ✅ P8.2 — ABORT_PLATEAU recovery : ENRICHED_RETRY + PlateauDiagnosis (RÉSOLU 2026-05-15)
+
+**Statut** : ✅ Résolu — un plateau ne s'écrase plus en silence, le converger donne une 2e chance avec diagnostic injecté
+
+**Cause racine** : `Converger._is_plateau()` détectait correctement la stagnation (2 deltas mu ≤ 0 + fail count non décroissant) mais `decide()` retournait immédiatement `ABORT_PLATEAU` sans (a) exposer pourquoi (dimensions stagnantes, assertions failed), (b) donner au prompt suivant une dernière chance avec ce diagnostic en contexte. NEXOS abandonnait collectif-nova (μ=8.05) et vertex-pmo (μ=7.91) sans la moindre instrumentation actionnable.
+
+**Décision** (suite challenge Codex `019e2baf`) : pas de switch model (hypothèse rejetée — "another model will likely produce different-looking failure with the same score" sans diagnostic). Au lieu de ça, instrumentation + 1 enriched retry informationnel. Si le retry plateau aussi → `ABORT_PLATEAU` cette fois pour de vrai.
+
+**Implémentation** (côté `soic_v3` commit `550631c`) :
+- `soic/converger.py` :
+  - Nouveau `Decision.ENRICHED_RETRY`
+  - Dataclasses frozen `FailingAssertion` (gate_id, name, dimension, score, evidence) + `PlateauDiagnosis` (iteration, mu_trajectory, fail_trajectory, failing_dimensions, failing_assertions, phase) avec `to_dict()` JSON-safe
+  - Flag interne `_enriched_retry_used` (re-armé par `reset()`)
+  - `_build_diagnosis()` snapshot les failing gates + trajectoires au moment de la détection
+  - `diagnose_plateau()` méthode publique pour le consommateur (iterator + feedback router)
+  - `get_summary()` étendu avec un message dédié pour `ENRICHED_RETRY`
+- `soic/feedback_router.py` :
+  - `FeedbackRouter.generate_with_plateau_context(report, diagnosis)` : préfixe markdown explicite (trajectoire mu, fail count, dimensions bloquantes, assertions échec individuelles) devant le feedback corrective standard
+- `soic/iterator.py` :
+  - `SOICIterator` + `PhaseIterator` : sur `ENRICHED_RETRY`, enrichissent le feedback via `diagnose_plateau()` et **continuent le loop** (`ENRICHED_RETRY` n'est pas dans `stop_decisions`)
+
+**Tests régression** (côté `nexos_v.3.0` — `tests/test_soic/test_converger.py`) :
+- `test_first_plateau_yields_enriched_retry` — 3 points → ENRICHED_RETRY
+- `test_second_plateau_yields_abort` — 4e point identique → ABORT_PLATEAU (retry consommé)
+- `test_enriched_retry_offered_once_per_lifecycle` — `reset()` ré-arme le flag
+- `test_diagnose_plateau_returns_none_before_plateau` — pas de diagnostic prématuré
+- `test_diagnose_plateau_captures_failing_dimensions` — extrait D4 + D8 + assertions W-05, W-14
+- `test_diagnose_plateau_to_dict_is_json_safe` — round-trip JSON propre
+- `test_summary_for_enriched_retry_is_informative` — message visible CLI
+- `test_feedback_router_with_plateau_context` — préfixe diagnostic + feedback standard
+
+Mise à jour de `test_plateau_detected` existant pour aligner sur la nouvelle sémantique (1er plateau = ENRICHED_RETRY au lieu de ABORT_PLATEAU).
+
+**Validation** : 489/489 tests Python verts (482 baseline P8.1 + 7 nouveaux P8.2), ruff check + format clean.
+
+**Effort réel** : ~1h45 (cartographie 15 min + converger 20 min + iterator + feedback_router 15 min + tests 35 min + ruff + commits 20 min).
+
+**Prochaines étapes liées (non faites cette session)** :
+- P8.3 dimension-scoped fixers — extension auto_fixer qui route D8 fail → legal fixer, D4 → security fixer (réutilise `PlateauDiagnosis.failing_dimensions` comme signal)
+- Mesure terrain : relancer collectif-nova et vertex-pmo pour vérifier que ENRICHED_RETRY débloque effectivement le plateau
 
 ---
 
@@ -700,6 +744,17 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 ---
 
 ## 🗓️ Historique des sessions notables
+
+### 2026-05-15 — P8.2 résolu : ENRICHED_RETRY + PlateauDiagnosis (claude)
+- Cause racine identifiée : `Converger.decide()` retournait `ABORT_PLATEAU` direct dès détection plateau (2 deltas mu ≤ 0 + fail count non décroissant), sans diagnostic ni 2e chance. NEXOS abandonnait silencieusement collectif-nova et vertex-pmo.
+- Décision Codex-aligned (`019e2baf`) : pas de switch model, instrumentation + 1 enriched retry informationnel
+- Nouveau `Decision.ENRICHED_RETRY` + dataclass `PlateauDiagnosis` (trajectoire mu/fail, failing_dimensions, failing_assertions[FailingAssertion]) + flag `_enriched_retry_used` ré-armé par `reset()`
+- `FeedbackRouter.generate_with_plateau_context()` produit un préfixe markdown explicite devant le feedback corrective standard
+- `PhaseIterator` + `SOICIterator` handle `ENRICHED_RETRY` en enrichissant le feedback sans break le loop. Re-plateau → ABORT_PLATEAU pour de vrai
+- 7 nouveaux tests régression + mise à jour test plateau existant (1er plateau = ENRICHED_RETRY)
+- Commit `550631c` côté `soic_v3` (3 fichiers, 225+/38-)
+- 489/489 tests Python verts, ruff clean
+- Effort réel ~1h45 vs estimé 2-4h
 
 ### 2026-05-15 — P8.1 résolu : FIXER_ORDER + idempotence auto_fixer (claude)
 - Refactor post-codex challenge (`019e2baf`) : pas de Protocol+toposort (rejeté ceremony), simple `FIXER_ORDER: list[Fixer]` linéaire avec dépendances commentées + tests d'invariants
