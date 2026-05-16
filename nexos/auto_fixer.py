@@ -917,9 +917,14 @@ def fixers_for_dimensions(dimensions: Iterable[str]) -> list[Fixer]:
 # ── Fonction principale ───────────────────────────────────────────────
 
 
-def auto_fix(site_dir: Path, client_dir: Path, brief: dict | None = None) -> FixReport:
+def auto_fix(
+    site_dir: Path,
+    client_dir: Path,
+    brief: dict | None = None,
+    dimensions: Iterable[str] | None = None,
+) -> FixReport:
     """
-    Applique tous les auto-fixes D4/D8 dans l'ordre de `FIXER_ORDER`.
+    Applique les auto-fixes D4/D8 (et D2) dans l'ordre de `FIXER_ORDER`.
 
     Idempotent : un second appel sur le même site ne doit produire aucun fix
     supplémentaire (`report.total_fixes == 0`) et ne pas modifier les fichiers.
@@ -929,6 +934,12 @@ def auto_fix(site_dir: Path, client_dir: Path, brief: dict | None = None) -> Fix
         site_dir: Répertoire du site Next.js (contient package.json)
         client_dir: Répertoire client NEXOS (contient brief-client.json)
         brief: Brief client pré-chargé. Si None, tente de lire brief-client.json.
+        dimensions: Sous-ensemble SOIC à cibler (P8.3). `None` (défaut) =
+            tous les fixers, comportement rétrocompat P8.1. Une collection
+            vide = aucun fixer appelé (report.total_fixes == 0). Une dimension
+            non couverte (D1/D3/D5/D6/D7/D9) résulte en un sous-ensemble vide,
+            sans crash. Utilisé par `_plateau_auto_fix` dans l'orchestrator
+            pour router selon `PlateauDiagnosis.failing_dimensions`.
     """
     report = FixReport()
 
@@ -945,12 +956,28 @@ def auto_fix(site_dir: Path, client_dir: Path, brief: dict | None = None) -> Fix
     else:
         brief = normalize_brief(brief)
 
-    logger.info("Auto-fix D4/D8 starting")
+    # Sélection des fixers à appliquer. `dimensions=None` conserve le
+    # comportement P8.1 (tous les fixers, ordre figé). `dimensions=set()`
+    # est un cas légitime distinct (filtre explicite = rien à faire).
+    if dimensions is None:
+        selected = FIXER_ORDER
+        scope = "all"
+    else:
+        selected = fixers_for_dimensions(dimensions)
+        scope = sorted(set(dimensions))
+
+    logger.info("Auto-fix starting (scope=%s, %d fixer(s))", scope, len(selected))
 
     if _HAS_CHANGELOG:
-        log_event(client_dir, EventType.AUTOFIX_START, agent="auto_fixer")
+        details = {"scope": scope, "fixer_count": len(selected)} if dimensions is not None else None
+        log_event(
+            client_dir,
+            EventType.AUTOFIX_START,
+            agent="auto_fixer",
+            details=details,
+        )
 
-    for fixer in FIXER_ORDER:
+    for fixer in selected:
         fixer.apply(site_dir, brief, report)
 
     if _HAS_CHANGELOG:

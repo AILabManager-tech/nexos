@@ -846,3 +846,156 @@ class TestIdempotence:
         middleware = (site / "middleware.ts").read_text()
         # CSP encodée en JSON literal — guillemets simples préservés
         assert csp_in_vercel in middleware or json.dumps(csp_in_vercel)[1:-1] in middleware
+
+
+@patch("nexos.auto_fixer._fix_npm_audit")
+class TestAutoFixDimensions:
+    """P8.3 — `auto_fix(..., dimensions=...)` ne déclenche QUE les fixers dont
+    `Fixer.dimension` appartient à l'ensemble fourni. `dimensions=None` (défaut)
+    conserve le comportement P8.1 (tous les fixers). `dimensions=set()` est
+    distinct de `None` : explicitement aucun fixer.
+
+    Cas d'usage primaire : routing déclenché par `PlateauDiagnosis.failing_dimensions`
+    sur `Decision.ENRICHED_RETRY`. Si SOIC plateau sur D4 uniquement, seuls les
+    5 fixers D4 s'exécutent — pas de bruit sur D2/D8.
+    """
+
+    BRIEF: ClassVar[dict] = {
+        "company_name": "TestCo",
+        "legal": {
+            "rpp_name": "Jean Test",
+            "rpp_title": "DPO",
+            "rpp_email": "rpp@test.example",
+            "neq": "1234567890",
+        },
+    }
+
+    def _setup(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        _build_minimal_site(site)
+        client = tmp_path / "client"
+        client.mkdir()
+        return site, client
+
+    def test_dimensions_d4_only_touches_d4_files(self, _mock_npm, tmp_path):
+        """Run dim-scoped D4 : vercel.json + middleware.ts + next.config.mjs
+        sont touchés, MAIS aucun fichier D2 (README) ni D8 (cookie + pages
+        légales) n'est créé."""
+        site, client = self._setup(tmp_path)
+        auto_fix(site, client, brief=self.BRIEF, dimensions={"D4"})
+
+        # D4 — doivent exister
+        assert (site / "vercel.json").exists(), "D4: vercel.json absent"
+        assert (site / "middleware.ts").exists(), "D4: middleware.ts absent"
+        next_config = (site / "next.config.mjs").read_text()
+        assert "poweredByHeader: false" in next_config, "D4: next.config pas patché"
+
+        # D8 — NE DOIVENT PAS exister
+        assert not (
+            site / "app" / "[locale]" / "politique-confidentialite" / "page.tsx"
+        ).exists(), "D8 fuite : privacy page créée alors que dimensions={D4}"
+        assert not (site / "app" / "[locale]" / "mentions-legales" / "page.tsx").exists(), (
+            "D8 fuite : legal page créée alors que dimensions={D4}"
+        )
+        layout = (site / "app" / "[locale]" / "layout.tsx").read_text()
+        assert "<CookieConsent" not in layout, "D8 fuite : cookie consent injecté"
+
+        # D2 — NE DOIT PAS exister
+        assert not (site / "README.md").exists(), "D2 fuite : README créé alors que dimensions={D4}"
+
+    def test_dimensions_d8_only_touches_d8_files(self, _mock_npm, tmp_path):
+        """Symétrique : dim-scoped D8 → cookie + pages légales, pas vercel.json
+        ni README. Note : `_fix_csp_middleware` requiert vercel.json avec CSP
+        donc en D8 isolé il ne fait rien — comportement attendu (skip défensif)."""
+        site, client = self._setup(tmp_path)
+        auto_fix(site, client, brief=self.BRIEF, dimensions={"D8"})
+
+        # D8 — doivent exister
+        assert (site / "app" / "[locale]" / "politique-confidentialite" / "page.tsx").exists(), (
+            "D8: privacy page absente"
+        )
+        assert (site / "app" / "[locale]" / "mentions-legales" / "page.tsx").exists(), (
+            "D8: legal page absente"
+        )
+        layout = (site / "app" / "[locale]" / "layout.tsx").read_text()
+        assert "<CookieConsent" in layout, "D8: cookie consent absent"
+
+        # D4 — NE DOIVENT PAS exister
+        assert not (site / "vercel.json").exists(), "D4 fuite : vercel.json créé"
+        assert not (site / "middleware.ts").exists(), "D4 fuite : middleware.ts créé"
+
+        # D2 — NE DOIT PAS exister
+        assert not (site / "README.md").exists(), "D2 fuite : README créé"
+
+    def test_dimensions_none_preserves_p81_behavior(self, _mock_npm, tmp_path):
+        """Rétrocompat : `dimensions=None` (défaut) doit donner exactement le
+        même résultat que P8.1 — tous les fichiers de tous les fixers."""
+        site, client = self._setup(tmp_path)
+        report = auto_fix(site, client, brief=self.BRIEF, dimensions=None)
+
+        # Tous les fichiers de toutes les dimensions doivent exister
+        assert (site / "vercel.json").exists()  # D4
+        assert (site / "middleware.ts").exists()  # D4
+        assert (site / "app" / "[locale]" / "politique-confidentialite" / "page.tsx").exists()  # D8
+        assert (site / "app" / "[locale]" / "mentions-legales" / "page.tsx").exists()  # D8
+        assert (site / "README.md").exists()  # D2
+        assert report.total_fixes >= 1
+
+    def test_dimensions_empty_set_runs_nothing(self, _mock_npm, tmp_path):
+        """`dimensions=set()` distinct de `None` : filtre explicite = aucun
+        fixer. `total_fixes == 0`. Pas de fichier créé."""
+        site, client = self._setup(tmp_path)
+        report = auto_fix(site, client, brief=self.BRIEF, dimensions=set())
+
+        assert report.total_fixes == 0
+        assert not (site / "vercel.json").exists()
+        assert not (site / "middleware.ts").exists()
+        assert not (site / "README.md").exists()
+        assert not (site / "app" / "[locale]" / "politique-confidentialite" / "page.tsx").exists()
+
+    def test_dimensions_uncovered_d5_runs_nothing_without_crash(self, _mock_npm, tmp_path):
+        """Plateau sur dimension non couverte (D5 Performance, D6 a11y, etc.)
+        ne doit pas lever. Le call site logge le gap, la pipeline continue."""
+        site, client = self._setup(tmp_path)
+        report = auto_fix(site, client, brief=self.BRIEF, dimensions={"D5", "D6", "D9"})
+
+        assert report.total_fixes == 0
+        # Aucun fichier créé (D4/D8/D2 pas dans la liste)
+        assert not (site / "vercel.json").exists()
+        assert not (site / "README.md").exists()
+
+    def test_dimensions_idempotent_dim_scoped(self, _mock_npm, tmp_path):
+        """Idempotence dim-scoped : `auto_fix(dimensions={D4})` appelé 3x sur
+        le même site reste bit-identique. Garantit qu'un plateau qui re-déclenche
+        le hook sur la même dimension n'introduit aucune corruption."""
+        site, client = self._setup(tmp_path)
+        report1 = auto_fix(site, client, brief=self.BRIEF, dimensions={"D4"})
+        vercel_snapshot = (site / "vercel.json").read_bytes()
+        middleware_snapshot = (site / "middleware.ts").read_bytes()
+        config_snapshot = (site / "next.config.mjs").read_bytes()
+
+        report2 = auto_fix(site, client, brief=self.BRIEF, dimensions={"D4"})
+        report3 = auto_fix(site, client, brief=self.BRIEF, dimensions={"D4"})
+
+        assert report1.total_fixes >= 1
+        assert report2.total_fixes == 0
+        assert report3.total_fixes == 0
+        assert (site / "vercel.json").read_bytes() == vercel_snapshot
+        assert (site / "middleware.ts").read_bytes() == middleware_snapshot
+        assert (site / "next.config.mjs").read_bytes() == config_snapshot
+
+    def test_dimensions_combined_d4_d8_runs_both_subsets(self, _mock_npm, tmp_path):
+        """Plateau sur 2 dimensions (cas typique : D4 + D8 ensemble) → les 2
+        sous-ensembles s'exécutent dans l'ordre global de FIXER_ORDER."""
+        site, client = self._setup(tmp_path)
+        auto_fix(site, client, brief=self.BRIEF, dimensions={"D4", "D8"})
+
+        # Les deux dimensions doivent être servies
+        assert (site / "vercel.json").exists()  # D4
+        assert (site / "middleware.ts").exists()  # D4
+        assert (site / "app" / "[locale]" / "politique-confidentialite" / "page.tsx").exists()  # D8
+        assert (site / "app" / "[locale]" / "mentions-legales" / "page.tsx").exists()  # D8
+
+        # D2 reste exclu
+        assert not (site / "README.md").exists()
