@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-15 — P1 + P2 + P3 + P4 + P5 + P6 résolus (claude session continue)
+**Dernière mise à jour** : 2026-05-15 — P8.1 résolu (claude session continue)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` (3 pré-P1 + 3 P1 + 1 P2 + 1 docs + 4 P3 + 12 P4 + 2 P5/P6 — 26 commits locaux, push à discrétion)
+**Branche** : `main` (26 + P8.1 commits locaux, push à discrétion)
 
 ---
 
@@ -15,7 +15,7 @@
 
 | Indicateur | Valeur | Note |
 |---|---|---|
-| Tests Python | **464/464** verts | +21 tests P3 + 10 tests P4a + 10 tests P4e |
+| Tests Python | **482/482** verts | +14 tests P8.1 (FIXER_ORDER + idempotence) |
 | Tests Vitest depanneur-nobert | **70/70** verts | +57 tests P4c (schemas + libs + email + clientConfig) + P5 (API contact + newsletter) |
 | Tests Vitest depanneur-nobert | **70/70** verts (était 13/13) | étendu en P4c + P5 |
 | Build site depanneur-nobert | **PASS** | npm audit 0/0 |
@@ -27,7 +27,8 @@
 | Silent failure paths | ✅ **3 nettoyés (P2)** | PipelineConfig + AgentRegistry + intake directive |
 | Ports hors zone CLAUDE.md | ✅ **résolu (P3)** | `nexos.port_allocator` + `tools/alloc-port.sh` — NEXOS_ENGINE 20100-20199 |
 | Osiris API désynchronisée | ✅ **résolu (P7)** | `osiris-scan.sh` adapté à `--url --output report`, scan production OK |
-| Bugs réels notés (audit) | 🔴 **P8 ouvert** (4 items B1-B4) | Aucun bloquant — Osiris deps externes, CVE HIGH, ABORT_PLATEAU, clients dormants |
+| Bugs réels notés (audit) | 🔴 **P8 ouvert** (3 items B1-B4 restants) | P8.1 résolu — FIXER_ORDER + idempotence. Reste B2 CVE / B3 ABORT_PLATEAU / B4 dormants |
+| Auto-fixer idempotent | ✅ **résolu (P8.1)** | `FIXER_ORDER: list[Fixer]` + 14 tests régression (ordre + file-ownership + idempotence run 3×) |
 | Dette technique notée | 🟡 **P9 ouvert** (6 items D1-D6) | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
 | Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
@@ -313,17 +314,41 @@ Codex : "switching models is a weak hypothesis until you know why plateau happen
 
 #### Plan révisé pour prochaine session
 
-| # | Item | Avant Codex | Après Codex | Effort |
-|---|---|---|---|---|
-| **P8.1** | Refactor `auto_fixer.py` | Protocol toposort | FIXER_ORDER tuple + idempotency tests | 1-2h |
-| **P8.2** | B3 ABORT_PLATEAU | Stratégie C mix | Instrumentation cause + 1 enriched retry | 2-4h |
-| **P8.3** | Dimension-scoped fixers | (manquait) | Nouveau : si D8 fail → legal, D4 → security | 3-5h |
-| **P8.4** | B4 onboard 6 dormants | Aveugle | Couvert par instrumentation P8.2 (on saura pourquoi) | 1-3h (downstream P8.2) |
-| **D1** | Vitest matrix 7 clients | Inchangé | Mécanique, OK tel quel | 2h |
-| **B2** | CVE HIGH upgrade | Inchangé | Test sur depanneur seul puis propager | 1-2h |
-| **D2** | Osiris dimension D10 SOIC | Inchangé | Pondération SOIC + Osiris | 2-3h |
+| # | Item | Avant Codex | Après Codex | Effort | Statut |
+|---|---|---|---|---|---|
+| **P8.1** | Refactor `auto_fixer.py` | Protocol toposort | FIXER_ORDER tuple + idempotency tests | 1-2h | ✅ résolu 2026-05-15 |
+| **P8.2** | B3 ABORT_PLATEAU | Stratégie C mix | Instrumentation cause + 1 enriched retry | 2-4h | — |
+| **P8.3** | Dimension-scoped fixers | (manquait) | Nouveau : si D8 fail → legal, D4 → security | 3-5h | — |
+| **P8.4** | B4 onboard 6 dormants | Aveugle | Couvert par instrumentation P8.2 (on saura pourquoi) | 1-3h (downstream P8.2) | — |
+| **D1** | Vitest matrix 7 clients | Inchangé | Mécanique, OK tel quel | 2h | — |
+| **B2** | CVE HIGH upgrade | Inchangé | Test sur depanneur seul puis propager | 1-2h | — |
+| **D2** | Osiris dimension D10 SOIC | Inchangé | Pondération SOIC + Osiris | 2-3h | — |
 
 **Économie nette estimée** : ~5h de scaffolding évitées, redirigées vers valeur observable (instrumentation + idempotency).
+
+---
+
+### ✅ P8.1 — Refactor `auto_fixer.py` FIXER_ORDER + idempotence (RÉSOLU 2026-05-15)
+
+**Statut** : ✅ Résolu — pipeline explicite + 14 tests régression
+
+**Cause racine** : `auto_fix()` enchaînait 9 appels `_fix_*` codés en dur sans (a) source de vérité unique sur l'ordre/dépendances entre fixers, (b) tests d'idempotence garantissant qu'un re-run ne corrompe pas vercel.json / layout.tsx / middleware.ts. Trois fixers touchent `vercel.json` (`vercel_headers`, `csp`, et `csp_middleware` en lecture) sans contrat explicite sur l'ordre.
+
+**Décision** (suite challenge Codex `019e2baf`) : pas de Protocol+toposort architectural — `FIXER_ORDER: list[Fixer]` linéaire suffit. Le vrai gap est l'observabilité et les invariants idempotence, pas la pluggabilité.
+
+**Implémentation** :
+- `nexos/auto_fixer.py` :
+  - `Fixer` dataclass `frozen=True` (`name`, `target`, `apply: Callable[[Path, dict, FixReport], None]`)
+  - `FIXER_ORDER` : 9 fixers ordonnés, dépendances commentées (csp après vercel_headers, csp_middleware après csp)
+  - `auto_fix()` simplifié → `for fixer in FIXER_ORDER: fixer.apply(...)`
+  - Adapters lambda uniformisent les signatures sans toucher les `_fix_*` sous-jacents (résolution de nom Python tardive → monkeypatching préservé)
+- `tests/test_auto_fixer.py` :
+  - `TestFixerOrder` (7 tests) — noms stables, frozen immutability, csp après vercel_headers, csp_middleware après csp, file-ownership `vercel.json`, `auto_fix` itère bien dans l'ordre déclaré
+  - `TestIdempotence` (7 tests, `_fix_npm_audit` mocké) — run 3× : `total_fixes==0` à partir du 2e, fichiers bit-identiques run 1↔3, headers vercel.json sans doublon, CSP exactement 1×, `<CookieConsent />` injecté 1×, `poweredByHeader: false` 1×, CSP middleware/vercel cohérents
+
+**Validation** : 482/482 tests Python verts (468 baseline + 14 nouveaux), ruff check + format clean.
+
+**Effort réel** : ~45 min (refactor 15 min + tests 25 min + ruff fixes 5 min).
 
 ---
 
@@ -675,6 +700,15 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 ---
 
 ## 🗓️ Historique des sessions notables
+
+### 2026-05-15 — P8.1 résolu : FIXER_ORDER + idempotence auto_fixer (claude)
+- Refactor post-codex challenge (`019e2baf`) : pas de Protocol+toposort (rejeté ceremony), simple `FIXER_ORDER: list[Fixer]` linéaire avec dépendances commentées + tests d'invariants
+- `Fixer` dataclass frozen (`name`, `target`, `apply`) — file-ownership de chaque fixer est métadonnée explicite, plus implicite
+- Adapters lambda uniformisent signature `(site_dir, brief, report)` sans toucher les `_fix_*` (résolution tardive Python → monkeypatching préservé)
+- `auto_fix()` : 9 lignes codées en dur → boucle `for fixer in FIXER_ORDER`
+- 14 nouveaux tests : `TestFixerOrder` (ordre + immutabilité + file-ownership vercel.json) + `TestIdempotence` (run 3× = bit-identique, headers/CSP/CookieConsent/poweredByHeader pas de doublon)
+- 482/482 tests Python verts, ruff clean
+- Effort réel ~45 min vs estimé 1-2h
 
 ### 2026-05-15 — P4 + P5 + P6 résolus mode autonome (claude session continue)
 **Mode** : Autonome qualité-first sur instruction explicite utilisateur ("fait tout, ne pose pas de questions, code de la meilleure qualité"). Règle absolue git push respectée.
