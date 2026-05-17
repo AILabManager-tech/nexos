@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-17 — audit public Mark Systems (codex)
+**Dernière mise à jour** : 2026-05-17 — P8.6 résolu (claude, mode rigoureux continu)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` — 4 commits P8.3 locaux (push à discrétion) ; SOIC `9b9e123` côté `soic_v3`
+**Branche** : `main` — 6 commits P8.3+P8.6 locaux (push à discrétion) ; SOIC `9b9e123` côté `soic_v3`
 
 ---
 
@@ -15,7 +15,7 @@
 
 | Indicateur | Valeur | Note |
 |---|---|---|
-| Tests Python | **518/518** verts | +11 P8.3 (Fixer.dimension + fixers_for_dimensions) +7 P8.3 (auto_fix dimensions=) +5 P8.3 (PhaseIterator hook) +6 P8.3 (plateau_recovery hook) |
+| Tests Python | **539/539** verts | +29 P8.3 (Fixer.dimension + auto_fix dimensions= + PhaseIterator hook + plateau_recovery) + 21 P8.6 (WCAG helpers + _fix_pa11y_contrast) |
 | Tests Vitest depanneur-nobert | **70/70** verts | +57 tests P4c (schemas + libs + email + clientConfig) + P5 (API contact + newsletter) |
 | Tests Vitest depanneur-nobert | **70/70** verts (était 13/13) | étendu en P4c + P5 |
 | Build site depanneur-nobert | **PASS** | npm audit 0/0 |
@@ -31,6 +31,7 @@
 | Auto-fixer idempotent | ✅ **résolu (P8.1)** | `FIXER_ORDER: list[Fixer]` + 14 tests régression (ordre + file-ownership + idempotence run 3×) |
 | ABORT_PLATEAU recovery | ✅ **résolu (P8.2)** | `Decision.ENRICHED_RETRY` + `PlateauDiagnosis` injecté dans feedback avant abort (1 retry par run) |
 | Dimension-scoped fixers | ✅ **résolu (P8.3)** | `Fixer.dimension` + `auto_fix(dimensions=)` + `on_enriched_retry` hook + `orchestrator/plateau_recovery.py` factory — routing déterministe D4/D8 sur plateau |
+| Fixer D6 contraste WCAG | ✅ **résolu (P8.6)** | `_fix_pa11y_contrast` — WCAG helpers stdlib + détection background + harden V (HSV) jusqu'à 5.0:1. Validé sur vrai vertex-pmo : 3.75:1 → 5.00:1 |
 | Dette technique notée | 🟡 **P9 ouvert** (7 items D1-D7) | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict, preflight path |
 | Audit Mark Systems public | 🟡 **fait 2026-05-17** | Lighthouse 94/91/100/100 ; pa11y 12 erreurs ; npm audit 1 critical + 8 high ; build PASS ; tests 34/34 |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
@@ -323,7 +324,8 @@ Codex : "switching models is a weak hypothesis until you know why plateau happen
 | **P8.2** | B3 ABORT_PLATEAU | Stratégie C mix | Instrumentation cause + 1 enriched retry | 2-4h | ✅ résolu 2026-05-15 |
 | **P8.3** | Dimension-scoped fixers | (manquait) | Nouveau : si D8 fail → legal, D4 → security | 3-5h | ✅ résolu 2026-05-16 |
 | **P8.4** | B4 onboard 6 dormants | Aveugle | Couvert par instrumentation P8.2 (on saura pourquoi) | 1-3h (downstream P8.2) | — |
-| **P8.5** | Mesure terrain plateau routing | (nouveau) | Relancer collectif-nova + vertex-pmo, mesurer si P8.3 débloque | 30 min | — |
+| **P8.5** | Mesure terrain plateau routing | (nouveau) | Relancer collectif-nova + vertex-pmo, mesurer si P8.3 débloque | 30 min | partiel 2026-05-17 (vertex-pmo gates statiques ré-évalués hors pipeline) |
+| **P8.6** | Fixer D6 contraste WCAG | (découvert P8.5) | `_fix_pa11y_contrast` — WCAG helpers + harden V tokens muted | 2-3h | ✅ résolu 2026-05-17 |
 | **D1** | Vitest matrix 7 clients | Inchangé | Mécanique, OK tel quel | 2h | — |
 | **B2** | CVE HIGH upgrade | Inchangé | Test sur depanneur seul puis propager | 1-2h | — |
 | **D2** | Osiris dimension D10 SOIC | Inchangé | Pondération SOIC + Osiris | 2-3h | — |
@@ -353,6 +355,50 @@ Codex : "switching models is a weak hypothesis until you know why plateau happen
 **Validation** : 482/482 tests Python verts (468 baseline + 14 nouveaux), ruff check + format clean.
 
 **Effort réel** : ~45 min (refactor 15 min + tests 25 min + ruff fixes 5 min).
+
+---
+
+### ✅ P8.6 — Fixer D6 contraste WCAG (`_fix_pa11y_contrast`) — RÉSOLU 2026-05-17
+
+**Statut** : ✅ Résolu — premier vrai fixer dimension D6 (Accessibilité). Ferme le gap découvert pendant la mesure terrain P8.5 sur vertex-pmo.
+
+**Cause racine** : Pa11y a remonté 18 erreurs WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Fail sur vertex-pmo, toutes du même type (contraste insuffisant), toutes pointant vers `text-ink-muted`. Cause unique : token `ink.muted: '#64748B'` sur background `surface.DEFAULT: '#0F172A'` = 3.75:1 (sous le seuil WCAG AA 4.5:1). Pattern identique à l'incident historique depanneur-nobert (`text.muted` #8B7355 → #7A6447, 34 → 0 erreurs en mai 2026).
+
+**Décision** :
+- **Scope conservateur** : ne toucher QUE les tokens dont le nom matche `muted`, `subtle`, `tertiary`, `disabled`, `placeholder`. Pas de risque de toucher `primary`, `accent`, `brand`.
+- **Pas de support CSS variables** (`globals.css --color-*`) dans ce commit — reporté à P8.6.2 si besoin terrain. Tous les clients NEXOS actuels utilisent le pattern Tailwind nested palette.
+- **Buffer cible 5.0:1** (au-dessus du 4.5:1 minimum WCAG AA) — laisse une marge pour les ajustements design futurs sans retomber sous le seuil.
+- **Préservation HSV** : on déplace V uniquement, hue + saturation intacts → l'intention "muted" visuelle est conservée (vs un blanchiment naïf qui détruirait la hiérarchie).
+
+**Implémentation** (1 commit atomique `43def6d`) :
+- `nexos/auto_fixer.py` :
+  - 6 helpers WCAG stdlib (pas de deps) : `_hex_to_rgb`, `_rgb_to_hex`, `_relative_luminance` (WCAG 2.1), `_contrast_ratio`, `_rgb_to_hsv` / `_hsv_to_rgb` (colorsys), `_harden_token_contrast`
+  - Algorithme `_harden_token_contrast` : détecte direction (lighten/darken selon luminance bg), boucle 50× pas de 0.02 sur V jusqu'à atteindre 5.0:1 ou bailout (palette structurellement hostile, ex: noir sur noir)
+  - `_TAILWIND_TOKEN_LINE_RE` regex line-by-line pour patch en place (préserve commentaires, indentation, autres tokens)
+  - `_extract_palette_token_lines` groupe les indices par nom de token
+  - `_fix_pa11y_contrast` : skip défensifs (config absent / no muted / no bg / already compliant) puis patch in-place + report.contrast_tokens_fixed
+- Ajouté à `FIXER_ORDER` en fin (aucune dépendance), `dimension="D6"`
+- `FixReport.contrast_tokens_fixed: int` + log changelog `target=tailwind.config.ts` + `tokens_fixed=N`
+
+**Validation terrain** (run dry-run sur vrai vertex-pmo, sans modifier le client) :
+- Avant : `ink.muted #64748B` / `surface #0F172A` = **3.75:1** ❌
+- Après : `ink.muted #7689a4` / `surface #0F172A` = **5.00:1** ✅ (buffer cible atteint exactement)
+
+**Tests régression** (21 nouveaux, 539/539 verts) :
+- `TestWcagContrastHelpers` (10) : hex parsing (3 + 6 digits, malformed), luminance extremes (black=0, white=1), contraste black-on-white=21:1, symétrie, ancrage cas vertex-pmo (#64748B sur #0F172A < 4.5), harden no-op si déjà conforme, harden lighten sur bg sombre, harden darken sur bg clair
+- `TestFixPa11yContrast` (10) : skip défensifs (config absent / no muted token / no background / already compliant), fix dark theme (anchor vertex-pmo), fix light theme (anchor depanneur-nobert historique), idempotence run 2× bit-identique, préservation primary/accent/surface intacts, multi-muted tokens (count = 2), routing P8.3 dimensions={"D6"}
+- 3 tests mis à jour pour refléter le nouveau fixer : `test_fixer_names_are_unique_and_stable`, `test_fixer_dimensions_are_stable_mapping`, `test_logs_coverage_gap_when_no_fixer_matches` (D6 maintenant couvert → gaps connus = D1/D3/D5/D7/D9)
+
+**Routing déterministe activé** : grâce à P8.3, dès qu'un futur plateau remontera `failing_dimensions=("D6",)`, le hook `make_plateau_auto_fix_hook` appellera automatiquement `auto_fix(dimensions={"D6"})` qui invoquera `_fix_pa11y_contrast`. Aucun wiring supplémentaire requis.
+
+**Limites assumées (transparence)** :
+- Couvre uniquement `WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Fail` (contraste texte).
+- Ne touche PAS aux 9 autres types d'erreurs WCAG (alt manquants, ARIA, focus visible, etc.).
+- Palettes CSS variables (`--color-*` dans globals.css) non couvertes — P8.6.2 follow-up si besoin terrain.
+
+**Mesure terrain à faire (post-merge)** : relancer le pipeline `nexos audit` sur vertex-pmo après push pour confirmer que (a) le fixer s'exécute en condition réelle dans le hook P8.3, (b) le pa11y post-fix descend bien à 0 erreur contraste, (c) μ Ph5 monte au-dessus du seuil 8.5 et débloque ACCEPT.
+
+**Effort réel** : ~2h30 (investigation gates + a11y.json + palette 30 min + 6 helpers + fixer 1h + 21 tests 45 min + fix régressions 15 min + ROADMAP).
 
 ---
 
@@ -810,6 +856,18 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 ---
 
 ## 🗓️ Historique des sessions notables
+
+### 2026-05-17 — P8.6 résolu : fixer D6 contraste WCAG (claude, mode rigoureux continu)
+- Découverte critique pendant P8.5 (mesure terrain) : vertex-pmo a déjà tous les fichiers W-13 (sitemap.ts, robots.ts, metadata) et W-02 (README) que le plan P8.6 initial voulait créer. Le plateau historique D7=7.0/D2=3.5 était obsolète. Le seul vrai bloqueur restant = 18 erreurs pa11y W-10, toutes du même type contraste sur le token `text-ink-muted`.
+- Pivot du plan : au lieu des 4 fixers D6+D7 spéculatifs, livrer 1 fixer ciblé `_fix_pa11y_contrast` qui résout la cause racine universelle (palette Tailwind avec token muted à contraste insuffisant).
+- Architecture pure-stdlib : 6 helpers WCAG (hex_to_rgb, relative_luminance WCAG 2.1, contrast_ratio, rgb_to_hsv via colorsys, harden_token_contrast). Algorithme : déplacer V (HSV) par pas de 0.02 dans la direction opposée à la luminance du fond, jusqu'à atteindre 5.0:1 (buffer au-dessus du seuil AA 4.5:1). Préserve hue + saturation → l'intention "muted" visuelle reste.
+- Détection background : sondes `surface` / `background` / `bg` / `body` en priorité, lit le `DEFAULT` du bloc. Couvre les conventions de vertex-pmo (dark theme `surface.DEFAULT`) et depanneur-nobert (light theme `background.DEFAULT`).
+- Validation terrain (dry-run sur vrai `clients/vertex-pmo/site/tailwind.config.ts`) : ink.muted `#64748B` → `#7689a4`, contraste passe de **3.75:1 à 5.00:1** (buffer cible atteint exactement).
+- Wiring P8.3 automatique : `dimension="D6"` sur le Fixer → `fixers_for_dimensions({"D6"})` retourne `[pa11y_contrast]` → hook `_plateau_auto_fix` l'appelle dès qu'un futur plateau remonte D6 dans `failing_dimensions`.
+- Tests régression : 21 nouveaux (TestWcagContrastHelpers 10 + TestFixPa11yContrast 10 + sous-ensemble D6 routing). 3 tests existants mis à jour (mapping figé étendu + coverage gap utilise désormais D5/D7/D9 puisque D6 est couvert).
+- Limites assumées : couvre uniquement WCAG2AA.Principle1.Guideline1_4.1_4_3.G18 (contraste texte), pas alt/ARIA/focus. CSS variables `--color-*` non couvertes (P8.6.2 follow-up si besoin).
+- Commit `43def6d` (3 fichiers, 626+/6-). 539/539 tests Python verts. ruff + format + mypy + pre-commit clean.
+- Effort réel ~2h30 (investigation 30 min + helpers + fixer 1h + 21 tests 45 min + fix régressions + ROADMAP 15 min).
 
 ### 2026-05-17 — Audit public Mark Systems (codex)
 - Cible : `https://www.marksystems.ca/` + source locale `/home/gear-code/02_projects/mark-systems-site/web-version`.
