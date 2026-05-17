@@ -2,6 +2,7 @@
 
 import dataclasses
 import json
+import re
 from pathlib import Path
 from typing import ClassVar
 from unittest.mock import patch
@@ -16,17 +17,22 @@ from nexos.auto_fixer import (
     TEMPLATES_DIR,
     Fixer,
     FixReport,
+    _contrast_ratio,
     _fix_cookie_consent,
     _fix_csp_middleware,
     _fix_legal_page,
     _fix_next_config,
+    _fix_pa11y_contrast,
     _fix_privacy_page,
     _fix_readme,
     _fix_vercel_headers,
     _generate_legal_page_tsx,
+    _harden_token_contrast,
+    _hex_to_rgb,
     _inline_md_jsx,
     _markdown_to_jsx_children,
     _read_csp_from_vercel,
+    _relative_luminance,
     auto_fix,
     fixers_for_dimensions,
 )
@@ -533,6 +539,7 @@ class TestFixerOrder:
             "privacy_page",
             "legal_page",
             "readme",
+            "pa11y_contrast",  # P8.6 — D6 contrast tokens
         ]
         assert len(set(names)) == len(names)
 
@@ -629,6 +636,7 @@ class TestFixerDimensions:
             "privacy_page": "D8",
             "legal_page": "D8",
             "readme": "D2",
+            "pa11y_contrast": "D6",  # P8.6
         }
 
     def test_fixers_for_dimensions_d4_subset_in_global_order(self):
@@ -646,6 +654,11 @@ class TestFixerDimensions:
     def test_fixers_for_dimensions_d2_subset(self):
         names = [f.name for f in fixers_for_dimensions({"D2"})]
         assert names == ["readme"]
+
+    def test_fixers_for_dimensions_d6_subset(self):
+        """P8.6 — D6 routing via pa11y_contrast (Tailwind palette tokens)."""
+        names = [f.name for f in fixers_for_dimensions({"D6"})]
+        assert names == ["pa11y_contrast"]
 
     def test_fixers_for_dimensions_multi_preserves_global_order(self):
         """Multi-dimensions : l'ordre global de FIXER_ORDER est préservé,
@@ -666,10 +679,13 @@ class TestFixerDimensions:
     def test_fixers_for_dimensions_unknown_returns_empty(self):
         """Dimension hors {D1..D9} ou non couverte : retourne [] sans erreur.
         Cas d'usage : plateau sur D5 (Performance) — aucun fixer disponible
-        aujourd'hui, le call site logge le gap et continue sans crash."""
+        aujourd'hui, le call site logge le gap et continue sans crash.
+
+        Gaps connus 2026-05-17 : D1, D3, D5, D7, D9 (D6 désormais couvert par
+        `pa11y_contrast` P8.6 ; D2/D4/D8 historiquement couverts)."""
         assert fixers_for_dimensions({"DXX"}) == []
         assert fixers_for_dimensions({"D5"}) == []  # gap de couverture connu
-        assert fixers_for_dimensions({"D1", "D3", "D6", "D7", "D9"}) == []
+        assert fixers_for_dimensions({"D1", "D3", "D7", "D9"}) == []
 
     def test_fixers_for_dimensions_empty_iterable_returns_empty(self):
         assert fixers_for_dimensions(set()) == []
@@ -998,4 +1014,315 @@ class TestAutoFixDimensions:
         assert (site / "app" / "[locale]" / "mentions-legales" / "page.tsx").exists()  # D8
 
         # D2 reste exclu
+        assert not (site / "README.md").exists()
+
+
+class TestWcagContrastHelpers:
+    """P8.6 — unit tests for the pure WCAG math: hex parsing, relative
+    luminance, contrast ratio. These functions are the load-bearing
+    primitives of `_fix_pa11y_contrast`. If any of them drift, the fixer
+    silently produces wrong palette values."""
+
+    def test_hex_to_rgb_six_digit(self):
+        assert _hex_to_rgb("#000000") == (0.0, 0.0, 0.0)
+        r, g, b = _hex_to_rgb("#FFFFFF")
+        assert (r, g, b) == (1.0, 1.0, 1.0)
+
+    def test_hex_to_rgb_three_digit_expands(self):
+        """`#abc` is shorthand for `#aabbcc`."""
+        r, g, b = _hex_to_rgb("#fff")
+        assert (r, g, b) == (1.0, 1.0, 1.0)
+
+    def test_hex_to_rgb_rejects_malformed(self):
+        with pytest.raises(ValueError):
+            _hex_to_rgb("#abcd")  # 4 digits, not a real hex
+
+    def test_relative_luminance_extremes(self):
+        """Black = 0.0, white = 1.0 — the reference points of the WCAG
+        luminance formula. If these break, every contrast calc is wrong."""
+        assert _relative_luminance((0.0, 0.0, 0.0)) == 0.0
+        assert _relative_luminance((1.0, 1.0, 1.0)) == pytest.approx(1.0, abs=1e-6)
+
+    def test_contrast_ratio_black_on_white_is_21(self):
+        """Pure black on pure white = 21:1 (max contrast per WCAG)."""
+        black = _hex_to_rgb("#000000")
+        white = _hex_to_rgb("#FFFFFF")
+        assert _contrast_ratio(black, white) == pytest.approx(21.0, abs=0.01)
+
+    def test_contrast_ratio_is_symmetric(self):
+        """contrast(a, b) == contrast(b, a) — the lighter color is
+        determined internally, not by argument order."""
+        a = _hex_to_rgb("#64748B")
+        b = _hex_to_rgb("#0F172A")
+        assert _contrast_ratio(a, b) == pytest.approx(_contrast_ratio(b, a))
+
+    def test_contrast_ratio_vertex_pmo_failing_case(self):
+        """Concrete anchor : vertex-pmo's `ink.muted` (#64748B) on
+        `surface.DEFAULT` (#0F172A) MUST score below WCAG AA 4.5:1.
+        That's why pa11y reports 18 errors on this site; if this test
+        ever passes, our fix-target heuristic has drifted."""
+        fg = _hex_to_rgb("#64748B")
+        bg = _hex_to_rgb("#0F172A")
+        ratio = _contrast_ratio(fg, bg)
+        assert ratio < 4.5, f"Expected vertex-pmo ink.muted to fail AA, got {ratio:.2f}"
+
+    def test_harden_already_compliant_returns_none(self):
+        """If the fg already meets the buffer target, the hardener is a
+        no-op — preserves design intent and ensures idempotence."""
+        # White on black = 21:1, well above the 5.0 buffer
+        assert _harden_token_contrast("#FFFFFF", "#000000") is None
+
+    def test_harden_dark_bg_lightens_fg(self):
+        """Dark background → the fixer must lift the foreground (raise V)
+        until contrast clears the 5.0 buffer."""
+        new_hex = _harden_token_contrast("#64748B", "#0F172A")
+        assert new_hex is not None
+        fg = _hex_to_rgb(new_hex)
+        bg = _hex_to_rgb("#0F172A")
+        assert _contrast_ratio(fg, bg) >= 5.0
+
+    def test_harden_light_bg_darkens_fg(self):
+        """Light background → the fixer must drop V to darken the
+        foreground until contrast clears the 5.0 buffer."""
+        # depanneur-nobert's historic problem : #8B7355 on a cream bg
+        new_hex = _harden_token_contrast("#8B7355", "#FFF8E7")
+        assert new_hex is not None
+        fg = _hex_to_rgb(new_hex)
+        bg = _hex_to_rgb("#FFF8E7")
+        assert _contrast_ratio(fg, bg) >= 5.0
+
+
+class TestFixPa11yContrast:
+    """P8.6 — integration tests for the `_fix_pa11y_contrast` fixer.
+
+    The fixer reads `tailwind.config.ts`, locates muted-role palette
+    tokens, computes their contrast against the site's primary background,
+    and rewrites any token below WCAG AA 4.5:1 to a value that clears 5.0:1.
+    """
+
+    def _write_palette(self, site_dir: Path, content: str) -> Path:
+        config = site_dir / "tailwind.config.ts"
+        config.write_text(content)
+        return config
+
+    def test_skip_when_tailwind_config_absent(self, tmp_path):
+        """Site without tailwind.config.ts (e.g., CSS-vars-only palette)
+        is out of scope for this commit — must skip cleanly."""
+        report = FixReport()
+        _fix_pa11y_contrast(tmp_path, report)
+        assert report.contrast_tokens_fixed == 0
+
+    def test_skip_when_no_muted_token(self, tmp_path):
+        """Palette without any muted-pattern token (`muted`, `subtle`,
+        `tertiary`, `disabled`, `placeholder`) leaves nothing to harden."""
+        self._write_palette(
+            tmp_path,
+            (
+                "export default {\n"
+                "  theme: { extend: { colors: {\n"
+                "    surface: {\n"
+                "      DEFAULT: '#0F172A'\n"
+                "    },\n"
+                "    primary: {\n"
+                "      DEFAULT: '#3B82F6'\n"
+                "    }\n"
+                "  }}}\n"
+                "};\n"
+            ),
+        )
+        report = FixReport()
+        _fix_pa11y_contrast(tmp_path, report)
+        assert report.contrast_tokens_fixed == 0
+
+    # Realistic tailwind.config.ts skeleton — mirrors vertex-pmo + depanneur-nobert
+    # convention : nested palette blocks, one token per line, single-quoted hexes.
+    _DARK_PALETTE = (
+        "export default {\n"
+        "  theme: { extend: { colors: {\n"
+        "    surface: {\n"
+        "      DEFAULT: '#0F172A',\n"
+        "      alt: '#1E293B'\n"
+        "    },\n"
+        "    ink: {\n"
+        "      DEFAULT: '#F8FAFC',\n"
+        "      muted: '#64748B'\n"
+        "    }\n"
+        "  }}}\n"
+        "};\n"
+    )
+
+    _LIGHT_PALETTE = (
+        "export default {\n"
+        "  theme: { extend: { colors: {\n"
+        "    background: {\n"
+        "      DEFAULT: '#FFF8E7'\n"
+        "    },\n"
+        "    text: {\n"
+        "      DEFAULT: '#2A1810',\n"
+        "      muted: '#8B7355'\n"
+        "    }\n"
+        "  }}}\n"
+        "};\n"
+    )
+
+    def test_skip_when_no_background_token(self, tmp_path):
+        """Palette without a recognized background token (`surface`,
+        `background`, `bg`, `body`) → cannot compute contrast → conservative skip."""
+        self._write_palette(
+            tmp_path,
+            (
+                "export default {\n"
+                "  theme: { extend: { colors: {\n"
+                "    text: {\n"
+                "      muted: '#64748B'\n"
+                "    }\n"
+                "  }}}\n"
+                "};\n"
+            ),
+        )
+        report = FixReport()
+        _fix_pa11y_contrast(tmp_path, report)
+        assert report.contrast_tokens_fixed == 0
+
+    def test_skip_when_already_compliant(self, tmp_path):
+        """If every muted token already meets the buffer (5.0:1), the file
+        stays bit-identical (idempotent no-op)."""
+        content = (
+            "export default {\n"
+            "  theme: { extend: { colors: {\n"
+            "    surface: {\n"
+            "      DEFAULT: '#0F172A'\n"
+            "    },\n"
+            "    ink: {\n"
+            "      muted: '#CBD5E1'\n"  # ~12:1 on #0F172A
+            "    }\n"
+            "  }}}\n"
+            "};\n"
+        )
+        config = self._write_palette(tmp_path, content)
+        report = FixReport()
+        _fix_pa11y_contrast(tmp_path, report)
+        assert report.contrast_tokens_fixed == 0
+        assert config.read_text() == content  # bit-identical
+
+    def test_fix_dark_theme_failing_muted(self, tmp_path):
+        """Concrete vertex-pmo case : ink.muted #64748B on surface
+        #0F172A scores ~4.0:1. The fixer must lift it to ≥ 4.5:1
+        (target 5.0) and rewrite the line in place."""
+        self._write_palette(tmp_path, self._DARK_PALETTE)
+        report = FixReport()
+        _fix_pa11y_contrast(tmp_path, report)
+
+        assert report.contrast_tokens_fixed == 1
+        new_content = (tmp_path / "tailwind.config.ts").read_text()
+        match = re.search(r"muted:\s*'(#[0-9a-fA-F]{6})'", new_content)
+        assert match is not None, f"muted token lost from rewrite: {new_content}"
+        new_hex = match.group(1)
+        ratio = _contrast_ratio(_hex_to_rgb(new_hex), _hex_to_rgb("#0F172A"))
+        assert ratio >= 4.5, f"Hardened value {new_hex} still fails AA: {ratio:.2f}"
+
+    def test_fix_light_theme_failing_muted(self, tmp_path):
+        """Symmetric : light cream background needs the muted token to be
+        DARKER, not lighter (depanneur-nobert's historic case)."""
+        self._write_palette(tmp_path, self._LIGHT_PALETTE)
+        report = FixReport()
+        _fix_pa11y_contrast(tmp_path, report)
+
+        assert report.contrast_tokens_fixed == 1
+        new_content = (tmp_path / "tailwind.config.ts").read_text()
+        match = re.search(r"muted:\s*'(#[0-9a-fA-F]{6})'", new_content)
+        assert match is not None
+        new_hex = match.group(1)
+        ratio = _contrast_ratio(_hex_to_rgb(new_hex), _hex_to_rgb("#FFF8E7"))
+        assert ratio >= 4.5
+
+    def test_fix_idempotent_run_twice(self, tmp_path):
+        """Running the fixer 2x must leave the file bit-identical after
+        the first pass — anchor for the P8.1 idempotence invariant
+        extended to D6 contrast tokens."""
+        self._write_palette(tmp_path, self._DARK_PALETTE)
+        report1 = FixReport()
+        _fix_pa11y_contrast(tmp_path, report1)
+        assert report1.contrast_tokens_fixed == 1
+        snapshot = (tmp_path / "tailwind.config.ts").read_bytes()
+
+        report2 = FixReport()
+        _fix_pa11y_contrast(tmp_path, report2)
+        assert report2.contrast_tokens_fixed == 0
+        assert (tmp_path / "tailwind.config.ts").read_bytes() == snapshot
+
+    def test_fix_preserves_other_tokens(self, tmp_path):
+        """The fixer must NOT touch primary / accent / brand tokens —
+        only muted-pattern ones. Verifies the conservative scope."""
+        self._write_palette(
+            tmp_path,
+            (
+                "export default {\n"
+                "  theme: { extend: { colors: {\n"
+                "    surface: {\n"
+                "      DEFAULT: '#0F172A'\n"
+                "    },\n"
+                "    primary: {\n"
+                "      DEFAULT: '#3B82F6'\n"
+                "    },\n"
+                "    accent: {\n"
+                "      DEFAULT: '#F59E0B'\n"
+                "    },\n"
+                "    ink: {\n"
+                "      muted: '#64748B'\n"
+                "    }\n"
+                "  }}}\n"
+                "};\n"
+            ),
+        )
+        report = FixReport()
+        _fix_pa11y_contrast(tmp_path, report)
+
+        new_content = (tmp_path / "tailwind.config.ts").read_text()
+        # primary + accent are untouched
+        assert "'#3B82F6'" in new_content
+        assert "'#F59E0B'" in new_content
+        # surface (background) is untouched
+        assert "'#0F172A'" in new_content
+        # muted was rewritten (no longer the original failing value)
+        assert "'#64748B'" not in new_content
+
+    def test_fix_multiple_muted_tokens(self, tmp_path):
+        """When several blocks expose a muted-role token (e.g., both
+        `ink.muted` and `text.subtle`), the fixer must process each one
+        independently and report the count correctly."""
+        self._write_palette(
+            tmp_path,
+            (
+                "export default {\n"
+                "  theme: { extend: { colors: {\n"
+                "    surface: {\n"
+                "      DEFAULT: '#0F172A'\n"
+                "    },\n"
+                "    ink: {\n"
+                "      muted: '#64748B'\n"
+                "    },\n"
+                "    text: {\n"
+                "      subtle: '#475569'\n"
+                "    }\n"
+                "  }}}\n"
+                "};\n"
+            ),
+        )
+        report = FixReport()
+        _fix_pa11y_contrast(tmp_path, report)
+        assert report.contrast_tokens_fixed == 2
+
+    def test_fix_via_auto_fix_routing(self, tmp_path):
+        """End-to-end via `auto_fix(dimensions={'D6'})` — verifies the
+        P8.3 routing actually invokes pa11y_contrast and no other fixer."""
+        site = tmp_path / "site"
+        site.mkdir()
+        self._write_palette(site, self._DARK_PALETTE)
+        client = tmp_path / "client"
+        client.mkdir()
+        report = auto_fix(site, client, brief={"company_name": "TestCo"}, dimensions={"D6"})
+        assert report.contrast_tokens_fixed == 1
+        # D4/D8 fixers MUST NOT have run
+        assert not (site / "vercel.json").exists()
         assert not (site / "README.md").exists()

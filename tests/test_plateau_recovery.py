@@ -113,9 +113,12 @@ class TestPlateauHookDefensive:
         assert "diagnostic vide" in joined, f"Expected empty-diag log, got: {joined}"
 
     def test_logs_coverage_gap_when_no_fixer_matches(self, tmp_path, say_log, brief_loader_log):
-        """Plateau on D5/D6/D9 (no NEXOS fixer today) → coverage gap log,
-        auto_fix NOT invoked. This is the signal that future P8/P9 work
-        should extend fixer coverage to these dimensions."""
+        """Plateau on D1/D3/D5/D7/D9 (no NEXOS fixer today) → coverage gap
+        log, auto_fix NOT invoked. This is the signal that future P8/P9
+        work should extend fixer coverage to these dimensions.
+
+        Coverage state 2026-05-17 : D2 (readme), D4 (5 fixers), D6
+        (pa11y_contrast P8.6), D8 (3 fixers) covered. D1/D3/D5/D7/D9 not."""
         lines, say = say_log
         _, loader = brief_loader_log
 
@@ -129,7 +132,7 @@ class TestPlateauHookDefensive:
         )
 
         with patch("nexos.auto_fixer.auto_fix") as mock_fix:
-            hook(_diagnosis(failing_dimensions=("D5", "D6", "D9")))
+            hook(_diagnosis(failing_dimensions=("D5", "D7", "D9")))
             mock_fix.assert_not_called()
 
         joined = " | ".join(lines)

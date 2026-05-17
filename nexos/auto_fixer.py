@@ -139,6 +139,9 @@ class FixReport:
     privacy_page_added: bool = False
     legal_page_added: bool = False
     readme_added: bool = False
+    # P8.6 — D6 accessibility: number of palette tokens hardened to meet
+    # WCAG AA 4.5:1 contrast. 0 = nothing to fix or all already conformant.
+    contrast_tokens_fixed: int = 0
 
     @property
     def total_fixes(self) -> int:
@@ -160,6 +163,8 @@ class FixReport:
         if self.privacy_page_added:
             count += 1
         if self.legal_page_added:
+            count += 1
+        if self.contrast_tokens_fixed > 0:
             count += 1
         return count
 
@@ -403,6 +408,274 @@ def _fix_readme(site_dir: Path, brief: dict[str, Any], report: FixReport) -> Non
     readme_path.write_text(_README_TEMPLATE.format(company_name=company_name))
     report.readme_added = True
     logger.info("README.md created (%s)", company_name)
+
+
+# ── WCAG contrast helpers (P8.6) ──────────────────────────────────────
+#
+# Pure-stdlib implementation of WCAG 2.1 relative luminance + contrast
+# ratio. Used by `_fix_pa11y_contrast` to detect Tailwind palette tokens
+# that fail AA 4.5:1 on the site's primary background, and to harden
+# their value just enough to clear the threshold (with a 5.0:1 buffer)
+# without losing the "muted" visual intent.
+
+# Token-name substrings that signal a low-emphasis text role. We only
+# touch these — never `primary`, `accent`, `brand`, etc. Conservative on
+# purpose : the goal is to prevent contrast regressions on subdued text,
+# not to repaint the design system.
+_MUTED_TOKEN_PATTERNS: tuple[str, ...] = (
+    "muted",
+    "subtle",
+    "tertiary",
+    "disabled",
+    "placeholder",
+)
+
+# Names of background tokens to probe, in priority order. The first one
+# that resolves to a hex literal in the same palette block becomes the
+# reference background for contrast computation. Reflects the convention
+# established by depanneur-nobert + vertex-pmo (both use `surface.DEFAULT`).
+_BACKGROUND_TOKEN_NAMES: tuple[str, ...] = (
+    "surface",
+    "background",
+    "bg",
+    "body",
+)
+
+# WCAG AA threshold for normal-size text. Buffer target lifts hardened
+# tokens above the bare minimum so a future palette tweak doesn't drag
+# them back into FAIL territory.
+_WCAG_AA_THRESHOLD: float = 4.5
+_CONTRAST_BUFFER_TARGET: float = 5.0
+
+# Maximum HSV adjustment iterations before bailing out. With a 0.02 step
+# (51-ish hex levels of resolution on V), 50 iterations is plenty to span
+# 0→1 without rounding artifacts.
+_MAX_CONTRAST_ITERATIONS: int = 50
+_V_ADJUSTMENT_STEP: float = 0.02
+
+
+def _hex_to_rgb(hex_color: str) -> tuple[float, float, float]:
+    """Parse a CSS-style hex literal (#RGB or #RRGGBB) to (R, G, B) ∈ [0, 1].
+
+    Raises ValueError on malformed input — callers should catch and skip.
+    """
+    s = hex_color.lstrip("#")
+    if len(s) == 3:
+        s = "".join(c * 2 for c in s)
+    if len(s) != 6:
+        raise ValueError(f"Not a 3- or 6-digit hex color: {hex_color!r}")
+    r = int(s[0:2], 16) / 255.0
+    g = int(s[2:4], 16) / 255.0
+    b = int(s[4:6], 16) / 255.0
+    return r, g, b
+
+
+def _rgb_to_hex(rgb: tuple[float, float, float]) -> str:
+    """Render (R, G, B) ∈ [0, 1] as `#RRGGBB` (lowercase, clamped)."""
+    r, g, b = rgb
+    ri = max(0, min(255, round(r * 255)))
+    gi = max(0, min(255, round(g * 255)))
+    bi = max(0, min(255, round(b * 255)))
+    return f"#{ri:02x}{gi:02x}{bi:02x}"
+
+
+def _relative_luminance(rgb: tuple[float, float, float]) -> float:
+    """WCAG 2.1 relative luminance for an sRGB color in [0, 1]³.
+
+    Implements the gamma-corrected weighted sum per
+    https://www.w3.org/TR/WCAG21/#dfn-relative-luminance.
+    """
+
+    def _component(c: float) -> float:
+        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+
+    r, g, b = rgb
+    return 0.2126 * _component(r) + 0.7152 * _component(g) + 0.0722 * _component(b)
+
+
+def _contrast_ratio(fg: tuple[float, float, float], bg: tuple[float, float, float]) -> float:
+    """Return the WCAG contrast ratio between two colors (1.0 to 21.0).
+
+    Symmetric in its arguments: which color is lighter is determined here.
+    """
+    l1 = _relative_luminance(fg)
+    l2 = _relative_luminance(bg)
+    lighter, darker = (l1, l2) if l1 >= l2 else (l2, l1)
+    return (lighter + 0.05) / (darker + 0.05)
+
+
+def _rgb_to_hsv(rgb: tuple[float, float, float]) -> tuple[float, float, float]:
+    """Convert (R, G, B) ∈ [0, 1] to (H, S, V) — colorsys avoids a deps drag."""
+    import colorsys
+
+    return colorsys.rgb_to_hsv(*rgb)
+
+
+def _hsv_to_rgb(hsv: tuple[float, float, float]) -> tuple[float, float, float]:
+    import colorsys
+
+    return colorsys.hsv_to_rgb(*hsv)
+
+
+def _harden_token_contrast(
+    fg_hex: str, bg_hex: str, target: float = _CONTRAST_BUFFER_TARGET
+) -> str | None:
+    """Adjust `fg_hex` so its contrast against `bg_hex` reaches `target`.
+
+    Strategy: shift the HSV `value` channel away from the background's
+    luminance (lighter if bg is dark, darker if bg is light) by
+    `_V_ADJUSTMENT_STEP` per iteration, capped at `_MAX_CONTRAST_ITERATIONS`.
+
+    Returns the new hex string (lowercase) or `None` if the target was
+    already met (caller short-circuits to no-op) or could not be reached
+    within the iteration budget.
+    """
+    try:
+        fg_rgb = _hex_to_rgb(fg_hex)
+        bg_rgb = _hex_to_rgb(bg_hex)
+    except ValueError:
+        return None
+
+    current_ratio = _contrast_ratio(fg_rgb, bg_rgb)
+    if current_ratio >= target:
+        return None  # already conformant, idempotent no-op
+
+    # Determine direction: if bg is "dark" (luminance < 0.5), we lift V;
+    # otherwise we drop V. This preserves the hue/saturation of the muted
+    # token while pulling its lightness across the contrast threshold.
+    bg_l = _relative_luminance(bg_rgb)
+    direction = +1 if bg_l < 0.5 else -1
+
+    h, s, v = _rgb_to_hsv(fg_rgb)
+    for _ in range(_MAX_CONTRAST_ITERATIONS):
+        v = max(0.0, min(1.0, v + direction * _V_ADJUSTMENT_STEP))
+        candidate_rgb = _hsv_to_rgb((h, s, v))
+        if _contrast_ratio(candidate_rgb, bg_rgb) >= target:
+            return _rgb_to_hex(candidate_rgb)
+        if v == 0.0 or v == 1.0:
+            # Hit the V boundary without reaching the target — palette is
+            # structurally hostile (e.g., pure black on pure black). Give up
+            # gracefully; caller logs the skip.
+            return None
+    return None
+
+
+# Token line in tailwind.config.ts: `  muted: '#64748B'` (with possible
+# `DEFAULT:` prefix, `,` suffix, single or double quotes). Captures the
+# leading indent + token name + quote + hex + trailing.
+_TAILWIND_TOKEN_LINE_RE = re.compile(
+    r"""^(?P<lead>\s*)
+        (?P<name>[A-Za-z_][A-Za-z0-9_]*)
+        (?P<sep>\s*:\s*)
+        (?P<quote>['"])
+        (?P<hex>\#[0-9A-Fa-f]{3,6})
+        (?P=quote)
+        (?P<tail>\s*,?\s*)$""",
+    re.VERBOSE,
+)
+
+
+def _extract_palette_token_lines(tailwind_content: str) -> dict[str, list[int]]:
+    """Group line indices by token name in a tailwind.config.ts source.
+
+    Multiple lines can share a name (e.g., `muted` under both `ink` and
+    `text` blocks) — we return every occurrence so the caller can fix all
+    of them in one pass. Indices are 0-based into `tailwind_content.splitlines()`.
+    """
+    grouped: dict[str, list[int]] = {}
+    for idx, line in enumerate(tailwind_content.splitlines()):
+        match = _TAILWIND_TOKEN_LINE_RE.match(line)
+        if match is None:
+            continue
+        grouped.setdefault(match.group("name"), []).append(idx)
+    return grouped
+
+
+def _fix_pa11y_contrast(site_dir: Path, report: FixReport) -> None:
+    """Harden Tailwind palette tokens that fail WCAG AA 4.5:1 contrast (P8.6).
+
+    Reads `<site>/tailwind.config.ts`, locates palette tokens whose name
+    matches a muted-role pattern (`muted`, `subtle`, `tertiary`, …),
+    computes their contrast against the site's primary background
+    (`surface.DEFAULT` / `background.DEFAULT` / `bg.DEFAULT` / `body.DEFAULT`),
+    and rewrites any token below 4.5:1 to a value that clears 5.0:1.
+
+    Defensive skips:
+      - no `tailwind.config.ts` (e.g., site uses a different palette source)
+      - no muted-pattern token found
+      - no background token found (can't compute contrast → can't decide)
+      - all tokens already conformant (idempotent no-op)
+
+    The patch is line-level (regex match + in-place rewrite) so commits
+    stay readable and other tokens / comments / indentation are untouched.
+    """
+    config_path = site_dir / "tailwind.config.ts"
+    if not config_path.exists():
+        # Some projects keep their palette in `globals.css` as CSS variables.
+        # Out of scope for this commit — see P8.6.2 follow-up if needed.
+        return
+
+    content = config_path.read_text()
+    tokens_by_name = _extract_palette_token_lines(content)
+
+    muted_lines: list[int] = []
+    for name, indices in tokens_by_name.items():
+        if any(pattern in name.lower() for pattern in _MUTED_TOKEN_PATTERNS):
+            muted_lines.extend(indices)
+    if not muted_lines:
+        return  # nothing to harden
+
+    bg_hex: str | None = None
+    lines = content.splitlines()
+    for bg_name in _BACKGROUND_TOKEN_NAMES:
+        candidates = tokens_by_name.get(bg_name) or []
+        # Also accept `DEFAULT` lines sitting just under a `surface: {` block.
+        candidates += tokens_by_name.get("DEFAULT", [])
+        for idx in candidates:
+            match = _TAILWIND_TOKEN_LINE_RE.match(lines[idx])
+            if match is None:
+                continue
+            # Only accept the first DEFAULT immediately following one of the
+            # background block headers (we don't want a `text: { DEFAULT }`).
+            if match.group("name") == "DEFAULT":
+                prev = lines[idx - 1] if idx > 0 else ""
+                if not re.search(rf"\b{bg_name}\s*:\s*\{{", prev):
+                    continue
+            bg_hex = match.group("hex")
+            break
+        if bg_hex is not None:
+            break
+
+    if bg_hex is None:
+        return  # cannot determine background reference → conservative skip
+
+    new_lines = list(lines)
+    fixed = 0
+    for idx in muted_lines:
+        match = _TAILWIND_TOKEN_LINE_RE.match(new_lines[idx])
+        if match is None:
+            continue
+        new_hex = _harden_token_contrast(match.group("hex"), bg_hex)
+        if new_hex is None:
+            continue
+        new_lines[idx] = (
+            f"{match.group('lead')}{match.group('name')}{match.group('sep')}"
+            f"{match.group('quote')}{new_hex}{match.group('quote')}{match.group('tail')}"
+        )
+        fixed += 1
+
+    if fixed == 0:
+        return  # all muted tokens already conformant, idempotent no-op
+
+    # Preserve trailing newline iff the original file had one.
+    trailing_nl = "\n" if content.endswith("\n") else ""
+    config_path.write_text("\n".join(new_lines) + trailing_nl)
+    report.contrast_tokens_fixed = fixed
+    logger.info(
+        "Hardened %d palette token(s) for WCAG AA contrast in %s",
+        fixed,
+        config_path.name,
+    )
 
 
 def _fix_csp(site_dir: Path, report: FixReport) -> None:
@@ -888,6 +1161,15 @@ FIXER_ORDER: list[Fixer] = [
         lambda s, b, r: _fix_legal_page(s, b, r),
     ),
     Fixer("readme", "README.md", "D2", lambda s, b, r: _fix_readme(s, b, r)),
+    # P8.6 — D6 accessibility: harden Tailwind palette muted tokens to meet
+    # WCAG AA 4.5:1. No dependency on other fixers (operates on
+    # tailwind.config.ts which no other fixer touches).
+    Fixer(
+        "pa11y_contrast",
+        "tailwind.config.ts",
+        "D6",
+        lambda s, _b, r: _fix_pa11y_contrast(s, r),
+    ),
 ]
 
 
@@ -1012,6 +1294,14 @@ def _log_applied_fixes(client_dir: Path, report: FixReport) -> None:
         fixes.append({"fix": "privacy_page", "target": "politique-confidentialite"})
     if report.legal_page_added:
         fixes.append({"fix": "legal_page", "target": "mentions-legales"})
+    if report.contrast_tokens_fixed > 0:
+        fixes.append(
+            {
+                "fix": "pa11y_contrast",
+                "target": "tailwind.config.ts",
+                "tokens_fixed": report.contrast_tokens_fixed,
+            }
+        )
 
     for fix_detail in fixes:
         log_event(client_dir, EventType.AUTOFIX_APPLIED, agent="auto_fixer", details=fix_detail)
