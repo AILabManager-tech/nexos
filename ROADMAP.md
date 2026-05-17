@@ -3,7 +3,7 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-16 — P8.3 résolu (claude, mode rigoureux)
+**Dernière mise à jour** : 2026-05-17 — audit public Mark Systems (codex)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
 **Branche** : `main` — 4 commits P8.3 locaux (push à discrétion) ; SOIC `9b9e123` côté `soic_v3`
 
@@ -31,7 +31,8 @@
 | Auto-fixer idempotent | ✅ **résolu (P8.1)** | `FIXER_ORDER: list[Fixer]` + 14 tests régression (ordre + file-ownership + idempotence run 3×) |
 | ABORT_PLATEAU recovery | ✅ **résolu (P8.2)** | `Decision.ENRICHED_RETRY` + `PlateauDiagnosis` injecté dans feedback avant abort (1 retry par run) |
 | Dimension-scoped fixers | ✅ **résolu (P8.3)** | `Fixer.dimension` + `auto_fix(dimensions=)` + `on_enriched_retry` hook + `orchestrator/plateau_recovery.py` factory — routing déterministe D4/D8 sur plateau |
-| Dette technique notée | 🟡 **P9 ouvert** (6 items D1-D6) | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict |
+| Dette technique notée | 🟡 **P9 ouvert** (7 items D1-D7) | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict, preflight path |
+| Audit Mark Systems public | 🟡 **fait 2026-05-17** | Lighthouse 94/91/100/100 ; pa11y 12 erreurs ; npm audit 1 critical + 8 high ; build PASS ; tests 34/34 |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
 | Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
 | CSP middleware dev local | ✅ **résolu (P4a)** | `_fix_csp_middleware` génère middleware.ts aligné prod (single source vercel.json) |
@@ -580,6 +581,10 @@ Exactement le seuil. Aucune marge. Toute modif mineure peut le faire descendre s
 `additionalProperties: false` rejette champs comme `sector` qui pourraient être utiles. Friction UX. Pas un bug, by design.
 **Action** : ajouter champs optionnels au schéma (`sector`, `tags`, `notes`) si valeur produit confirmée. Effort 20 min.
 
+#### D7 — `tools/preflight.sh` écrit `npm-audit.json` avec un chemin relatif cassé
+Audit Mark Systems 2026-05-17 : `bash tools/preflight.sh https://www.marksystems.ca/ clients/mark_systems_demo` crée `TOOLING_DIR=clients/mark_systems_demo/tooling`, puis fait `cd "$SITE_DIR"` avant `npm audit --json > "$TOOLING_DIR/npm-audit.json"`. Le chemin devient relatif au site et l'écriture échoue (`No such file or directory`) même si le script affiche `✓`.
+**Action** : résoudre `CLIENT_DIR`/`TOOLING_DIR` en chemins absolus au début du script ou remplacer le bloc npm par `tools/deps-scan.sh`. Ajouter un test régression. Effort 20 min.
+
 ---
 
 ### 🟢 Items P4 archivés (référence historique)
@@ -805,6 +810,13 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 ---
 
 ## 🗓️ Historique des sessions notables
+
+### 2026-05-17 — Audit public Mark Systems (codex)
+- Cible : `https://www.marksystems.ca/` + source locale `/home/gear-code/02_projects/mark-systems-site/web-version`.
+- Résultats : Lighthouse `performance 94`, `accessibility 91`, `best-practices 100`, `seo 100`; build Next PASS; Vitest `34/34`.
+- Blocages : pa11y `12` erreurs WCAG (6 contrastes `text-txt-tertiary`, 6 liens icône sans nom accessible), `npm audit` = `1 critical`, `8 high`, `5 moderate`, `1 low`.
+- Conformité : headers prod solides (CSP/HSTS/XFO/nosniff/referrer/permissions), privacy + mentions légales publiques présentes; source locale fourni ne correspond pas exactement au déploiement public observé.
+- Dette NEXOS découverte : `tools/preflight.sh` casse l'écriture `npm-audit.json` après `cd "$SITE_DIR"` avec un `TOOLING_DIR` relatif. Ajouté en P9/D7.
 
 ### 2026-05-16 — P8.3 résolu : dimension-scoped auto-fix on plateau (claude, mode rigoureux)
 - Cause racine identifiée : P8.2 surfaçait `PlateauDiagnosis.failing_dimensions` mais le signal alimentait UNIQUEMENT le prompt LLM enrichi. Aucun fixer déterministe NEXOS n'était déclenché — alors qu'on a déjà 5 fixers D4 (sécurité) et 3 fixers D8 (Loi 25) qui pourraient corriger en quelques millisecondes ce que le LLM doit réécrire sur plateau.
