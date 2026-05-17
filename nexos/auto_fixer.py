@@ -1173,6 +1173,237 @@ FIXER_ORDER: list[Fixer] = [
 ]
 
 
+# ── P9 D8 — Dry-run describers (parity with FIXER_ORDER) ─────────────
+#
+# Chaque describer reproduit la condition de détection du fixer
+# correspondant en mode read-only et retourne un finding `str` si une
+# correction serait appliquée, ou `None` si le fixer ne ferait rien
+# (idempotence respect). `DRY_RUN_DESCRIBERS` est la source de vérité du
+# mode dry-run ; l'invariant `set(DRY_RUN_DESCRIBERS) == {f.name for f
+# in FIXER_ORDER}` est testé pour empêcher toute dérive future.
+
+
+def _describe_cookie_consent(
+    site_dir: Path, _client_dir: Path, _brief: dict[str, Any] | None
+) -> str | None:
+    components_dir = _resolve_components_dir(site_dir)
+    if not components_dir.exists():
+        return "Cookie consent absent → copierait template + injection layout.tsx"
+    for f in components_dir.rglob("*"):
+        if f.is_file() and "cookie" in f.name.lower() and "consent" in f.name.lower():
+            return None
+    return "Cookie consent absent → copierait template + injection layout.tsx"
+
+
+def _describe_npm_audit(
+    _site_dir: Path, _client_dir: Path, _brief: dict[str, Any] | None
+) -> str | None:
+    # Pas de détection statique : `npm audit` est coûteux et son résultat
+    # change selon le lock-file. On annonce systématiquement la tentative.
+    return "npm audit fix → exécuterait pour corriger les vulnérabilités connues"
+
+
+def _describe_vercel_headers(
+    site_dir: Path, _client_dir: Path, _brief: dict[str, Any] | None
+) -> str | None:
+    vercel_path = site_dir / "vercel.json"
+    if not vercel_path.exists():
+        return "vercel.json absent → créerait depuis template"
+    try:
+        data = json.loads(vercel_path.read_text())
+    except json.JSONDecodeError:
+        return "vercel.json corrompu → remplacerait par template"
+    existing: set[str] = set()
+    for block in data.get("headers", []):
+        for h in block.get("headers", []):
+            existing.add(h.get("key", "").lower())
+    missing = [k for k in REQUIRED_HEADERS if k.lower() not in existing]
+    if missing:
+        return f"Headers manquants dans vercel.json: {', '.join(missing)}"
+    return None
+
+
+def _describe_csp(site_dir: Path, _client_dir: Path, _brief: dict[str, Any] | None) -> str | None:
+    vercel_path = site_dir / "vercel.json"
+    if not vercel_path.exists():
+        # vercel_headers describer aura déjà signalé l'absence du fichier ;
+        # ici on n'ajoute pas de bruit.
+        return None
+    try:
+        data = json.loads(vercel_path.read_text())
+    except json.JSONDecodeError:
+        return None
+    existing: set[str] = set()
+    for block in data.get("headers", []):
+        for h in block.get("headers", []):
+            existing.add(h.get("key", "").lower())
+    if "content-security-policy" not in existing:
+        return "Content-Security-Policy absente → ajouterait DEFAULT_CSP"
+    return None
+
+
+def _describe_csp_middleware(
+    site_dir: Path, _client_dir: Path, _brief: dict[str, Any] | None
+) -> str | None:
+    middleware_path = site_dir / "middleware.ts"
+    if not middleware_path.exists():
+        return "middleware.ts absent → créerait avec bloc CSP"
+    content = middleware_path.read_text()
+    if (
+        "Content-Security-Policy" not in content
+        and "content-security-policy" not in content.lower()
+    ):
+        return "middleware.ts sans CSP → injecterait Content-Security-Policy"
+    return None
+
+
+def _describe_next_config(
+    site_dir: Path, _client_dir: Path, _brief: dict[str, Any] | None
+) -> str | None:
+    for config_name in ("next.config.mjs", "next.config.js", "next.config.ts"):
+        config_path = site_dir / config_name
+        if not config_path.exists():
+            continue
+        content = config_path.read_text()
+        if "poweredByHeader" not in content:
+            return f"{config_name}: poweredByHeader manquant → ajouterait false"
+        if "poweredByHeader: true" in content or "poweredByHeader:true" in content:
+            return f"{config_name}: poweredByHeader=true → changerait à false"
+        return None
+    return None
+
+
+def _describe_privacy_page(
+    site_dir: Path, _client_dir: Path, _brief: dict[str, Any] | None
+) -> str | None:
+    app_root = _resolve_app_root(site_dir)
+    found = any(
+        (app_root / sub / "politique-confidentialite" / "page.tsx").exists()
+        for sub in ("[locale]", "")
+    )
+    if found:
+        return None
+    return "Page Politique confidentialité absente → générerait depuis template"
+
+
+def _describe_legal_page(
+    site_dir: Path, _client_dir: Path, _brief: dict[str, Any] | None
+) -> str | None:
+    app_root = _resolve_app_root(site_dir)
+    found = any(
+        (app_root / sub / "mentions-legales" / "page.tsx").exists() for sub in ("[locale]", "")
+    )
+    if found:
+        return None
+    return "Page Mentions légales absente → générerait depuis template"
+
+
+def _describe_readme(
+    site_dir: Path, _client_dir: Path, _brief: dict[str, Any] | None
+) -> str | None:
+    if (site_dir / "README.md").exists():
+        return None
+    return "README.md absent → générerait depuis template (gate D2 documentation)"
+
+
+def _describe_pa11y_contrast(
+    site_dir: Path, _client_dir: Path, _brief: dict[str, Any] | None
+) -> str | None:
+    """Détecte les tokens muted Tailwind sous WCAG AA 4.5:1.
+
+    Réplique la logique de `_fix_pa11y_contrast` en read-only :
+    parse tailwind.config.ts, isole les tokens muted, résout la
+    background reference, calcule le contraste. Renvoie un finding
+    seulement si au moins un token est non conforme.
+    """
+    config_path = site_dir / "tailwind.config.ts"
+    if not config_path.exists():
+        return None
+    content = config_path.read_text()
+    tokens_by_name = _extract_palette_token_lines(content)
+    muted_lines: list[int] = []
+    for name, indices in tokens_by_name.items():
+        if any(pattern in name.lower() for pattern in _MUTED_TOKEN_PATTERNS):
+            muted_lines.extend(indices)
+    if not muted_lines:
+        return None
+    bg_hex: str | None = None
+    lines = content.splitlines()
+    for bg_name in _BACKGROUND_TOKEN_NAMES:
+        candidates = tokens_by_name.get(bg_name) or []
+        candidates += tokens_by_name.get("DEFAULT", [])
+        for idx in candidates:
+            match = _TAILWIND_TOKEN_LINE_RE.match(lines[idx])
+            if match is None:
+                continue
+            if match.group("name") == "DEFAULT":
+                prev = lines[idx - 1] if idx > 0 else ""
+                if not re.search(rf"\b{bg_name}\s*:\s*\{{", prev):
+                    continue
+            bg_hex = match.group("hex")
+            break
+        if bg_hex is not None:
+            break
+    if bg_hex is None:
+        return None
+    try:
+        bg_rgb = _hex_to_rgb(bg_hex)
+    except ValueError:
+        return None
+    non_conformant = 0
+    for idx in muted_lines:
+        match = _TAILWIND_TOKEN_LINE_RE.match(lines[idx])
+        if match is None:
+            continue
+        try:
+            fg_rgb = _hex_to_rgb(match.group("hex"))
+        except ValueError:
+            continue
+        if _contrast_ratio(fg_rgb, bg_rgb) < 4.5:
+            non_conformant += 1
+    if non_conformant == 0:
+        return None
+    return (
+        f"tailwind.config.ts: {non_conformant} token(s) muted sous WCAG AA 4.5:1 "
+        f"sur bg {bg_hex} → durcirait jusqu'à 5.0:1 (HSV V uniquement)"
+    )
+
+
+DRY_RUN_DESCRIBERS: dict[str, Callable[[Path, Path, dict[str, Any] | None], str | None]] = {
+    "cookie_consent": _describe_cookie_consent,
+    "npm_audit": _describe_npm_audit,
+    "vercel_headers": _describe_vercel_headers,
+    "csp": _describe_csp,
+    "csp_middleware": _describe_csp_middleware,
+    "next_config": _describe_next_config,
+    "privacy_page": _describe_privacy_page,
+    "legal_page": _describe_legal_page,
+    "readme": _describe_readme,
+    "pa11y_contrast": _describe_pa11y_contrast,
+}
+
+
+def describe_auto_fix(
+    site_dir: Path,
+    client_dir: Path,
+    brief: dict[str, Any] | None,
+) -> list[str]:
+    """Itère FIXER_ORDER en read-only et renvoie les findings prévus.
+
+    Utilisé par `nexos fix --dry-run` (cli_commands) pour afficher ce
+    qu'`auto_fix()` ferait sans modifier le système de fichiers. La
+    source de vérité reste `FIXER_ORDER` ; chaque fixer doit avoir une
+    entrée dans `DRY_RUN_DESCRIBERS` (invariant testé).
+    """
+    findings: list[str] = []
+    for fixer in FIXER_ORDER:
+        describer = DRY_RUN_DESCRIBERS[fixer.name]
+        finding = describer(site_dir, client_dir, brief)
+        if finding is not None:
+            findings.append(finding)
+    return findings
+
+
 def fixers_for_dimensions(dimensions: Iterable[str]) -> list[Fixer]:
     """Sous-ensemble de `FIXER_ORDER` pour les dimensions données (P8.3).
 

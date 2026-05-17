@@ -12,6 +12,7 @@ import pytest
 from nexos.auto_fixer import (
     _VALID_SOIC_DIMENSIONS,
     DEFAULT_CSP,
+    DRY_RUN_DESCRIBERS,
     FIXER_ORDER,
     REQUIRED_HEADERS,
     TEMPLATES_DIR,
@@ -34,6 +35,7 @@ from nexos.auto_fixer import (
     _read_csp_from_vercel,
     _relative_luminance,
     auto_fix,
+    describe_auto_fix,
     fixers_for_dimensions,
 )
 
@@ -1326,3 +1328,231 @@ class TestFixPa11yContrast:
         # D4/D8 fixers MUST NOT have run
         assert not (site / "vercel.json").exists()
         assert not (site / "README.md").exists()
+
+
+# ── P9 D8 — dry-run describers parity with FIXER_ORDER ────────────────
+
+
+class TestDryRunDescribers:
+    """Invariants structurels : `DRY_RUN_DESCRIBERS` est la source de
+    vérité du mode dry-run et doit rester synchronisé avec `FIXER_ORDER`.
+
+    Découvert pendant P8.5 (mesure terrain vertex-pmo) : l'ancien
+    `_dry_run_analysis` (cli_commands.py) hardcodait 6 checks et omettait
+    `readme` (P8.1) et `pa11y_contrast` (P8.6). D8 ferme cette dérive en
+    dérivant le dry-run depuis `FIXER_ORDER` via un registre testé.
+    """
+
+    def test_describers_cover_all_fixers(self):
+        """Tout fixer dans FIXER_ORDER doit avoir un describer."""
+        fixer_names = {f.name for f in FIXER_ORDER}
+        describer_names = set(DRY_RUN_DESCRIBERS.keys())
+        assert fixer_names == describer_names, (
+            f"Missing describers: {fixer_names - describer_names} | "
+            f"Stale describers: {describer_names - fixer_names}"
+        )
+
+    def test_describer_signature_returns_str_or_none(self, tmp_path):
+        """Chaque describer doit retourner `str | None` sur site vide."""
+        site = tmp_path / "site"
+        site.mkdir()
+        client = tmp_path / "client"
+        client.mkdir()
+        for name, describer in DRY_RUN_DESCRIBERS.items():
+            result = describer(site, client, None)
+            assert result is None or isinstance(result, str), (
+                f"Describer {name!r} returned {type(result).__name__}, expected str | None"
+            )
+
+    def test_describe_auto_fix_returns_list_in_fixer_order(self, tmp_path):
+        """Findings sortent dans l'ordre strict de FIXER_ORDER."""
+        site = tmp_path / "site"
+        site.mkdir()
+        client = tmp_path / "client"
+        client.mkdir()
+        findings = describe_auto_fix(site, client, brief=None)
+        assert isinstance(findings, list)
+        assert all(isinstance(f, str) for f in findings)
+        # Ordre vérifié : npm_audit (générique, toujours présent) doit être
+        # à l'index correspondant à sa position dans FIXER_ORDER.
+        fixer_index = {f.name: i for i, f in enumerate(FIXER_ORDER)}
+        # On retrouve les findings dans l'ordre du FIXER_ORDER : pour chaque
+        # paire de findings successifs, l'index du fixer source est croissant.
+        last_seen_index = -1
+        for finding in findings:
+            matched_name = next(
+                (
+                    name
+                    for name in DRY_RUN_DESCRIBERS
+                    if name.replace("_", " ") in finding.lower() or name in finding
+                ),
+                None,
+            )
+            if matched_name is None:
+                continue  # finding générique non rattachable, on skip
+            assert fixer_index[matched_name] > last_seen_index, (
+                f"Finding {finding!r} (fixer {matched_name}) hors ordre FIXER_ORDER"
+            )
+            last_seen_index = fixer_index[matched_name]
+
+
+class TestDescriberParityCookieConsent:
+    def test_describes_when_absent(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        result = DRY_RUN_DESCRIBERS["cookie_consent"](site, tmp_path / "c", None)
+        assert result is not None
+        assert "cookie" in result.lower() or "consent" in result.lower()
+
+    def test_silent_when_present(self, tmp_path):
+        # `_resolve_components_dir` choisit `site/components/` quand `site/app/`
+        # existe (convention NEXOS flat), sinon `site/src/components/`. On
+        # reproduit la convention flat pour que le scan trouve le banner.
+        site = tmp_path / "site"
+        (site / "app").mkdir(parents=True)
+        components = site / "components" / "layout"
+        components.mkdir(parents=True)
+        (components / "CookieConsentBanner.tsx").write_text("export {}")
+        result = DRY_RUN_DESCRIBERS["cookie_consent"](site, tmp_path / "c", None)
+        assert result is None
+
+
+class TestDescriberParityVercelHeaders:
+    def test_describes_when_vercel_absent(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        result = DRY_RUN_DESCRIBERS["vercel_headers"](site, tmp_path / "c", None)
+        assert result is not None
+        assert "vercel" in result.lower()
+
+    def test_describes_when_headers_missing(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        (site / "vercel.json").write_text(json.dumps({"headers": []}))
+        result = DRY_RUN_DESCRIBERS["vercel_headers"](site, tmp_path / "c", None)
+        assert result is not None
+        assert "header" in result.lower()
+
+
+class TestDescriberParityCsp:
+    def test_describes_when_csp_absent(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        (site / "vercel.json").write_text(json.dumps({"headers": []}))
+        result = DRY_RUN_DESCRIBERS["csp"](site, tmp_path / "c", None)
+        assert result is not None
+        assert "content-security-policy" in result.lower() or "csp" in result.lower()
+
+
+class TestDescriberParityCspMiddleware:
+    def test_describes_when_middleware_absent(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        result = DRY_RUN_DESCRIBERS["csp_middleware"](site, tmp_path / "c", None)
+        assert result is not None
+        assert "middleware" in result.lower() or "csp" in result.lower()
+
+
+class TestDescriberParityNextConfig:
+    def test_describes_when_poweredByHeader_missing(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        (site / "next.config.mjs").write_text("export default {}")
+        result = DRY_RUN_DESCRIBERS["next_config"](site, tmp_path / "c", None)
+        assert result is not None
+        assert "poweredByHeader" in result or "powered" in result.lower()
+
+    def test_silent_when_already_false(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        (site / "next.config.mjs").write_text("export default { poweredByHeader: false }")
+        result = DRY_RUN_DESCRIBERS["next_config"](site, tmp_path / "c", None)
+        assert result is None
+
+
+class TestDescriberParityPrivacyPage:
+    def test_describes_when_absent(self, tmp_path):
+        site = tmp_path / "site"
+        (site / "app").mkdir(parents=True)
+        result = DRY_RUN_DESCRIBERS["privacy_page"](site, tmp_path / "c", None)
+        assert result is not None
+        assert (
+            "confidentialité" in result.lower()
+            or "privacy" in result.lower()
+            or "politique" in result.lower()
+        )
+
+
+class TestDescriberParityLegalPage:
+    def test_describes_when_absent(self, tmp_path):
+        site = tmp_path / "site"
+        (site / "app").mkdir(parents=True)
+        result = DRY_RUN_DESCRIBERS["legal_page"](site, tmp_path / "c", None)
+        assert result is not None
+        assert "mentions" in result.lower() or "legal" in result.lower()
+
+
+class TestDescriberParityReadme:
+    """Le describer pivot pour P9 D8 — sans lui le dry-run mentait."""
+
+    def test_describes_when_absent(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        result = DRY_RUN_DESCRIBERS["readme"](site, tmp_path / "c", None)
+        assert result is not None
+        assert "readme" in result.lower()
+
+    def test_silent_when_present(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        (site / "README.md").write_text("# Existing")
+        result = DRY_RUN_DESCRIBERS["readme"](site, tmp_path / "c", None)
+        assert result is None
+
+
+class TestDescriberParityPa11yContrast:
+    """Le 2e describer pivot pour P9 D8 — anchor vertex-pmo.
+
+    Le pattern multi-ligne (un token par ligne) reflète la convention
+    réelle des sites NEXOS (vertex-pmo + depanneur-nobert), que la regex
+    `_TAILWIND_TOKEN_LINE_RE` du fixer attend.
+    """
+
+    _LOW_CONTRAST = (
+        "export default {\n"
+        "  theme: { extend: { colors: {\n"
+        "    surface: {\n"
+        "      DEFAULT: '#0F172A'\n"
+        "    },\n"
+        "    ink: {\n"
+        "      DEFAULT: '#F8FAFC',\n"
+        "      muted: '#64748B'\n"
+        "    }\n"
+        "  }}}\n"
+        "};\n"
+    )
+
+    def test_describes_when_low_contrast(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        (site / "tailwind.config.ts").write_text(self._LOW_CONTRAST)
+        result = DRY_RUN_DESCRIBERS["pa11y_contrast"](site, tmp_path / "c", None)
+        assert result is not None
+        assert "contrast" in result.lower() or "wcag" in result.lower() or "muted" in result.lower()
+
+    def test_silent_when_no_tailwind_config(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        result = DRY_RUN_DESCRIBERS["pa11y_contrast"](site, tmp_path / "c", None)
+        assert result is None
+
+
+class TestDescriberParityNpmAudit:
+    """npm_audit n'a pas de détection statique → finding générique."""
+
+    def test_always_reports_generic_finding(self, tmp_path):
+        site = tmp_path / "site"
+        site.mkdir()
+        result = DRY_RUN_DESCRIBERS["npm_audit"](site, tmp_path / "c", None)
+        assert result is not None
+        assert "npm" in result.lower() or "audit" in result.lower()

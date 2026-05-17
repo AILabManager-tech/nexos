@@ -12,10 +12,8 @@ from pathlib import Path
 from typing import Any
 
 from nexos.auto_fixer import (
-    REQUIRED_HEADERS,
-    _resolve_app_root,
-    _resolve_components_dir,
     auto_fix,
+    describe_auto_fix,
 )
 from nexos.brief_contract import normalize_brief
 from nexos.build_validator import (
@@ -311,69 +309,25 @@ def run_fix(client_dir: Path, dry_run: bool = False) -> None:
 
 
 def _dry_run_analysis(site_dir: Path, client_dir: Path) -> None:
-    """Analyse ce qui serait corrigé sans appliquer."""
-    findings: list[str] = []
+    """Analyse ce qui serait corrigé sans appliquer (P9 D8).
 
-    # Cookie consent — utiliser le helper qui gère structure plate ET src/
-    components_dir = _resolve_components_dir(site_dir)
-    has_consent = False
-    if components_dir.exists():
-        for f in components_dir.rglob("*"):
-            if f.is_file() and "cookie" in f.name.lower() and "consent" in f.name.lower():
-                has_consent = True
-                break
-    if not has_consent:
-        findings.append("Cookie consent absent → copierait template + injection layout.tsx")
-
-    # Vercel headers
-    vercel_path = site_dir / "vercel.json"
-    if not vercel_path.exists():
-        findings.append("vercel.json absent → créerait depuis template")
-    else:
-        try:
-            data = json.loads(vercel_path.read_text())
-            existing = set()
-            for block in data.get("headers", []):
-                for h in block.get("headers", []):
-                    existing.add(h.get("key", "").lower())
-            missing = [k for k in REQUIRED_HEADERS if k.lower() not in existing]
-            if missing:
-                findings.append(f"Headers manquants dans vercel.json: {', '.join(missing)}")
-            if "content-security-policy" not in existing:
-                findings.append("Content-Security-Policy absente → ajouterait DEFAULT_CSP")
-        except json.JSONDecodeError:
-            findings.append("vercel.json corrompu → remplacerait par template")
-
-    # next.config
-    for config_name in ["next.config.mjs", "next.config.js", "next.config.ts"]:
-        config_path = site_dir / config_name
-        if config_path.exists():
-            content = config_path.read_text()
-            if "poweredByHeader" not in content:
-                findings.append(f"{config_name}: poweredByHeader manquant → ajouterait false")
-            elif "poweredByHeader: true" in content:
-                findings.append(f"{config_name}: poweredByHeader=true → changerait à false")
-            break
-
-    # Pages légales — utiliser _resolve_app_root qui gère plate ET src/
-    app_root = _resolve_app_root(site_dir)
-    for page_name, label in [
-        ("politique-confidentialite", "Politique confidentialité"),
-        ("mentions-legales", "Mentions légales"),
-    ]:
-        # Chercher dans variantes i18n et racine app/
-        found = any((app_root / sub / page_name / "page.tsx").exists() for sub in ["[locale]", ""])
-        if not found:
-            findings.append(f"Page {label} absente → générerait depuis template")
-
-    # npm audit
-    findings.append("npm audit fix → exécuterait pour corriger les vulnérabilités connues")
-
-    if findings:
-        for i, finding in enumerate(findings, 1):
-            say(f"  {i}. {finding}")
-    else:
+    Thin wrapper sur `describe_auto_fix()` (auto_fixer.py) qui itère
+    `FIXER_ORDER` via `DRY_RUN_DESCRIBERS`. Garantit la parité dry-run ↔
+    fix réel : tout fixer présent dans FIXER_ORDER apparaît ici, et un
+    test d'invariant échoue immédiatement si un nouveau fixer est ajouté
+    sans son describer.
+    """
+    brief_path = client_dir / "brief-client.json"
+    brief: dict[str, Any] | None = None
+    if brief_path.exists():
+        with contextlib.suppress(json.JSONDecodeError):
+            brief = normalize_brief(json.loads(brief_path.read_text()))
+    findings = describe_auto_fix(site_dir, client_dir, brief)
+    if not findings:
         say("  Aucune correction nécessaire.")
+        return
+    for i, finding in enumerate(findings, 1):
+        say(f"  {i}. {finding}")
 
 
 def run_report(client_dir: Path) -> None:

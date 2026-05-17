@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-17 — Mark Systems Session 1 durcie (codex)
+**Dernière mise à jour** : 2026-05-17 — P9 D8 résolu : describers dry-run parité FIXER_ORDER (claude, tungsten)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` — 6 commits P8.3+P8.6 locaux (push à discrétion) ; SOIC `9b9e123` côté `soic_v3`
+**Branche** : `main` — 6 commits P8.3+P8.6 locaux + 1 commit P9 D8 (push à discrétion) ; SOIC `9b9e123` côté `soic_v3`
 
 ---
 
@@ -15,7 +15,7 @@
 
 | Indicateur | Valeur | Note |
 |---|---|---|
-| Tests Python | **539/539** verts | +29 P8.3 (Fixer.dimension + auto_fix dimensions= + PhaseIterator hook + plateau_recovery) + 21 P8.6 (WCAG helpers + _fix_pa11y_contrast) |
+| Tests Python | **557/557** verts | +29 P8.3 + 21 P8.6 + 18 P9 D8 (3 invariants + 15 parité describers) |
 | Tests Vitest depanneur-nobert | **70/70** verts | +57 tests P4c (schemas + libs + email + clientConfig) + P5 (API contact + newsletter) |
 | Tests Vitest depanneur-nobert | **70/70** verts (était 13/13) | étendu en P4c + P5 |
 | Build site depanneur-nobert | **PASS** | npm audit 0/0 |
@@ -32,7 +32,7 @@
 | ABORT_PLATEAU recovery | ✅ **résolu (P8.2)** | `Decision.ENRICHED_RETRY` + `PlateauDiagnosis` injecté dans feedback avant abort (1 retry par run) |
 | Dimension-scoped fixers | ✅ **résolu (P8.3)** | `Fixer.dimension` + `auto_fix(dimensions=)` + `on_enriched_retry` hook + `orchestrator/plateau_recovery.py` factory — routing déterministe D4/D8 sur plateau |
 | Fixer D6 contraste WCAG | ✅ **résolu (P8.6)** | `_fix_pa11y_contrast` — WCAG helpers stdlib + détection background + harden V (HSV) jusqu'à 5.0:1. Validé sur vrai vertex-pmo : 3.75:1 → 5.00:1 |
-| Dette technique notée | 🟡 **P9 ouvert** (7 items D1-D7) | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict, preflight path |
+| Dette technique notée | 🟡 **P9 ouvert** (7 items D1-D7) · ✅ D8 résolu 2026-05-17 | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict, preflight path. D8 (dry-run parité) fermé |
 | Audit Mark Systems public | 🟢 **Session 1 faite 2026-05-17** | Next 15.5.18 ; analytics conditionnel au consentement ; liens privacy localisés ; tests 34/34 ; build PASS ; npm audit HIGH/CRITICAL = 0 |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
 | Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
@@ -631,6 +631,33 @@ Exactement le seuil. Aucune marge. Toute modif mineure peut le faire descendre s
 Audit Mark Systems 2026-05-17 : `bash tools/preflight.sh https://www.marksystems.ca/ clients/mark_systems_demo` crée `TOOLING_DIR=clients/mark_systems_demo/tooling`, puis fait `cd "$SITE_DIR"` avant `npm audit --json > "$TOOLING_DIR/npm-audit.json"`. Le chemin devient relatif au site et l'écriture échoue (`No such file or directory`) même si le script affiche `✓`.
 **Action** : résoudre `CLIENT_DIR`/`TOOLING_DIR` en chemins absolus au début du script ou remplacer le bloc npm par `tools/deps-scan.sh`. Ajouter un test régression. Effort 20 min.
 
+#### ✅ D8 — `_dry_run_analysis` désynchronisé de `FIXER_ORDER` (RÉSOLU 2026-05-17)
+
+**Cause racine** : `nexos/cli_commands.py:_dry_run_analysis()` hardcodait 6 checks (cookie_consent + vercel_headers + csp + next_config + privacy_page + legal_page + générique npm_audit). Depuis P8.1 (`readme` ajouté mai 15) et P8.6 (`pa11y_contrast` ajouté ce matin), 2 fixers de `FIXER_ORDER` étaient invisibles au dry-run et 1 (`csp_middleware`) aussi. Découvert pendant P8.5 mesure terrain vertex-pmo : `nexos fix --dry-run` annonçait 1 fix (npm audit) alors que le fix réel en appliquait 1 (pa11y_contrast). Aucun garde-fou anti-dérive.
+
+**Décision** : refactor pour faire de `FIXER_ORDER` la source unique de vérité aussi en mode dry-run, via un registre `DRY_RUN_DESCRIBERS: dict[str, Callable]` parité 1:1 + test invariant. Cohérent avec la décision Codex P8.1 (pas de Protocol+toposort architectural — registre testé suffit).
+
+**Implémentation** (1 commit atomique) :
+- `nexos/auto_fixer.py` :
+  - 10 fonctions `_describe_*` read-only répliquant la logique de détection des `_fix_*` correspondants (skip défensifs identiques, jamais d'effet de bord)
+  - `DRY_RUN_DESCRIBERS: dict[str, Callable[[Path, Path, dict | None], str | None]]` mapping name → describer
+  - `describe_auto_fix(site_dir, client_dir, brief) -> list[str]` itère `FIXER_ORDER` et délègue (KeyError immédiat si fixer sans describer = fail-fast)
+- `nexos/cli_commands.py` :
+  - `_dry_run_analysis` passe de 64 lignes hardcodées à 12 lignes thin wrapper
+  - Imports nettoyés : suppression `REQUIRED_HEADERS`, `_resolve_app_root`, `_resolve_components_dir` (plus utilisés directement)
+- Tests régression (18 nouveaux, 557/557 verts) :
+  - `TestDryRunDescribers` (3) — invariants structurels : parité ensembles `set(DRY_RUN_DESCRIBERS) == {f.name for f in FIXER_ORDER}`, signature `str | None`, ordre des findings = ordre FIXER_ORDER
+  - 11 classes `TestDescriberParity*` (15 tests) — pour chaque describer, fixture "besoin" → finding ≠ None, fixture "ok" → None (sauf npm_audit générique)
+
+**Validation in vivo sur vertex-pmo** :
+- Avant D8 : dry-run liste 1 finding (`npm audit fix → exécuterait...`)
+- Après D8 : dry-run liste 3 findings (npm_audit + csp_middleware + pa11y_contrast 1 token sous WCAG AA 4.5:1 sur bg #0F172A) — exactement ce que le fix réel appliquerait
+- Inventaire `nexos doctor --all-clients` inchangé (16 clients, 2/16 déployables)
+
+**Pourquoi ça résiste à la dérive future** : `describe_auto_fix` fait `DRY_RUN_DESCRIBERS[fixer.name]` (lookup direct sans `.get()` ni fallback). Tout fixer ajouté à `FIXER_ORDER` sans son describer lève `KeyError` au premier appel, et le test `test_describers_cover_all_fixers` échoue avant même la mise en exécution.
+
+**Effort réel** : ~1h30 (design + test guard 30 min + 10 describers 20 min + refactor cli + fix bug `_contrast_ratio` signature + tests fixtures alignées sur convention multi-ligne 20 min + lint + doctor + ROADMAP 20 min).
+
 ---
 
 ### 🟢 Items P4 archivés (référence historique)
@@ -865,6 +892,18 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 - Compat Next 15 : pages/layout `[locale]` adaptés au contrat `params: Promise<{ locale: string }>` ; `contact/page.tsx` utilise `getTranslations` côté serveur.
 - Validation : `npm test` 34/34, `npm run build` PASS, `npm audit --audit-level=high` PASS.
 - Note session : le repo NEXOS affichait des suppressions massives non liées dans `clients/depanneur-nobert/site`; non touchées.
+
+### 2026-05-17 — P9 D8 résolu : describers dry-run parité FIXER_ORDER (claude, tungsten strict)
+- Découverte pendant préparation P8.5 : `nexos fix clients/vertex-pmo --dry-run` annonçait 1 finding (npm_audit générique) alors que le vrai `auto_fix()` allait appliquer pa11y_contrast (P8.6) et potentiellement readme (P8.1). `_dry_run_analysis` (cli_commands.py:313) hardcodait 6 checks, désynchronisé du `FIXER_ORDER` depuis P8.1 (15 mai) et P8.6 (17 mai matin). Aucun garde-fou anti-dérive.
+- Décision tungsten (anti-yes-mannerie) : pause P8.5, fix D8 d'abord. Un dry-run menteur invalide la méthodologie « design + validation avant impl ». Cf [[feedback_zero_bug_left_behind]] créée à cette occasion.
+- Approche : registre `DRY_RUN_DESCRIBERS: dict[str, Callable]` parité 1:1 avec `FIXER_ORDER` + test invariant `set(DRY_RUN_DESCRIBERS) == {f.name for f in FIXER_ORDER}`. KeyError immédiat si futur fixer ajouté sans describer (fail-fast intégré). Cohérent avec Codex P8.1 (registre testé > Protocol architectural).
+- 10 describers ajoutés à `nexos/auto_fixer.py` (cookie_consent, npm_audit, vercel_headers, csp, csp_middleware, next_config, privacy_page, legal_page, readme, pa11y_contrast) répliquant les conditions de détection des `_fix_*` correspondants en read-only strict.
+- `describe_auto_fix(site_dir, client_dir, brief) -> list[str]` itère FIXER_ORDER. `_dry_run_analysis` passe de 64 lignes hardcodées à 12 lignes thin wrapper.
+- Bug latent attrapé en cours : `_describe_pa11y_contrast` passait `match.group("hex")` (str) à `_contrast_ratio` qui attend `tuple[float, float, float]` → ValueError silencieuse au test. Fix par `_hex_to_rgb()` avant + try/except défensif (cohérent avec les fixers existants).
+- Validation in vivo vertex-pmo : dry-run liste maintenant 3 findings (npm_audit + csp_middleware + pa11y_contrast `1 token muted sous WCAG AA 4.5:1 sur bg #0F172A → durcirait jusqu'à 5.0:1`) — exactement ce que le fix réel appliquerait.
+- Tests régression : 18 nouveaux (3 invariants TestDryRunDescribers + 15 parité TestDescriberParity*), **557/557 verts** (539 baseline + 18 D8). ruff format + check clean. mypy via venv OK (CLI direct = dette D4 connue).
+- Articulation tungsten : impossible d'ajouter un futur fixer en P8.X sans (a) son describer (KeyError runtime) ET (b) son entrée DRY_RUN_DESCRIBERS (test invariant rouge). Double protection.
+- Effort réel ~1h30 (design + test guard 30 min + 10 describers 20 min + refactor cli + fix `_contrast_ratio` signature + fixtures alignées convention multi-ligne 20 min + lint + doctor + ROADMAP 20 min).
 
 ### 2026-05-17 — P8.6 résolu : fixer D6 contraste WCAG (claude, mode rigoureux continu)
 - Découverte critique pendant P8.5 (mesure terrain) : vertex-pmo a déjà tous les fichiers W-13 (sitemap.ts, robots.ts, metadata) et W-02 (README) que le plan P8.6 initial voulait créer. Le plateau historique D7=7.0/D2=3.5 était obsolète. Le seul vrai bloqueur restant = 18 erreurs pa11y W-10, toutes du même type contraste sur le token `text-ink-muted`.
