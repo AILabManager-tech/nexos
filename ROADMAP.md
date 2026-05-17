@@ -3,7 +3,7 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-17 — P8.6 résolu (claude, mode rigoureux continu)
+**Dernière mise à jour** : 2026-05-17 — Mark Systems Session 1 durcie (codex)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
 **Branche** : `main` — 6 commits P8.3+P8.6 locaux (push à discrétion) ; SOIC `9b9e123` côté `soic_v3`
 
@@ -33,7 +33,7 @@
 | Dimension-scoped fixers | ✅ **résolu (P8.3)** | `Fixer.dimension` + `auto_fix(dimensions=)` + `on_enriched_retry` hook + `orchestrator/plateau_recovery.py` factory — routing déterministe D4/D8 sur plateau |
 | Fixer D6 contraste WCAG | ✅ **résolu (P8.6)** | `_fix_pa11y_contrast` — WCAG helpers stdlib + détection background + harden V (HSV) jusqu'à 5.0:1. Validé sur vrai vertex-pmo : 3.75:1 → 5.00:1 |
 | Dette technique notée | 🟡 **P9 ouvert** (7 items D1-D7) | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict, preflight path |
-| Audit Mark Systems public | 🟡 **fait 2026-05-17** | Lighthouse 94/91/100/100 ; pa11y 12 erreurs ; npm audit 1 critical + 8 high ; build PASS ; tests 34/34 |
+| Audit Mark Systems public | 🟢 **Session 1 faite 2026-05-17** | Next 15.5.18 ; analytics conditionnel au consentement ; liens privacy localisés ; tests 34/34 ; build PASS ; npm audit HIGH/CRITICAL = 0 |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
 | Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
 | CSP middleware dev local | ✅ **résolu (P4a)** | `_fix_csp_middleware` génère middleware.ts aligné prod (single source vercel.json) |
@@ -856,6 +856,15 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 ---
 
 ## 🗓️ Historique des sessions notables
+
+### 2026-05-17 — Mark Systems Session 1 : sécurité + consentement réel (codex)
+- Cible : `/home/gear-code/02_projects/mark-systems-site/web-version`.
+- Sécurité : `npm audit fix` + upgrade contrôlé `next`/`eslint-config-next` vers `15.5.18` (versions exactes). HIGH/CRITICAL passent à 0 ; reste 2 MODERATE `postcss` embarqués par Next, sans correctif npm acceptable (`npm audit fix --force` propose une régression vers Next 9.3.3).
+- Conformité : nouveau `src/lib/consent.ts` + `src/components/compliance/ConsentAnalytics.tsx`; Vercel Analytics / Speed Insights ne sont rendus que si consentement analytics explicite. Preconnect Vercel analytics retiré du layout avant consentement.
+- i18n légal : liens `/fr/privacy` hardcodés remplacés par liens localisés (`/${locale}/privacy`) dans contact, brief wizard, navigation wizard et cookie consent.
+- Compat Next 15 : pages/layout `[locale]` adaptés au contrat `params: Promise<{ locale: string }>` ; `contact/page.tsx` utilise `getTranslations` côté serveur.
+- Validation : `npm test` 34/34, `npm run build` PASS, `npm audit --audit-level=high` PASS.
+- Note session : le repo NEXOS affichait des suppressions massives non liées dans `clients/depanneur-nobert/site`; non touchées.
 
 ### 2026-05-17 — P8.6 résolu : fixer D6 contraste WCAG (claude, mode rigoureux continu)
 - Découverte critique pendant P8.5 (mesure terrain) : vertex-pmo a déjà tous les fichiers W-13 (sitemap.ts, robots.ts, metadata) et W-02 (README) que le plan P8.6 initial voulait créer. Le plateau historique D7=7.0/D2=3.5 était obsolète. Le seul vrai bloqueur restant = 18 erreurs pa11y W-10, toutes du même type contraste sur le token `text-ink-muted`.
