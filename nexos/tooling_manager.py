@@ -307,7 +307,37 @@ def doctor_client_report(slug: str) -> str:
     else:
         lines.append("  [-] tooling/ MANQUANT (preflight pas exécuté)")
 
-    # Verdict deploy
+    # Deploy decision dual-axis (P9 D2) — SOIC + Osiris
+    lines.append("\n  DEPLOY DECISION (2 axes)")
+    lines.append("  " + "-" * 46)
+    try:
+        from nexos.deploy_decision import evaluate_deploy_decision
+
+        decision = evaluate_deploy_decision(client_dir)
+        soic_mu_str = f"{decision.soic_mu:.2f}" if decision.soic_mu is not None else "—"
+        osiris_score_str = (
+            f"{decision.osiris_score:.1f}" if decision.osiris_score is not None else "—"
+        )
+        osiris_grade_str = decision.osiris_grade or "—"
+        soic_icon = "+" if decision.soic_verdict == "PASS" else "-"
+        osiris_icon = {"PASS": "+", "FAIL": "-", "UNKNOWN": "?"}[decision.osiris_verdict]
+        joint_icon = "+" if decision.joint_verdict == "ACCEPT" else "-"
+        lines.append(
+            f"  [{soic_icon}] SOIC   μ={soic_mu_str:6s} "
+            f"(≥{decision.soic_threshold:.1f}) → {decision.soic_verdict}"
+        )
+        lines.append(
+            f"  [{osiris_icon}] Osiris score={osiris_score_str:6s} ({osiris_grade_str}) "
+            f"(≥{decision.osiris_threshold:.1f}) → {decision.osiris_verdict}"
+        )
+        blocker_str = decision.blocker or "—"
+        lines.append(f"  [{joint_icon}] Joint  {decision.joint_verdict} (blocker: {blocker_str})")
+        for w in decision.warnings:
+            lines.append(f"  [!] {w}")
+    except Exception as exc:  # doctor doit jamais crasher
+        lines.append(f"  [!] deploy_decision indisponible ({type(exc).__name__})")
+
+    # Verdict deploy (legacy summary — gardé pour compat doctor --all-clients)
     lines.append("\n" + "=" * 50)
     ph5 = None
     if gates_path.exists():
