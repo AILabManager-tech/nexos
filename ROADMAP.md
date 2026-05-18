@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-18 — B2 + B2.1 + P9 D1+D3+D4+D5+D6 résolus (claude, tungsten)
+**Dernière mise à jour** : 2026-05-18 — B2 + B2.1 + P9 D1+D2+D3+D4+D5+D6 résolus (claude, tungsten) — **P9 dette CLOSE**
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` — 5 commits locaux (`f220576` P9 D1 pilote + `927c139` P9 D1 batch + `9df9649` P9 D1 CI + `59d76fb` doc + `f644cf8` B2.1) ; SOIC `9b9e123` côté `soic_v3`
+**Branche** : `main` — 4 commits P9 D2 locaux (`8ce284c` module + `efb3d42` score_injection + `0bb8f2d` doctor + doc à venir) ; SOIC `9b9e123` côté `soic_v3`
 
 ---
 
@@ -34,8 +34,9 @@
 | ABORT_PLATEAU recovery | ✅ **résolu (P8.2)** | `Decision.ENRICHED_RETRY` + `PlateauDiagnosis` injecté dans feedback avant abort (1 retry par run) |
 | Dimension-scoped fixers | ✅ **résolu (P8.3)** | `Fixer.dimension` + `auto_fix(dimensions=)` + `on_enriched_retry` hook + `orchestrator/plateau_recovery.py` factory — routing déterministe D4/D8 sur plateau |
 | Fixer D6 contraste WCAG | ✅ **résolu (P8.6)** | `_fix_pa11y_contrast` — WCAG helpers stdlib + détection background + harden V (HSV) jusqu'à 5.0:1. Validé sur vrai vertex-pmo : 3.75:1 → 5.00:1 |
-| Dette technique notée | 🟢 **P9 1 item restant** · ✅ D1+D3+D4+D5+D6+D7+D8+D9 résolus | Reste D2 Osiris dimension SOIC (~2-3h, vraie feature). |
+| Dette technique notée | 🟢 **P9 dette CLOSE** · ✅ D1+D2+D3+D4+D5+D6+D7+D8+D9 résolus | Aucun item P9 ouvert. |
 | Vitest matrix CI 7 clients | ✅ **résolu (P9 D1) 2026-05-18** | 18 tests invariants × 5 sites (vertex-pmo + 4 batch) + 70 dépanneur + 34 mark = 200 tests total. Pivot vs brief : invariants structurels NEXOS au lieu de copier code métier dépanneur. CI matrix [`9df9649`] 1→7 clients. collectif-nova exclu (gitignored). |
+| Deploy gate 2-axes (SOIC + Osiris) | ✅ **résolu (P9 D2) 2026-05-18** | Pattern dual-axis : séparation mesure (SOIC D1-D9 / Osiris externe) et décision (verdict joint, blocker traçable). `nexos/deploy_decision.py` + 7 placeholders dans rapport Ph5 + section doctor dédiée. Politique UNKNOWN : Osiris absent ne bloque pas. Pattern extensible (Lighthouse, npm audit). 18 tests dédiés, 580/580 total. Commits `8ce284c` + `efb3d42` + `0bb8f2d`. |
 | Audit Mark Systems public | 🟢 **Session 1 faite 2026-05-17** | Next 15.5.18 ; analytics conditionnel au consentement ; liens privacy localisés ; tests 34/34 ; build PASS ; npm audit HIGH/CRITICAL = 0 |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
 | Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
@@ -331,7 +332,7 @@ Codex : "switching models is a weak hypothesis until you know why plateau happen
 | **P8.6** | Fixer D6 contraste WCAG | (découvert P8.5) | `_fix_pa11y_contrast` — WCAG helpers + harden V tokens muted | 2-3h | ✅ résolu 2026-05-17 |
 | **D1** | Vitest matrix 7 clients | Pivot invariants | Tests dépanneur non-portables → 18 tests structurels NEXOS × 5 sites | 2h | ✅ résolu 2026-05-18 (pilote `f220576` + batch `927c139` + CI `9df9649`) |
 | **B2** | CVE HIGH upgrade | Inchangé | Pilote vertex-pmo + batch 5 clients | 1-2h | ✅ résolu 2026-05-18 (pilote `56c8320` + batch `46e93fa`) |
-| **D2** | Osiris dimension D10 SOIC | Inchangé | Pondération SOIC + Osiris | 2-3h | — |
+| **D2** | Osiris dimension D10 SOIC | Pivot dual-axis | Séparation mesure/décision, verdict joint traçable | 2-3h | ✅ résolu 2026-05-18 (`8ce284c` + `efb3d42` + `0bb8f2d`) |
 
 **Économie nette estimée** : ~5h de scaffolding évitées, redirigées vers valeur observable (instrumentation + idempotency).
 
@@ -634,9 +635,33 @@ l-usine-rh, l-usinerh, nexos-platform-industrial, usine-rh
 
 **Commits** : `f220576` (pilote) + `927c139` (batch 4) + `9df9649` (CI matrix extension).
 
-#### D2 — Divergence SOIC interne vs Osiris externe
-depanneur-nobert : SOIC μ=9.11 (READY) ↔ Osiris 4.0/10 (Critique). Les deux mesurent des choses différentes (technique NEXOS vs santé opérationnelle réelle). NEXOS est aveugle à ce qu'Osiris mesure.
-**Action** : intégrer Osiris score comme dimension SOIC D10 (ou pondérer μ par Osiris). Effort 2-3h.
+#### ✅ D2 — Divergence SOIC interne vs Osiris externe (RÉSOLU 2026-05-18 par dual-axis)
+
+**Décision design** (challengée et tranchée en session) : ni nouvelle dimension D10, ni pondération μ, ni gate hard binaire. Pattern **dual-axis verdict** : séparer la mesure de la décision.
+
+- **Mesure** : SOIC garde sa souveraineté sur D1-D9 (technique NEXOS interne), Osiris reste un signal externe distinct (santé opérationnelle). Pas de fusion artificielle.
+- **Décision deploy** : verdict composite à 2 axes — `μ_SOIC ≥ 8.5` ET `osiris_score ≥ 6.0`. Si bloqué, le `blocker` ("soic" | "osiris" | "both") identifie exactement la mesure responsable.
+
+**Avantages combinés** (résout les 3 trade-offs initiaux) :
+- ✅ Visibilité Osiris : section dédiée même niveau que SOIC dans le rapport Ph5
+- ✅ Grille D1-D9 inchangée : zéro impact agents Ph5, tests, doc, pondérations existantes
+- ✅ Gate hard : le verdict joint bloque le deploy si l'un des deux fail
+- ✅ Gradation : Osiris score reste continu 0-10, seul le seuil est binaire
+- ✅ Diagnostic : si bloqué, on sait exactement lequel des 2 gates a fail — pas de cause masquée derrière un composite
+
+**Politique UNKNOWN** : Osiris absent / scan error / non-numeric → `UNKNOWN`, **ne bloque pas** le deploy mais émet une warning explicite. Don't punish missing signal.
+
+**Implémentation** :
+- `nexos/deploy_decision.py` : `DeployDecision` dataclass + `evaluate_deploy_decision` + `persist_deploy_decision` + `format_dual_axis_table` (180 lignes, 0 dep externe). Commit `8ce284c`.
+- `nexos/config.py` : `NEXOS_OSIRIS_THRESHOLD` env, défaut 6.0 (entre 4.0 Critique depanneur et 7.4 Conforme example.com).
+- `orchestrator/score_injection.py` : 7 nouveaux placeholders (`OSIRIS_SCORE/GRADE/VERDICT/THRESHOLD`, `JOINT_VERDICT/BLOCKER`, `DUAL_AXIS_TABLE`) + persistance `deploy-decision.json` par client. Commit `efb3d42`.
+- `nexos/tooling_manager.py` doctor : section "DEPLOY DECISION (2 axes)" avec icônes `[+]/[-]/[?]` et warnings inline. Commit `0bb8f2d`.
+
+**Tests** : 18 nouveaux (15 deploy_decision + 3 score_injection intégration). Total suite **580/580 verts** (vs 562 baseline).
+
+**Smoke test vertex-pmo réel** : SOIC PASS μ=9.10 + Osiris UNKNOWN (preflight broken cf B1) → Joint ACCEPT (UNKNOWN ne bloque pas), warning explicite "Osiris scan failed". Comportement attendu.
+
+**Pattern extensible** : Lighthouse perf score, npm audit HIGH/CRITICAL count, pa11y a11y score peuvent être ajoutés comme axes 3, 4, 5… sans toucher à SOIC ni Osiris. Documenté dans CLAUDE.md section "Deploy gate à 2 axes".
 
 #### ✅ D3 — Doc obsolète symlinks (RÉSOLU 2026-05-18)
 CLAUDE.md avait déjà la bonne doc (section "DÉPENDANCES EXTERNES" — pattern sibling-via-`SCRIPT_DIR/../../osiris`). Restait AGENTS.md, GEMINI.md, docs/blueprint.md qui mentionnaient encore les symlinks obsolètes `core-v3 → ~/projects/ai/ainova-os-v3` et `osiris → ~/osiris-scanner`. Aligné les 3 fichiers sur le pattern sibling documenté dans CLAUDE.md. AGENTS et GEMINI gardent leur style "sans accents" pour cohérence.
@@ -1267,11 +1292,12 @@ usine-rh                  brief=ok site=missing
 
 | # | Item | Effort | Type | Note |
 |---|---|---|---|---|
-| 1 | **P9 D2** — Osiris dimension SOIC | ~2-3h | Vraie feature | Intégrer Osiris score (4.0/10 critique) comme dimension D10 SOIC (ou pondérer μ par Osiris). Modifie `soic/dimensions.py` + grids. Seul item P9 ouvert. Décision design préalable : nouvelle dimension D10 vs facteur multiplicatif sur μ. |
+| 1 | **B1+** — Fix preflight Osiris API + propager scan | ~45 min | Infra critique | `tools/preflight.sh:91` utilise l'OLD API (`scanner.py URL --format json`), génère `tooling/osiris.json` en erreur sur TOUS les clients → tous les sites tournent en Osiris UNKNOWN. Le fix est mécanique : aligner sur `tools/osiris-scan.sh` (NEW API `--url URL --output report --mode fast`). Bénéfice direct : le verdict dual-axis P9 D2 devient mesuré sur la majorité des clients (vs UNKNOWN partout aujourd'hui). |
 | 2 | **collectif-nova Vitest** — décision gitignore | ~15 min | Décision | `clients/collectif-nova/` est gitignored ligne 23 .gitignore. Si on veut le protéger en CI : retirer la ligne et propager `vitest.config.ts` + `__tests__/nexos-invariants.test.ts` (template existant chez vertex-pmo). Sinon : status quo. |
 | 3 | **B1** — Osiris deps externes | ~30 min | Infra | Install playwright + récupérer blocklists/trackers.json côté `/osiris/`. Hors scope NEXOS strict, mais débloque 2/8 axes Osiris. |
 | 4 | **P8.4** — Onboard 5-6 clients dormants | ~3-6h par session, coûteux LLM | Production | iusine, la-villa-du-sous-marin, l-usine-rh, l-usinerh, usine-rh, USINE_RH_industrielle (4 derniers à dédupliquer avec user avant). 50-200k tokens par client. |
 | 5 | **P8.6.2** — Fixer pa11y multi-background | ~1h | Polish D6 | Étendre `_fix_pa11y_contrast` pour calibrer sur le bg le PLUS clair de la palette (vertex-pmo a 11 erreurs résiduelles sur `surface.alt`). |
+| 6 | **Extension dual-axis** — Lighthouse perf + npm audit en gates | ~2-3h | Évolution | Pattern P9 D2 extensible : ajouter Lighthouse perf score (≥85) et npm audit HIGH count (=0) comme axes 3 et 4 du verdict deploy joint. Conserve la lisibilité (blocker traçable). |
 
 ### Recommandation ouverture session
 
@@ -1283,9 +1309,10 @@ git status && git log origin/main..HEAD --oneline
 python3 nexos_cli.py doctor --all-clients
 
 # 2. Choisir priorité parmi la liste ci-dessus (cf table priorisée)
-# Recommandation 1er coup : P9 D2 (Osiris dimension SOIC) — seul item
-# P9 ouvert, vraie feature. Décision design préalable : nouvelle
-# dimension D10 vs pondération μ par Osiris.
+# Recommandation 1er coup : B1+ (fix preflight Osiris API) — débloque
+# la valeur du dual-axis P9 D2 sur tous les clients (~45 min mécanique).
+# Sans ce fix, Osiris reste UNKNOWN partout et le verdict joint dégénère
+# en SOIC seul. Avec le fix, on aura des vrais scores Osiris en CI.
 
 # 3. Cycle tungsten : measure → fix → test → commit atomique → ROADMAP update
 ```
@@ -1296,7 +1323,7 @@ python3 nexos_cli.py doctor --all-clients
 - **Propager aveuglément** : pilote 1 client + check-in user obligatoire avant batch (cf B2 méthodologie). P9 D1 pivot 2026-05-18 = exemple : inspection avant copie a évité de transformer 6 sites marketing en clones partiels de dépanneur.
 - **Push autonome** : règle absolue gear-code. L'user valide explicitement chaque push.
 
-### Session 2026-05-18 (suite, post-closeout) — P9 D1 + B2.1 résolus
+### Session 2026-05-18 (suite, post-closeout) — P9 D1 + B2.1 + P9 D2 résolus = **P9 dette CLOSE**
 
 **Commits posés** (locaux) :
 - `f220576` test(vertex-pmo): seed Vitest invariants suite (P9 D1 pilot) — 18 tests
@@ -1304,6 +1331,10 @@ python3 nexos_cli.py doctor --all-clients
 - `9df9649` ci(vitest-clients): extend matrix from 1 to 7 clients (P9 D1 close)
 - `59d76fb` docs(roadmap): P9 D1 résolu par pivot
 - `f644cf8` fix(mark_systems_demo): B2.1 next 16.2.3 → 16.2.6 (CVE HIGH → 0)
+- `113c45c` docs(roadmap): B2.1 résolu — mark_systems_demo next 16.2.6
+- `8ce284c` feat(deploy_decision): dual-axis verdict SOIC + Osiris (P9 D2)
+- `efb3d42` feat(score_injection): inject Osiris + joint verdict (P9 D2 wiring)
+- `0bb8f2d` feat(doctor): display dual-axis deploy decision per client (P9 D2)
 
 **Accomplissements** :
 - Pivot interprétation P9 D1 : inspection des 11 tests dépanneur a montré qu'ils sont **non-portables** (dépendent de libs métier absentes des 6 autres sites). Décision : créer **18 tests d'invariants structurels NEXOS** par site (headers sécurité, next.config, i18n, Loi 25, middleware, robots/sitemap) — protège le contrat de génération en CI sans toucher au scope des sites.
@@ -1316,3 +1347,5 @@ python3 nexos_cli.py doctor --all-clients
 - `clients/collectif-nova/` est gitignored (ligne 23 .gitignore) → nouveaux fichiers non trackés. Décision user requise sur statut tracking (item résiduel #2 ci-dessus).
 - Brief P9 D1 v1 (2026-05-15) sous-estimait la portabilité : "8 portables sur 11" devient "0 portables" après inspection. Leçon : un brief mécanique mérite quand même un check de faisabilité avant exécution.
 - `mark_systems_demo` a 86 tests Vitest (vs 34 documenté dans ROADMAP, accru entre temps). À retenir : compter les tests à la mesure, pas au snapshot doc.
+- P9 D2 résolu par **pivot design challengé** : 3 options initiales (D10 / pondération μ / gate hard) → l'utilisateur demande "comment avoir les 3 avantages sans les 3 inconvénients ?" → réponse pattern **dual-axis** = séparer la mesure (SOIC + Osiris indépendants) de la décision (verdict joint, blocker traçable). Pattern extensible à Lighthouse + npm audit + pa11y. Documenté CLAUDE.md règle.
+- **B1+ critique découvert** (priorité #1 prochaine session) : `tools/preflight.sh:91` utilise encore l'OLD API Osiris (`scanner.py URL --format json`) tandis que `tools/osiris-scan.sh` a la NEW API depuis P7. Conséquence : TOUS les clients ont `tooling/osiris.json` en erreur → verdict dual-axis dégénère en SOIC seul (Osiris UNKNOWN partout). ~45 min de fix mécanique débloque immédiatement la valeur P9 D2 sur tous les clients.
