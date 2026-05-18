@@ -313,7 +313,7 @@ def doctor_client_report(slug: str) -> str:
     if gates_path.exists():
         try:
             gates = json.loads(gates_path.read_text())
-            ph5 = next((g for g in gates if g.get("phase") == "ph5-qa"), None)
+            ph5 = _latest_phase_gate(gates, "ph5-qa")
         except json.JSONDecodeError:
             pass
     if ph5 and ph5.get("decision") == "ACCEPT" and ph5.get("mu", 0) >= 8.5:
@@ -324,6 +324,24 @@ def doctor_client_report(slug: str) -> str:
         lines.append("Statut: PIPELINE INCOMPLET — Ph5 non atteinte")
 
     return "\n".join(lines)
+
+
+def _latest_phase_gate(gates: list, phase: str) -> dict | None:
+    """Retourne la DERNIÈRE entrée d'une phase dans `soic-gates.json` (P9 D9).
+
+    Le fichier est append-only : chaque run produit une nouvelle entrée.
+    Pour le verdict deploy d'un client, on veut toujours le run le plus
+    récent. Le pattern `next((g for g in gates if g.get("phase") == phase))`
+    retournait la PREMIÈRE entrée et faisait mentir doctor pour tout client
+    multi-runs (découvert pendant P8.5 vertex-pmo : run 4 ACCEPT μ=9.00
+    invisible derrière run 1 ABORT_PLATEAU μ=7.91).
+
+    Cohérent avec `orchestrator/score_injection.py:_load_latest_gate`.
+    """
+    if not isinstance(gates, list):
+        return None
+    matching = [g for g in gates if isinstance(g, dict) and g.get("phase") == phase]
+    return matching[-1] if matching else None
 
 
 def _client_status_row(slug: str) -> dict[str, str]:
@@ -372,7 +390,7 @@ def _client_status_row(slug: str) -> dict[str, str]:
             gates = json.loads(gates_path.read_text())
             if isinstance(gates, list):
                 row["gates"] = str(len(gates))
-                ph5 = next((g for g in gates if g.get("phase") == "ph5-qa"), None)
+                ph5 = _latest_phase_gate(gates, "ph5-qa")
                 if ph5:
                     mu = ph5.get("mu", 0)
                     decision = ph5.get("decision", "?")

@@ -3,7 +3,7 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-17 — P9 D8 résolu : describers dry-run parité FIXER_ORDER (claude, tungsten)
+**Dernière mise à jour** : 2026-05-17 — P9 D9 résolu : doctor latest gate (claude, tungsten)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
 **Branche** : `main` — 6 commits P8.3+P8.6 locaux + 1 commit P9 D8 (push à discrétion) ; SOIC `9b9e123` côté `soic_v3`
 
@@ -15,7 +15,7 @@
 
 | Indicateur | Valeur | Note |
 |---|---|---|
-| Tests Python | **557/557** verts | +29 P8.3 + 21 P8.6 + 18 P9 D8 (3 invariants + 15 parité describers) |
+| Tests Python | **558/558** verts | +29 P8.3 + 21 P8.6 + 18 P9 D8 + 1 P9 D9 (doctor latest gate) |
 | Tests Vitest depanneur-nobert | **70/70** verts | +57 tests P4c (schemas + libs + email + clientConfig) + P5 (API contact + newsletter) |
 | Tests Vitest depanneur-nobert | **70/70** verts (était 13/13) | étendu en P4c + P5 |
 | Build site depanneur-nobert | **PASS** | npm audit 0/0 |
@@ -32,7 +32,7 @@
 | ABORT_PLATEAU recovery | ✅ **résolu (P8.2)** | `Decision.ENRICHED_RETRY` + `PlateauDiagnosis` injecté dans feedback avant abort (1 retry par run) |
 | Dimension-scoped fixers | ✅ **résolu (P8.3)** | `Fixer.dimension` + `auto_fix(dimensions=)` + `on_enriched_retry` hook + `orchestrator/plateau_recovery.py` factory — routing déterministe D4/D8 sur plateau |
 | Fixer D6 contraste WCAG | ✅ **résolu (P8.6)** | `_fix_pa11y_contrast` — WCAG helpers stdlib + détection background + harden V (HSV) jusqu'à 5.0:1. Validé sur vrai vertex-pmo : 3.75:1 → 5.00:1 |
-| Dette technique notée | 🟡 **P9 ouvert** (7 items D1-D7) · ✅ D8 résolu 2026-05-17 | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict, preflight path. D8 (dry-run parité) fermé |
+| Dette technique notée | 🟡 **P9 ouvert** (7 items D1-D7) · ✅ D8 + D9 résolus 2026-05-17 | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict, preflight path. D8 (dry-run parité) + D9 (doctor latest gate) fermés |
 | Audit Mark Systems public | 🟢 **Session 1 faite 2026-05-17** | Next 15.5.18 ; analytics conditionnel au consentement ; liens privacy localisés ; tests 34/34 ; build PASS ; npm audit HIGH/CRITICAL = 0 |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
 | Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
@@ -631,6 +631,24 @@ Exactement le seuil. Aucune marge. Toute modif mineure peut le faire descendre s
 Audit Mark Systems 2026-05-17 : `bash tools/preflight.sh https://www.marksystems.ca/ clients/mark_systems_demo` crée `TOOLING_DIR=clients/mark_systems_demo/tooling`, puis fait `cd "$SITE_DIR"` avant `npm audit --json > "$TOOLING_DIR/npm-audit.json"`. Le chemin devient relatif au site et l'écriture échoue (`No such file or directory`) même si le script affiche `✓`.
 **Action** : résoudre `CLIENT_DIR`/`TOOLING_DIR` en chemins absolus au début du script ou remplacer le bloc npm par `tools/deps-scan.sh`. Ajouter un test régression. Effort 20 min.
 
+#### ✅ D9 — `nexos doctor` lisait la 1ère entrée `soic-gates.json` au lieu de la dernière (RÉSOLU 2026-05-17)
+
+**Cause racine** : `nexos/tooling_manager.py:316` et `:375` utilisaient `next((g for g in gates if g.get("phase") == "ph5-qa"), None)` qui retourne la **première** entrée matchant. Pour tout client ayant plus d'un run Ph5 (audit re-évalué), doctor affichait un μ + verdict **périmé**. Découvert pendant P8.5 vertex-pmo : persistance run 4 ACCEPT μ=9.00 invisible derrière run 1 ABORT_PLATEAU μ=7.91. Le bon pattern existait déjà dans `orchestrator/score_injection.py:_load_latest_gate` (`matching[-1]`), mais avait été dupliqué à l'envers dans tooling_manager.
+
+**Décision** : extraire un helper local `_latest_phase_gate(gates, phase) -> dict | None` (cohérent avec `_load_latest_gate`, sans créer de dépendance tooling_manager → orchestrator), remplacer les 2 instances. Test régression in vivo sur fixture multi-runs.
+
+**Implémentation** (1 commit atomique) :
+- `nexos/tooling_manager.py` : nouveau helper `_latest_phase_gate` + 2 remplacements de `next(...)`
+- `tests/test_tooling_manager.py` : `test_client_status_row_picks_latest_gate_when_multi_runs` — fixture avec [ABORT_PLATEAU μ=7.91 mai 7, ACCEPT μ=9.00 mai 17] → assertion row['ph5_mu']='9.00' + row['deploy']='READY'
+
+**Validation in vivo** : `nexos doctor --all-clients` affiche désormais vertex-pmo `μ=9.00 READY` (vs `μ=7.91 ABORT_PLATEAU` avant fix). Déployables 2/16 → 3/16.
+
+**558/558 tests verts** (557 baseline + 1 D9). ruff clean.
+
+**Effort réel** : ~20 min (TDD red + helper + remplacement + test + lint).
+
+---
+
 #### ✅ D8 — `_dry_run_analysis` désynchronisé de `FIXER_ORDER` (RÉSOLU 2026-05-17)
 
 **Cause racine** : `nexos/cli_commands.py:_dry_run_analysis()` hardcodait 6 checks (cookie_consent + vercel_headers + csp + next_config + privacy_page + legal_page + générique npm_audit). Depuis P8.1 (`readme` ajouté mai 15) et P8.6 (`pa11y_contrast` ajouté ce matin), 2 fixers de `FIXER_ORDER` étaient invisibles au dry-run et 1 (`csp_middleware`) aussi. Découvert pendant P8.5 mesure terrain vertex-pmo : `nexos fix --dry-run` annonçait 1 fix (npm audit) alors que le fix réel en appliquait 1 (pa11y_contrast). Aucun garde-fou anti-dérive.
@@ -892,6 +910,15 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 - Compat Next 15 : pages/layout `[locale]` adaptés au contrat `params: Promise<{ locale: string }>` ; `contact/page.tsx` utilise `getTranslations` côté serveur.
 - Validation : `npm test` 34/34, `npm run build` PASS, `npm audit --audit-level=high` PASS.
 - Note session : le repo NEXOS affichait des suppressions massives non liées dans `clients/depanneur-nobert/site`; non touchées.
+
+### 2026-05-17 — P9 D9 résolu : doctor lit la dernière entrée gates (claude, tungsten strict)
+- Bug en chaîne découvert pendant P8.5 vertex-pmo : après avoir persisté `soic-gates.json` avec une nouvelle entrée run 4 ACCEPT μ=9.00, `nexos doctor` continuait d'afficher run 1 ABORT_PLATEAU μ=7.91. Cause : `next((g for g in gates if g.get("phase") == "ph5-qa"))` retourne la première entrée matchant.
+- Pattern existait déjà correctement dans `orchestrator/score_injection.py:_load_latest_gate` (`matching[-1]`) — duplication à l'envers dans tooling_manager (dette historique).
+- Fix : extract `_latest_phase_gate(gates, phase)` helper local + remplacement des 2 instances (lignes 316 + 375).
+- Test régression `test_client_status_row_picks_latest_gate_when_multi_runs` avec fixture multi-runs [mai 7 ABORT, mai 17 ACCEPT] → assert dernière entrée lue.
+- Validation in vivo : doctor affiche désormais vertex-pmo `μ=9.00 READY`, déployables 2/16 → 3/16. Tests 558/558 verts.
+- Confirmation [[feedback_zero_bug_left_behind]] : un bug découvert pendant tâche X (P8.5) sur le chemin critique de validation = fix immédiat avant de continuer. P8.5 ne pouvait pas committer un état que doctor ne refléterait pas.
+- Effort réel ~20 min (TDD red + helper + remplacement + test + lint + ROADMAP).
 
 ### 2026-05-17 — P9 D8 résolu : describers dry-run parité FIXER_ORDER (claude, tungsten strict)
 - Découverte pendant préparation P8.5 : `nexos fix clients/vertex-pmo --dry-run` annonçait 1 finding (npm_audit générique) alors que le vrai `auto_fix()` allait appliquer pa11y_contrast (P8.6) et potentiellement readme (P8.1). `_dry_run_analysis` (cli_commands.py:313) hardcodait 6 checks, désynchronisé du `FIXER_ORDER` depuis P8.1 (15 mai) et P8.6 (17 mai matin). Aucun garde-fou anti-dérive.

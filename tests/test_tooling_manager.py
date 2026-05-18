@@ -217,3 +217,45 @@ class TestDoctorAllClients:
         report = doctor_all_clients_report()
         assert "_ARCHIVE" not in report
         assert "real-client" in report
+
+    def test_client_status_row_picks_latest_gate_when_multi_runs(self, tmp_path, monkeypatch):
+        """P9 D9 — Pour un client multi-runs, doctor doit lire la DERNIÈRE
+        entrée ph5-qa de soic-gates.json, pas la première. Bug découvert
+        pendant P8.5 vertex-pmo : run 1 ABORT_PLATEAU μ=7.91 puis run 4
+        ACCEPT μ=9.00 → doctor doit afficher 9.00 READY, pas 7.91."""
+        import json as _json
+
+        monkeypatch.chdir(tmp_path)
+        client_dir = tmp_path / "clients" / "multirun"
+        client_dir.mkdir(parents=True)
+        (client_dir / "soic-gates.json").write_text(
+            _json.dumps(
+                [
+                    {
+                        "phase": "ph5-qa",
+                        "mu": 7.91,
+                        "threshold": 8.5,
+                        "decision": "ABORT_PLATEAU",
+                        "iterations": 3,
+                        "timestamp": "2026-05-07T00:00:00",
+                    },
+                    {
+                        "phase": "ph5-qa",
+                        "mu": 9.00,
+                        "threshold": 8.5,
+                        "decision": "ACCEPT",
+                        "iterations": 4,
+                        "timestamp": "2026-05-17T00:00:00",
+                    },
+                ]
+            )
+        )
+        row = _client_status_row("multirun")
+        assert row["ph5_mu"] == "9.00", (
+            "doctor a lu la 1ère entrée (mu=7.91) au lieu de la dernière "
+            "(mu=9.00) — bug P9 D9 régressé"
+        )
+        assert row["deploy"] == "READY", (
+            f"deploy={row['deploy']!r}, attendu 'READY' (dernière entrée = ACCEPT μ=9.00 ≥ 8.5)"
+        )
+        assert row["gates"] == "2", "compte total des gates incorrect"
