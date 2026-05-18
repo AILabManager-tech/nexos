@@ -199,6 +199,33 @@ def test_osiris_score_non_numeric_treated_as_unknown(tmp_path: Path) -> None:
     assert d.osiris_score is None
 
 
+def test_osiris_raw_scanner_json_uses_score_key(tmp_path: Path) -> None:
+    """Le JSON brut osiris/scanner.py utilise `score` (pas `osiris_score`).
+
+    Tolérance : si le report a `score` (raw scanner output) au lieu de
+    `osiris_score` (RunStore SOIC), on lit `score`. Évite le mismatch
+    silencieux observé en B1+ (preflight écrivait UNKNOWN partout).
+    """
+    _write_soic_gates(tmp_path, mu=9.0, decision="ACCEPT")
+    # Format JSON brut Osiris scanner.py (cf tools/osiris-scan.sh output)
+    _write_osiris(
+        tmp_path,
+        {
+            "osiris_version": "0.2.0",
+            "url": "https://example.com",
+            "domain": "example.com",
+            "score": 7.9,
+            "grade": "Conforme",
+        },
+    )
+
+    d = evaluate_deploy_decision(tmp_path)
+    assert d.osiris_score == 7.9
+    assert d.osiris_grade == "Conforme"
+    assert d.osiris_verdict == "PASS"
+    assert d.joint_verdict == "ACCEPT"
+
+
 # ── Persistance + format ────────────────────────────────────────────────────
 
 

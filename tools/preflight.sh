@@ -85,14 +85,18 @@ else
 fi
 
 # ── 6. OSIRIS ──
+# B1+ fix (2026-05-18) : alignement sur la NEW API Osiris.
+# Avant : `scanner.py URL --format json` (OLD API, path hardcodé $HOME) →
+# tous les clients avaient osiris.json en erreur → verdict P9 D2 dual-axis
+# dégénérait en SOIC seul (Osiris UNKNOWN partout).
+# Maintenant : délégation à tools/osiris-scan.sh qui implémente NEW API
+# (`scanner.py --url URL --output report --mode fast`), path resolution
+# sibling, retry + budget + timeout, et toujours exit 0 + JSON valide
+# même en erreur. Pattern cohérent avec headers-scan.sh / a11y-scan.sh /
+# ssl-scan.sh appelés plus haut.
 echo -n "[6/6] OSIRIS scanner... "
-OSIRIS_PATH="$HOME/osiris-scanner"
-if [ -d "$OSIRIS_PATH" ]; then
-    python3 "$OSIRIS_PATH/scanner.py" "$URL" --format json > "$TOOLING_DIR/osiris.json" 2>/dev/null \
-        && echo "✓" || echo "⚠ partial"
-else
-    echo "⚠ osiris-scanner non trouvé"
-fi
+bash "$TOOLS_DIR/osiris-scan.sh" "$URL" > "$TOOLING_DIR/osiris.json" 2>/dev/null \
+    && echo "✓" || echo "⚠ partial"
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

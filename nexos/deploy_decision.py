@@ -96,13 +96,17 @@ def _extract_osiris_axis(
     if report is None:
         return None, None, "UNKNOWN", ["Osiris report absent (tooling/osiris.json missing)"]
 
-    if "error" in report and "osiris_score" not in report:
+    # Le JSON Osiris brut (sortie scanner.py) utilise `score`. Le RunStore SOIC
+    # (osiris_history.db) utilise `osiris_score`. On tolère les deux noms.
+    if "error" in report and "osiris_score" not in report and "score" not in report:
         err = str(report.get("error", "unknown"))[:120]
         return None, None, "UNKNOWN", [f"Osiris scan failed: {err}"]
 
     score = report.get("osiris_score")
+    if score is None:
+        score = report.get("score")
     if not isinstance(score, (int, float)):
-        return None, None, "UNKNOWN", ["Osiris osiris_score missing or non-numeric"]
+        return None, None, "UNKNOWN", ["Osiris score missing or non-numeric"]
 
     grade = report.get("grade")
     grade_str = str(grade) if isinstance(grade, str) else None
