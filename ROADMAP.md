@@ -1109,6 +1109,113 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ---
 
+## 🧭 Préparation détaillée — B2 + P8.4 (terrain prêt 2026-05-17)
+
+> Point d'entrée pour la prochaine session Claude/Codex/Gemini. Lire cette section
+> AVANT de coder. Aliases shell prêts : `B2`, `P8.4`, `nexos-attack --help`.
+
+### 🟠 B2 — CVE HIGH next-intl + postcss upgrade contrôlé (N3, ~3-4h estimé)
+
+**Périmètre** : 7 clients NEXOS actuels (dépanneur-nobert SORTI de la stack, voir
+ci-dessous). Aliases shell : `B2`.
+
+**Référence pilote** : **vertex-pmo** — choisi parce que :
+1. Récemment validé READY (μ=9.00, P8.5 du 17 mai)
+2. Baseline tooling/*.json fraîche (mesurée localhost:20100 le 17 mai)
+3. Vitest pas encore en CI dessus, mais ça importe peu pour B2 (le test critique = build + npm audit après upgrade)
+
+**Stack à upgrader** :
+| Pkg | Avant | Après | Type |
+|---|---|---|---|
+| `next` | `^15.x.x` | `^15.5.18` | breaking (App Router types, `params: Promise<>` confirmé en sessions précédentes) |
+| `next-intl` | `<4.12.0` | `^4.12.0` | breaking @formatjs chain |
+| `postcss` | `<8.5.10` | `^8.5.10` | patch (XSS via `</style>` non-échappé) |
+
+**Plan d'attaque tungsten** (1 commit pilote + 1 commit batch propagation) :
+1. **Avant** :
+   - Snapshot `clients/vertex-pmo/site/package.json` (md5 + version actuelles)
+   - Snapshot `clients/vertex-pmo/soic-runs.jsonl` baseline (run 4 ACCEPT μ=9.00)
+   - Test guard : aucun nouveau test Python nécessaire (B2 est shell/npm/build, pas Python). Mais ré-écrire `tests/test_preflight_sh.py` aurait été pertinent ici aussi — pour l'instant, le test guard B2 = mesurer `nexos audit` avant/après via méthode B (cf P8.5).
+   - Rollback : `git restore -- clients/vertex-pmo/site/`
+3. **Pendant — vertex-pmo seul** :
+   - `cd clients/vertex-pmo/site && npm install next@15.5.18 next-intl@4.12.0 postcss@8.5.10`
+   - `npm run build` doit passer (sinon noter erreurs types `params: Promise<>` à fixer dans le code Next 15)
+   - `npm audit --audit-level=high` doit retourner 0 vulns
+   - Build + serve local sur port 20100 (cf P8.5 script)
+   - Re-mesure via `tools/preflight.sh http://localhost:20100 clients/vertex-pmo`
+   - Re-eval SOIC : `python3 -c 'from soic.gate_engine import GateEngine; ...'` (cf P8.5)
+   - Si μ reste ≥ 8.5 et 0 HIGH dans npm audit → **commit pilote vertex-pmo**
+4. **Pendant — propagation 6 autres** : clinique-aura, beaumont-avocats, collectif-nova, electro-maitre-industriel, mark_systems_demo, table-de-marguerite
+   - Boucle bash : pour chaque, `npm install next@15.5.18 next-intl@4.12.0 postcss@8.5.10 && npm run build`
+   - Si build PASS sur tous → **commit batch propagation** (1 seul commit, message liste tous les clients)
+   - Si build FAIL sur un client → STOP, investiguer ce client précis, fix code, re-batch
+5. **Après** :
+   - `nexos doctor --all-clients` : tous les μ doivent rester ≥ leurs niveaux baseline
+   - ROADMAP update : B2 ✅ résolu
+   - Commit pilote + commit batch séparés
+   - **Check-in user obligatoire** entre pilote vertex-pmo et batch propagation (N3 strict)
+
+**Risques anticipés** :
+| Risque | Probabilité | Mitigation |
+|---|---|---|
+| Next 15.5.18 introduit types incompatibles (`params: Promise<>`) | Moyenne | Mark Systems et vertex-pmo ont déjà été migrés vers ce pattern — risque réduit. Si déclenche, fix par client puis re-batch |
+| next-intl 4.12 demande migration `getTranslations` côté serveur | Faible | Mark Systems déjà migré (session codex 2026-05-17) — la convention est connue |
+| postcss 8.5.10 casse Tailwind | Très faible | Tailwind 3.4+ et 4 supportent — vérifier `package.json` Tailwind version par client |
+| `npm install` met à jour le lockfile et change autres deps mineures | Élevée | Acceptable, c'est le but ; revoir `package-lock.json` diff dans le commit |
+
+**Dépanneur Nobert** (hors stack NEXOS depuis 2026-05-17) :
+- Path : `/home/gear-code/01_business/clients/03_Depanneur_Nobert/04_livrables/site-web/`
+- Même CVE, mais commit séparé dans son emplacement business (si tracké git séparément — à vérifier au moment de B2). Recommandation : faire dépanneur en dernier, après validation pilote NEXOS.
+
+---
+
+### 🟣 P8.4 — Onboard 6 clients dormants (N3 par client, ~3-6h par session)
+
+**Périmètre** : 6 clients avec brief OK mais sans site (pipeline jamais exécuté ou
+échec silencieux). Aliases shell : `P8.4`.
+
+**Liste exacte** (vérifier au démarrage avec `nexos doctor --all-clients`) :
+```
+iusine                    brief=ok site=missing
+jokeresthetique           brief=missing → exclure ou créer brief
+la-villa-du-sous-marin    brief=ok site=missing (1 gate présente)
+l-usine-rh                brief=ok site=missing
+l-usinerh                 brief=ok site=missing
+nexos-platform-industrial brief=missing → exclure
+usine-rh                  brief=ok site=missing
+```
+
+**Décision stratégique** : prioriser les 5 qui ont un brief (iusine, la-villa-du-sous-marin, l-usine-rh, l-usinerh, usine-rh). Les 2 sans brief (jokeresthetique, nexos-platform-industrial) demandent une discussion utilisateur avant — sont-ils encore actifs ou archives ?
+
+**Plan d'attaque tungsten — 1 client à la fois** :
+1. **Avant** (par client) :
+   - Snapshot `clients/<slug>/brief-client.json` (vérifier validité schéma)
+   - Lire `clients/<slug>/nexos-changelog.json` si présent (peut révéler pourquoi le pipeline a échoué la dernière fois)
+   - Estimer coût LLM : pipeline complet 6 phases × codex = 50-200k tokens par client (selon complexité brief)
+2. **Pendant** (par client) :
+   - `nexos create --client-dir clients/<slug>` (timeout étendu, ~10-30 min par phase)
+   - Surveiller les phases : PH0 discovery → PH1 strategy → PH2 design → PH3 content → PH4 build → PH5 QA+deploy
+   - Si phase échoue : capturer `failing_dimensions` via SOIC, voir si fixer existe (P8.3 routing), sinon noter le gap
+3. **Après** (par client) :
+   - `nexos doctor --client <slug>` détaillé
+   - μ doit être ≥ 8.5 avec decision=ACCEPT pour client READY
+   - Si plateau persistant → analyser via `soic-runs.jsonl` les dimensions stagnantes
+   - **Commit atomique par client**
+   - ROADMAP update incrémentale (nombre de dormants restants)
+   - **Check-in user obligatoire après chaque client** (N3 × N clients)
+
+**Critères d'acceptance par client** :
+- [ ] Site built (`npm run build` PASS)
+- [ ] SOIC μ ≥ 8.5 ACCEPT
+- [ ] Tooling complet (`tools/preflight.sh` produit 6 JSON valides)
+- [ ] Pages légales Loi 25 présentes (privacy + mentions + cookie consent)
+
+**Items P8.4 doublons potentiels** (à investiguer dès le démarrage) : `l-usine-rh`, `l-usinerh`, `usine-rh`, `USINE_RH_industrielle` — quatre slugs très proches. Vérifier avec user : ce sont 4 clients différents ou 4 itérations d'un même client à dédupliquer ? Si dédup, P8.4 = en réalité 3 clients (iusine + la-villa + 1 usine-rh consolidé) → effort réduit.
+
+**Risque coût LLM** : si tous les 5-6 clients tournent à 200k tokens chacun = 1-1.2M tokens total. À budgéter avec user avant de démarrer la session.
+
+---
+
 ## 🎯 Pour la session prochaine — recommandation finale
 
 **P1 + P2 + P3 + P4 + P5 + P6 résolus 2026-05-15.** Toute la dette identifiée + 2 items P5/P6 dégagés à l'audit sont clos. Pipeline NEXOS production-ready autonome avec :
