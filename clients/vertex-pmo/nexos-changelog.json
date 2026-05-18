@@ -104,5 +104,51 @@
       "fixes": 1,
       "build_pass": true
     }
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-17T20:28:27",
+    "agent": "auto_fixer"
+  },
+  {
+    "event": "autofix_applied",
+    "timestamp": "2026-05-17T20:28:31",
+    "agent": "auto_fixer",
+    "details": {
+      "fix": "pa11y_contrast",
+      "target": "tailwind.config.ts",
+      "tokens_fixed": 1
+    }
+  },
+  {
+    "event": "cli_fix",
+    "timestamp": "2026-05-17T20:28:41",
+    "agent": "cli",
+    "details": {
+      "fixes": 1,
+      "build_pass": true
+    }
+  },
+  {
+    "event": "pipeline_start",
+    "timestamp": "2026-05-17T20:29:05",
+    "agent": "orchestrator",
+    "details": {
+      "mode": "audit",
+      "phases": [
+        "ph5-qa"
+      ]
+    }
+  },
+  {
+    "event": "phase_start",
+    "timestamp": "2026-05-17T20:29:05",
+    "phase": "ph5-qa",
+    "agent": "orchestrator"
+  },
+  {
+    "event": "autofix_start",
+    "timestamp": "2026-05-17T20:29:05",
+    "agent": "auto_fixer"
   }
 ]

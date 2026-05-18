@@ -3,7 +3,7 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-17 — P9 D9 résolu : doctor latest gate (claude, tungsten)
+**Dernière mise à jour** : 2026-05-17 — P8.5 résolu : vertex-pmo READY μ=9.00 (claude, tungsten)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
 **Branche** : `main` — 6 commits P8.3+P8.6 locaux + 1 commit P9 D8 (push à discrétion) ; SOIC `9b9e123` côté `soic_v3`
 
@@ -324,7 +324,7 @@ Codex : "switching models is a weak hypothesis until you know why plateau happen
 | **P8.2** | B3 ABORT_PLATEAU | Stratégie C mix | Instrumentation cause + 1 enriched retry | 2-4h | ✅ résolu 2026-05-15 |
 | **P8.3** | Dimension-scoped fixers | (manquait) | Nouveau : si D8 fail → legal, D4 → security | 3-5h | ✅ résolu 2026-05-16 |
 | **P8.4** | B4 onboard 6 dormants | Aveugle | Couvert par instrumentation P8.2 (on saura pourquoi) | 1-3h (downstream P8.2) | — |
-| **P8.5** | Mesure terrain plateau routing | (nouveau) | Relancer collectif-nova + vertex-pmo, mesurer si P8.3 débloque | 30 min | partiel 2026-05-17 (vertex-pmo gates statiques ré-évalués hors pipeline) |
+| **P8.5** | Mesure terrain plateau routing | (nouveau) | Relancer vertex-pmo, mesurer si P8.3+P8.6 débloquent | 30 min → 2h | ✅ résolu 2026-05-17 (vertex-pmo READY μ=9.00 ; 3 bugs latents découverts en chaîne + fixés : D8, D9, P8.6.2 follow-up noté) |
 | **P8.6** | Fixer D6 contraste WCAG | (découvert P8.5) | `_fix_pa11y_contrast` — WCAG helpers + harden V tokens muted | 2-3h | ✅ résolu 2026-05-17 |
 | **D1** | Vitest matrix 7 clients | Inchangé | Mécanique, OK tel quel | 2h | — |
 | **B2** | CVE HIGH upgrade | Inchangé | Test sur depanneur seul puis propager | 1-2h | — |
@@ -910,6 +910,26 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 - Compat Next 15 : pages/layout `[locale]` adaptés au contrat `params: Promise<{ locale: string }>` ; `contact/page.tsx` utilise `getTranslations` côté serveur.
 - Validation : `npm test` 34/34, `npm run build` PASS, `npm audit --audit-level=high` PASS.
 - Note session : le repo NEXOS affichait des suppressions massives non liées dans `clients/depanneur-nobert/site`; non touchées.
+
+### 2026-05-17 — P8.5 résolu : mesure terrain vertex-pmo READY μ=9.00 (claude, tungsten strict)
+- **Résultat** : vertex-pmo passe de ABORT_PLATEAU μ=7.91 (mai 7) à ACCEPT μ=9.00 → **3e client déployable** (depanneur-nobert, beaumont-avocats, vertex-pmo).
+- **Méthode B (validée par user)** : `tools/preflight.sh http://localhost:20100` (build + serve vertex-pmo en local) + invocation directe `soic.gate_engine.GateEngine.run_all_gates()` pour recalculer le score. Pas de coût LLM. Plus tungsten que `nexos audit` complet (qui invoque codex Ph5 et coûte tokens).
+- **Validation routing P8.3 + fixer P8.6 in vivo** : `nexos fix clients/vertex-pmo` a appliqué 1 fix (`ink.muted #64748B → #7689a4` via `_fix_pa11y_contrast`). pa11y empirique sur localhost:20100 : **18 → 11 erreurs WCAG** (-39%, gain D6 +1.75).
+- **Dimensions vs baseline mai 7** :
+  - D2 doc 3.50 → 8.50 (+5.0) — README.md ajouté hors session entre mai 7 et 17
+  - D6 a11y 5.10 → 6.85 (+1.75) — fixer P8.6 livre exactement ce qu'il promettait sur `surface.DEFAULT` (3.75:1 → 5.00:1)
+  - D7 SEO 7.00 → 10.00 (+3.0) — layout.tsx + sitemap.ts + metadata ajoutés hors session
+  - D4 sécu 9.44 → 9.33 (-0.11) — npm-audit FAIL 1 HIGH (CVE next-intl, c'est B2)
+  - **μ pondéré 7.91 → 9.00 (+1.09)**, coverage 0.88 → 0.89
+- **Persistance audit trail** : nouvelle entrée run 4 `soic-runs.jsonl` (run_id `336b7689`) + nouvelle entrée `soic-gates.json` (`decision: ACCEPT`). Le verdict deploy est désormais cohérent entre code et état officiel.
+- **Limite documentée (P8.6.2 follow-up à créer)** : 11 erreurs G18 résiduelles toutes sur `text-ink-muted` utilisé sur `surface.alt #1E293B` (bg plus clair que `surface.DEFAULT`). Le fixer P8.6 cible un seul bg de référence. Sur `surface.alt`, contraste 4.10:1 (toujours < 4.5:1). Pour fermer complètement D6, créer P8.6.2 — extension multi-background : calibrer sur le bg le PLUS clair de la palette (pire cas), garantit conformité partout.
+- **3 bugs latents découverts en chaîne pendant cette tâche** (chaîne tungsten « zéro bug en arrière ») :
+  - D8 (`_dry_run_analysis` désynchronisé de FIXER_ORDER) → fixé immédiatement, commit `8459098`
+  - D9 (doctor lit la 1ère entrée gates au lieu de la dernière) → fixé immédiatement, commit `42b546a`
+  - P8.6.2 (fixer multi-background) → ajouté en backlog (impact terrain mesuré, urgence basse — vertex-pmo déjà READY malgré 11 erreurs)
+- **Bonus découvert** : D7 SEO (W-13 gap historique signalé dans P8.3 ROADMAP) était déjà résolu hors session. Le fixer P8.7 spéculatif évoqué dans P8.5 design n'est plus urgent — créer un fixer SEO uniquement quand un vrai client le déclenchera en plateau.
+- Files committed : `clients/vertex-pmo/{site/tailwind.config.ts, soic-gates.json, soic-runs.jsonl, nexos-changelog.json, tooling/}` (état terrain mesuré et persisté).
+- Effort réel : ~2h (vs 30 min estimé) — dérive justifiée par 3 bugs latents fixés en chaîne, chacun avec son commit atomique. Méthode tungsten respectée intégralement (TDD pour D8/D9, audit terrain réel, articulation tracée).
 
 ### 2026-05-17 — P9 D9 résolu : doctor lit la dernière entrée gates (claude, tungsten strict)
 - Bug en chaîne découvert pendant P8.5 vertex-pmo : après avoir persisté `soic-gates.json` avec une nouvelle entrée run 4 ACCEPT μ=9.00, `nexos doctor` continuait d'afficher run 1 ABORT_PLATEAU μ=7.91. Cause : `next((g for g in gates if g.get("phase") == "ph5-qa"))` retourne la première entrée matchant.

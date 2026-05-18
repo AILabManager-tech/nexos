@@ -1,1 +1,1 @@
-{"grade": "error", "error": "unable to connect to localhost:443"}
+{"grade": "error", "error": "unable to connect to localhost:443 (openssl exit 1)", "domain": "localhost", "stderr": "4017DAE9237D0000:error:8000006F:system library:BIO_connect:Connection refused:../crypto/bio/bio_sock2.c:114:calling connect()\n4017DAE9237D0000:error:10000067:BIO routines:BIO_connect:connect error:../crypto/bio/bio_sock2.c:116:\nconnect:errno=111"}

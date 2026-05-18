@@ -41,7 +41,7 @@ const config: Config = {
         ink: {
           DEFAULT: '#F8FAFC',
           soft: '#CBD5E1',
-          muted: '#64748B'
+          muted: '#7689a4'
         },
         kpi: {
           success: '#22C55E',
