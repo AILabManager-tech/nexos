@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-18 — B2 résolu : CVE HIGH next-intl/postcss upgrade — pilote vertex-pmo + batch 4 clients (claude, tungsten)
+**Dernière mise à jour** : 2026-05-18 — B2 résolu (CVE HIGH next-intl/postcss) + P9 D5 résolu (beaumont μ 8.50 → 9.46) (claude, tungsten)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` — 2 nouveaux commits B2 (`56c8320` pilote + `46e93fa` batch) ; SOIC `9b9e123` côté `soic_v3`
+**Branche** : `main` — 4 commits B2 pushed (`56c8320`, `46e93fa`, `e51e98e`, `bac4297`) + 1 commit D5 local (`b275094`) ; SOIC `9b9e123` côté `soic_v3`
 
 ---
 
@@ -33,7 +33,7 @@
 | ABORT_PLATEAU recovery | ✅ **résolu (P8.2)** | `Decision.ENRICHED_RETRY` + `PlateauDiagnosis` injecté dans feedback avant abort (1 retry par run) |
 | Dimension-scoped fixers | ✅ **résolu (P8.3)** | `Fixer.dimension` + `auto_fix(dimensions=)` + `on_enriched_retry` hook + `orchestrator/plateau_recovery.py` factory — routing déterministe D4/D8 sur plateau |
 | Fixer D6 contraste WCAG | ✅ **résolu (P8.6)** | `_fix_pa11y_contrast` — WCAG helpers stdlib + détection background + harden V (HSV) jusqu'à 5.0:1. Validé sur vrai vertex-pmo : 3.75:1 → 5.00:1 |
-| Dette technique notée | 🟡 **P9 ouvert** (6 items D1-D6) · ✅ D7 + D8 + D9 résolus 2026-05-17 | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict. D7 (preflight path) + D8 (dry-run parité) + D9 (doctor latest gate) fermés |
+| Dette technique notée | 🟡 **P9 ouvert** (5 items) · ✅ D5 + D7 + D8 + D9 résolus | D5 (beaumont marge) fermé 2026-05-18 par effet de bord post-B2 (μ 8.50 → 9.46). Reste D1 Vitest matrix, D2 Osiris dimension SOIC, D3 doc symlinks, D4 mypy, D6 schéma strict. |
 | Audit Mark Systems public | 🟢 **Session 1 faite 2026-05-17** | Next 15.5.18 ; analytics conditionnel au consentement ; liens privacy localisés ; tests 34/34 ; build PASS ; npm audit HIGH/CRITICAL = 0 |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
 | Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
@@ -626,9 +626,21 @@ Le script `osiris-scan.sh` a un fallback sibling qui marche. Mais la doc ment.
 `python3 -m mypy` retourne "No module named mypy" en CLI direct. Mais `pytest tests/test_mypy_clean.py` passe (via venv). Inconsistance environnement.
 **Action** : `pip install mypy` au niveau système OU documenter activation venv. Effort 5 min.
 
-#### D5 — Verdict deploy marginal beaumont-avocats μ=8.50
-Exactement le seuil. Aucune marge. Toute modif mineure peut le faire descendre sous 8.5.
-**Action** : analyser dimensions faibles + améliorer pour gagner ~0.3 de marge. Effort 1h.
+#### ✅ D5 — Verdict deploy marginal beaumont (RÉSOLU 2026-05-18 par effet de bord)
+Baseline 7 mai était μ=8.5014 pile. Marge cible 0.3.
+
+**Mesure live post-B2** (build localhost:20100 + preflight + GateEngine) :
+- **μ = 9.4562 ACCEPT** (+0.95 vs baseline, **>3× la cible 0.3**)
+- coverage 0.889 (+0.007), fail_count = 0
+- Toutes les dimensions ≥ 8.5 sauf D8 (7.67 — cap structurel cookie_consent 7.0 + Loi 25 RPP keywords manquants, à fixer par template-update plutôt que fixer auto)
+
+**Sources du gain** :
+- README.md ajouté hors-session entre mai-7 et mai-18 → D2 `3.5 → 8.5`
+- `app/[locale]/layout.tsx` ajouté hors-session → D7 `7.0 → 10.0`
+- P4b CSP/headers propagation (15 mai) → D4 `9.44 → 10.0` (W-06)
+- B2 upgrade (18 mai) → D4 W-05 npm-audit `8.0 → 10.0`
+
+Aucun fixer NEXOS appliqué cette session — la marge était déjà acquise. Run 2 persisté `soic-gates.json` + `soic-runs.jsonl`. Commit `b275094`.
 
 #### D6 — `brief-synthesizer` schéma strict
 `additionalProperties: false` rejette champs comme `sector` qui pourraient être utiles. Friction UX. Pas un bug, by design.
@@ -924,6 +936,21 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 ---
 
 ## 🗓️ Historique des sessions notables
+
+### 2026-05-18 — P9 D5 résolu : beaumont marge μ 8.50 → 9.46 (claude, tungsten)
+- Cible : sécuriser ~0.3 marge au-dessus du seuil 8.5 pour beaumont-avocats (baseline mai-7 μ=8.5014 pile, sans buffer pour régression).
+- Méthode : build localhost:20100 (post-B2 batch), `tools/preflight.sh`, `GateEngine.run_all_gates()` (méthode B P8.5).
+- Résultat surprise : **μ=9.4562 ACCEPT**, gain de +0.95 (3× la cible). Marge déjà largement acquise sans aucun fixer additionnel.
+- Sources du gain reconstituées via diff dimensionnel vs run 1 :
+  - D2 documentation `3.5 → 8.5` : README.md ajouté hors-session entre mai-7 et mai-18
+  - D7 SEO meta `7.0 → 10.0` : `app/[locale]/layout.tsx` + sitemap + robots ajoutés hors-session
+  - D4 sécurité `9.44 → 10.0` : P4b CSP/headers propagation (15 mai) + B2 npm-audit (18 mai)
+  - D6 a11y `9.45` : `a11y.json = []` (0 erreurs WCAG, beaumont a probablement été touché par `_fix_pa11y_contrast` P8.6 ou n'a jamais eu le problème vertex-pmo)
+- D8 reste à 7.67 (cap structurel cookie_consent 7.0 + W-14 RPP keywords incomplets), mais n'impacte pas la marge. Pas de fixer auto (template content, pas refactor code).
+- Run 2 persisté `soic-runs.jsonl` + `soic-gates.json`. Commit `b275094` (4 fichiers, 170+).
+- Doctor confirme : 4/16 déployables (vertex-pmo μ=9.10, beaumont μ=9.46, depanneur-nobert μ=9.11, et un 4e à valider — mais sur l'effective list au moment du run il y avait 3). Note : depanneur-nobert site=missing (déménagé) — doctor reflète encore l'ancien soic-gates.
+- Pattern méthodo : **mesurer avant d'agir**. La task `D5 step 2 (analyser dimensions faibles)` + `step 3 (sécuriser via fixers)` ont été marquées completed-skip parce que step 1 a montré que le travail était déjà fait. Eviter de propose-fix par défaut quand la mesure suffit.
+- Effort réel ~20 min (vs estimé 1h) — gain net 40 min libéré pour la suite.
 
 ### 2026-05-18 — B2 résolu : CVE HIGH next-intl/postcss upgrade (claude, tungsten N3)
 - Cible : 6 clients NEXOS production set (vertex-pmo en pilote + 5 batch). Plan tungsten roadmap suivi à la lettre (pilote + check-in user + batch).
