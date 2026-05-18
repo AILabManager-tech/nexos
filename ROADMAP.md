@@ -1226,28 +1226,42 @@ usine-rh                  brief=ok site=missing
 
 ---
 
-## 🎯 Pour la session prochaine — recommandation finale
+## 🎯 Point d'entrée prochaine session (snapshot fin 2026-05-18)
 
-**P1 + P2 + P3 + P4 + P5 + P6 résolus 2026-05-15.** Toute la dette identifiée + 2 items P5/P6 dégagés à l'audit sont clos. Pipeline NEXOS production-ready autonome avec :
-- Score Ph5 déterministe via SOIC (P1)
-- 5 silent failure paths nettoyés (P2 + P6)
-- Allocation ports conforme convention machine (P3)
-- 8 sites clients alignés sécurité + Loi 25 (P4b)
-- Tooling scripts robustes (P4d)
-- CSP single source vercel.json + middleware dev (P4a)
-- Tests coverage Vitest x5 (P4c + P5)
-- Doctor multi-clients (P4e)
-- 464/464 Python + 70/70 Vitest verts
+### État après session 2026-05-18
 
-**Critère "qualité code maximale" atteint** sur le scope identifié. Prochaines pistes possibles si nouvelle session :
+**7 items fermés cette session** : B2 (CVE HIGH next-intl/postcss) + P9 D3 (doc symlinks) + P9 D4 (mypy doc) + P9 D5 (beaumont marge μ 8.50 → 9.46) + P9 D6 (brief-schema champs). Tous commités, 7 commits poussés sur origin.
 
-1. **Propagation tests Vitest 7 autres clients** (~2h) — répliquer les 70 tests depanneur-nobert sur beaumont/clinique-aura/etc. Effort élevé, valeur défensive long-terme.
-2. **next-intl + postcss breaking upgrade** (~30 min, risque moyen) — fixer les CVE HIGH npm audit sur tous les clients via `npm audit fix --force` (next 15.5.18 / next-intl 4.12.0). Nécessite re-tester chaque site.
-3. **Type hint coverage push 80%** (~1h) — actuellement >60%, polish.
-4. **CI GitHub Actions** — déjà partiellement présent, vérifier robustesse + ajouter Vitest aux jobs.
-5. **Réveil d'un client dormant** (iusine, jokeresthetique, nexos-platform-industrial, etc. — ont brief mais pas de site/) — lancer `nexos create --client-dir clients/<slug>` pour générer leur site.
+**Pipeline NEXOS** : 562/562 tests Python verts, 4/16 clients déployables (vertex-pmo μ=9.10, beaumont-avocats μ=9.46, depanneur-nobert μ=9.11 [site déménagé hors stack], +1 attendu de la mesure batch B2). Tous les 7 clients NEXOS production sur next 15.5.18 + next-intl 4.12.0 + postcss 8.5.10.
 
-**Critère "session prochaine = succès"** :
-- Identifier une priorité concrète dans la liste ci-dessus (ou découverte fraîche via `nexos doctor --all-clients`)
-- Cycle code → tests → audit → docs → commits atomiques maintenu
-- 0 push autonome — utilisateur valide explicitement
+### Priorités ouvertes ordonnées
+
+| # | Item | Effort | Type | Note |
+|---|---|---|---|---|
+| 1 | **P9 D1** — Vitest matrix 7 clients | ~2h (pilote 45 min + batch 1h15) | Mécanique | Tests sources OK dans `/01_business/.../03_Depanneur_Nobert/...` (11 fichiers, 8 portables). Recommandation : pilote vertex-pmo puis batch 6 autres (mark_systems_demo exclu — déjà 34/34 Vitest). |
+| 2 | **B2.1** — mark_systems_demo CVE next 16 | ~1-2h | Investigation | Décision préalable user : aligner 16.x patchée vs downgrade 15.5.18. `nexos doctor --client mark_systems_demo` + check usages Cache Components / segments. |
+| 3 | **P9 D2** — Osiris dimension SOIC | ~2-3h | Vraie feature | Intégrer Osiris score (4.0/10 critique) comme dimension D10 SOIC (ou pondérer μ par Osiris). Modifie `soic/dimensions.py` + grids. |
+| 4 | **B1** — Osiris deps externes | ~30 min | Infra | Install playwright + récupérer blocklists/trackers.json côté `/osiris/`. Hors scope NEXOS strict, mais débloque 2/8 axes Osiris. |
+| 5 | **P8.4** — Onboard 5-6 clients dormants | ~3-6h par session, coûteux LLM | Production | iusine, la-villa-du-sous-marin, l-usine-rh, l-usinerh, usine-rh, USINE_RH_industrielle (4 derniers à dédupliquer avec user avant). 50-200k tokens par client. |
+| 6 | **P8.6.2** — Fixer pa11y multi-background | ~1h | Polish D6 | Étendre `_fix_pa11y_contrast` pour calibrer sur le bg le PLUS clair de la palette (vertex-pmo a 11 erreurs résiduelles sur `surface.alt`). |
+
+### Recommandation ouverture session
+
+```bash
+cd /home/gear-code/02_projects/NEXOS_PLATFORM/nexos_v.3.0
+
+# 1. Snapshot
+git status && git log origin/main..HEAD --oneline
+python3 nexos_cli.py doctor --all-clients
+
+# 2. Choisir priorité parmi la liste ci-dessus (cf table priorisée)
+# Recommandation 1er coup : P9 D1 (pilote vertex-pmo) — clean, mécanique, ferme une vraie dette CI
+
+# 3. Cycle tungsten : measure → fix → test → commit atomique → ROADMAP update
+```
+
+### Anti-patterns à éviter (rappel)
+
+- **Marquer fermé sans vérifier** : 3/4 items P9 cette session étaient déjà résolus mais pas marqués. Toujours grep + lire la cible avant de "fix".
+- **Propager aveuglément** : pilote 1 client + check-in user obligatoire avant batch (cf B2 méthodologie).
+- **Push autonome** : règle absolue gear-code. L'user valide explicitement chaque push.
