@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-18 — B2 résolu (CVE HIGH next-intl/postcss) + P9 D5 résolu (beaumont μ 8.50 → 9.46) (claude, tungsten)
+**Dernière mise à jour** : 2026-05-18 — B2 + P9 D3+D4+D5+D6 résolus (claude, tungsten)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` — 4 commits B2 pushed (`56c8320`, `46e93fa`, `e51e98e`, `bac4297`) + 1 commit D5 local (`b275094`) ; SOIC `9b9e123` côté `soic_v3`
+**Branche** : `main` — 4 commits B2 pushed + 2 commits D5 local + commit quick wins en cours ; SOIC `9b9e123` côté `soic_v3`
 
 ---
 
@@ -33,7 +33,7 @@
 | ABORT_PLATEAU recovery | ✅ **résolu (P8.2)** | `Decision.ENRICHED_RETRY` + `PlateauDiagnosis` injecté dans feedback avant abort (1 retry par run) |
 | Dimension-scoped fixers | ✅ **résolu (P8.3)** | `Fixer.dimension` + `auto_fix(dimensions=)` + `on_enriched_retry` hook + `orchestrator/plateau_recovery.py` factory — routing déterministe D4/D8 sur plateau |
 | Fixer D6 contraste WCAG | ✅ **résolu (P8.6)** | `_fix_pa11y_contrast` — WCAG helpers stdlib + détection background + harden V (HSV) jusqu'à 5.0:1. Validé sur vrai vertex-pmo : 3.75:1 → 5.00:1 |
-| Dette technique notée | 🟡 **P9 ouvert** (5 items) · ✅ D5 + D7 + D8 + D9 résolus | D5 (beaumont marge) fermé 2026-05-18 par effet de bord post-B2 (μ 8.50 → 9.46). Reste D1 Vitest matrix, D2 Osiris dimension SOIC, D3 doc symlinks, D4 mypy, D6 schéma strict. |
+| Dette technique notée | 🟢 **P9 quasi-clos** (2 items) · ✅ D3+D4+D5+D6+D7+D8+D9 résolus | Reste D1 Vitest matrix (~2h, mécanique) + D2 Osiris dimension SOIC (~2-3h, vraie feature). Tous les autres items P9 fermés. |
 | Audit Mark Systems public | 🟢 **Session 1 faite 2026-05-17** | Next 15.5.18 ; analytics conditionnel au consentement ; liens privacy localisés ; tests 34/34 ; build PASS ; npm audit HIGH/CRITICAL = 0 |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
 | Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
@@ -614,17 +614,11 @@ J'ai ajouté Vitest dans CI hier (commit `5e05951`) avec matrix `client: [depann
 depanneur-nobert : SOIC μ=9.11 (READY) ↔ Osiris 4.0/10 (Critique). Les deux mesurent des choses différentes (technique NEXOS vs santé opérationnelle réelle). NEXOS est aveugle à ce qu'Osiris mesure.
 **Action** : intégrer Osiris score comme dimension SOIC D10 (ou pondérer μ par Osiris). Effort 2-3h.
 
-#### D3 — Doc obsolète CLAUDE.md (symlinks)
-```
-osiris  → ~/osiris-scanner   # n'existe pas
-core-v3 → ~/projects/ai/ainova-os-v3   # n'existe pas
-```
-Le script `osiris-scan.sh` a un fallback sibling qui marche. Mais la doc ment.
-**Action** : corriger CLAUDE.md ou créer les symlinks. Effort 10 min.
+#### ✅ D3 — Doc obsolète symlinks (RÉSOLU 2026-05-18)
+CLAUDE.md avait déjà la bonne doc (section "DÉPENDANCES EXTERNES" — pattern sibling-via-`SCRIPT_DIR/../../osiris`). Restait AGENTS.md, GEMINI.md, docs/blueprint.md qui mentionnaient encore les symlinks obsolètes `core-v3 → ~/projects/ai/ainova-os-v3` et `osiris → ~/osiris-scanner`. Aligné les 3 fichiers sur le pattern sibling documenté dans CLAUDE.md. AGENTS et GEMINI gardent leur style "sans accents" pour cohérence.
 
-#### D4 — mypy installation inconsistante
-`python3 -m mypy` retourne "No module named mypy" en CLI direct. Mais `pytest tests/test_mypy_clean.py` passe (via venv). Inconsistance environnement.
-**Action** : `pip install mypy` au niveau système OU documenter activation venv. Effort 5 min.
+#### ✅ D4 — mypy installation (RÉSOLU — déjà documenté `docs/runbook.md:75`)
+`docs/runbook.md` ligne 75 documente déjà : activer venv `source .venv/bin/activate`, PEP 668 sur Python 3.12 système refuse `pip install mypy` global, le repo fournit `.venv/bin/mypy` 1.20.1, et `test_mypy_passes_on_nexos_package` détecte automatiquement `.venv/bin/mypy` en priorité avec fallback PATH. Pas de nouvelle action requise — l'item de la roadmap était périmé.
 
 #### ✅ D5 — Verdict deploy marginal beaumont (RÉSOLU 2026-05-18 par effet de bord)
 Baseline 7 mai était μ=8.5014 pile. Marge cible 0.3.
@@ -642,9 +636,8 @@ Baseline 7 mai était μ=8.5014 pile. Marge cible 0.3.
 
 Aucun fixer NEXOS appliqué cette session — la marge était déjà acquise. Run 2 persisté `soic-gates.json` + `soic-runs.jsonl`. Commit `b275094`.
 
-#### D6 — `brief-synthesizer` schéma strict
-`additionalProperties: false` rejette champs comme `sector` qui pourraient être utiles. Friction UX. Pas un bug, by design.
-**Action** : ajouter champs optionnels au schéma (`sector`, `tags`, `notes`) si valeur produit confirmée. Effort 20 min.
+#### ✅ D6 — `brief-synthesizer` champs optionnels (RÉSOLU — commit `0778398` mai-15)
+`nexos/modules/brief_synthesizer/input.schema.json` accepte déjà `sector` (string ≥1), `tags` (array<string> max 20), `notes` (string max 2000) en optionnels — avec descriptions Loi 25 / SaaS preview / opérateur libre. La roadmap n'avait juste pas marqué l'item fermé. `additionalProperties: false` reste strict mais les 3 champs souhaités sont accueillis sans friction.
 
 #### ✅ D7 — `tools/preflight.sh` chemin relatif cassé (RÉSOLU 2026-05-17)
 
@@ -936,6 +929,16 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 ---
 
 ## 🗓️ Historique des sessions notables
+
+### 2026-05-18 — P9 quick wins D3+D4+D6 marqués clos (claude, économie tokens)
+- Cible : 3 quick wins polish P9 (D3 doc symlinks, D4 mypy, D6 brief-schema champs optionnels) estimés ~35 min total.
+- Réalité : 2/3 étaient **déjà résolus** mais pas marqués dans ROADMAP :
+  - **D4** : `docs/runbook.md:75` documente déjà précisément le pattern venv (`.venv/bin/mypy 1.20.1`, PEP 668, fallback PATH dans `test_mypy_passes`). Aucune modif requise.
+  - **D6** : commit `0778398` mai-15 a déjà ajouté `sector`/`tags`/`notes` optionnels dans `nexos/modules/brief_synthesizer/input.schema.json` avec descriptions Loi 25 / SaaS preview. Roadmap pas synced.
+- **D3** : vrai fix nécessaire — CLAUDE.md avait été corrigé en P3 ou plus tôt (section "DÉPENDANCES EXTERNES" avec pattern sibling), mais AGENTS.md ligne 271, GEMINI.md ligne 257 et docs/blueprint.md lignes 162+216 mentionnaient encore les symlinks obsolètes `core-v3 → ~/projects/ai/ainova-os-v3` et `osiris → ~/osiris-scanner`. Aligné les 3 sur le pattern documenté dans CLAUDE.md (AGENTS+GEMINI gardent style sans accents).
+- Méthodo retenue : **avant de fixer, vérifier l'état réel via grep + lecture cible**. La roadmap peut accumuler de la dette obsolète si les fixes des sessions antérieures ne sont pas marqués. D5 + D4 + D6 cette session illustrent : 3/4 items "ouverts" étaient en réalité fermés.
+- P9 dette réduite à 2 items réels : D1 (Vitest matrix 7 clients, mécanique 2h) + D2 (Osiris dimension SOIC, vraie feature 2-3h).
+- Effort réel ~15 min (vs estimé 35 min). 3 fichiers modifiés (AGENTS.md, GEMINI.md, docs/blueprint.md).
 
 ### 2026-05-18 — P9 D5 résolu : beaumont marge μ 8.50 → 9.46 (claude, tungsten)
 - Cible : sécuriser ~0.3 marge au-dessus du seuil 8.5 pour beaumont-avocats (baseline mai-7 μ=8.5014 pile, sans buffer pour régression).

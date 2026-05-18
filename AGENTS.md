@@ -268,12 +268,23 @@ Tout nouveau projet utilise les templates dans `templates/` :
 - `docs/adr/` : 6 Architecture Decision Records
 - `docs/adding-agents.md`, `docs/runbook.md`, `docs/env.md`
 
-## SYMLINKS
+## DEPENDANCES EXTERNES (resolution sibling layout monorepo)
+
+NEXOS s'appuie sur deux composants freres dans le monorepo `NEXOS_PLATFORM/` :
 
 ```
-core-v3 -> ~/projects/ai/ainova-os-v3
-osiris  -> ~/osiris-scanner
+NEXOS_PLATFORM/
+|-- nexos_v.3.0/   <- ce repo (moteur de fabrication)
+|-- soic_v3/       <- quality engine (consomme via symlink relatif `soic/`)
+`-- osiris/        <- scanner sobriete/securite (resolu via sibling depuis tools/)
 ```
+
+| Composant | Resolution | Override env |
+|---|---|---|
+| **SOIC** | Symlink `soic/ -> ../soic_v3` (present dans le repo) | -- |
+| **Osiris** | Sibling auto-detecte par `tools/osiris-scan.sh` (cherche `../../osiris/scanner.py`) | `OSIRIS_PATH` |
+
+Pas de symlink `osiris` ni `core-v3` a la racine. Le pattern sibling-via-`SCRIPT_DIR/../../osiris` est defensif et fonctionne tant que les deux repos sont voisins dans `NEXOS_PLATFORM/`.
 
 ## DISCIPLINE DE SESSION — ROADMAP.md (regle obligatoire, tous LLM)
 

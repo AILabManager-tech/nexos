@@ -159,7 +159,7 @@ Cible : ≥85/100 au premier run.
 │   ├── ssl-scan.sh                  # testssl.sh --json $URL
 │   ├── a11y-scan.sh                 # pa11y $URL --reporter json
 │   ├── deps-scan.sh                 # npm audit --json
-│   ├── osiris-scan.sh               # python ~/osiris-scanner/scanner.py $URL
+│   ├── osiris-scan.sh               # python ../../osiris/scanner.py $URL (sibling)
 │   └── parse-results.py             # Agrège tous les JSON → feed agent
 │
 ├── soic/                            # Moteur SOIC v3.0 intégré
@@ -213,9 +213,9 @@ Cible : ≥85/100 au premier run.
 │   ├── architecture.md
 │   └── web-orchestrator.md
 │
-├── core-v3 -> ~/projects/ai/ainova-os-v3   # Symlink AINOVA OS
-├── osiris -> ~/osiris-scanner               # Symlink scanner
-└── projets -> ~/Bureau/PROJETS_CODE         # Symlink projets
+└── soic -> ../soic_v3                       # Symlink relatif vers soic_v3 sibling
+                                              # (osiris résolu via sibling auto-détecté
+                                              # par tools/osiris-scan.sh, pas de symlink)
 ```
 
 ---
