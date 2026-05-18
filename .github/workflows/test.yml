@@ -72,15 +72,24 @@ jobs:
   vitest-clients:
     name: Vitest (client sites)
     runs-on: ubuntu-latest
-    # Détecte les régressions UI / Zod / API handlers sur les sites clients
-    # avec couverture Vitest réelle (P4c + P5).
+    # Détecte les régressions UI / Zod / API handlers + invariants
+    # structurels NEXOS (headers sécurité, next.config, i18n, Loi 25,
+    # middleware, robots/sitemap) sur les sites clients.
+    # depanneur-nobert : 70 tests métier (P4c + P5).
+    # mark_systems_demo : 34 tests internes (src/).
+    # vertex-pmo + 4 sites : 18 tests d'invariants (P9 D1).
+    # collectif-nova : exclu (clients/collectif-nova/ gitignored).
     strategy:
       fail-fast: false
       matrix:
         client:
           - depanneur-nobert
-        # Les 7 autres clients n'ont pas encore de tests Vitest — à ajouter
-        # selon roadmap "propagation tests Vitest 7 clients".
+          - vertex-pmo
+          - beaumont-avocats
+          - clinique-aura
+          - electro-maitre-industriel
+          - table-de-marguerite
+          - mark_systems_demo
     steps:
       - uses: actions/checkout@v4
       - name: Set up Node 22
