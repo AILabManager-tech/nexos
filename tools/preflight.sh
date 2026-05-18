@@ -8,9 +8,18 @@
 set -euo pipefail
 
 URL="${1:?Usage: preflight.sh <URL> <CLIENT_DIR>}"
-CLIENT_DIR="${2:?Usage: preflight.sh <URL> <CLIENT_DIR>}"
+CLIENT_DIR_RAW="${2:?Usage: preflight.sh <URL> <CLIENT_DIR>}"
+
+# P9 D7 — résolution en chemin absolu AVANT tout `cd`.
+# Le script `cd "$SITE_DIR"` plus bas (ligne npm audit) cassait la résolution
+# de TOOLING_DIR quand CLIENT_DIR était passé en relatif : la redirection
+# `> "$TOOLING_DIR/npm-audit.json"` finissait dans <SITE_DIR>/<CLIENT_DIR>/
+# inexistant et le `|| true` masquait l'erreur. Découvert audit Mark Systems
+# 2026-05-17, reproduit P8.5 vertex-pmo.
+mkdir -p "$CLIENT_DIR_RAW"
+CLIENT_DIR="$(realpath "$CLIENT_DIR_RAW")"
 TOOLING_DIR="$CLIENT_DIR/tooling"
-TOOLS_DIR="$(dirname "$0")"
+TOOLS_DIR="$(realpath "$(dirname "$0")")"
 
 mkdir -p "$TOOLING_DIR"
 

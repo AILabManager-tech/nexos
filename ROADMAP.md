@@ -3,7 +3,7 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-17 — P8.5 résolu : vertex-pmo READY μ=9.00 (claude, tungsten)
+**Dernière mise à jour** : 2026-05-17 — P9 D7 résolu : preflight.sh path absolu (claude, tungsten)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
 **Branche** : `main` — 6 commits P8.3+P8.6 locaux + 1 commit P9 D8 (push à discrétion) ; SOIC `9b9e123` côté `soic_v3`
 
@@ -15,7 +15,7 @@
 
 | Indicateur | Valeur | Note |
 |---|---|---|
-| Tests Python | **558/558** verts | +29 P8.3 + 21 P8.6 + 18 P9 D8 + 1 P9 D9 (doctor latest gate) |
+| Tests Python | **562/562** verts | +29 P8.3 + 21 P8.6 + 18 P9 D8 + 1 P9 D9 + 4 P9 D7 (preflight.sh path) |
 | Tests Vitest depanneur-nobert | **70/70** verts | +57 tests P4c (schemas + libs + email + clientConfig) + P5 (API contact + newsletter) |
 | Tests Vitest depanneur-nobert | **70/70** verts (était 13/13) | étendu en P4c + P5 |
 | Build site depanneur-nobert | **PASS** | npm audit 0/0 |
@@ -32,7 +32,7 @@
 | ABORT_PLATEAU recovery | ✅ **résolu (P8.2)** | `Decision.ENRICHED_RETRY` + `PlateauDiagnosis` injecté dans feedback avant abort (1 retry par run) |
 | Dimension-scoped fixers | ✅ **résolu (P8.3)** | `Fixer.dimension` + `auto_fix(dimensions=)` + `on_enriched_retry` hook + `orchestrator/plateau_recovery.py` factory — routing déterministe D4/D8 sur plateau |
 | Fixer D6 contraste WCAG | ✅ **résolu (P8.6)** | `_fix_pa11y_contrast` — WCAG helpers stdlib + détection background + harden V (HSV) jusqu'à 5.0:1. Validé sur vrai vertex-pmo : 3.75:1 → 5.00:1 |
-| Dette technique notée | 🟡 **P9 ouvert** (7 items D1-D7) · ✅ D8 + D9 résolus 2026-05-17 | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict, preflight path. D8 (dry-run parité) + D9 (doctor latest gate) fermés |
+| Dette technique notée | 🟡 **P9 ouvert** (6 items D1-D6) · ✅ D7 + D8 + D9 résolus 2026-05-17 | Polish — CI matrix, divergence SOIC/Osiris, doc symlinks, mypy, seuil margin, schéma strict. D7 (preflight path) + D8 (dry-run parité) + D9 (doctor latest gate) fermés |
 | Audit Mark Systems public | 🟢 **Session 1 faite 2026-05-17** | Next 15.5.18 ; analytics conditionnel au consentement ; liens privacy localisés ; tests 34/34 ; build PASS ; npm audit HIGH/CRITICAL = 0 |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
 | Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
@@ -627,9 +627,25 @@ Exactement le seuil. Aucune marge. Toute modif mineure peut le faire descendre s
 `additionalProperties: false` rejette champs comme `sector` qui pourraient être utiles. Friction UX. Pas un bug, by design.
 **Action** : ajouter champs optionnels au schéma (`sector`, `tags`, `notes`) si valeur produit confirmée. Effort 20 min.
 
-#### D7 — `tools/preflight.sh` écrit `npm-audit.json` avec un chemin relatif cassé
-Audit Mark Systems 2026-05-17 : `bash tools/preflight.sh https://www.marksystems.ca/ clients/mark_systems_demo` crée `TOOLING_DIR=clients/mark_systems_demo/tooling`, puis fait `cd "$SITE_DIR"` avant `npm audit --json > "$TOOLING_DIR/npm-audit.json"`. Le chemin devient relatif au site et l'écriture échoue (`No such file or directory`) même si le script affiche `✓`.
-**Action** : résoudre `CLIENT_DIR`/`TOOLING_DIR` en chemins absolus au début du script ou remplacer le bloc npm par `tools/deps-scan.sh`. Ajouter un test régression. Effort 20 min.
+#### ✅ D7 — `tools/preflight.sh` chemin relatif cassé (RÉSOLU 2026-05-17)
+
+**Cause racine** : `TOOLING_DIR="$CLIENT_DIR/tooling"` (ligne 12) était relatif au cwd. Puis ligne 44 `cd "$SITE_DIR"` changeait le cwd. Ligne 45 `npm audit --json > "$TOOLING_DIR/npm-audit.json"` cherchait à écrire dans `<SITE_DIR>/<CLIENT_DIR>/tooling/npm-audit.json` (path résolu relativement au nouveau cwd) qui n'existait pas. Le `|| true` masquait l'erreur, le script affichait `✓`, et `npm-audit.json` n'était jamais écrit. Découvert audit Mark Systems 2026-05-17, **reproduit en direct pendant P8.5 vertex-pmo** (preflight loggé `ligne 45: clients/vertex-pmo/tooling/npm-audit.json: Aucun fichier ou dossier de ce nom`).
+
+**Décision** : résoudre `CLIENT_DIR` / `TOOLING_DIR` / `TOOLS_DIR` en **chemins absolus** via `realpath` dès l'entête, avant tout `cd`. Approche moins invasive que remplacer le bloc npm par `tools/deps-scan.sh` (qui aurait demandé un test d'intégration plus large).
+
+**Implémentation** (1 commit atomique) :
+- `tools/preflight.sh` : `mkdir -p "$CLIENT_DIR_RAW"` (cohérence : créer si absent avant realpath) + `realpath` sur `CLIENT_DIR` et `TOOLS_DIR`. Commentaire D7 inline pour traçabilité.
+- `tests/test_preflight_sh.py` (nouveau, 4 tests) :
+  - `test_npm_audit_json_written_with_relative_client_dir` — fixture relative + mock npm via PATH override → assert `npm-audit.json` existe et JSON valide
+  - `test_no_redirection_error_in_stderr` — garde-fou anti-régression : aucun "Aucun fichier ou dossier" / "No such file or directory" sur stderr
+  - `test_preflight_exit_code_zero_on_partial_tools` — pattern hardening P4d préservé
+  - `test_tooling_dir_created_inside_client_dir` — `tooling/` créé sous CLIENT_DIR, pas sous SITE_DIR
+
+**Validation** : 562/562 tests Python verts (558 baseline + 4 D7). ruff clean (import sort autocorrigé).
+
+**Effort réel** : ~25 min (test guard 10 min + fix bash 2 min + correction test pour reproduire le bug avec path relatif 5 min + ruff format + ROADMAP 8 min). Estimation initiale 20 min tenue.
+
+---
 
 #### ✅ D9 — `nexos doctor` lisait la 1ère entrée `soic-gates.json` au lieu de la dernière (RÉSOLU 2026-05-17)
 
@@ -910,6 +926,14 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 - Compat Next 15 : pages/layout `[locale]` adaptés au contrat `params: Promise<{ locale: string }>` ; `contact/page.tsx` utilise `getTranslations` côté serveur.
 - Validation : `npm test` 34/34, `npm run build` PASS, `npm audit --audit-level=high` PASS.
 - Note session : le repo NEXOS affichait des suppressions massives non liées dans `clients/depanneur-nobert/site`; non touchées.
+
+### 2026-05-17 — P9 D7 résolu : preflight.sh chemin absolu (claude, tungsten N2)
+- Bug reproduit en direct pendant P8.5 vertex-pmo : `ligne 45: clients/vertex-pmo/tooling/npm-audit.json: Aucun fichier ou dossier de ce nom` — même message d'erreur que sur Mark Systems le matin du 17 mai. Cause unique : `TOOLING_DIR` relatif + `cd "$SITE_DIR"` ligne 44 → la redirection cherche un path inexistant.
+- Test guard d'abord (TDD red) : nouveau `tests/test_preflight_sh.py` avec 4 tests qui appellent `bash preflight.sh` en subprocess, mock npm via PATH override, vérifient `npm-audit.json` écrit + stderr propre. Erreur "Aucun fichier ou dossier" reproduite exactement comme en prod avant fix.
+- Fix bash : `mkdir -p "$CLIENT_DIR_RAW"` (création préalable nécessaire pour realpath) puis `realpath` sur `CLIENT_DIR` + `TOOLS_DIR`. 3 lignes modifiées, commentaire D7 inline.
+- 562/562 tests verts (558 baseline + 4 D7). ruff clean (import sort autocorrigé).
+- Petite leçon méthodologique : ma 1ère version du test passait parce que je passais `str(client)` absolu — le bug ne se déclenche QUE sur path relatif. J'ai dû modifier le test pour reproduire l'usage réel (`cwd=tmp_path` + `client_factice` relatif). Le test guard est aussi important que le fix : sans test fidèle au bug, on ne sait pas qu'on a vraiment fixé.
+- Effort réel ~25 min (vs 20 min estimé), discipline tungsten maintenue.
 
 ### 2026-05-17 — P8.5 résolu : mesure terrain vertex-pmo READY μ=9.00 (claude, tungsten strict)
 - **Résultat** : vertex-pmo passe de ABORT_PLATEAU μ=7.91 (mai 7) à ACCEPT μ=9.00 → **3e client déployable** (depanneur-nobert, beaumont-avocats, vertex-pmo).
