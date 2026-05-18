@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-18 — B2 + P9 D1+D3+D4+D5+D6 résolus (claude, tungsten)
+**Dernière mise à jour** : 2026-05-18 — B2 + B2.1 + P9 D1+D3+D4+D5+D6 résolus (claude, tungsten)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` — 3 commits P9 D1 local (`f220576` pilote + `927c139` batch + `9df9649` CI) ; SOIC `9b9e123` côté `soic_v3`
+**Branche** : `main` — 5 commits locaux (`f220576` P9 D1 pilote + `927c139` P9 D1 batch + `9df9649` P9 D1 CI + `59d76fb` doc + `f644cf8` B2.1) ; SOIC `9b9e123` côté `soic_v3`
 
 ---
 
@@ -29,6 +29,7 @@
 | Osiris API désynchronisée | ✅ **résolu (P7)** | `osiris-scan.sh` adapté à `--url --output report`, scan production OK |
 | Bugs réels notés (audit) | 🟡 **P8 ouvert** (1 item restant) | P8.1 + P8.2 + B2 résolus. Reste B4 6 clients dormants |
 | CVE HIGH next-intl/postcss | ✅ **résolu (B2) 2026-05-18** | next 15.5.15 → 15.5.18 + next-intl 3.25.1 → 4.12.0 + postcss 8.4.49 → 8.5.10 sur 6 clients (pilote vertex-pmo `56c8320` + batch 4 clients `46e93fa` + collectif-nova on-disk). mark_systems_demo hors scope (déjà next 16.2.3). vertex-pmo μ 9.00 → 9.10 (+0.10). |
+| CVE HIGH mark_systems_demo next 16 | ✅ **résolu (B2.1) 2026-05-18** | next 16.2.3 → 16.2.6 (latest patched 16.x). Zero API Next-16-specific utilisée → upgrade safe vs downgrade. 86/86 tests + build PASS + HIGH/CRITICAL = 0. Commit `f644cf8`. Stack NEXOS production : 6 sites sur 15.5.18 + mark sur 16.2.6 = tous patchés. |
 | Auto-fixer idempotent | ✅ **résolu (P8.1)** | `FIXER_ORDER: list[Fixer]` + 14 tests régression (ordre + file-ownership + idempotence run 3×) |
 | ABORT_PLATEAU recovery | ✅ **résolu (P8.2)** | `Decision.ENRICHED_RETRY` + `PlateauDiagnosis` injecté dans feedback avant abort (1 retry par run) |
 | Dimension-scoped fixers | ✅ **résolu (P8.3)** | `Fixer.dimension` + `auto_fix(dimensions=)` + `on_enriched_retry` hook + `orchestrator/plateau_recovery.py` factory — routing déterministe D4/D8 sur plateau |
@@ -1190,15 +1191,20 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 Voir entrée historique 2026-05-18. Pilote `56c8320` + batch `46e93fa`. 6 clients alignés sur next 15.5.18 / next-intl 4.12.0 / postcss 8.5.10. vertex-pmo μ 9.00 → 9.10.
 
-### 🟠 B2.1 — mark_systems_demo : 1 HIGH CVE next 16.2.3 résiduel (~1-2h)
+### ✅ B2.1 — mark_systems_demo : CVE HIGH next 16 (RÉSOLU 2026-05-18 par upgrade)
 
-**Découvert** : pendant batch B2, `mark_systems_demo` était hors scope car déjà sur next 16.2.3 (plus récent que cible 15.5.18). `npm audit` montre 1 HIGH CVE (advisories GHSA-* sur next 16.x : DoS Server Components, Middleware bypass, XSS App Router, etc.). `npm audit fix` ne propose pas de fix automatique.
+**Décision** : upgrade `16.2.3 → 16.2.6` (latest patched 16.x stable, semver patch). Pas de downgrade : `grep` du codebase pour `cacheComponents`, `ppr`, `unstable_after`, `'use cache'`, `cacheLife`, `cacheTag` → zéro match. Aucune API Next-16-specific utilisée, donc downgrade vers 15.5.18 aurait fait perdre l'architecture React 19 / `src/app/[locale]/` initiale sans aucun gain de sécurité.
 
-**2 stratégies possibles** :
-- **Aligner vers 16.x patchée** : trouver la dernière 16.x sans CVE (probablement 16.3.x ou 16.4.x si publiée). Reste sur next 16, demande update de `params: Promise<>` si l'API change.
-- **Downgrade vers 15.5.18** : aligne sur le reste du stack NEXOS. Plus simple, mais c'est un downgrade qui peut casser des features 16.x (Cache Components, etc.).
+**CVE fermés** (2 cumulés, cf `npm audit`) :
+- `GHSA-8h8q-6873-q5fj` — Next.js DoS via Server Components (range >=16.0.0 <16.2.5)
+- `GHSA-26hh-7cqf-hhc6` — Middleware/Proxy bypass App Router segment-prefetch routes — Incomplete Fix Follow-Up (range >=16.0.0 <16.2.6)
 
-**Pré-requis avant d'attaquer** : check si mark_systems_demo a un site/ utilisable (cf `nexos doctor --client mark_systems_demo`) et identifier les usages spécifiques next 16 (Cache Components, segments, etc.).
+**Validation post-upgrade** :
+- 86/86 tests Vitest verts en 4.12 s
+- `npm run build` PASS (API routes `/api/agents/*`, `/api/auth/[...nextauth]`, `/api/contact`, `/api/webhooks` + middleware proxy intacts)
+- `npm audit` HIGH/CRITICAL = 0 (7 moderate non-bloquants restent)
+
+**État final stack NEXOS production** : tous les 7 clients sont sur des Next patchés (6 sites sur 15.5.18, mark_systems_demo sur 16.2.6). Commit `f644cf8`.
 
 ---
 
@@ -1261,12 +1267,11 @@ usine-rh                  brief=ok site=missing
 
 | # | Item | Effort | Type | Note |
 |---|---|---|---|---|
-| 1 | **B2.1** — mark_systems_demo CVE next 16 | ~1-2h | Investigation | Décision préalable user : aligner 16.x patchée vs downgrade 15.5.18. `nexos doctor --client mark_systems_demo` + check usages Cache Components / segments. |
-| 2 | **P9 D2** — Osiris dimension SOIC | ~2-3h | Vraie feature | Intégrer Osiris score (4.0/10 critique) comme dimension D10 SOIC (ou pondérer μ par Osiris). Modifie `soic/dimensions.py` + grids. Seul item P9 ouvert. |
-| 3 | **collectif-nova Vitest** — décision gitignore | ~15 min | Décision | `clients/collectif-nova/` est gitignored ligne 23 .gitignore. Si on veut le protéger en CI : retirer la ligne et propager `vitest.config.ts` + `__tests__/nexos-invariants.test.ts` (template existant chez vertex-pmo). Sinon : status quo. |
-| 4 | **B1** — Osiris deps externes | ~30 min | Infra | Install playwright + récupérer blocklists/trackers.json côté `/osiris/`. Hors scope NEXOS strict, mais débloque 2/8 axes Osiris. |
-| 5 | **P8.4** — Onboard 5-6 clients dormants | ~3-6h par session, coûteux LLM | Production | iusine, la-villa-du-sous-marin, l-usine-rh, l-usinerh, usine-rh, USINE_RH_industrielle (4 derniers à dédupliquer avec user avant). 50-200k tokens par client. |
-| 6 | **P8.6.2** — Fixer pa11y multi-background | ~1h | Polish D6 | Étendre `_fix_pa11y_contrast` pour calibrer sur le bg le PLUS clair de la palette (vertex-pmo a 11 erreurs résiduelles sur `surface.alt`). |
+| 1 | **P9 D2** — Osiris dimension SOIC | ~2-3h | Vraie feature | Intégrer Osiris score (4.0/10 critique) comme dimension D10 SOIC (ou pondérer μ par Osiris). Modifie `soic/dimensions.py` + grids. Seul item P9 ouvert. Décision design préalable : nouvelle dimension D10 vs facteur multiplicatif sur μ. |
+| 2 | **collectif-nova Vitest** — décision gitignore | ~15 min | Décision | `clients/collectif-nova/` est gitignored ligne 23 .gitignore. Si on veut le protéger en CI : retirer la ligne et propager `vitest.config.ts` + `__tests__/nexos-invariants.test.ts` (template existant chez vertex-pmo). Sinon : status quo. |
+| 3 | **B1** — Osiris deps externes | ~30 min | Infra | Install playwright + récupérer blocklists/trackers.json côté `/osiris/`. Hors scope NEXOS strict, mais débloque 2/8 axes Osiris. |
+| 4 | **P8.4** — Onboard 5-6 clients dormants | ~3-6h par session, coûteux LLM | Production | iusine, la-villa-du-sous-marin, l-usine-rh, l-usinerh, usine-rh, USINE_RH_industrielle (4 derniers à dédupliquer avec user avant). 50-200k tokens par client. |
+| 5 | **P8.6.2** — Fixer pa11y multi-background | ~1h | Polish D6 | Étendre `_fix_pa11y_contrast` pour calibrer sur le bg le PLUS clair de la palette (vertex-pmo a 11 erreurs résiduelles sur `surface.alt`). |
 
 ### Recommandation ouverture session
 
@@ -1278,8 +1283,9 @@ git status && git log origin/main..HEAD --oneline
 python3 nexos_cli.py doctor --all-clients
 
 # 2. Choisir priorité parmi la liste ci-dessus (cf table priorisée)
-# Recommandation 1er coup : B2.1 (mark_systems_demo) — fermer le dernier
-# trou CVE de la chaîne B2, puis enchaîner P9 D2 (vraie feature SOIC).
+# Recommandation 1er coup : P9 D2 (Osiris dimension SOIC) — seul item
+# P9 ouvert, vraie feature. Décision design préalable : nouvelle
+# dimension D10 vs pondération μ par Osiris.
 
 # 3. Cycle tungsten : measure → fix → test → commit atomique → ROADMAP update
 ```
@@ -1290,19 +1296,23 @@ python3 nexos_cli.py doctor --all-clients
 - **Propager aveuglément** : pilote 1 client + check-in user obligatoire avant batch (cf B2 méthodologie). P9 D1 pivot 2026-05-18 = exemple : inspection avant copie a évité de transformer 6 sites marketing en clones partiels de dépanneur.
 - **Push autonome** : règle absolue gear-code. L'user valide explicitement chaque push.
 
-### Session 2026-05-18 (suite, post-closeout) — P9 D1 résolu par pivot
+### Session 2026-05-18 (suite, post-closeout) — P9 D1 + B2.1 résolus
 
-**Commits posés** (locaux, à pousser) :
+**Commits posés** (locaux) :
 - `f220576` test(vertex-pmo): seed Vitest invariants suite (P9 D1 pilot) — 18 tests
 - `927c139` test(clients): propagate Vitest invariants to 4 sites (P9 D1 batch) — 72 tests
 - `9df9649` ci(vitest-clients): extend matrix from 1 to 7 clients (P9 D1 close)
+- `59d76fb` docs(roadmap): P9 D1 résolu par pivot
+- `f644cf8` fix(mark_systems_demo): B2.1 next 16.2.3 → 16.2.6 (CVE HIGH → 0)
 
 **Accomplissements** :
 - Pivot interprétation P9 D1 : inspection des 11 tests dépanneur a montré qu'ils sont **non-portables** (dépendent de libs métier absentes des 6 autres sites). Décision : créer **18 tests d'invariants structurels NEXOS** par site (headers sécurité, next.config, i18n, Loi 25, middleware, robots/sitemap) — protège le contrat de génération en CI sans toucher au scope des sites.
 - 5 clients équipés (vertex-pmo pilote + 4 batch : beaumont, clinique-aura, electro-maitre-industriel, table-de-marguerite). 90 tests Vitest nouveaux verts en 1.5s cumulé.
 - CI matrix `vitest-clients` étendue de 1 à 7 clients dans `.github/workflows/test.yml`. `fail-fast: false` conservé.
 - npm audit HIGH/CRITICAL = 0 sur les 5 sites équipés.
+- B2.1 résolu : `mark_systems_demo` next 16.2.3 → 16.2.6, ferme 2 CVE HIGH (GHSA-8h8q-6873-q5fj DoS Server Components + GHSA-26hh-7cqf-hhc6 Middleware bypass). Décision upgrade vs downgrade tranchée par grep : zéro API Next-16-specific utilisée → upgrade safe, downgrade aurait perdu l'architecture React 19 sans gain. 86/86 tests + build PASS post-upgrade. Tous les 7 clients NEXOS production sont maintenant sur Next patché.
 
 **Découverte** :
-- `clients/collectif-nova/` est gitignored (ligne 23 .gitignore) → nouveaux fichiers non trackés. Décision user requise sur statut tracking (item résiduel #3 ci-dessus).
+- `clients/collectif-nova/` est gitignored (ligne 23 .gitignore) → nouveaux fichiers non trackés. Décision user requise sur statut tracking (item résiduel #2 ci-dessus).
 - Brief P9 D1 v1 (2026-05-15) sous-estimait la portabilité : "8 portables sur 11" devient "0 portables" après inspection. Leçon : un brief mécanique mérite quand même un check de faisabilité avant exécution.
+- `mark_systems_demo` a 86 tests Vitest (vs 34 documenté dans ROADMAP, accru entre temps). À retenir : compter les tests à la mesure, pas au snapshot doc.
