@@ -213,3 +213,84 @@ def test_report_mu_matches_gates_mu_exactly(tmp_path: Path) -> None:
     # et que la valeur affichée est bien dérivée de gates_mu arrondie 2 décimales.
     assert content == "Score Final 9.11"
     assert "8.39" not in content
+
+
+# ── P9 D2 : intégration dual-axis Osiris ────────────────────────────────────
+
+
+def test_osiris_placeholders_substituted_and_decision_persisted(tmp_path: Path) -> None:
+    """[[OSIRIS_*]] + [[JOINT_*]] sont substitués, deploy-decision.json est écrit."""
+    _write_gates(
+        tmp_path,
+        [{"phase": "ph5-qa", "mu": 9.10, "decision": "ACCEPT", "threshold": 8.5}],
+    )
+    _write_runs(tmp_path, [{"phase": "ph5-qa", "mu": 9.10, "dimension_scores": {}}])
+    tooling = tmp_path / "tooling"
+    tooling.mkdir()
+    (tooling / "osiris.json").write_text(
+        json.dumps({"osiris_score": 4.0, "grade": "Critique"}), encoding="utf-8"
+    )
+
+    report = _write_report(
+        tmp_path,
+        "μ=[[SOIC_MU]] osiris=[[OSIRIS_SCORE]]/[[OSIRIS_GRADE]] "
+        "osiris_verdict=[[OSIRIS_VERDICT]] joint=[[JOINT_VERDICT]] blocker=[[JOINT_BLOCKER]]",
+    )
+
+    assert inject_soic_scores(report, tmp_path) is True
+    content = report.read_text(encoding="utf-8")
+    assert "μ=9.10" in content
+    assert "osiris=4.0/Critique" in content
+    assert "osiris_verdict=FAIL" in content  # 4.0 < 6.0
+    assert "joint=FAIL" in content  # SOIC PASS mais Osiris FAIL
+    assert "blocker=osiris" in content
+
+    # deploy-decision.json persisté à la racine du client
+    deploy_path = tmp_path / "deploy-decision.json"
+    assert deploy_path.exists()
+    persisted = json.loads(deploy_path.read_text(encoding="utf-8"))
+    assert persisted["joint_verdict"] == "FAIL"
+    assert persisted["blocker"] == "osiris"
+
+
+def test_dual_axis_table_renders_full_markdown(tmp_path: Path) -> None:
+    """[[DUAL_AXIS_TABLE]] insère le tableau 3 lignes complet."""
+    _write_gates(
+        tmp_path,
+        [{"phase": "ph5-qa", "mu": 9.46, "decision": "ACCEPT", "threshold": 8.5}],
+    )
+    _write_runs(tmp_path, [{"phase": "ph5-qa", "mu": 9.46, "dimension_scores": {}}])
+    tooling = tmp_path / "tooling"
+    tooling.mkdir()
+    (tooling / "osiris.json").write_text(
+        json.dumps({"osiris_score": 7.4, "grade": "Conforme"}), encoding="utf-8"
+    )
+
+    report = _write_report(tmp_path, "[[DUAL_AXIS_TABLE]]")
+    assert inject_soic_scores(report, tmp_path) is True
+    content = report.read_text(encoding="utf-8")
+    assert "| Axe | Mesure | Seuil | Verdict | Source |" in content
+    assert "μ=9.46" in content
+    assert "score=7.4" in content
+    assert "Conforme" in content
+    assert "**ACCEPT**" in content
+    assert "blocker: —" in content
+
+
+def test_osiris_unknown_does_not_block_joint(tmp_path: Path) -> None:
+    """SOIC ACCEPT + Osiris UNKNOWN (file absent) → joint ACCEPT, warning."""
+    _write_gates(
+        tmp_path,
+        [{"phase": "ph5-qa", "mu": 9.0, "decision": "ACCEPT", "threshold": 8.5}],
+    )
+    _write_runs(tmp_path, [{"phase": "ph5-qa", "mu": 9.0, "dimension_scores": {}}])
+    # Pas de tooling/osiris.json
+
+    report = _write_report(tmp_path, "verdict=[[JOINT_VERDICT]] osiris=[[OSIRIS_VERDICT]]")
+    assert inject_soic_scores(report, tmp_path) is True
+    content = report.read_text(encoding="utf-8")
+    assert "verdict=ACCEPT" in content
+    assert "osiris=UNKNOWN" in content
+
+    persisted = json.loads((tmp_path / "deploy-decision.json").read_text(encoding="utf-8"))
+    assert any("Osiris report absent" in w for w in persisted["warnings"])

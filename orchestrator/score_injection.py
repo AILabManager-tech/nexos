@@ -1,18 +1,33 @@
-"""Injection du score SOIC officiel dans ph5-qa-report.md.
+"""Injection du score SOIC officiel + Osiris dans ph5-qa-report.md.
 
 Source de vérité unique pour le score Ph5 = SOIC GateEngine (déterministe).
 L'agent Ph5 rédige le rapport qualitatif avec des placeholders ; ce module
 substitue les placeholders avec les valeurs mesurées par SOIC en
 post-traitement.
 
-Placeholders supportés :
+P9 D2 (2026-05-18) : ajout du verdict dual-axis (SOIC + Osiris). SOIC mesure
+la qualité technique (D1-D9), Osiris mesure la santé opérationnelle externe.
+Verdict deploy joint = `μ_SOIC ≥ 8.5` ET `osiris_score ≥ 6.0`. Le blocker est
+traçable au gate qui a fail (pas de score composite opaque).
+
+Placeholders SOIC :
     [[SOIC_MU]]                 -> "9.11"  (2 décimales)
     [[SOIC_VERDICT]]            -> "ACCEPT" | "FAIL"
     [[SOIC_THRESHOLD]]          -> "8.5"
     [[SOIC_DIM_SCORES_TABLE]]   -> tableau markdown D1-D9 complet
     [[SOIC_D1]] ... [[SOIC_D9]] -> score par dimension (2 décimales)
 
+Placeholders Osiris + joint (P9 D2) :
+    [[OSIRIS_SCORE]]            -> "4.0" | "UNKNOWN"
+    [[OSIRIS_GRADE]]            -> "Critique" | "Conforme" | "UNKNOWN"
+    [[OSIRIS_VERDICT]]          -> "PASS" | "FAIL" | "UNKNOWN"
+    [[OSIRIS_THRESHOLD]]        -> "6.0"
+    [[JOINT_VERDICT]]           -> "ACCEPT" | "FAIL"
+    [[JOINT_BLOCKER]]           -> "soic" | "osiris" | "both" | "—"
+    [[DUAL_AXIS_TABLE]]         -> tableau markdown 2 axes + verdict joint
+
 Item N (P1) — chantier dette pipeline 2026-05-15.
+Item D2 (P9) — dual-axis 2026-05-18.
 """
 
 from __future__ import annotations
@@ -21,6 +36,12 @@ import json
 from pathlib import Path
 from typing import Any
 
+from nexos.deploy_decision import (
+    DeployDecision,
+    evaluate_deploy_decision,
+    format_dual_axis_table,
+    persist_deploy_decision,
+)
 from soic.dimensions import DIMENSIONS
 
 PLACEHOLDER_MU = "[[SOIC_MU]]"
@@ -28,6 +49,14 @@ PLACEHOLDER_VERDICT = "[[SOIC_VERDICT]]"
 PLACEHOLDER_THRESHOLD = "[[SOIC_THRESHOLD]]"
 PLACEHOLDER_DIM_TABLE = "[[SOIC_DIM_SCORES_TABLE]]"
 _PLACEHOLDER_DIM_MARKER = "[[SOIC_D"  # détection [[SOIC_D1]] ... [[SOIC_D9]]
+
+PLACEHOLDER_OSIRIS_SCORE = "[[OSIRIS_SCORE]]"
+PLACEHOLDER_OSIRIS_GRADE = "[[OSIRIS_GRADE]]"
+PLACEHOLDER_OSIRIS_VERDICT = "[[OSIRIS_VERDICT]]"
+PLACEHOLDER_OSIRIS_THRESHOLD = "[[OSIRIS_THRESHOLD]]"
+PLACEHOLDER_JOINT_VERDICT = "[[JOINT_VERDICT]]"
+PLACEHOLDER_JOINT_BLOCKER = "[[JOINT_BLOCKER]]"
+PLACEHOLDER_DUAL_AXIS_TABLE = "[[DUAL_AXIS_TABLE]]"
 
 
 def _load_latest_gate(soic_gates_path: Path, phase: str) -> dict[str, Any] | None:
@@ -110,28 +139,59 @@ def _format_dimension_scores_table(dim_scores: dict[str, float]) -> str:
 
 
 def _has_any_placeholder(content: str) -> bool:
-    """True si le rapport contient au moins un placeholder SOIC."""
+    """True si le rapport contient au moins un placeholder SOIC ou dual-axis."""
     fixed_placeholders = (
         PLACEHOLDER_MU,
         PLACEHOLDER_VERDICT,
         PLACEHOLDER_THRESHOLD,
         PLACEHOLDER_DIM_TABLE,
+        PLACEHOLDER_OSIRIS_SCORE,
+        PLACEHOLDER_OSIRIS_GRADE,
+        PLACEHOLDER_OSIRIS_VERDICT,
+        PLACEHOLDER_OSIRIS_THRESHOLD,
+        PLACEHOLDER_JOINT_VERDICT,
+        PLACEHOLDER_JOINT_BLOCKER,
+        PLACEHOLDER_DUAL_AXIS_TABLE,
     )
     if any(ph in content for ph in fixed_placeholders):
         return True
     return _PLACEHOLDER_DIM_MARKER in content
 
 
+def _inject_dual_axis(content: str, decision: DeployDecision) -> str:
+    """Substitue les placeholders Osiris + joint dans le rapport."""
+    osiris_score_str = (
+        f"{decision.osiris_score:.1f}" if decision.osiris_score is not None else "UNKNOWN"
+    )
+    osiris_grade_str = decision.osiris_grade or "UNKNOWN"
+    content = content.replace(PLACEHOLDER_OSIRIS_SCORE, osiris_score_str)
+    content = content.replace(PLACEHOLDER_OSIRIS_GRADE, osiris_grade_str)
+    content = content.replace(PLACEHOLDER_OSIRIS_VERDICT, decision.osiris_verdict)
+    content = content.replace(PLACEHOLDER_OSIRIS_THRESHOLD, f"{decision.osiris_threshold:.1f}")
+    content = content.replace(PLACEHOLDER_JOINT_VERDICT, decision.joint_verdict)
+    content = content.replace(PLACEHOLDER_JOINT_BLOCKER, decision.blocker or "—")
+    if PLACEHOLDER_DUAL_AXIS_TABLE in content:
+        content = content.replace(PLACEHOLDER_DUAL_AXIS_TABLE, format_dual_axis_table(decision))
+    return content
+
+
 def inject_soic_scores(report_path: Path, client_dir: Path) -> bool:
-    """Substitue les placeholders SOIC dans ph5-qa-report.md.
+    """Substitue les placeholders SOIC + Osiris (dual-axis) dans ph5-qa-report.md.
 
     Args:
         report_path: chemin vers ph5-qa-report.md.
-        client_dir:  dossier client (contient soic-gates.json et soic-runs.jsonl).
+        client_dir:  dossier client (contient soic-gates.json, soic-runs.jsonl,
+                     tooling/osiris.json).
 
     Retourne True si une substitution a été effectuée, False sinon
     (rapport sans placeholder, gates absents, ou rapport inexistant).
     Idempotent : un fichier sans placeholder est laissé intact.
+
+    Effet de bord : si au moins une donnée est lisible (SOIC ou Osiris),
+    persiste `deploy-decision.json` à la racine du client avec le verdict
+    joint à 2 axes (P9 D2). Ceci tourne avant la substitution markdown pour
+    garantir que deploy-decision.json reflète bien l'état pris en compte
+    pour les placeholders.
     """
     if not report_path.exists():
         return False
@@ -143,6 +203,10 @@ def inject_soic_scores(report_path: Path, client_dir: Path) -> bool:
     run = _load_latest_run(client_dir / "soic-runs.jsonl", "ph5-qa")
     if gate is None and run is None:
         return False
+
+    # P9 D2 — verdict dual-axis SOIC + Osiris, persisté avant injection markdown.
+    deploy_decision = evaluate_deploy_decision(client_dir)
+    persist_deploy_decision(deploy_decision, client_dir)
 
     mu = (gate or {}).get("mu")
     if mu is None and run is not None:
@@ -175,6 +239,9 @@ def inject_soic_scores(report_path: Path, client_dir: Path) -> bool:
             value = dim_scores.get(dim_id)
             content = content.replace(ph, f"{value:.2f}" if value is not None else "N/A")
 
+    # P9 D2 — substitution des placeholders Osiris + verdict joint.
+    content = _inject_dual_axis(content, deploy_decision)
+
     if content == original:
         return False
     report_path.write_text(content, encoding="utf-8")
@@ -183,7 +250,14 @@ def inject_soic_scores(report_path: Path, client_dir: Path) -> bool:
 
 __all__ = [
     "PLACEHOLDER_DIM_TABLE",
+    "PLACEHOLDER_DUAL_AXIS_TABLE",
+    "PLACEHOLDER_JOINT_BLOCKER",
+    "PLACEHOLDER_JOINT_VERDICT",
     "PLACEHOLDER_MU",
+    "PLACEHOLDER_OSIRIS_GRADE",
+    "PLACEHOLDER_OSIRIS_SCORE",
+    "PLACEHOLDER_OSIRIS_THRESHOLD",
+    "PLACEHOLDER_OSIRIS_VERDICT",
     "PLACEHOLDER_THRESHOLD",
     "PLACEHOLDER_VERDICT",
     "inject_soic_scores",
