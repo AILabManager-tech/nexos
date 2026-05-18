@@ -86,22 +86,26 @@ Format : `role=#HEXCODE`. Rôles courants : primary, secondary, accent, backgrou
 - Fonts : next/font TOUJOURS
 - Imports : Absolute paths via @/
 
-### Deploy gate à 2 axes — SOIC + Osiris (P9 D2, 2026-05-18)
+### Deploy gate à 4 axes — SOIC + Osiris + Lighthouse + npm audit (P9 D2 + extension, 2026-05-18)
 
-Le verdict deploy est composite, jamais un score unique opaque. Deux mesures indépendantes, traçables :
+Le verdict deploy est composite, jamais un score unique opaque. Quatre mesures indépendantes, traçables :
 
-- **SOIC** (qualité technique interne) — μ ≥ 8.5 sur D1-D9, source `soic-gates.json`
-- **Osiris** (santé opérationnelle externe) — score ≥ 6.0/10, source `tooling/osiris.json`
+| Axe | Mesure | Seuil | Source |
+|---|---|---|---|
+| **SOIC** (qualité technique interne) | μ sur D1-D9 | ≥ 8.5 | `soic-gates.json` |
+| **Osiris** (santé opérationnelle externe) | score 0-10 (8 sous-axes O/S/I/R/V/L/A/E) | ≥ 6.0 | `tooling/osiris.json` |
+| **Lighthouse** (performance web) | perf score 0-100 (Core Web Vitals composite) | ≥ 85 | `tooling/lighthouse.json` |
+| **npm audit** (supply chain) | high + critical CVE count | ≤ 0 | `tooling/npm-audit.json` |
 
-**Verdict joint** = `μ_SOIC ≥ 8.5` **ET** `osiris_score ≥ 6.0`. Si bloqué, le champ `blocker` (`"soic"` | `"osiris"` | `"both"`) identifie exactement la mesure responsable — pas de cause masquée derrière un composite.
+**Verdict joint** : ACCEPT seulement si TOUS les axes sont PASS (ou UNKNOWN). Sinon FAIL, et `blockers: list[str]` énumère exactement les axes responsables — pas de cause masquée derrière un composite.
 
-**Politique UNKNOWN** : Osiris absent / scan error / non-numeric → verdict `UNKNOWN`, **ne bloque pas** le deploy mais émet une warning explicite. Don't punish missing signal — mais l'opérateur sait.
+**Politique UNKNOWN** : Osiris / Lighthouse / npm audit absent / scan error / non-numeric → verdict `UNKNOWN`, **ne bloque pas** le deploy mais émet une warning explicite. Don't punish missing signal — mais l'opérateur sait. SOIC UNKNOWN est l'exception : pas de gate Ph5 = pas de deploy (traité comme FAIL pour le joint).
 
 **Code de référence** : `nexos/deploy_decision.py` (module pur, 0 dep externe). Lecture via `from nexos.deploy_decision import evaluate_deploy_decision`. Persistance par client dans `deploy-decision.json` (idempotent, écrit par `orchestrator/score_injection.py` après Ph5).
 
-**Threshold configurable** : `NEXOS_OSIRIS_THRESHOLD` env (défaut 6.0). Le seuil SOIC reste piloté par `_PHASE_THRESHOLDS["ph5-qa"]` dans `soic/converger.py`.
+**Thresholds configurables** : passés en kwargs à `evaluate_deploy_decision(soic_threshold=, osiris_threshold=, lighthouse_threshold=, npm_audit_threshold=)`. Seuils par défaut alignés CLAUDE.md (npm audit = 0 zero tolerance, Lighthouse = 85 production, Osiris = 6.0 minimum opérationnel, SOIC = 8.5 deploy gate).
 
-**Pattern extensible** : d'autres gates indépendants (Lighthouse perf, npm audit HIGH count, pa11y a11y score) peuvent être ajoutés comme axes 3, 4, 5... sans toucher à SOIC ni à Osiris. Le verdict reste joint, lisible, traçable au gate qui a fail.
+**Pattern extensible** : d'autres gates indépendants (pa11y a11y score, build status, custom checks) peuvent être ajoutés comme axes 5+ sans toucher aux 4 existants. Le verdict reste joint, lisible, traçable au gate qui a fail.
 
 ## STRUCTURE PROJET CLIENT
 
