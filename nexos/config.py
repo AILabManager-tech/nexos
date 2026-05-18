@@ -22,6 +22,7 @@ Variables lues depuis l'environnement (ou .env si python-dotenv est installé) :
 Audit / analyse :
     AUDIT_TOOLKIT_PATH     : chemin vers audit_toolkit/ (défaut: WORKSPACE/audit_toolkit)
     OSIRIS_PATH            : chemin vers osiris/ (défaut: WORKSPACE/osiris)
+    NEXOS_OSIRIS_THRESHOLD : seuil minimum osiris_score pour ACCEPT deploy (défaut: 6.0)
 
 API externes (vides par défaut, optionnelles) :
     MOZ_API_KEY
@@ -52,6 +53,16 @@ def _env_str(key: str, default: str = "") -> str:
     return os.environ.get(key, default)
 
 
+def _env_float(key: str, default: float) -> float:
+    val = os.environ.get(key)
+    if val is None:
+        return default
+    try:
+        return float(val)
+    except ValueError:
+        return default
+
+
 @dataclass(frozen=True)
 class Settings:
     """Configuration NEXOS immuable, lue au démarrage."""
@@ -68,6 +79,9 @@ class Settings:
     # Paths périphériques
     audit_toolkit_path: Path | None = None
     osiris_path: Path | None = None
+
+    # Gates seuils (déploy 2-axes : SOIC + Osiris)
+    osiris_threshold: float = 6.0
 
     # Logging
     log_level: str = "INFO"
@@ -92,6 +106,7 @@ def _build_settings() -> Settings:
         output_dir=_env_path("NEXOS_OUTPUT_DIR", repo_root / "output"),
         audit_toolkit_path=_env_path("AUDIT_TOOLKIT_PATH", workspace_root / "audit_toolkit"),
         osiris_path=_env_path("OSIRIS_PATH", workspace_root / "osiris"),
+        osiris_threshold=_env_float("NEXOS_OSIRIS_THRESHOLD", 6.0),
         log_level=_env_str("NEXOS_LOG_LEVEL", "INFO"),
         moz_api_key=_env_str("MOZ_API_KEY", ""),
         whois_api_key=_env_str("WHOIS_API_KEY", ""),
