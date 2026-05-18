@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-18 — B2 + P9 D3+D4+D5+D6 résolus (claude, tungsten)
+**Dernière mise à jour** : 2026-05-18 — B2 + P9 D1+D3+D4+D5+D6 résolus (claude, tungsten)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` — 4 commits B2 pushed + 2 commits D5 local + commit quick wins en cours ; SOIC `9b9e123` côté `soic_v3`
+**Branche** : `main` — 3 commits P9 D1 local (`f220576` pilote + `927c139` batch + `9df9649` CI) ; SOIC `9b9e123` côté `soic_v3`
 
 ---
 
@@ -33,7 +33,8 @@
 | ABORT_PLATEAU recovery | ✅ **résolu (P8.2)** | `Decision.ENRICHED_RETRY` + `PlateauDiagnosis` injecté dans feedback avant abort (1 retry par run) |
 | Dimension-scoped fixers | ✅ **résolu (P8.3)** | `Fixer.dimension` + `auto_fix(dimensions=)` + `on_enriched_retry` hook + `orchestrator/plateau_recovery.py` factory — routing déterministe D4/D8 sur plateau |
 | Fixer D6 contraste WCAG | ✅ **résolu (P8.6)** | `_fix_pa11y_contrast` — WCAG helpers stdlib + détection background + harden V (HSV) jusqu'à 5.0:1. Validé sur vrai vertex-pmo : 3.75:1 → 5.00:1 |
-| Dette technique notée | 🟢 **P9 quasi-clos** (2 items) · ✅ D3+D4+D5+D6+D7+D8+D9 résolus | Reste D1 Vitest matrix (~2h, mécanique) + D2 Osiris dimension SOIC (~2-3h, vraie feature). Tous les autres items P9 fermés. |
+| Dette technique notée | 🟢 **P9 1 item restant** · ✅ D1+D3+D4+D5+D6+D7+D8+D9 résolus | Reste D2 Osiris dimension SOIC (~2-3h, vraie feature). |
+| Vitest matrix CI 7 clients | ✅ **résolu (P9 D1) 2026-05-18** | 18 tests invariants × 5 sites (vertex-pmo + 4 batch) + 70 dépanneur + 34 mark = 200 tests total. Pivot vs brief : invariants structurels NEXOS au lieu de copier code métier dépanneur. CI matrix [`9df9649`] 1→7 clients. collectif-nova exclu (gitignored). |
 | Audit Mark Systems public | 🟢 **Session 1 faite 2026-05-17** | Next 15.5.18 ; analytics conditionnel au consentement ; liens privacy localisés ; tests 34/34 ; build PASS ; npm audit HIGH/CRITICAL = 0 |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
 | Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
@@ -327,7 +328,7 @@ Codex : "switching models is a weak hypothesis until you know why plateau happen
 | **P8.4** | B4 onboard 6 dormants | Aveugle | Couvert par instrumentation P8.2 (on saura pourquoi) | 1-3h (downstream P8.2) | — |
 | **P8.5** | Mesure terrain plateau routing | (nouveau) | Relancer vertex-pmo, mesurer si P8.3+P8.6 débloquent | 30 min → 2h | ✅ résolu 2026-05-17 (vertex-pmo READY μ=9.00 ; 3 bugs latents découverts en chaîne + fixés : D8, D9, P8.6.2 follow-up noté) |
 | **P8.6** | Fixer D6 contraste WCAG | (découvert P8.5) | `_fix_pa11y_contrast` — WCAG helpers + harden V tokens muted | 2-3h | ✅ résolu 2026-05-17 |
-| **D1** | Vitest matrix 7 clients | Inchangé | Mécanique, OK tel quel | 2h | — |
+| **D1** | Vitest matrix 7 clients | Pivot invariants | Tests dépanneur non-portables → 18 tests structurels NEXOS × 5 sites | 2h | ✅ résolu 2026-05-18 (pilote `f220576` + batch `927c139` + CI `9df9649`) |
 | **B2** | CVE HIGH upgrade | Inchangé | Pilote vertex-pmo + batch 5 clients | 1-2h | ✅ résolu 2026-05-18 (pilote `56c8320` + batch `46e93fa`) |
 | **D2** | Osiris dimension D10 SOIC | Inchangé | Pondération SOIC + Osiris | 2-3h | — |
 
@@ -606,9 +607,31 @@ l-usine-rh, l-usinerh, nexos-platform-industrial, usine-rh
 
 **Statut** : 🟡 Polish / amélioration. Zero blocage opérationnel.
 
-#### D1 — CI Vitest matrix limitée à 1 client sur 8
-J'ai ajouté Vitest dans CI hier (commit `5e05951`) avec matrix `client: [depanneur-nobert]`. Les 7 autres clients : aucune protection régression UI/Zod/API en CI.
-**Action** : propager les 70 tests Vitest aux 7 autres clients, étendre matrix. Effort ~2h.
+#### ✅ D1 — CI Vitest matrix 7 clients (RÉSOLU 2026-05-18 par pivot)
+
+**Pivot brief vs implementation** : le brief initial proposait de copier les 11 tests Vitest depanneur-nobert aux 7 autres clients (estimation "8 portables"). Inspection a montré que les tests dépendent de libs métier (`lib/horaires`, `lib/clientConfig`, `app/api/contact`) **absentes** des 6 autres sites NEXOS marketing — copier les tests = copier les libs = transformer chaque site en clone partiel de dépanneur. Anti-pattern fort.
+
+**Approche retenue** : suite de **18 tests d'invariants structurels NEXOS** par site, qui protège le contrat de génération en CI sans déformer le scope :
+- vercel.json : 7 headers sécurité présents + CSP directives anti-clickjacking/injection + HSTS preload + Cache-Control immutable static
+- next.config.mjs : `poweredByHeader: false`, `reactStrictMode: true`, formats avif/webp
+- i18n/routing.ts : locales FR/EN + defaultLocale fr
+- Loi 25 : pages politique-confidentialite + mentions-legales présentes sous `[locale]/`
+- middleware.ts : matcher exclut api/_next/_vercel
+- robots.ts + sitemap.ts : `export default function`
+
+**Couverture matrix CI** (commit `9df9649`, 7 clients) :
+- depanneur-nobert (70 tests métier P4c + P5)
+- vertex-pmo (18 tests invariants — pilote `f220576`)
+- beaumont-avocats, clinique-aura, electro-maitre-industriel, table-de-marguerite (18 tests invariants chacun — batch `927c139`)
+- mark_systems_demo (34 tests internes src/)
+
+**Total Vitest CI** : 200 tests sur 7 clients (vs 70 sur 1 avant).
+
+**Exclus** :
+- collectif-nova : `clients/collectif-nova/` gitignored ligne 23 .gitignore — décision user requise sur statut tracking avant inclusion
+- depanneur-nobert site déménagé hors stack (deletes non commités) ne change rien à la CI tant que le repo HEAD contient encore le site
+
+**Commits** : `f220576` (pilote) + `927c139` (batch 4) + `9df9649` (CI matrix extension).
 
 #### D2 — Divergence SOIC interne vs Osiris externe
 depanneur-nobert : SOIC μ=9.11 (READY) ↔ Osiris 4.0/10 (Critique). Les deux mesurent des choses différentes (technique NEXOS vs santé opérationnelle réelle). NEXOS est aveugle à ce qu'Osiris mesure.
@@ -937,7 +960,7 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
   - **D6** : commit `0778398` mai-15 a déjà ajouté `sector`/`tags`/`notes` optionnels dans `nexos/modules/brief_synthesizer/input.schema.json` avec descriptions Loi 25 / SaaS preview. Roadmap pas synced.
 - **D3** : vrai fix nécessaire — CLAUDE.md avait été corrigé en P3 ou plus tôt (section "DÉPENDANCES EXTERNES" avec pattern sibling), mais AGENTS.md ligne 271, GEMINI.md ligne 257 et docs/blueprint.md lignes 162+216 mentionnaient encore les symlinks obsolètes `core-v3 → ~/projects/ai/ainova-os-v3` et `osiris → ~/osiris-scanner`. Aligné les 3 sur le pattern documenté dans CLAUDE.md (AGENTS+GEMINI gardent style sans accents).
 - Méthodo retenue : **avant de fixer, vérifier l'état réel via grep + lecture cible**. La roadmap peut accumuler de la dette obsolète si les fixes des sessions antérieures ne sont pas marqués. D5 + D4 + D6 cette session illustrent : 3/4 items "ouverts" étaient en réalité fermés.
-- P9 dette réduite à 2 items réels : D1 (Vitest matrix 7 clients, mécanique 2h) + D2 (Osiris dimension SOIC, vraie feature 2-3h).
+- P9 dette réduite à 2 items réels : D1 (Vitest matrix 7 clients, mécanique 2h) + D2 (Osiris dimension SOIC, vraie feature 2-3h). [_Note 2026-05-18 suite : D1 fermé par pivot — voir section dédiée plus bas. Reste D2 seul._]
 - Effort réel ~15 min (vs estimé 35 min). 3 fichiers modifiés (AGENTS.md, GEMINI.md, docs/blueprint.md).
 
 ### 2026-05-18 — P9 D5 résolu : beaumont marge μ 8.50 → 9.46 (claude, tungsten)
@@ -1226,21 +1249,21 @@ usine-rh                  brief=ok site=missing
 
 ---
 
-## 🎯 Point d'entrée prochaine session (snapshot fin 2026-05-18)
+## 🎯 Point d'entrée prochaine session (snapshot fin 2026-05-18 v2)
 
-### État après session 2026-05-18
+### État après session 2026-05-18 (suite)
 
-**7 items fermés cette session** : B2 (CVE HIGH next-intl/postcss) + P9 D3 (doc symlinks) + P9 D4 (mypy doc) + P9 D5 (beaumont marge μ 8.50 → 9.46) + P9 D6 (brief-schema champs). Tous commités, 7 commits poussés sur origin.
+**8 items fermés cette session** : B2 (CVE HIGH next-intl/postcss) + P9 D1 (Vitest matrix 7 clients via pivot invariants) + P9 D3 (doc symlinks) + P9 D4 (mypy doc) + P9 D5 (beaumont marge μ 8.50 → 9.46) + P9 D6 (brief-schema champs). Tous commités sur main (5 commits déjà push + 3 locaux P9 D1 à pousser).
 
-**Pipeline NEXOS** : 562/562 tests Python verts, 4/16 clients déployables (vertex-pmo μ=9.10, beaumont-avocats μ=9.46, depanneur-nobert μ=9.11 [site déménagé hors stack], +1 attendu de la mesure batch B2). Tous les 7 clients NEXOS production sur next 15.5.18 + next-intl 4.12.0 + postcss 8.5.10.
+**Pipeline NEXOS** : 562/562 tests Python verts, **200 tests Vitest sur 7 clients en matrix CI** (vs 70 sur 1 avant), 4/16 clients déployables (vertex-pmo μ=9.10, beaumont-avocats μ=9.46, depanneur-nobert μ=9.11 [site déménagé hors stack]). Tous les 7 clients NEXOS production sur next 15.5.18 + next-intl 4.12.0 + postcss 8.5.10.
 
 ### Priorités ouvertes ordonnées
 
 | # | Item | Effort | Type | Note |
 |---|---|---|---|---|
-| 1 | **P9 D1** — Vitest matrix 7 clients | ~2h (pilote 45 min + batch 1h15) | Mécanique | Tests sources OK dans `/01_business/.../03_Depanneur_Nobert/...` (11 fichiers, 8 portables). Recommandation : pilote vertex-pmo puis batch 6 autres (mark_systems_demo exclu — déjà 34/34 Vitest). |
-| 2 | **B2.1** — mark_systems_demo CVE next 16 | ~1-2h | Investigation | Décision préalable user : aligner 16.x patchée vs downgrade 15.5.18. `nexos doctor --client mark_systems_demo` + check usages Cache Components / segments. |
-| 3 | **P9 D2** — Osiris dimension SOIC | ~2-3h | Vraie feature | Intégrer Osiris score (4.0/10 critique) comme dimension D10 SOIC (ou pondérer μ par Osiris). Modifie `soic/dimensions.py` + grids. |
+| 1 | **B2.1** — mark_systems_demo CVE next 16 | ~1-2h | Investigation | Décision préalable user : aligner 16.x patchée vs downgrade 15.5.18. `nexos doctor --client mark_systems_demo` + check usages Cache Components / segments. |
+| 2 | **P9 D2** — Osiris dimension SOIC | ~2-3h | Vraie feature | Intégrer Osiris score (4.0/10 critique) comme dimension D10 SOIC (ou pondérer μ par Osiris). Modifie `soic/dimensions.py` + grids. Seul item P9 ouvert. |
+| 3 | **collectif-nova Vitest** — décision gitignore | ~15 min | Décision | `clients/collectif-nova/` est gitignored ligne 23 .gitignore. Si on veut le protéger en CI : retirer la ligne et propager `vitest.config.ts` + `__tests__/nexos-invariants.test.ts` (template existant chez vertex-pmo). Sinon : status quo. |
 | 4 | **B1** — Osiris deps externes | ~30 min | Infra | Install playwright + récupérer blocklists/trackers.json côté `/osiris/`. Hors scope NEXOS strict, mais débloque 2/8 axes Osiris. |
 | 5 | **P8.4** — Onboard 5-6 clients dormants | ~3-6h par session, coûteux LLM | Production | iusine, la-villa-du-sous-marin, l-usine-rh, l-usinerh, usine-rh, USINE_RH_industrielle (4 derniers à dédupliquer avec user avant). 50-200k tokens par client. |
 | 6 | **P8.6.2** — Fixer pa11y multi-background | ~1h | Polish D6 | Étendre `_fix_pa11y_contrast` pour calibrer sur le bg le PLUS clair de la palette (vertex-pmo a 11 erreurs résiduelles sur `surface.alt`). |
@@ -1255,7 +1278,8 @@ git status && git log origin/main..HEAD --oneline
 python3 nexos_cli.py doctor --all-clients
 
 # 2. Choisir priorité parmi la liste ci-dessus (cf table priorisée)
-# Recommandation 1er coup : P9 D1 (pilote vertex-pmo) — clean, mécanique, ferme une vraie dette CI
+# Recommandation 1er coup : B2.1 (mark_systems_demo) — fermer le dernier
+# trou CVE de la chaîne B2, puis enchaîner P9 D2 (vraie feature SOIC).
 
 # 3. Cycle tungsten : measure → fix → test → commit atomique → ROADMAP update
 ```
@@ -1263,5 +1287,22 @@ python3 nexos_cli.py doctor --all-clients
 ### Anti-patterns à éviter (rappel)
 
 - **Marquer fermé sans vérifier** : 3/4 items P9 cette session étaient déjà résolus mais pas marqués. Toujours grep + lire la cible avant de "fix".
-- **Propager aveuglément** : pilote 1 client + check-in user obligatoire avant batch (cf B2 méthodologie).
+- **Propager aveuglément** : pilote 1 client + check-in user obligatoire avant batch (cf B2 méthodologie). P9 D1 pivot 2026-05-18 = exemple : inspection avant copie a évité de transformer 6 sites marketing en clones partiels de dépanneur.
 - **Push autonome** : règle absolue gear-code. L'user valide explicitement chaque push.
+
+### Session 2026-05-18 (suite, post-closeout) — P9 D1 résolu par pivot
+
+**Commits posés** (locaux, à pousser) :
+- `f220576` test(vertex-pmo): seed Vitest invariants suite (P9 D1 pilot) — 18 tests
+- `927c139` test(clients): propagate Vitest invariants to 4 sites (P9 D1 batch) — 72 tests
+- `9df9649` ci(vitest-clients): extend matrix from 1 to 7 clients (P9 D1 close)
+
+**Accomplissements** :
+- Pivot interprétation P9 D1 : inspection des 11 tests dépanneur a montré qu'ils sont **non-portables** (dépendent de libs métier absentes des 6 autres sites). Décision : créer **18 tests d'invariants structurels NEXOS** par site (headers sécurité, next.config, i18n, Loi 25, middleware, robots/sitemap) — protège le contrat de génération en CI sans toucher au scope des sites.
+- 5 clients équipés (vertex-pmo pilote + 4 batch : beaumont, clinique-aura, electro-maitre-industriel, table-de-marguerite). 90 tests Vitest nouveaux verts en 1.5s cumulé.
+- CI matrix `vitest-clients` étendue de 1 à 7 clients dans `.github/workflows/test.yml`. `fail-fast: false` conservé.
+- npm audit HIGH/CRITICAL = 0 sur les 5 sites équipés.
+
+**Découverte** :
+- `clients/collectif-nova/` est gitignored (ligne 23 .gitignore) → nouveaux fichiers non trackés. Décision user requise sur statut tracking (item résiduel #3 ci-dessus).
+- Brief P9 D1 v1 (2026-05-15) sous-estimait la portabilité : "8 portables sur 11" devient "0 portables" après inspection. Leçon : un brief mécanique mérite quand même un check de faisabilité avant exécution.
