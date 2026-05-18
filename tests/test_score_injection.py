@@ -250,7 +250,7 @@ def test_osiris_placeholders_substituted_and_decision_persisted(tmp_path: Path) 
     assert deploy_path.exists()
     persisted = json.loads(deploy_path.read_text(encoding="utf-8"))
     assert persisted["joint_verdict"] == "FAIL"
-    assert persisted["blocker"] == "osiris"
+    assert persisted["blockers"] == ["osiris"]
 
 
 def test_dual_axis_table_renders_full_markdown(tmp_path: Path) -> None:
@@ -274,7 +274,7 @@ def test_dual_axis_table_renders_full_markdown(tmp_path: Path) -> None:
     assert "score=7.4" in content
     assert "Conforme" in content
     assert "**ACCEPT**" in content
-    assert "blocker: —" in content
+    assert "blockers: —" in content
 
 
 def test_osiris_unknown_does_not_block_joint(tmp_path: Path) -> None:

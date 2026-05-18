@@ -17,17 +17,26 @@ Placeholders SOIC :
     [[SOIC_DIM_SCORES_TABLE]]   -> tableau markdown D1-D9 complet
     [[SOIC_D1]] ... [[SOIC_D9]] -> score par dimension (2 décimales)
 
-Placeholders Osiris + joint (P9 D2) :
+Placeholders Osiris + Lighthouse + npm audit + joint (P9 D2 + extension) :
     [[OSIRIS_SCORE]]            -> "4.0" | "UNKNOWN"
     [[OSIRIS_GRADE]]            -> "Critique" | "Conforme" | "UNKNOWN"
     [[OSIRIS_VERDICT]]          -> "PASS" | "FAIL" | "UNKNOWN"
     [[OSIRIS_THRESHOLD]]        -> "6.0"
+    [[LIGHTHOUSE_PERF]]         -> "92" (0-100) | "UNKNOWN"
+    [[LIGHTHOUSE_VERDICT]]      -> "PASS" | "FAIL" | "UNKNOWN"
+    [[LIGHTHOUSE_THRESHOLD]]    -> "85"
+    [[NPM_AUDIT_HIGH]]          -> "0" | "UNKNOWN"
+    [[NPM_AUDIT_CRITICAL]]      -> "0" | "UNKNOWN"
+    [[NPM_AUDIT_VERDICT]]       -> "PASS" | "FAIL" | "UNKNOWN"
     [[JOINT_VERDICT]]           -> "ACCEPT" | "FAIL"
-    [[JOINT_BLOCKER]]           -> "soic" | "osiris" | "both" | "—"
-    [[DUAL_AXIS_TABLE]]         -> tableau markdown 2 axes + verdict joint
+    [[JOINT_BLOCKERS]]          -> "osiris, npm_audit" | "—"
+    [[DUAL_AXIS_TABLE]]         -> tableau markdown 4 axes + verdict joint
+                                   (nom historique conservé pour compat ; le tableau
+                                    contient maintenant 4 axes, pas 2)
 
 Item N (P1) — chantier dette pipeline 2026-05-15.
 Item D2 (P9) — dual-axis 2026-05-18.
+Extension (2026-05-18) — axes Lighthouse + npm audit.
 """
 
 from __future__ import annotations
@@ -39,7 +48,7 @@ from typing import Any
 from nexos.deploy_decision import (
     DeployDecision,
     evaluate_deploy_decision,
-    format_dual_axis_table,
+    format_axes_table,
     persist_deploy_decision,
 )
 from soic.dimensions import DIMENSIONS
@@ -54,9 +63,18 @@ PLACEHOLDER_OSIRIS_SCORE = "[[OSIRIS_SCORE]]"
 PLACEHOLDER_OSIRIS_GRADE = "[[OSIRIS_GRADE]]"
 PLACEHOLDER_OSIRIS_VERDICT = "[[OSIRIS_VERDICT]]"
 PLACEHOLDER_OSIRIS_THRESHOLD = "[[OSIRIS_THRESHOLD]]"
+PLACEHOLDER_LIGHTHOUSE_PERF = "[[LIGHTHOUSE_PERF]]"
+PLACEHOLDER_LIGHTHOUSE_VERDICT = "[[LIGHTHOUSE_VERDICT]]"
+PLACEHOLDER_LIGHTHOUSE_THRESHOLD = "[[LIGHTHOUSE_THRESHOLD]]"
+PLACEHOLDER_NPM_AUDIT_HIGH = "[[NPM_AUDIT_HIGH]]"
+PLACEHOLDER_NPM_AUDIT_CRITICAL = "[[NPM_AUDIT_CRITICAL]]"
+PLACEHOLDER_NPM_AUDIT_VERDICT = "[[NPM_AUDIT_VERDICT]]"
 PLACEHOLDER_JOINT_VERDICT = "[[JOINT_VERDICT]]"
-PLACEHOLDER_JOINT_BLOCKER = "[[JOINT_BLOCKER]]"
+PLACEHOLDER_JOINT_BLOCKERS = "[[JOINT_BLOCKERS]]"
 PLACEHOLDER_DUAL_AXIS_TABLE = "[[DUAL_AXIS_TABLE]]"
+
+# Rétrocompat : alias historique singulier conservé pour les rapports legacy
+PLACEHOLDER_JOINT_BLOCKER = "[[JOINT_BLOCKER]]"
 
 
 def _load_latest_gate(soic_gates_path: Path, phase: str) -> dict[str, Any] | None:
@@ -139,7 +157,7 @@ def _format_dimension_scores_table(dim_scores: dict[str, float]) -> str:
 
 
 def _has_any_placeholder(content: str) -> bool:
-    """True si le rapport contient au moins un placeholder SOIC ou dual-axis."""
+    """True si le rapport contient au moins un placeholder SOIC ou multi-axes."""
     fixed_placeholders = (
         PLACEHOLDER_MU,
         PLACEHOLDER_VERDICT,
@@ -149,7 +167,14 @@ def _has_any_placeholder(content: str) -> bool:
         PLACEHOLDER_OSIRIS_GRADE,
         PLACEHOLDER_OSIRIS_VERDICT,
         PLACEHOLDER_OSIRIS_THRESHOLD,
+        PLACEHOLDER_LIGHTHOUSE_PERF,
+        PLACEHOLDER_LIGHTHOUSE_VERDICT,
+        PLACEHOLDER_LIGHTHOUSE_THRESHOLD,
+        PLACEHOLDER_NPM_AUDIT_HIGH,
+        PLACEHOLDER_NPM_AUDIT_CRITICAL,
+        PLACEHOLDER_NPM_AUDIT_VERDICT,
         PLACEHOLDER_JOINT_VERDICT,
+        PLACEHOLDER_JOINT_BLOCKERS,
         PLACEHOLDER_JOINT_BLOCKER,
         PLACEHOLDER_DUAL_AXIS_TABLE,
     )
@@ -158,20 +183,40 @@ def _has_any_placeholder(content: str) -> bool:
     return _PLACEHOLDER_DIM_MARKER in content
 
 
-def _inject_dual_axis(content: str, decision: DeployDecision) -> str:
-    """Substitue les placeholders Osiris + joint dans le rapport."""
+def _inject_multi_axis(content: str, decision: DeployDecision) -> str:
+    """Substitue les placeholders Osiris + Lighthouse + npm audit + joint."""
     osiris_score_str = (
         f"{decision.osiris_score:.1f}" if decision.osiris_score is not None else "UNKNOWN"
     )
     osiris_grade_str = decision.osiris_grade or "UNKNOWN"
+    lh_perf_str = (
+        f"{decision.lighthouse_perf:.0f}" if decision.lighthouse_perf is not None else "UNKNOWN"
+    )
+    npm_high_str = "UNKNOWN" if decision.npm_audit_high is None else str(decision.npm_audit_high)
+    npm_crit_str = (
+        "UNKNOWN" if decision.npm_audit_critical is None else str(decision.npm_audit_critical)
+    )
+    blockers_str = ", ".join(decision.blockers) if decision.blockers else "—"
+
     content = content.replace(PLACEHOLDER_OSIRIS_SCORE, osiris_score_str)
     content = content.replace(PLACEHOLDER_OSIRIS_GRADE, osiris_grade_str)
     content = content.replace(PLACEHOLDER_OSIRIS_VERDICT, decision.osiris_verdict)
     content = content.replace(PLACEHOLDER_OSIRIS_THRESHOLD, f"{decision.osiris_threshold:.1f}")
+    content = content.replace(PLACEHOLDER_LIGHTHOUSE_PERF, lh_perf_str)
+    content = content.replace(PLACEHOLDER_LIGHTHOUSE_VERDICT, decision.lighthouse_verdict)
+    content = content.replace(
+        PLACEHOLDER_LIGHTHOUSE_THRESHOLD, f"{decision.lighthouse_threshold:.0f}"
+    )
+    content = content.replace(PLACEHOLDER_NPM_AUDIT_HIGH, npm_high_str)
+    content = content.replace(PLACEHOLDER_NPM_AUDIT_CRITICAL, npm_crit_str)
+    content = content.replace(PLACEHOLDER_NPM_AUDIT_VERDICT, decision.npm_audit_verdict)
     content = content.replace(PLACEHOLDER_JOINT_VERDICT, decision.joint_verdict)
-    content = content.replace(PLACEHOLDER_JOINT_BLOCKER, decision.blocker or "—")
+    content = content.replace(PLACEHOLDER_JOINT_BLOCKERS, blockers_str)
+    # Rétrocompat : legacy [[JOINT_BLOCKER]] singulier → premier blocker (ou —)
+    legacy_blocker = decision.blockers[0] if decision.blockers else "—"
+    content = content.replace(PLACEHOLDER_JOINT_BLOCKER, legacy_blocker)
     if PLACEHOLDER_DUAL_AXIS_TABLE in content:
-        content = content.replace(PLACEHOLDER_DUAL_AXIS_TABLE, format_dual_axis_table(decision))
+        content = content.replace(PLACEHOLDER_DUAL_AXIS_TABLE, format_axes_table(decision))
     return content
 
 
@@ -239,8 +284,9 @@ def inject_soic_scores(report_path: Path, client_dir: Path) -> bool:
             value = dim_scores.get(dim_id)
             content = content.replace(ph, f"{value:.2f}" if value is not None else "N/A")
 
-    # P9 D2 — substitution des placeholders Osiris + verdict joint.
-    content = _inject_dual_axis(content, deploy_decision)
+    # P9 D2 + extension — substitution des placeholders Osiris + Lighthouse +
+    # npm audit + verdict joint multi-axes.
+    content = _inject_multi_axis(content, deploy_decision)
 
     if content == original:
         return False
@@ -252,8 +298,15 @@ __all__ = [
     "PLACEHOLDER_DIM_TABLE",
     "PLACEHOLDER_DUAL_AXIS_TABLE",
     "PLACEHOLDER_JOINT_BLOCKER",
+    "PLACEHOLDER_JOINT_BLOCKERS",
     "PLACEHOLDER_JOINT_VERDICT",
+    "PLACEHOLDER_LIGHTHOUSE_PERF",
+    "PLACEHOLDER_LIGHTHOUSE_THRESHOLD",
+    "PLACEHOLDER_LIGHTHOUSE_VERDICT",
     "PLACEHOLDER_MU",
+    "PLACEHOLDER_NPM_AUDIT_CRITICAL",
+    "PLACEHOLDER_NPM_AUDIT_HIGH",
+    "PLACEHOLDER_NPM_AUDIT_VERDICT",
     "PLACEHOLDER_OSIRIS_GRADE",
     "PLACEHOLDER_OSIRIS_SCORE",
     "PLACEHOLDER_OSIRIS_THRESHOLD",

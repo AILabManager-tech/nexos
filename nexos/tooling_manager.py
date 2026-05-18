@@ -307,31 +307,49 @@ def doctor_client_report(slug: str) -> str:
     else:
         lines.append("  [-] tooling/ MANQUANT (preflight pas exécuté)")
 
-    # Deploy decision dual-axis (P9 D2) — SOIC + Osiris
-    lines.append("\n  DEPLOY DECISION (2 axes)")
+    # Deploy decision multi-axes (P9 D2 + extension) — SOIC + Osiris + Lighthouse + npm audit
+    lines.append("\n  DEPLOY DECISION (4 axes)")
     lines.append("  " + "-" * 46)
     try:
         from nexos.deploy_decision import evaluate_deploy_decision
 
         decision = evaluate_deploy_decision(client_dir)
+        icon_for = {"PASS": "+", "FAIL": "-", "UNKNOWN": "?"}
+
         soic_mu_str = f"{decision.soic_mu:.2f}" if decision.soic_mu is not None else "—"
         osiris_score_str = (
             f"{decision.osiris_score:.1f}" if decision.osiris_score is not None else "—"
         )
         osiris_grade_str = decision.osiris_grade or "—"
-        soic_icon = "+" if decision.soic_verdict == "PASS" else "-"
-        osiris_icon = {"PASS": "+", "FAIL": "-", "UNKNOWN": "?"}[decision.osiris_verdict]
-        joint_icon = "+" if decision.joint_verdict == "ACCEPT" else "-"
+        lh_perf_str = (
+            f"{decision.lighthouse_perf:.0f}" if decision.lighthouse_perf is not None else "—"
+        )
+        npm_high_str = "—" if decision.npm_audit_high is None else str(decision.npm_audit_high)
+        npm_crit_str = (
+            "—" if decision.npm_audit_critical is None else str(decision.npm_audit_critical)
+        )
+
         lines.append(
-            f"  [{soic_icon}] SOIC   μ={soic_mu_str:6s} "
-            f"(≥{decision.soic_threshold:.1f}) → {decision.soic_verdict}"
+            f"  [{icon_for[decision.soic_verdict]}] SOIC       μ={soic_mu_str:6s} "
+            f"(≥{decision.soic_threshold:.1f})   → {decision.soic_verdict}"
         )
         lines.append(
-            f"  [{osiris_icon}] Osiris score={osiris_score_str:6s} ({osiris_grade_str}) "
+            f"  [{icon_for[decision.osiris_verdict]}] Osiris     score={osiris_score_str:6s} ({osiris_grade_str}) "
             f"(≥{decision.osiris_threshold:.1f}) → {decision.osiris_verdict}"
         )
-        blocker_str = decision.blocker or "—"
-        lines.append(f"  [{joint_icon}] Joint  {decision.joint_verdict} (blocker: {blocker_str})")
+        lines.append(
+            f"  [{icon_for[decision.lighthouse_verdict]}] Lighthouse perf={lh_perf_str:>3s}/100 "
+            f"(≥{decision.lighthouse_threshold:.0f})   → {decision.lighthouse_verdict}"
+        )
+        lines.append(
+            f"  [{icon_for[decision.npm_audit_verdict]}] npm audit  high={npm_high_str} crit={npm_crit_str} "
+            f"(≤{decision.npm_audit_threshold} HIGH+CRIT) → {decision.npm_audit_verdict}"
+        )
+        joint_icon = "+" if decision.joint_verdict == "ACCEPT" else "-"
+        blockers_str = ", ".join(decision.blockers) if decision.blockers else "—"
+        lines.append(
+            f"  [{joint_icon}] Joint      {decision.joint_verdict} (blockers: {blockers_str})"
+        )
         for w in decision.warnings:
             lines.append(f"  [!] {w}")
     except Exception as exc:  # doctor doit jamais crasher

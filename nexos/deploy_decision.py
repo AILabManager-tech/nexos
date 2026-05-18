@@ -1,17 +1,19 @@
-"""NEXOS — Verdict deploy à 2 axes : SOIC (qualité technique) + Osiris (santé opérationnelle).
+"""NEXOS — Verdict deploy à N axes : SOIC + Osiris + Lighthouse + npm audit.
 
 Architecture séparée de la mesure et de la décision :
 - SOIC garde sa souveraineté sur D1-D9 (technique interne, ce que le pipeline contrôle).
 - Osiris reste un signal externe distinct (santé opérationnelle réelle).
-- Le verdict deploy est composite : `μ_SOIC ≥ 8.5` ET `osiris_score ≥ threshold`.
+- Lighthouse perf score = signal performance web (Core Web Vitals composite).
+- npm audit HIGH+CRITICAL count = signal supply chain (zero tolerance).
 
-Si bloqué, le `blocker` est traçable aux 2 mesures sources (pas de score composite opaque).
+Le verdict deploy est composite : TOUS les axes doivent être PASS (ou UNKNOWN) pour
+ACCEPT. Si bloqué, `blockers: list[str]` énumère exactement les axes responsables —
+pas de score composite opaque.
 
-Pattern réutilisable : on peut étendre `evaluate_deploy_decision` à d'autres gates
-indépendants (Lighthouse perf, npm audit HIGH count, pa11y a11y score) sans toucher
-à SOIC. Le verdict final reste joint, lisible, traçable.
-
-P9 D2 — chantier dette pipeline 2026-05-18.
+P9 D2 (2026-05-18) : pattern dual-axis initial (SOIC + Osiris).
+Extension (2026-05-18 suite) : axes 3 (Lighthouse) + 4 (npm audit). Le pattern reste
+extensible : pa11y a11y score, build status, custom gates peuvent être ajoutés
+comme axes 5+ sans toucher aux axes existants.
 """
 
 from __future__ import annotations
@@ -23,35 +25,56 @@ from typing import Any, Literal
 
 JointVerdict = Literal["ACCEPT", "FAIL"]
 AxisVerdict = Literal["PASS", "FAIL", "UNKNOWN"]
-Blocker = Literal["soic", "osiris", "both"] | None
 
 SOIC_GATES_FILENAME = "soic-gates.json"
 OSIRIS_TOOLING_FILENAME = "osiris.json"
+LIGHTHOUSE_TOOLING_FILENAME = "lighthouse.json"
+NPM_AUDIT_TOOLING_FILENAME = "npm-audit.json"
 DEPLOY_DECISION_FILENAME = "deploy-decision.json"
+
+# Axes canoniques (ordre stable pour rapports + blockers)
+AXIS_SOIC = "soic"
+AXIS_OSIRIS = "osiris"
+AXIS_LIGHTHOUSE = "lighthouse"
+AXIS_NPM_AUDIT = "npm_audit"
 
 
 @dataclass(frozen=True)
 class DeployDecision:
-    """Verdict deploy composite, traçable aux 2 axes sources."""
+    """Verdict deploy composite, traçable aux N axes sources."""
 
-    # SOIC axis
+    # SOIC axis — qualité technique interne (D1-D9)
     soic_mu: float | None
     soic_verdict: AxisVerdict
     soic_threshold: float
 
-    # Osiris axis
+    # Osiris axis — santé opérationnelle externe (8 sous-axes O/S/I/R/V/L/A/E)
     osiris_score: float | None
     osiris_grade: str | None
     osiris_verdict: AxisVerdict
     osiris_threshold: float
 
+    # Lighthouse axis — performance web (Core Web Vitals composite)
+    lighthouse_perf: float | None  # normalisé 0-100
+    lighthouse_verdict: AxisVerdict
+    lighthouse_threshold: float
+
+    # npm audit axis — supply chain (HIGH + CRITICAL CVE count)
+    npm_audit_high: int | None
+    npm_audit_critical: int | None
+    npm_audit_verdict: AxisVerdict
+    npm_audit_threshold: int
+
     # Joint
     joint_verdict: JointVerdict
-    blocker: Blocker
+    blockers: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+
+# ── Lecteurs de fichiers (defensive) ────────────────────────────────────────
 
 
 def _load_latest_soic_gate(client_dir: Path, phase: str = "ph5-qa") -> dict[str, Any] | None:
@@ -69,9 +92,9 @@ def _load_latest_soic_gate(client_dir: Path, phase: str = "ph5-qa") -> dict[str,
     return matching[-1] if matching else None
 
 
-def _load_osiris_report(client_dir: Path) -> dict[str, Any] | None:
-    """Lit tooling/osiris.json (defensive)."""
-    path = client_dir / "tooling" / OSIRIS_TOOLING_FILENAME
+def _load_tooling_json(client_dir: Path, filename: str) -> dict[str, Any] | None:
+    """Lit tooling/<filename> (defensive — retourne None si absent/corrompu)."""
+    path = client_dir / "tooling" / filename
     if not path.exists():
         return None
     try:
@@ -81,23 +104,22 @@ def _load_osiris_report(client_dir: Path) -> dict[str, Any] | None:
     return data if isinstance(data, dict) else None
 
 
+# ── Extracteurs par axe ─────────────────────────────────────────────────────
+
+
 def _extract_osiris_axis(
     report: dict[str, Any] | None,
     threshold: float,
 ) -> tuple[float | None, str | None, AxisVerdict, list[str]]:
-    """Décode le rapport Osiris en (score, grade, verdict, warnings).
+    """Décode tooling/osiris.json en (score, grade, verdict, warnings).
 
-    Politique UNKNOWN : Osiris missing / scan error → verdict UNKNOWN, ne bloque
-    pas le deploy (don't punish missing signal). Une warning explicite est émise
-    pour rendre la dette visible.
-
-    Politique FAIL : score numérique < threshold → verdict FAIL, blocker traçable.
+    Politique UNKNOWN : missing / scan error / non-numeric → ne bloque pas.
+    Le JSON brut Osiris scanner.py utilise `score` ; le RunStore SOIC utilise
+    `osiris_score` ; on tolère les deux.
     """
     if report is None:
         return None, None, "UNKNOWN", ["Osiris report absent (tooling/osiris.json missing)"]
 
-    # Le JSON Osiris brut (sortie scanner.py) utilise `score`. Le RunStore SOIC
-    # (osiris_history.db) utilise `osiris_score`. On tolère les deux noms.
     if "error" in report and "osiris_score" not in report and "score" not in report:
         err = str(report.get("error", "unknown"))[:120]
         return None, None, "UNKNOWN", [f"Osiris scan failed: {err}"]
@@ -111,61 +133,117 @@ def _extract_osiris_axis(
     grade = report.get("grade")
     grade_str = str(grade) if isinstance(grade, str) else None
     score_f = float(score)
+    verdict: AxisVerdict = "PASS" if score_f >= threshold else "FAIL"
+    return score_f, grade_str, verdict, []
 
-    if score_f >= threshold:
-        return score_f, grade_str, "PASS", []
-    return score_f, grade_str, "FAIL", []
+
+def _extract_lighthouse_axis(
+    report: dict[str, Any] | None,
+    threshold: float,
+) -> tuple[float | None, AxisVerdict, list[str]]:
+    """Décode tooling/lighthouse.json en (perf_score_0_100, verdict, warnings).
+
+    Lighthouse écrit `categories.performance.score` sur 0-1 ; on multiplie par 100
+    pour avoir un score lisible (cohérent avec la convention humaine 0-100).
+
+    Politique UNKNOWN : missing / score non-numeric → ne bloque pas (don't punish
+    missing signal — un site peut ne pas avoir tourné lighthouse sans que ce soit
+    bloquant pour le verdict joint).
+    """
+    if report is None:
+        return None, "UNKNOWN", ["Lighthouse report absent (tooling/lighthouse.json missing)"]
+
+    perf_section = report.get("categories", {}).get("performance")
+    if not isinstance(perf_section, dict):
+        return None, "UNKNOWN", ["Lighthouse categories.performance missing"]
+    raw_score = perf_section.get("score")
+    if not isinstance(raw_score, (int, float)):
+        return None, "UNKNOWN", ["Lighthouse performance.score missing or non-numeric"]
+
+    perf_100 = float(raw_score) * 100.0
+    verdict: AxisVerdict = "PASS" if perf_100 >= threshold else "FAIL"
+    return perf_100, verdict, []
+
+
+def _extract_npm_audit_axis(
+    report: dict[str, Any] | None,
+    threshold: int,
+) -> tuple[int | None, int | None, AxisVerdict, list[str]]:
+    """Décode tooling/npm-audit.json en (high, critical, verdict, warnings).
+
+    Schema npm audit JSON : `metadata.vulnerabilities.{high,critical}` (int counts).
+
+    Politique FAIL : (high + critical) > threshold → FAIL. Aligné CLAUDE.md règle
+    absolue "npm audit = 0 vulnérabilités HIGH/CRITICAL".
+
+    Politique UNKNOWN : missing / structure invalide → ne bloque pas.
+    """
+    if report is None:
+        return None, None, "UNKNOWN", ["npm audit report absent (tooling/npm-audit.json missing)"]
+
+    vulns = report.get("metadata", {}).get("vulnerabilities")
+    if not isinstance(vulns, dict):
+        return None, None, "UNKNOWN", ["npm audit metadata.vulnerabilities missing"]
+
+    high = vulns.get("high")
+    critical = vulns.get("critical")
+    if not isinstance(high, int) or not isinstance(critical, int):
+        return None, None, "UNKNOWN", ["npm audit high/critical counts missing or non-int"]
+
+    total = high + critical
+    verdict: AxisVerdict = "PASS" if total <= threshold else "FAIL"
+    return high, critical, verdict, []
+
+
+# ── Calcul du verdict joint ─────────────────────────────────────────────────
 
 
 def _compute_joint(
-    soic_verdict: AxisVerdict,
-    osiris_verdict: AxisVerdict,
-) -> tuple[JointVerdict, Blocker]:
-    """Logique deploy joint :
-    - SOIC FAIL + Osiris FAIL → FAIL, blocker="both"
-    - SOIC FAIL + (Osiris PASS|UNKNOWN) → FAIL, blocker="soic"
-    - SOIC PASS + Osiris FAIL → FAIL, blocker="osiris"
-    - SOIC PASS + (Osiris PASS|UNKNOWN) → ACCEPT
+    axis_verdicts: dict[str, AxisVerdict],
+) -> tuple[JointVerdict, list[str]]:
+    """Logique deploy joint N-axes :
+    - TOUS les axes PASS ou UNKNOWN → ACCEPT, blockers=[]
+    - Au moins un FAIL → FAIL, blockers = liste des axes en FAIL (ordre stable)
+    - SOIC UNKNOWN traité comme FAIL en amont par evaluate_deploy_decision
+      (pas de gate = pas de deploy ; autres axes UNKNOWN tolérés).
     """
-    soic_ok = soic_verdict == "PASS"
-    osiris_ok = osiris_verdict in ("PASS", "UNKNOWN")  # UNKNOWN ne bloque pas
-    osiris_fail = osiris_verdict == "FAIL"
-
-    if soic_ok and osiris_ok:
-        return "ACCEPT", None
-    if not soic_ok and osiris_fail:
-        return "FAIL", "both"
-    if not soic_ok:
-        return "FAIL", "soic"
-    return "FAIL", "osiris"
+    failed = [axis for axis, verdict in axis_verdicts.items() if verdict == "FAIL"]
+    if failed:
+        return "FAIL", failed
+    return "ACCEPT", []
 
 
 def evaluate_deploy_decision(
     client_dir: Path,
     osiris_threshold: float = 6.0,
     soic_threshold: float = 8.5,
+    lighthouse_threshold: float = 85.0,
+    npm_audit_threshold: int = 0,
 ) -> DeployDecision:
-    """Calcule le verdict deploy à 2 axes pour un client.
+    """Calcule le verdict deploy à 4 axes pour un client.
 
     Args:
-        client_dir: dossier client (contient soic-gates.json et tooling/osiris.json).
+        client_dir: dossier client (contient soic-gates.json + tooling/*.json).
         osiris_threshold: seuil minimum osiris_score pour PASS (défaut 6.0).
-        soic_threshold: seuil μ_SOIC pour PASS (défaut 8.5, aligné Ph5 deploy).
+        soic_threshold: seuil μ_SOIC pour PASS (défaut 8.5).
+        lighthouse_threshold: seuil minimum perf 0-100 pour PASS (défaut 85.0).
+        npm_audit_threshold: max HIGH+CRITICAL count pour PASS (défaut 0).
 
     Returns:
-        DeployDecision immuable, prête à sérialiser et injecter en rapport.
+        DeployDecision immuable, prête à sérialiser.
     """
+    warnings: list[str] = []
+
+    # SOIC axis (special — UNKNOWN traité comme FAIL pour joint)
     gate = _load_latest_soic_gate(client_dir)
     soic_mu: float | None = None
     soic_verdict: AxisVerdict = "UNKNOWN"
-    warnings: list[str] = []
 
     if gate is not None:
         raw_mu = gate.get("mu")
         if isinstance(raw_mu, (int, float)):
             soic_mu = float(raw_mu)
         decision = gate.get("decision", "")
-        # SOIC GateEngine émet "ACCEPT" en décision finale ; tout autre = FAIL
         if decision == "ACCEPT" and soic_mu is not None and soic_mu >= soic_threshold:
             soic_verdict = "PASS"
         elif soic_mu is None:
@@ -176,15 +254,35 @@ def evaluate_deploy_decision(
     else:
         warnings.append("SOIC gate ph5-qa absent (soic-gates.json missing or empty)")
 
-    report = _load_osiris_report(client_dir)
-    osiris_score, osiris_grade, osiris_verdict, osiris_warnings = _extract_osiris_axis(
-        report, osiris_threshold
+    # Osiris axis
+    osiris_report = _load_tooling_json(client_dir, OSIRIS_TOOLING_FILENAME)
+    osiris_score, osiris_grade, osiris_verdict, osiris_warns = _extract_osiris_axis(
+        osiris_report, osiris_threshold
     )
-    warnings.extend(osiris_warnings)
+    warnings.extend(osiris_warns)
 
-    # SOIC UNKNOWN traité comme FAIL pour la décision (pas de gate = pas de deploy)
+    # Lighthouse axis
+    lh_report = _load_tooling_json(client_dir, LIGHTHOUSE_TOOLING_FILENAME)
+    lh_perf, lh_verdict, lh_warns = _extract_lighthouse_axis(lh_report, lighthouse_threshold)
+    warnings.extend(lh_warns)
+
+    # npm audit axis
+    npm_report = _load_tooling_json(client_dir, NPM_AUDIT_TOOLING_FILENAME)
+    npm_high, npm_crit, npm_verdict, npm_warns = _extract_npm_audit_axis(
+        npm_report, npm_audit_threshold
+    )
+    warnings.extend(npm_warns)
+
+    # SOIC UNKNOWN → FAIL pour joint (pas de gate = pas de deploy)
     soic_for_joint: AxisVerdict = soic_verdict if soic_verdict != "UNKNOWN" else "FAIL"
-    joint, blocker = _compute_joint(soic_for_joint, osiris_verdict)
+    joint, blockers = _compute_joint(
+        {
+            AXIS_SOIC: soic_for_joint,
+            AXIS_OSIRIS: osiris_verdict,
+            AXIS_LIGHTHOUSE: lh_verdict,
+            AXIS_NPM_AUDIT: npm_verdict,
+        }
+    )
 
     return DeployDecision(
         soic_mu=soic_mu,
@@ -194,8 +292,15 @@ def evaluate_deploy_decision(
         osiris_grade=osiris_grade,
         osiris_verdict=osiris_verdict,
         osiris_threshold=osiris_threshold,
+        lighthouse_perf=lh_perf,
+        lighthouse_verdict=lh_verdict,
+        lighthouse_threshold=lighthouse_threshold,
+        npm_audit_high=npm_high,
+        npm_audit_critical=npm_crit,
+        npm_audit_verdict=npm_verdict,
+        npm_audit_threshold=npm_audit_threshold,
         joint_verdict=joint,
-        blocker=blocker,
+        blockers=blockers,
         warnings=warnings,
     )
 
@@ -210,12 +315,15 @@ def persist_deploy_decision(decision: DeployDecision, client_dir: Path) -> Path:
     return path
 
 
-def format_dual_axis_table(decision: DeployDecision) -> str:
-    """Tableau markdown 2 axes pour rapport Ph5 et nexos doctor."""
+def format_axes_table(decision: DeployDecision) -> str:
+    """Tableau markdown 4 axes + verdict joint pour rapport Ph5 et nexos doctor."""
     soic_mu = f"{decision.soic_mu:.2f}" if decision.soic_mu is not None else "—"
     osiris_score = f"{decision.osiris_score:.1f}" if decision.osiris_score is not None else "—"
     osiris_grade = decision.osiris_grade or "—"
-    blocker = decision.blocker or "—"
+    lh_perf = f"{decision.lighthouse_perf:.0f}" if decision.lighthouse_perf is not None else "—"
+    npm_high_str = "—" if decision.npm_audit_high is None else str(decision.npm_audit_high)
+    npm_crit_str = "—" if decision.npm_audit_critical is None else str(decision.npm_audit_critical)
+    blockers_str = ", ".join(decision.blockers) if decision.blockers else "—"
     lines = [
         "| Axe | Mesure | Seuil | Verdict | Source |",
         "|-----|-------:|------:|---------|--------|",
@@ -224,15 +332,31 @@ def format_dual_axis_table(decision: DeployDecision) -> str:
         f"| Osiris (santé opérationnelle) | score={osiris_score} ({osiris_grade}) "
         f"| ≥{decision.osiris_threshold:.1f} | {decision.osiris_verdict} "
         f"| `tooling/osiris.json` |",
-        f"| **Joint** | **{decision.joint_verdict}** | — | **blocker: {blocker}** | — |",
+        f"| Lighthouse (performance) | perf={lh_perf}/100 | ≥{decision.lighthouse_threshold:.0f} "
+        f"| {decision.lighthouse_verdict} | `tooling/lighthouse.json` |",
+        f"| npm audit (supply chain) | high={npm_high_str} critical={npm_crit_str} "
+        f"| ≤{decision.npm_audit_threshold} HIGH+CRIT | {decision.npm_audit_verdict} "
+        f"| `tooling/npm-audit.json` |",
+        f"| **Joint** | **{decision.joint_verdict}** | — | **blockers: {blockers_str}** | — |",
     ]
     return "\n".join(lines)
 
 
+# Rétrocompat : alias gardé pour ne pas casser les imports existants pendant
+# la transition. À supprimer dans une future itération une fois les consommateurs
+# migrés.
+format_dual_axis_table = format_axes_table
+
+
 __all__ = [
+    "AXIS_LIGHTHOUSE",
+    "AXIS_NPM_AUDIT",
+    "AXIS_OSIRIS",
+    "AXIS_SOIC",
     "DEPLOY_DECISION_FILENAME",
     "DeployDecision",
     "evaluate_deploy_decision",
+    "format_axes_table",
     "format_dual_axis_table",
     "persist_deploy_decision",
 ]
