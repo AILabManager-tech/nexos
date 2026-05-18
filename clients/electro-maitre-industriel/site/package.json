@@ -2,7 +2,7 @@
   "name": "electro-maitre-industriel-site",
   "version": "0.1.0",
   "private": true,
-  "description": "Site web \u00c9lectro-Ma\u00eetre Industriel \u2014 NEXOS v4.2 scaffold (chantier F : option A + patterns P06 + P12)",
+  "description": "Site web Électro-Maître Industriel — NEXOS v4.2 scaffold (chantier F : option A + patterns P06 + P12)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

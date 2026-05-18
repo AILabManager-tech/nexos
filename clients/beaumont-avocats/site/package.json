@@ -2,7 +2,7 @@
   "name": "beaumont-avocats-site",
   "version": "0.1.0",
   "private": true,
-  "description": "Beaumont Avocats \u2014 NEXOS v4.2 scaffold (chantier I : option A + patterns P14 + P17)",
+  "description": "Beaumont Avocats — NEXOS v4.2 scaffold (chantier I : option A + patterns P14 + P17)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

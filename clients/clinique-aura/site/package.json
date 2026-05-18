@@ -2,7 +2,7 @@
   "name": "clinique-aura-site",
   "version": "0.1.0",
   "private": true,
-  "description": "Site web Clinique Aura \u2014 NEXOS v4.2 scaffold (chantier E option A)",
+  "description": "Site web Clinique Aura — NEXOS v4.2 scaffold (chantier E option A)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
