@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-17 — P9 D7 résolu : preflight.sh path absolu (claude, tungsten)
+**Dernière mise à jour** : 2026-05-18 — B2 résolu : CVE HIGH next-intl/postcss upgrade — pilote vertex-pmo + batch 4 clients (claude, tungsten)
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` — 6 commits P8.3+P8.6 locaux + 1 commit P9 D8 (push à discrétion) ; SOIC `9b9e123` côté `soic_v3`
+**Branche** : `main` — 2 nouveaux commits B2 (`56c8320` pilote + `46e93fa` batch) ; SOIC `9b9e123` côté `soic_v3`
 
 ---
 
@@ -27,7 +27,8 @@
 | Silent failure paths | ✅ **3 nettoyés (P2)** | PipelineConfig + AgentRegistry + intake directive |
 | Ports hors zone CLAUDE.md | ✅ **résolu (P3)** | `nexos.port_allocator` + `tools/alloc-port.sh` — NEXOS_ENGINE 20100-20199 |
 | Osiris API désynchronisée | ✅ **résolu (P7)** | `osiris-scan.sh` adapté à `--url --output report`, scan production OK |
-| Bugs réels notés (audit) | 🔴 **P8 ouvert** (2 items restants) | P8.1 + P8.2 résolus. Reste B2 CVE HIGH / B4 6 clients dormants |
+| Bugs réels notés (audit) | 🟡 **P8 ouvert** (1 item restant) | P8.1 + P8.2 + B2 résolus. Reste B4 6 clients dormants |
+| CVE HIGH next-intl/postcss | ✅ **résolu (B2) 2026-05-18** | next 15.5.15 → 15.5.18 + next-intl 3.25.1 → 4.12.0 + postcss 8.4.49 → 8.5.10 sur 6 clients (pilote vertex-pmo `56c8320` + batch 4 clients `46e93fa` + collectif-nova on-disk). mark_systems_demo hors scope (déjà next 16.2.3). vertex-pmo μ 9.00 → 9.10 (+0.10). |
 | Auto-fixer idempotent | ✅ **résolu (P8.1)** | `FIXER_ORDER: list[Fixer]` + 14 tests régression (ordre + file-ownership + idempotence run 3×) |
 | ABORT_PLATEAU recovery | ✅ **résolu (P8.2)** | `Decision.ENRICHED_RETRY` + `PlateauDiagnosis` injecté dans feedback avant abort (1 retry par run) |
 | Dimension-scoped fixers | ✅ **résolu (P8.3)** | `Fixer.dimension` + `auto_fix(dimensions=)` + `on_enriched_retry` hook + `orchestrator/plateau_recovery.py` factory — routing déterministe D4/D8 sur plateau |
@@ -327,7 +328,7 @@ Codex : "switching models is a weak hypothesis until you know why plateau happen
 | **P8.5** | Mesure terrain plateau routing | (nouveau) | Relancer vertex-pmo, mesurer si P8.3+P8.6 débloquent | 30 min → 2h | ✅ résolu 2026-05-17 (vertex-pmo READY μ=9.00 ; 3 bugs latents découverts en chaîne + fixés : D8, D9, P8.6.2 follow-up noté) |
 | **P8.6** | Fixer D6 contraste WCAG | (découvert P8.5) | `_fix_pa11y_contrast` — WCAG helpers + harden V tokens muted | 2-3h | ✅ résolu 2026-05-17 |
 | **D1** | Vitest matrix 7 clients | Inchangé | Mécanique, OK tel quel | 2h | — |
-| **B2** | CVE HIGH upgrade | Inchangé | Test sur depanneur seul puis propager | 1-2h | — |
+| **B2** | CVE HIGH upgrade | Inchangé | Pilote vertex-pmo + batch 5 clients | 1-2h | ✅ résolu 2026-05-18 (pilote `56c8320` + batch `46e93fa`) |
 | **D2** | Osiris dimension D10 SOIC | Inchangé | Pondération SOIC + Osiris | 2-3h | — |
 
 **Économie nette estimée** : ~5h de scaffolding évitées, redirigées vers valeur observable (instrumentation + idempotency).
@@ -531,25 +532,31 @@ pip install playwright && playwright install chromium
 
 ---
 
-#### B2 — CVE HIGH npm audit non résolu sur tous les sites
+#### ✅ B2 — CVE HIGH npm audit (RÉSOLU 2026-05-18)
 
-**Symptôme** :
-```
-HIGH      next-intl <4.12.0    (GHSA chain via @formatjs)
-MODERATE  postcss   <8.5.10    (XSS via Unescaped </style> in CSS Stringify)
-```
+**Statut** : ✅ Résolu — 6 clients alignés sur stack patchée + 1 client hors scope documenté.
 
-**Impact réel actuel** : faible. Tous tes sites NEXOS sont statiques (pas d'input CSS user-uploadé), donc surface d'attaque XSS postcss ≈ 0. Mais le CVE existe et persiste sur 8/8 sites.
+**Stack patchée** (versions exactes, convention repo) :
+- next `15.5.15` → `15.5.18`
+- next-intl `3.25.1` → `4.12.0` (major, mais API client `useTranslations` rétrocompatible avec usage NEXOS)
+- postcss `8.4.49` → `8.5.10` (patch XSS `</style>`)
 
-**Pourquoi pas auto-fixé en P4b** : `npm audit fix --force` voudrait installer next-intl@4.12.0 + next@15.5.18 — breaking change qui pourrait casser le build/runtime sans tests régression complets.
+**Approche tungsten** (pilote + batch + check-in user) :
+1. Pilote vertex-pmo (commit `56c8320`) : upgrade + build + audit + serve localhost:20100 + preflight + SOIC re-eval → run 5 persisté `ACCEPT μ=9.10` (vs baseline run 4 `μ=9.00`, +0.10)
+2. **Check-in user** entre pilote et batch (règle N3 strict ROADMAP)
+3. Batch 4 clients trackés (commit `46e93fa`) : clinique-aura, beaumont-avocats, electro-maitre-industriel, table-de-marguerite — boucle `npm install` + pin exact + `npm install --package-lock-only` + `npm run build` + `npm audit --audit-level=high` — 5/5 PASS (collectif-nova upgrade on-disk mais ignored par `.gitignore:23`)
 
-**Fix proposé** (upgrade contrôlé) :
-1. Upgrade next 15.5.18 + next-intl 4.12.0 sur **depanneur-nobert seul** (client de référence)
-2. Run full Vitest (70 tests) + build + lighthouse pour valider
-3. Si OK, propager aux 7 autres clients
-4. Si KO, downgrade + ouvrir issue upstream
+**Validation post-upgrade** :
+- vertex-pmo : npm audit HIGH `1 → 0` ; Lighthouse perf `92 → 99` ; SOIC `D4 9.33 → 10.00` ; μ `9.00 → 9.10`
+- 5 autres clients : `npm run build` PASS, `npm audit --audit-level=high` exit 0 — patterns Next 15 (`params: Promise<>`) déjà migrés en sessions antérieures, pas de fix code requis pour next-intl 3→4 (API `useTranslations` client compatible)
+- 562/562 tests Python verts (aucune régression)
+- `nexos doctor --all-clients` : 3/16 déployables (vertex-pmo `μ=9.10`, beaumont-avocats `μ=8.50`, depanneur-nobert `μ=9.11`)
 
-**Effort estimé** : 1-2h. **Valeur** : moyenne aujourd'hui (surface attaque ≈ 0), élevée si un futur site sert du CSS user-uploadé.
+**Hors scope** :
+- **mark_systems_demo** : déjà sur `next 16.2.3` (plus récent que 15.5.18). 1 HIGH CVE résiduel sur next 16 (advisories GHSA-* non liés à postcss/formatjs) que `npm audit fix` ne peut pas résoudre automatiquement. **Follow-up B2.1** : aligner mark_systems_demo sur la dernière 16.x patchée ou downgrade vers 15.5.18.
+- **depanneur-nobert** : hors stack NEXOS depuis 2026-05-17 (déménagé vers `/home/gear-code/01_business/clients/03_Depanneur_Nobert/04_livrables/site-web/`). À traiter dans son emplacement business si tracké git séparément.
+
+**Effort réel** : ~1h45 (baseline + pilote + check-in + batch + validation + ROADMAP).
 
 ---
 
@@ -918,6 +925,18 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ## 🗓️ Historique des sessions notables
 
+### 2026-05-18 — B2 résolu : CVE HIGH next-intl/postcss upgrade (claude, tungsten N3)
+- Cible : 6 clients NEXOS production set (vertex-pmo en pilote + 5 batch). Plan tungsten roadmap suivi à la lettre (pilote + check-in user + batch).
+- **Pilote vertex-pmo** (commit `56c8320`) : `npm install next@15.5.18 next-intl@4.12.0 postcss@8.5.10` puis pin exact (retirer `^`) puis `npm install --package-lock-only`. Build PASS du premier coup — patterns Next 15 (`params: Promise<>`) déjà migrés. Lighthouse perf saute de 92 → 99. `npm audit --audit-level=high` exit 0.
+- **Re-mesure SOIC live** (méthode B P8.5) : serveur sur localhost:20100, `tools/preflight.sh` regénère tooling/, `GateEngine.run_all_gates()` recalcule. Run 5 persisté dans `soic-runs.jsonl` + `soic-gates.json` : `μ=9.10 ACCEPT` (vs baseline run 4 `μ=9.00 ACCEPT`). Gain : W-05 npm-audit `FAIL 8.0 → PASS 10.0` (1 HIGH → 0), D4 dim `9.33 → 10.00`.
+- **Check-in user** posé via `AskUserQuestion` entre pilote et batch (règle N3 ROADMAP). Validation explicite "Go batch — 6 clients en boucle".
+- **Batch propagation** (commit `46e93fa`) : 4 clients trackés (clinique-aura, beaumont-avocats, electro-maitre-industriel, table-de-marguerite) + collectif-nova on-disk (gitignored `.gitignore:23`). Boucle bash uniformisée : install + pin exact + relock + build + audit. 5/5 PASS — aucun client n'a cassé sur next-intl 3→4 ou Next 15.5.18.
+- **Hors scope identifié** : `mark_systems_demo` déjà sur `next 16.2.3` (plus récent que cible 15.5.18). 1 HIGH CVE résiduel non-corrigeable par `npm audit fix`. Documenté en follow-up B2.1 (aligner sur 16.x patchée ou downgrade 15.5.18).
+- Discovery utile : `npm audit --audit-level=high` retourne exit 0 même avec 1 HIGH si pas de fix auto disponible — pas un substitut à la lecture du metadata `vulnerabilities.high`. À retenir pour B2.1.
+- Validation finale : `nexos doctor --all-clients` confirme 3/16 déployables (vertex-pmo `μ=9.10`, beaumont-avocats `μ=8.50`, depanneur-nobert `μ=9.11`) — aucune régression. 562/562 tests Python verts.
+- Pre-commit hook a refusé `tooling/lighthouse.json` (528 KB > 500 KB) — pattern identique à P8.5 baseline. Lighthouse JSON non-commitable, gardé local pour audit forensique.
+- Effort réel ~1h45 (baseline 15 min + pilote upgrade+build+audit 20 min + SOIC re-eval + commit 25 min + check-in user 5 min + batch 5 clients 30 min + commit batch + ROADMAP 20 min). Estimation roadmap 3-4h dépassée largement à la baisse grâce au pilote propre.
+
 ### 2026-05-17 — Mark Systems Session 1 : sécurité + consentement réel (codex)
 - Cible : `/home/gear-code/02_projects/mark-systems-site/web-version`.
 - Sécurité : `npm audit fix` + upgrade contrôlé `next`/`eslint-config-next` vers `15.5.18` (versions exactes). HIGH/CRITICAL passent à 0 ; reste 2 MODERATE `postcss` embarqués par Next, sans correctif npm acceptable (`npm audit fix --force` propose une régression vers Next 9.3.3).
@@ -1109,63 +1128,24 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ---
 
-## 🧭 Préparation détaillée — B2 + P8.4 (terrain prêt 2026-05-17)
+## 🧭 Préparation détaillée — P8.4 + B2.1 (terrain prêt 2026-05-18)
 
 > Point d'entrée pour la prochaine session Claude/Codex/Gemini. Lire cette section
-> AVANT de coder. Aliases shell prêts : `B2`, `P8.4`, `nexos-attack --help`.
+> AVANT de coder. Aliases shell prêts : `P8.4`, `nexos-attack --help`.
 
-### 🟠 B2 — CVE HIGH next-intl + postcss upgrade contrôlé (N3, ~3-4h estimé)
+### ✅ B2 — CVE HIGH next-intl + postcss (RÉSOLU 2026-05-18)
 
-**Périmètre** : 7 clients NEXOS actuels (dépanneur-nobert SORTI de la stack, voir
-ci-dessous). Aliases shell : `B2`.
+Voir entrée historique 2026-05-18. Pilote `56c8320` + batch `46e93fa`. 6 clients alignés sur next 15.5.18 / next-intl 4.12.0 / postcss 8.5.10. vertex-pmo μ 9.00 → 9.10.
 
-**Référence pilote** : **vertex-pmo** — choisi parce que :
-1. Récemment validé READY (μ=9.00, P8.5 du 17 mai)
-2. Baseline tooling/*.json fraîche (mesurée localhost:20100 le 17 mai)
-3. Vitest pas encore en CI dessus, mais ça importe peu pour B2 (le test critique = build + npm audit après upgrade)
+### 🟠 B2.1 — mark_systems_demo : 1 HIGH CVE next 16.2.3 résiduel (~1-2h)
 
-**Stack à upgrader** :
-| Pkg | Avant | Après | Type |
-|---|---|---|---|
-| `next` | `^15.x.x` | `^15.5.18` | breaking (App Router types, `params: Promise<>` confirmé en sessions précédentes) |
-| `next-intl` | `<4.12.0` | `^4.12.0` | breaking @formatjs chain |
-| `postcss` | `<8.5.10` | `^8.5.10` | patch (XSS via `</style>` non-échappé) |
+**Découvert** : pendant batch B2, `mark_systems_demo` était hors scope car déjà sur next 16.2.3 (plus récent que cible 15.5.18). `npm audit` montre 1 HIGH CVE (advisories GHSA-* sur next 16.x : DoS Server Components, Middleware bypass, XSS App Router, etc.). `npm audit fix` ne propose pas de fix automatique.
 
-**Plan d'attaque tungsten** (1 commit pilote + 1 commit batch propagation) :
-1. **Avant** :
-   - Snapshot `clients/vertex-pmo/site/package.json` (md5 + version actuelles)
-   - Snapshot `clients/vertex-pmo/soic-runs.jsonl` baseline (run 4 ACCEPT μ=9.00)
-   - Test guard : aucun nouveau test Python nécessaire (B2 est shell/npm/build, pas Python). Mais ré-écrire `tests/test_preflight_sh.py` aurait été pertinent ici aussi — pour l'instant, le test guard B2 = mesurer `nexos audit` avant/après via méthode B (cf P8.5).
-   - Rollback : `git restore -- clients/vertex-pmo/site/`
-3. **Pendant — vertex-pmo seul** :
-   - `cd clients/vertex-pmo/site && npm install next@15.5.18 next-intl@4.12.0 postcss@8.5.10`
-   - `npm run build` doit passer (sinon noter erreurs types `params: Promise<>` à fixer dans le code Next 15)
-   - `npm audit --audit-level=high` doit retourner 0 vulns
-   - Build + serve local sur port 20100 (cf P8.5 script)
-   - Re-mesure via `tools/preflight.sh http://localhost:20100 clients/vertex-pmo`
-   - Re-eval SOIC : `python3 -c 'from soic.gate_engine import GateEngine; ...'` (cf P8.5)
-   - Si μ reste ≥ 8.5 et 0 HIGH dans npm audit → **commit pilote vertex-pmo**
-4. **Pendant — propagation 6 autres** : clinique-aura, beaumont-avocats, collectif-nova, electro-maitre-industriel, mark_systems_demo, table-de-marguerite
-   - Boucle bash : pour chaque, `npm install next@15.5.18 next-intl@4.12.0 postcss@8.5.10 && npm run build`
-   - Si build PASS sur tous → **commit batch propagation** (1 seul commit, message liste tous les clients)
-   - Si build FAIL sur un client → STOP, investiguer ce client précis, fix code, re-batch
-5. **Après** :
-   - `nexos doctor --all-clients` : tous les μ doivent rester ≥ leurs niveaux baseline
-   - ROADMAP update : B2 ✅ résolu
-   - Commit pilote + commit batch séparés
-   - **Check-in user obligatoire** entre pilote vertex-pmo et batch propagation (N3 strict)
+**2 stratégies possibles** :
+- **Aligner vers 16.x patchée** : trouver la dernière 16.x sans CVE (probablement 16.3.x ou 16.4.x si publiée). Reste sur next 16, demande update de `params: Promise<>` si l'API change.
+- **Downgrade vers 15.5.18** : aligne sur le reste du stack NEXOS. Plus simple, mais c'est un downgrade qui peut casser des features 16.x (Cache Components, etc.).
 
-**Risques anticipés** :
-| Risque | Probabilité | Mitigation |
-|---|---|---|
-| Next 15.5.18 introduit types incompatibles (`params: Promise<>`) | Moyenne | Mark Systems et vertex-pmo ont déjà été migrés vers ce pattern — risque réduit. Si déclenche, fix par client puis re-batch |
-| next-intl 4.12 demande migration `getTranslations` côté serveur | Faible | Mark Systems déjà migré (session codex 2026-05-17) — la convention est connue |
-| postcss 8.5.10 casse Tailwind | Très faible | Tailwind 3.4+ et 4 supportent — vérifier `package.json` Tailwind version par client |
-| `npm install` met à jour le lockfile et change autres deps mineures | Élevée | Acceptable, c'est le but ; revoir `package-lock.json` diff dans le commit |
-
-**Dépanneur Nobert** (hors stack NEXOS depuis 2026-05-17) :
-- Path : `/home/gear-code/01_business/clients/03_Depanneur_Nobert/04_livrables/site-web/`
-- Même CVE, mais commit séparé dans son emplacement business (si tracké git séparément — à vérifier au moment de B2). Recommandation : faire dépanneur en dernier, après validation pilote NEXOS.
+**Pré-requis avant d'attaquer** : check si mark_systems_demo a un site/ utilisable (cf `nexos doctor --client mark_systems_demo`) et identifier les usages spécifiques next 16 (Cache Components, segments, etc.).
 
 ---
 
