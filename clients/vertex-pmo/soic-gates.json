@@ -18,5 +18,15 @@
     "decision": "ACCEPT",
     "abort_reason": "",
     "timestamp": "2026-05-18T00:51:16.508313+00:00"
+  },
+  {
+    "phase": "ph5-qa",
+    "mu": 9.1,
+    "threshold": 8.5,
+    "converged": true,
+    "iterations": 5,
+    "decision": "ACCEPT",
+    "abort_reason": "",
+    "timestamp": "2026-05-18T20:46:18.374584+00:00"
   }
 ]
