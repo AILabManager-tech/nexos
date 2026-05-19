@@ -364,7 +364,10 @@ def doctor_client_report(slug: str) -> str:
     except Exception as exc:  # doctor doit jamais crasher
         lines.append(f"  [!] deploy_decision indisponible ({type(exc).__name__})")
 
-    # Verdict deploy (legacy summary — gardé pour compat doctor --all-clients)
+    # Verdict deploy final — aligné sur le verdict joint 5-axes (P9 D2 +
+    # extensions). Avant l'alignement, cette ligne lisait seulement μ_SOIC,
+    # ce qui pouvait dire "DÉPLOYABLE" même quand pa11y/Lighthouse/npm audit
+    # bloquaient (faux positif). Maintenant : reflète le verdict composite.
     lines.append("\n" + "=" * 50)
     ph5 = None
     if gates_path.exists():
@@ -373,8 +376,28 @@ def doctor_client_report(slug: str) -> str:
             ph5 = _latest_phase_gate(gates, "ph5-qa")
         except json.JSONDecodeError:
             pass
-    if ph5 and ph5.get("decision") == "ACCEPT" and ph5.get("mu", 0) >= 8.5:
-        lines.append(f"Statut: DÉPLOYABLE — Ph5 μ={ph5['mu']:.2f} ≥ 8.5")
+
+    # `decision` est calculé au-dessus dans la section DEPLOY DECISION (5 axes).
+    # On le ré-utilise ici plutôt que de re-lire (déjà coûteux pour un doctor).
+    joint = None
+    blockers_str = "—"
+    try:
+        joint = decision.joint_verdict
+        if decision.blockers:
+            blockers_str = ", ".join(decision.blockers)
+    except (NameError, AttributeError):
+        # `decision` n'a pas été calculé (section deploy_decision a crash).
+        # Fallback sur l'ancien comportement μ-only pour ne pas casser doctor.
+        pass
+
+    if joint == "ACCEPT":
+        mu_str = f"μ={ph5['mu']:.2f}" if ph5 and isinstance(ph5.get("mu"), (int, float)) else "—"
+        lines.append(f"Statut: DÉPLOYABLE — Joint ACCEPT ({mu_str} + 4 axes externes PASS/UNKNOWN)")
+    elif joint == "FAIL":
+        lines.append(f"Statut: NON DÉPLOYABLE — Joint FAIL (blockers: {blockers_str})")
+    elif ph5 and ph5.get("decision") == "ACCEPT" and ph5.get("mu", 0) >= 8.5:
+        # Fallback legacy — `decision` n'a pas pu être calculé mais SOIC OK.
+        lines.append(f"Statut: DÉPLOYABLE (SOIC seul) — Ph5 μ={ph5['mu']:.2f} ≥ 8.5")
     elif ph5:
         lines.append(f"Statut: NON DÉPLOYABLE — Ph5 μ={ph5.get('mu', 0):.2f} < 8.5 ou non accepté")
     else:
