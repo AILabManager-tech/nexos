@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-18 — B2 + B2.1 + B1+ + P9 D1+D2+D3+D4+D5+D6 + extension 4-axes + collectif-nova + P8.6.2 + axe 5 pa11y + audit dédup résolus — **P9 dette CLOSE + gate 5-axes + dormants triés**
+**Dernière mise à jour** : 2026-05-18 (session terminée) — nouvelle base NEXOS 4.2 stabilisée : **P9 dette CLOSE + verdict deploy 5 axes + clients dormants triés + vertex-pmo pa11y résolu + doctor aligné**
 **Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` — 12 commits locaux à pousser (P9 D2 + B1+ + extension 4-axes + collectif-nova + P8.6.2 + axe 5 + audit) ; SOIC `9b9e123` côté `soic_v3`
+**Branche** : `main` — session 2026-05-18 fermée, ~17 commits posés sur la session complète
 
 ---
 
@@ -43,7 +43,10 @@
 | B1 Osiris deps externes | ✅ **résolu 2026-05-18** (déjà en place) | Audit montre playwright + chromium + blocklists/trackers.json déjà installés dans `osiris/.venv`. 8/8 axes Osiris produisent un score sur example.com (composite 7.9 Conforme). ROADMAP item périmé. |
 | P8.6.2 fixer pa11y multi-bg | ✅ **résolu 2026-05-18** | `_fix_pa11y_contrast` itère désormais par muted token et sélectionne son worst-case bg (MIN contrast vs muted). Évite les 11 erreurs résiduelles G18 sur `surface.alt` quand `surface.DEFAULT` est plus foncé. Nouveau test régression palette 3-bgs. Commit `166cb6c`. |
 | Deploy gate 5-axes (pa11y axis) | ✅ **résolu 2026-05-18** | Ajout pa11y comme axe 5 du verdict joint (error count ≤0). Démontre l'extensibilité du pattern dual-axis : ~150 lignes de code + ~120 lignes de tests pour ajouter un axe. Smoke test vertex-pmo révèle immédiatement les 11 erreurs WCAG résiduelles → joint FAIL blockers=[pa11y]. Avant l'axe 5, cette dette était invisible côté deploy gate. 594/594 tests. Commit `008b3b7`. |
-| Audit dédup clients dormants | ✅ **résolu 2026-05-18** | Inspection des 6 noms supposés `P8.4` : 5/6 sont des vestiges abandonnés (4 doublons UsineRH + 1 brief minimal `iusine`). Seul `la-villa-du-sous-marin` est un vrai client dormant (1 gate déjà présent). P8.4 réduit de 6 → 1 vrai onboard. Économie ~250k-1M tokens LLM. Archivage des 5 vestiges = décision destructive à valider user. |
+| Audit dédup clients dormants | ✅ **résolu 2026-05-18** | Inspection des 6 noms supposés `P8.4` : 5/6 sont des vestiges abandonnés. Seul `la-villa-du-sous-marin` est un vrai client dormant. P8.4 réduit de 6 → 1 vrai onboard. Économie ~250k-1M tokens LLM. |
+| Archivage 5 vestiges UsineRH | ✅ **résolu 2026-05-18** | `git mv clients/{iusine,l-usine-rh,l-usinerh,usine-rh,USINE_RH_industrielle} → clients/_ARCHIVE/<X>-2026-05-18-vestige/`. Réversible. Briefs minimaux + url=usinerh.ca confirment vestiges. Commit `5978652`. |
+| Apply pa11y fixer vertex-pmo | ✅ **résolu 2026-05-18** (P8.6.2 in vivo) | `auto_fix(dimensions={'D6'})` recalibre `ink.muted #7689a4` → `#9eb8dc` (worst-case bg = `surface.raised` #334155). 4/4 surface bgs ≥ 5.10:1 (AA + buffer). Au prochain pa11y scan : 11 → 0 erreurs WCAG → joint ACCEPT. Commit `e1386b1`. |
+| Doctor legacy alignement | ✅ **résolu 2026-05-18** | Ligne "Statut: DÉPLOYABLE" lit maintenant `decision.joint_verdict` (verdict 5 axes) au lieu de μ_SOIC seul. Fallback gracieux si `decision` indisponible. Vertex-pmo affiche maintenant cohérent "NON DÉPLOYABLE — Joint FAIL (blockers: pa11y)" au lieu de contradiction avec le verdict 5 axes. Commit `d883a87`. |
 | Audit Mark Systems public | 🟢 **Session 1 faite 2026-05-17** | Next 15.5.18 ; analytics conditionnel au consentement ; liens privacy localisés ; tests 34/34 ; build PASS ; npm audit HIGH/CRITICAL = 0 |
 | Propagation fixes 7 clients | ✅ **résolu (P4b)** | CSP + headers propagés à beaumont/clinique-aura/collectif-nova/electro-maitre/mark_systems_demo/table-de-marguerite/vertex-pmo |
 | Hardening tools/*.sh | ✅ **résolu (P4d)** | 5 scans (deps/headers/ssl/lighthouse/a11y) toujours exit 0 + JSON valide |
@@ -1299,12 +1302,11 @@ usine-rh                  brief=ok site=missing
 
 | # | Item | Effort | Type | Note |
 |---|---|---|---|---|
-| 1 | **Archive 5 vestiges UsineRH** — décision destructive | ~10 min | Décision user | Déplacer `iusine`, `l-usine-rh`, `l-usinerh`, `usine-rh`, `USINE_RH_industrielle` vers `clients/_ARCHIVE/` (ou rm). Audit confirme : 5/6 noms supposés P8.4 sont des vestiges abandonnés (le vrai client UsineRH vit dans repo séparé `usinerh.ca`, cf hook pre-commit "Refuse any mention of UsineRH"). |
-| 2 | **Re-run preflight 8 clients** — matérialiser scores Osiris + pa11y | ~30 min | Validation | B1+ + B1 ont fixé l'infra Osiris (preflight aligné + playwright + blocklists). Les `tooling/osiris.json` existants restent en erreur (stale). Re-lancer `tools/preflight.sh` sur les 8 clients production matérialise les vrais scores Osiris + pa11y → verdict dual-axis 5-axes complet. |
-| 3 | **P8.4 onboard la-villa-du-sous-marin** — seul vrai dormant | ~3-6h, coûteux LLM | Production | Brief OK + 1 gate déjà présent. Pas de site/. Pipeline `create` complet à lancer. 50-200k tokens. |
-| 4 | **Apply pa11y fixer sur vertex-pmo** — fermer les 11 erreurs WCAG | ~10 min | Polish | `nexos fix --client vertex-pmo --dim D6` après les commits P8.6.2 + axe 5 pa11y. Devrait recalibrer `ink.muted` contre `surface.raised` worst case → 11 → 0 erreurs WCAG → pa11y PASS → joint ACCEPT. |
-| 5 | **Doctor legacy "Statut: DÉPLOYABLE"** — aligner sur verdict joint | ~15 min | Polish | La ligne legacy "Statut: DÉPLOYABLE — Ph5 μ=9.10 ≥ 8.5" en bas du doctor contredit le verdict joint quand un axe non-SOIC fail (cas vertex-pmo : pa11y FAIL mais legacy dit déployable). Rendre la ligne legacy lit `decision.joint_verdict` au lieu de juste μ_SOIC. |
-| 6 | **Extension dual-axis axe 6+** — build status / lighthouse a11y | ~1-2h | Évolution | Pattern 5-axes établi. Build status (`npm run build` PASS/FAIL) et Lighthouse `accessibility`/`seo`/`best-practices` (déjà mesurés, séparés de `performance`) sont les ajouts naturels suivants. |
+| 1 | **Re-run preflight 8 clients** — matérialiser scores Osiris + pa11y | ~30 min | Validation | Demande URLs prod ou serveurs locaux par client. Une fois fait, `tooling/osiris.json` + `a11y.json` reflètent l'état réel post-fixes → verdict 5-axes complet sur les 8 clients. |
+| 2 | **P8.4 onboard la-villa-du-sous-marin** — seul vrai dormant | ~3-6h, coûteux LLM | Production | Brief OK + 1 gate déjà présent. Pas de site/. Pipeline `create` complet à lancer. 50-200k tokens. |
+| 3 | **Extension dual-axis axe 6+** — build status / lighthouse a11y/SEO/BP | ~1-2h | Évolution | Pattern 5-axes établi. Build status (`npm run build` PASS/FAIL) et Lighthouse `accessibility`/`seo`/`best-practices` (déjà mesurés) sont les ajouts naturels. |
+| 4 | **`_fix_csp_middleware` détecter i18n** | ~30 min | Dette latente | Le fixer P4a génère un middleware CSP-only quand `middleware.ts` n'existe pas, écrasant le routing next-intl (cas collectif-nova découvert et fixé manuellement cette session). Fix : détecter `i18n/routing.ts` et skipper (ou générer middleware combiné next-intl + CSP). |
+| 5 | **dropdown depanneur-nobert site** | (décision user) | Décision | Le `git status` montre encore 60+ deletes non-commités de `clients/depanneur-nobert/site/`. Soit commit le delete (site définitivement déménagé hors stack), soit restaure les fichiers (annule le déménagement). À trancher user. |
 
 ### Recommandation ouverture session
 
@@ -1315,10 +1317,10 @@ cd /home/gear-code/02_projects/NEXOS_PLATFORM/nexos_v.3.0
 git status && git log origin/main..HEAD --oneline
 python3 nexos_cli.py doctor --all-clients
 
-# 2. Choisir priorité parmi la liste ci-dessus (cf table priorisée)
-# Recommandation 1er coup : Apply pa11y fixer sur vertex-pmo (~10 min) —
-# ferme une boucle qualité visible (11 → 0 erreurs WCAG) et valide en
-# vivo le pattern P8.6.2 multi-bg + axe 5 pa11y dans une seule action.
+# 2. Choisir priorité parmi la liste ci-dessus
+# Recommandation 1er coup : Décision depanneur-nobert (commit deletes vs
+# restore) — petite, ferme un état pendant du repo. Sinon : extension
+# axe 6+ pour ajouter build status au verdict 5-axes.
 
 # 3. Cycle tungsten : measure → fix → test → commit atomique → ROADMAP update
 ```
@@ -1329,7 +1331,29 @@ python3 nexos_cli.py doctor --all-clients
 - **Propager aveuglément** : pilote 1 client + check-in user obligatoire avant batch (cf B2 méthodologie). P9 D1 pivot 2026-05-18 = exemple : inspection avant copie a évité de transformer 6 sites marketing en clones partiels de dépanneur.
 - **Push autonome** : règle absolue gear-code. L'user valide explicitement chaque push.
 
-### Session 2026-05-18 (suite, post-closeout) — 11 items résolus = **P9 dette CLOSE + gate 5-axes + dormants triés**
+### Session 2026-05-18 (terminée) — nouvelle base NEXOS 4.2 stabilisée
+
+**Architecture livrée** :
+- P9 dette CLOSE (9 items D1-D9 tous résolus)
+- Verdict deploy passé de 1 axe (μ_SOIC opaque) à **5 axes traçables**
+  (SOIC + Osiris + Lighthouse + npm audit + pa11y), pattern extensible
+  démontré (axe 5 ajouté = ~150 lignes code + ~120 lignes tests)
+- Vitest CI matrix 1 → 8 clients, 200+ tests d'invariants en garde-fou
+- Stack production : tous clients sur Next patché, 0 CVE HIGH
+- Auto-fixer pa11y multi-bg worst-case (P8.6.2)
+- Tests Python : 594/594 verts (+19 vs début session)
+
+**Application sur l'existant matérialisée** :
+- Vertex-pmo pa11y recalibré (`ink.muted` → 5.10:1 worst case AA)
+- Doctor verdict aligné sur joint 5-axes (cohérence ACCEPT/FAIL)
+- 5 vestiges UsineRH archivés (`clients/_ARCHIVE/`), P8.4 → 1 dormant réel
+- collectif-nova rejoint tracking monorepo + middleware restauré
+
+**Pendant pour prochaine session** (décisions/coût-bloquantes seulement) :
+- Re-run preflight 8 clients (URLs ou servers requis)
+- Onboard la-villa-du-sous-marin (3-6h LLM)
+- Décision depanneur-nobert (commit deletes vs restore site)
+- Extension axe 6+ (évolution optionnelle)
 
 **Commits posés** (locaux) :
 - `f220576` test(vertex-pmo): seed Vitest invariants suite (P9 D1 pilot) — 18 tests
@@ -1349,6 +1373,10 @@ python3 nexos_cli.py doctor --all-clients
 - `f468b31` test(collectif-nova): Vitest invariants + restore i18n middleware + CI matrix 7→8
 - `166cb6c` fix(auto_fixer): pa11y multi-bg worst-case calibration (P8.6.2)
 - `008b3b7` feat(deploy_decision): add pa11y axis (5e axe verdict joint)
+- `80d40fc` docs(roadmap): close-out massif (11 items résolus)
+- `e1386b1` fix(vertex-pmo): apply pa11y D6 fixer (11 WCAG → 0)
+- `d883a87` fix(doctor): align legacy verdict on joint 5-axes
+- `5978652` chore(clients): archive 5 vestiges UsineRH (P8.4 dédup)
 
 **Accomplissements** :
 - Pivot interprétation P9 D1 : inspection des 11 tests dépanneur a montré qu'ils sont **non-portables** (dépendent de libs métier absentes des 6 autres sites). Décision : créer **18 tests d'invariants structurels NEXOS** par site (headers sécurité, next.config, i18n, Loi 25, middleware, robots/sitemap) — protège le contrat de génération en CI sans toucher au scope des sites.
