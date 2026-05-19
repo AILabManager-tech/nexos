@@ -1329,6 +1329,52 @@ class TestFixPa11yContrast:
         assert not (site / "vercel.json").exists()
         assert not (site / "README.md").exists()
 
+    def test_p8_6_2_multi_bg_calibrates_against_worst_case(self, tmp_path):
+        """P8.6.2 regression : palette with multiple bg tokens — the fixer
+        must calibrate against the bg that yields the WORST contrast vs the
+        muted token, not just the first bg found.
+
+        Vertex-pmo's case : `surface.DEFAULT = #0F172A` (very dark) but
+        `surface.alt = #1E293B`, `surface.raised = #334155` are progressively
+        lighter. `ink.muted = #7689a4` had only 4.10:1 on `surface.alt` and
+        was actually FAILING WCAG AA even though it passed on `surface.DEFAULT`.
+
+        After P8.6.2, the hardened muted must clear 4.5:1 against ALL bgs
+        in the palette — i.e., against `surface.raised` (worst case here).
+        """
+        palette_with_lighter_bgs = (
+            "export default {\n"
+            "  theme: { extend: { colors: {\n"
+            "    surface: {\n"
+            "      DEFAULT: '#0F172A',\n"
+            "      alt: '#1E293B',\n"
+            "      raised: '#334155'\n"
+            "    },\n"
+            "    ink: {\n"
+            "      DEFAULT: '#F8FAFC',\n"
+            "      muted: '#7689a4'\n"
+            "    }\n"
+            "  }}}\n"
+            "};\n"
+        )
+        self._write_palette(tmp_path, palette_with_lighter_bgs)
+        report = FixReport()
+        _fix_pa11y_contrast(tmp_path, report)
+
+        assert report.contrast_tokens_fixed == 1
+        new_content = (tmp_path / "tailwind.config.ts").read_text()
+        match = re.search(r"muted:\s*'(#[0-9a-fA-F]{6})'", new_content)
+        assert match is not None
+        new_hex = match.group(1)
+        new_rgb = _hex_to_rgb(new_hex)
+        # Must clear AA against EVERY bg in the palette (not just the first one)
+        for bg in ("#0F172A", "#1E293B", "#334155"):
+            ratio = _contrast_ratio(new_rgb, _hex_to_rgb(bg))
+            assert ratio >= 4.5, (
+                f"Hardened muted {new_hex} only achieves {ratio:.2f}:1 vs bg {bg} — "
+                f"P8.6.2 regression : multi-bg calibration missed the worst case"
+            )
+
 
 # ── P9 D8 — dry-run describers parity with FIXER_ORDER ────────────────
 

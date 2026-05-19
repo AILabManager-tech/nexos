@@ -591,14 +591,87 @@ def _extract_palette_token_lines(tailwind_content: str) -> dict[str, list[int]]:
     return grouped
 
 
+def _collect_all_backgrounds(content: str) -> list[str]:
+    """Collect every hex literal inside any background-named block (P8.6.2).
+
+    Scans `surface: { ... }`, `background: { ... }`, `bg: { ... }`, `body: { ... }`
+    blocks and returns every hex literal found inside (DEFAULT, alt, raised, dark,
+    etc.). Used by `_fix_pa11y_contrast` to calibrate against the WORST-CASE bg
+    per muted token (the bg with minimum contrast vs the muted), not just the
+    first one — fixes the P8.6.2 case where surface.alt / surface.raised expose
+    contrast errors that the original first-bg-only selection missed.
+
+    Returns hex strings in the order they appear (deduplicated, preserving order).
+    """
+    lines = content.splitlines()
+    bg_hexes: list[str] = []
+    seen: set[str] = set()
+    for bg_name in _BACKGROUND_TOKEN_NAMES:
+        opener = re.compile(rf"^\s*{re.escape(bg_name)}\s*:\s*\{{")
+        in_block = False
+        for line in lines:
+            if not in_block:
+                if opener.match(line):
+                    in_block = True
+                continue
+            # Inside the block. A closing brace ends it (single-line `},`
+            # idiom common in tailwind palettes is captured by `}` substring).
+            if "}" in line:
+                in_block = False
+                continue
+            match = _TAILWIND_TOKEN_LINE_RE.match(line)
+            if match is None:
+                continue
+            hex_str = match.group("hex").lower()
+            if hex_str not in seen:
+                seen.add(hex_str)
+                bg_hexes.append(hex_str)
+    return bg_hexes
+
+
+def _worst_case_bg(muted_hex: str, all_bgs: list[str]) -> str | None:
+    """Pick the bg with MIN contrast vs the muted token (worst-case calibration).
+
+    Returns None if `muted_hex` is malformed or `all_bgs` is empty. The returned
+    hex string is the bg that, when paired with `muted_hex`, yields the smallest
+    WCAG contrast ratio — i.e., the bg against which the muted token is hardest
+    to read. Calibrating the muted to clear 5.0:1 against this bg guarantees it
+    clears 4.5:1 against any other bg in the same palette.
+    """
+    if not all_bgs:
+        return None
+    try:
+        muted_rgb = _hex_to_rgb(muted_hex)
+    except ValueError:
+        return None
+    valid_bgs: list[tuple[str, float]] = []
+    for bg in all_bgs:
+        try:
+            ratio = _contrast_ratio(muted_rgb, _hex_to_rgb(bg))
+        except ValueError:
+            continue
+        valid_bgs.append((bg, ratio))
+    if not valid_bgs:
+        return None
+    return min(valid_bgs, key=lambda pair: pair[1])[0]
+
+
 def _fix_pa11y_contrast(site_dir: Path, report: FixReport) -> None:
-    """Harden Tailwind palette tokens that fail WCAG AA 4.5:1 contrast (P8.6).
+    """Harden Tailwind palette tokens that fail WCAG AA 4.5:1 contrast (P8.6 + P8.6.2).
 
     Reads `<site>/tailwind.config.ts`, locates palette tokens whose name
     matches a muted-role pattern (`muted`, `subtle`, `tertiary`, …),
-    computes their contrast against the site's primary background
-    (`surface.DEFAULT` / `background.DEFAULT` / `bg.DEFAULT` / `body.DEFAULT`),
-    and rewrites any token below 4.5:1 to a value that clears 5.0:1.
+    computes their contrast against the WORST-CASE background among all
+    palette bgs (P8.6.2 multi-bg : `surface.DEFAULT`, `surface.alt`,
+    `surface.raised`, etc., picked per token = the bg that yields the
+    smallest contrast vs that specific muted color), and rewrites any
+    token below 4.5:1 to a value that clears 5.0:1 against the worst-case.
+
+    Why worst-case multi-bg : prior P8.6 picked the first bg it found
+    (typically `surface.DEFAULT`), missing the case where a lighter bg
+    in the same palette (`surface.alt`, `surface.raised`) gave the muted
+    token a lower contrast. Vertex-pmo had 11 pa11y G18 errors on
+    `text-ink-muted` over `surface.alt` despite passing on `surface.DEFAULT`.
 
     Defensive skips:
       - no `tailwind.config.ts` (e.g., site uses a different palette source)
@@ -612,7 +685,7 @@ def _fix_pa11y_contrast(site_dir: Path, report: FixReport) -> None:
     config_path = site_dir / "tailwind.config.ts"
     if not config_path.exists():
         # Some projects keep their palette in `globals.css` as CSS variables.
-        # Out of scope for this commit — see P8.6.2 follow-up if needed.
+        # Out of scope for this commit — see P8.6.3 follow-up if needed.
         return
 
     content = config_path.read_text()
@@ -625,37 +698,24 @@ def _fix_pa11y_contrast(site_dir: Path, report: FixReport) -> None:
     if not muted_lines:
         return  # nothing to harden
 
-    bg_hex: str | None = None
-    lines = content.splitlines()
-    for bg_name in _BACKGROUND_TOKEN_NAMES:
-        candidates = tokens_by_name.get(bg_name) or []
-        # Also accept `DEFAULT` lines sitting just under a `surface: {` block.
-        candidates += tokens_by_name.get("DEFAULT", [])
-        for idx in candidates:
-            match = _TAILWIND_TOKEN_LINE_RE.match(lines[idx])
-            if match is None:
-                continue
-            # Only accept the first DEFAULT immediately following one of the
-            # background block headers (we don't want a `text: { DEFAULT }`).
-            if match.group("name") == "DEFAULT":
-                prev = lines[idx - 1] if idx > 0 else ""
-                if not re.search(rf"\b{bg_name}\s*:\s*\{{", prev):
-                    continue
-            bg_hex = match.group("hex")
-            break
-        if bg_hex is not None:
-            break
-
-    if bg_hex is None:
+    all_bgs = _collect_all_backgrounds(content)
+    if not all_bgs:
         return  # cannot determine background reference → conservative skip
 
+    lines = content.splitlines()
     new_lines = list(lines)
     fixed = 0
     for idx in muted_lines:
         match = _TAILWIND_TOKEN_LINE_RE.match(new_lines[idx])
         if match is None:
             continue
-        new_hex = _harden_token_contrast(match.group("hex"), bg_hex)
+        muted_hex = match.group("hex")
+        # P8.6.2 : pick the bg that gives this muted token its worst contrast.
+        # Calibrating against that bg guarantees AA on every other bg.
+        bg_hex = _worst_case_bg(muted_hex, all_bgs)
+        if bg_hex is None:
+            continue
+        new_hex = _harden_token_contrast(muted_hex, bg_hex)
         if new_hex is None:
             continue
         new_lines[idx] = (
