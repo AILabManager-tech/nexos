@@ -87,6 +87,7 @@ jobs:
           - vertex-pmo
           - beaumont-avocats
           - clinique-aura
+          - collectif-nova
           - electro-maitre-industriel
           - table-de-marguerite
           - mark_systems_demo

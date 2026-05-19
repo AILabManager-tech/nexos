@@ -20,7 +20,14 @@ logs/
 *.zip
 
 # Client templates (separate repos)
-clients/collectif-nova/
+# (collectif-nova retiré de gitignore 2026-05-18 — tracking unifié monorepo
+# pour bénéficier des fixes propagés P9 D1 / B2 / dual-axis 4 axes)
+clients/collectif-nova/site/node_modules/
+clients/collectif-nova/site/.next/
+clients/collectif-nova/site/.env
+clients/collectif-nova/site/.env.local
+clients/collectif-nova/site/next-env.d.ts
+clients/collectif-nova/site/tsconfig.tsbuildinfo
 # beaumont-avocats : matérialisé dans ce repo par le chantier knowledge phase I
 # (option A scaffold + patterns P14 + P17). Voir phase-I-report.md.
 clients/beaumont-avocats/site/node_modules/
