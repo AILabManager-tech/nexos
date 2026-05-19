@@ -21,6 +21,7 @@ from nexos.deploy_decision import (
     AXIS_LIGHTHOUSE,
     AXIS_NPM_AUDIT,
     AXIS_OSIRIS,
+    AXIS_PA11Y,
     AXIS_SOIC,
     DEPLOY_DECISION_FILENAME,
     DeployDecision,
@@ -50,8 +51,14 @@ def _write_tooling(client_dir: Path, filename: str, payload: dict) -> None:
     (tooling / filename).write_text(json.dumps(payload), encoding="utf-8")
 
 
+def _write_a11y_list(client_dir: Path, issues: list[dict]) -> None:
+    tooling = client_dir / "tooling"
+    tooling.mkdir(parents=True, exist_ok=True)
+    (tooling / "a11y.json").write_text(json.dumps(issues), encoding="utf-8")
+
+
 def _write_all_pass(tmp_path: Path) -> None:
-    """Helper : configure les 4 axes en PASS pour tester ACCEPT joint."""
+    """Helper : configure les 5 axes en PASS pour tester ACCEPT joint."""
     _write_soic_gates(tmp_path, mu=9.0, decision="ACCEPT")
     _write_tooling(tmp_path, "osiris.json", {"score": 7.4, "grade": "Conforme"})
     _write_tooling(tmp_path, "lighthouse.json", {"categories": {"performance": {"score": 0.92}}})
@@ -60,13 +67,14 @@ def _write_all_pass(tmp_path: Path) -> None:
         "npm-audit.json",
         {"metadata": {"vulnerabilities": {"high": 0, "critical": 0}}},
     )
+    _write_a11y_list(tmp_path, [])  # pa11y vide = 0 errors
 
 
 # ── Verdict joint : cas canoniques ──────────────────────────────────────────
 
 
-def test_joint_accept_when_all_4_pass(tmp_path: Path) -> None:
-    """4 axes PASS → ACCEPT, blockers=[]."""
+def test_joint_accept_when_all_5_pass(tmp_path: Path) -> None:
+    """5 axes PASS → ACCEPT, blockers=[]."""
     _write_all_pass(tmp_path)
     d = evaluate_deploy_decision(tmp_path)
     assert d.joint_verdict == "ACCEPT"
@@ -75,6 +83,7 @@ def test_joint_accept_when_all_4_pass(tmp_path: Path) -> None:
     assert d.osiris_verdict == "PASS"
     assert d.lighthouse_verdict == "PASS"
     assert d.npm_audit_verdict == "PASS"
+    assert d.pa11y_verdict == "PASS"
 
 
 def test_joint_fail_lists_only_failed_axes(tmp_path: Path) -> None:
@@ -89,8 +98,8 @@ def test_joint_fail_lists_only_failed_axes(tmp_path: Path) -> None:
     assert set(d.blockers) == {AXIS_OSIRIS, AXIS_LIGHTHOUSE}
 
 
-def test_joint_fail_all_4_axes(tmp_path: Path) -> None:
-    """Tous FAIL → blockers contient les 4."""
+def test_joint_fail_all_5_axes(tmp_path: Path) -> None:
+    """Tous FAIL → blockers contient les 5."""
     _write_soic_gates(tmp_path, mu=7.0, decision="FAIL")
     _write_tooling(tmp_path, "osiris.json", {"score": 3.0, "grade": "Critique"})
     _write_tooling(tmp_path, "lighthouse.json", {"categories": {"performance": {"score": 0.30}}})
@@ -99,10 +108,111 @@ def test_joint_fail_all_4_axes(tmp_path: Path) -> None:
         "npm-audit.json",
         {"metadata": {"vulnerabilities": {"high": 3, "critical": 1}}},
     )
+    _write_a11y_list(tmp_path, [{"type": "error"}, {"type": "error"}, {"type": "error"}])
 
     d = evaluate_deploy_decision(tmp_path)
     assert d.joint_verdict == "FAIL"
-    assert set(d.blockers) == {AXIS_SOIC, AXIS_OSIRIS, AXIS_LIGHTHOUSE, AXIS_NPM_AUDIT}
+    assert set(d.blockers) == {
+        AXIS_SOIC,
+        AXIS_OSIRIS,
+        AXIS_LIGHTHOUSE,
+        AXIS_NPM_AUDIT,
+        AXIS_PA11Y,
+    }
+
+
+# ── Axe pa11y ───────────────────────────────────────────────────────────────
+
+
+def test_pa11y_zero_errors_passes(tmp_path: Path) -> None:
+    """pa11y a11y.json vide (0 erreurs) → PASS."""
+    _write_all_pass(tmp_path)
+    d = evaluate_deploy_decision(tmp_path)
+    assert d.pa11y_errors == 0
+    assert d.pa11y_warnings_count == 0
+    assert d.pa11y_verdict == "PASS"
+
+
+def test_pa11y_any_error_fails(tmp_path: Path) -> None:
+    """1 erreur pa11y → FAIL avec threshold default 0 (zero tolerance)."""
+    _write_all_pass(tmp_path)
+    _write_a11y_list(
+        tmp_path,
+        [
+            {
+                "code": "WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Fail",
+                "type": "error",
+                "message": "Insufficient contrast.",
+            }
+        ],
+    )
+
+    d = evaluate_deploy_decision(tmp_path)
+    assert d.pa11y_errors == 1
+    assert d.pa11y_verdict == "FAIL"
+    assert d.joint_verdict == "FAIL"
+    assert d.blockers == [AXIS_PA11Y]
+
+
+def test_pa11y_warnings_dont_block(tmp_path: Path) -> None:
+    """Warnings (type='warning') ne comptent pas comme errors → PASS si 0 errors."""
+    _write_all_pass(tmp_path)
+    _write_a11y_list(
+        tmp_path,
+        [
+            {"type": "warning", "message": "minor a11y notice"},
+            {"type": "warning", "message": "another notice"},
+        ],
+    )
+
+    d = evaluate_deploy_decision(tmp_path)
+    assert d.pa11y_errors == 0
+    assert d.pa11y_warnings_count == 2
+    assert d.pa11y_verdict == "PASS"
+    assert d.joint_verdict == "ACCEPT"
+
+
+def test_pa11y_missing_does_not_block(tmp_path: Path) -> None:
+    """tooling/a11y.json absent → UNKNOWN, ne bloque pas."""
+    _write_soic_gates(tmp_path, mu=9.0, decision="ACCEPT")
+    _write_tooling(tmp_path, "osiris.json", {"score": 7.4, "grade": "Conforme"})
+    _write_tooling(tmp_path, "lighthouse.json", {"categories": {"performance": {"score": 0.92}}})
+    _write_tooling(
+        tmp_path,
+        "npm-audit.json",
+        {"metadata": {"vulnerabilities": {"high": 0, "critical": 0}}},
+    )
+
+    d = evaluate_deploy_decision(tmp_path)
+    assert d.pa11y_verdict == "UNKNOWN"
+    assert d.joint_verdict == "ACCEPT"
+    assert any("pa11y report absent" in w for w in d.warnings)
+
+
+def test_pa11y_custom_threshold_allows_some_errors(tmp_path: Path) -> None:
+    """threshold=2 permet jusqu'à 2 errors."""
+    _write_all_pass(tmp_path)
+    _write_a11y_list(
+        tmp_path,
+        [{"type": "error"}, {"type": "error"}],
+    )
+
+    d_zero = evaluate_deploy_decision(tmp_path)  # default threshold=0
+    assert d_zero.pa11y_verdict == "FAIL"
+
+    d_relaxed = evaluate_deploy_decision(tmp_path, pa11y_threshold=2)
+    assert d_relaxed.pa11y_verdict == "PASS"
+    assert d_relaxed.joint_verdict == "ACCEPT"
+
+
+def test_pa11y_corrupted_treated_as_unknown(tmp_path: Path) -> None:
+    """a11y.json corrompu → UNKNOWN, ne crash pas."""
+    _write_all_pass(tmp_path)
+    (tmp_path / "tooling" / "a11y.json").write_text("garbage", encoding="utf-8")
+
+    d = evaluate_deploy_decision(tmp_path)
+    assert d.pa11y_verdict == "UNKNOWN"
+    assert d.joint_verdict == "ACCEPT"
 
 
 # ── Axe Lighthouse ──────────────────────────────────────────────────────────
@@ -363,8 +473,8 @@ def test_persist_is_idempotent(tmp_path: Path) -> None:
     assert first == second
 
 
-def test_format_axes_table_contains_4_axes() -> None:
-    """Le tableau markdown contient les 4 axes + le verdict joint."""
+def test_format_axes_table_contains_5_axes() -> None:
+    """Le tableau markdown contient les 5 axes + le verdict joint."""
     d = DeployDecision(
         soic_mu=9.11,
         soic_verdict="PASS",
@@ -380,8 +490,12 @@ def test_format_axes_table_contains_4_axes() -> None:
         npm_audit_critical=0,
         npm_audit_verdict="FAIL",
         npm_audit_threshold=0,
+        pa11y_errors=11,
+        pa11y_warnings_count=3,
+        pa11y_verdict="FAIL",
+        pa11y_threshold=0,
         joint_verdict="FAIL",
-        blockers=["osiris", "npm_audit"],
+        blockers=["osiris", "npm_audit", "pa11y"],
         warnings=[],
     )
     table = format_axes_table(d)
@@ -391,4 +505,6 @@ def test_format_axes_table_contains_4_axes() -> None:
     assert "perf=92/100" in table
     assert "high=2" in table
     assert "critical=0" in table
-    assert "blockers: osiris, npm_audit" in table
+    assert "errors=11" in table
+    assert "warnings=3" in table
+    assert "blockers: osiris, npm_audit, pa11y" in table

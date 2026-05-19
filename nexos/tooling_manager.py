@@ -307,8 +307,9 @@ def doctor_client_report(slug: str) -> str:
     else:
         lines.append("  [-] tooling/ MANQUANT (preflight pas exécuté)")
 
-    # Deploy decision multi-axes (P9 D2 + extension) — SOIC + Osiris + Lighthouse + npm audit
-    lines.append("\n  DEPLOY DECISION (4 axes)")
+    # Deploy decision multi-axes (P9 D2 + extension + extension²)
+    # — SOIC + Osiris + Lighthouse + npm audit + pa11y
+    lines.append("\n  DEPLOY DECISION (5 axes)")
     lines.append("  " + "-" * 46)
     try:
         from nexos.deploy_decision import evaluate_deploy_decision
@@ -344,6 +345,14 @@ def doctor_client_report(slug: str) -> str:
         lines.append(
             f"  [{icon_for[decision.npm_audit_verdict]}] npm audit  high={npm_high_str} crit={npm_crit_str} "
             f"(≤{decision.npm_audit_threshold} HIGH+CRIT) → {decision.npm_audit_verdict}"
+        )
+        pa11y_err_str = "—" if decision.pa11y_errors is None else str(decision.pa11y_errors)
+        pa11y_warn_str = (
+            "—" if decision.pa11y_warnings_count is None else str(decision.pa11y_warnings_count)
+        )
+        lines.append(
+            f"  [{icon_for[decision.pa11y_verdict]}] pa11y      errors={pa11y_err_str} warns={pa11y_warn_str} "
+            f"(≤{decision.pa11y_threshold} errors)   → {decision.pa11y_verdict}"
         )
         joint_icon = "+" if decision.joint_verdict == "ACCEPT" else "-"
         blockers_str = ", ".join(decision.blockers) if decision.blockers else "—"

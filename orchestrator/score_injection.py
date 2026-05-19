@@ -28,6 +28,9 @@ Placeholders Osiris + Lighthouse + npm audit + joint (P9 D2 + extension) :
     [[NPM_AUDIT_HIGH]]          -> "0" | "UNKNOWN"
     [[NPM_AUDIT_CRITICAL]]      -> "0" | "UNKNOWN"
     [[NPM_AUDIT_VERDICT]]       -> "PASS" | "FAIL" | "UNKNOWN"
+    [[PA11Y_ERRORS]]            -> "0" | "UNKNOWN"
+    [[PA11Y_WARNINGS]]          -> "0" | "UNKNOWN"
+    [[PA11Y_VERDICT]]           -> "PASS" | "FAIL" | "UNKNOWN"
     [[JOINT_VERDICT]]           -> "ACCEPT" | "FAIL"
     [[JOINT_BLOCKERS]]          -> "osiris, npm_audit" | "—"
     [[DUAL_AXIS_TABLE]]         -> tableau markdown 4 axes + verdict joint
@@ -69,6 +72,9 @@ PLACEHOLDER_LIGHTHOUSE_THRESHOLD = "[[LIGHTHOUSE_THRESHOLD]]"
 PLACEHOLDER_NPM_AUDIT_HIGH = "[[NPM_AUDIT_HIGH]]"
 PLACEHOLDER_NPM_AUDIT_CRITICAL = "[[NPM_AUDIT_CRITICAL]]"
 PLACEHOLDER_NPM_AUDIT_VERDICT = "[[NPM_AUDIT_VERDICT]]"
+PLACEHOLDER_PA11Y_ERRORS = "[[PA11Y_ERRORS]]"
+PLACEHOLDER_PA11Y_WARNINGS = "[[PA11Y_WARNINGS]]"
+PLACEHOLDER_PA11Y_VERDICT = "[[PA11Y_VERDICT]]"
 PLACEHOLDER_JOINT_VERDICT = "[[JOINT_VERDICT]]"
 PLACEHOLDER_JOINT_BLOCKERS = "[[JOINT_BLOCKERS]]"
 PLACEHOLDER_DUAL_AXIS_TABLE = "[[DUAL_AXIS_TABLE]]"
@@ -173,6 +179,9 @@ def _has_any_placeholder(content: str) -> bool:
         PLACEHOLDER_NPM_AUDIT_HIGH,
         PLACEHOLDER_NPM_AUDIT_CRITICAL,
         PLACEHOLDER_NPM_AUDIT_VERDICT,
+        PLACEHOLDER_PA11Y_ERRORS,
+        PLACEHOLDER_PA11Y_WARNINGS,
+        PLACEHOLDER_PA11Y_VERDICT,
         PLACEHOLDER_JOINT_VERDICT,
         PLACEHOLDER_JOINT_BLOCKERS,
         PLACEHOLDER_JOINT_BLOCKER,
@@ -196,6 +205,10 @@ def _inject_multi_axis(content: str, decision: DeployDecision) -> str:
     npm_crit_str = (
         "UNKNOWN" if decision.npm_audit_critical is None else str(decision.npm_audit_critical)
     )
+    pa11y_err_str = "UNKNOWN" if decision.pa11y_errors is None else str(decision.pa11y_errors)
+    pa11y_warn_str = (
+        "UNKNOWN" if decision.pa11y_warnings_count is None else str(decision.pa11y_warnings_count)
+    )
     blockers_str = ", ".join(decision.blockers) if decision.blockers else "—"
 
     content = content.replace(PLACEHOLDER_OSIRIS_SCORE, osiris_score_str)
@@ -210,6 +223,9 @@ def _inject_multi_axis(content: str, decision: DeployDecision) -> str:
     content = content.replace(PLACEHOLDER_NPM_AUDIT_HIGH, npm_high_str)
     content = content.replace(PLACEHOLDER_NPM_AUDIT_CRITICAL, npm_crit_str)
     content = content.replace(PLACEHOLDER_NPM_AUDIT_VERDICT, decision.npm_audit_verdict)
+    content = content.replace(PLACEHOLDER_PA11Y_ERRORS, pa11y_err_str)
+    content = content.replace(PLACEHOLDER_PA11Y_WARNINGS, pa11y_warn_str)
+    content = content.replace(PLACEHOLDER_PA11Y_VERDICT, decision.pa11y_verdict)
     content = content.replace(PLACEHOLDER_JOINT_VERDICT, decision.joint_verdict)
     content = content.replace(PLACEHOLDER_JOINT_BLOCKERS, blockers_str)
     # Rétrocompat : legacy [[JOINT_BLOCKER]] singulier → premier blocker (ou —)
@@ -311,6 +327,9 @@ __all__ = [
     "PLACEHOLDER_OSIRIS_SCORE",
     "PLACEHOLDER_OSIRIS_THRESHOLD",
     "PLACEHOLDER_OSIRIS_VERDICT",
+    "PLACEHOLDER_PA11Y_ERRORS",
+    "PLACEHOLDER_PA11Y_VERDICT",
+    "PLACEHOLDER_PA11Y_WARNINGS",
     "PLACEHOLDER_THRESHOLD",
     "PLACEHOLDER_VERDICT",
     "inject_soic_scores",
