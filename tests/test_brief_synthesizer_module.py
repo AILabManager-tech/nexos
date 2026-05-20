@@ -47,6 +47,26 @@ def test_brief_synthesizer_outputs_pipeline_ready_brief() -> None:
     assert output["brief"]["legal"]["cookie_consent"] == "opt-in"
 
 
+def test_brief_synthesizer_preserves_sector_and_tags() -> None:
+    """Le brief canonique doit préserver sector + tags pour les modules en aval.
+
+    Régression : avant ce fix, normalize_brief() filtrait sector/tags du raw_brief,
+    ce qui faisait tomber pattern-prerecommender en fallback systématique même
+    quand l'intake déclarait un secteur explicite.
+    """
+    registry = ModuleRegistry()
+    payload = {
+        **_valid_payload(),
+        "sector": "commerce alimentaire boulangerie",
+        "tags": ["food", "local", "quartier"],
+    }
+
+    output = registry.run("brief-synthesizer", payload)
+
+    assert output["brief"]["sector"] == "commerce alimentaire boulangerie"
+    assert output["brief"]["tags"] == ["food", "local", "quartier"]
+
+
 def test_brief_synthesizer_reports_legal_gaps() -> None:
     registry = ModuleRegistry()
     payload = {"company": {"name": "Client Incomplet"}}

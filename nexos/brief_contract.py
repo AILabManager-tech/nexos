@@ -203,6 +203,8 @@ def normalize_brief(raw_brief: dict[str, Any], mode: str | None = None) -> dict[
         },
         "adaptive": adaptive,
         "mission": mission,
+        "sector": _clean_str(brief.get("sector")),
+        "tags": _clean_list(brief.get("tags")),
     }
     return normalized
 

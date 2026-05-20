@@ -59,6 +59,8 @@ def run(payload: dict[str, Any]) -> dict[str, Any]:
         "context": context,
         "adaptive": _dict_value(payload, "adaptive"),
         "mission": _dict_value(payload, "mission"),
+        "sector": payload.get("sector"),
+        "tags": payload.get("tags", []),
     }
 
     brief = normalize_brief(raw_brief, mode=mode)
