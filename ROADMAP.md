@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-18 (session terminée) — nouvelle base NEXOS 4.2 stabilisée : **P9 dette CLOSE + verdict deploy 5 axes + clients dormants triés + vertex-pmo pa11y résolu + doctor aligné**
-**Version NEXOS active** : v4.2.0 (production-ready autonome)
-**Branche** : `main` — session 2026-05-18 fermée, ~17 commits posés sur la session complète
+**Dernière mise à jour** : 2026-05-19 (session terminée) — exploration modules v4.4.0 + fix root-cause `brief.sector/tags` perdu dans normalize_brief
+**Version NEXOS active** : v4.4.0 (modularisation pipeline — chantier 5 clos, registre modulaire + 6 modules + 2 workflows)
+**Branche** : `main` — 3 commits locaux devant `origin/main`, non pushés (hard-stop user)
 
 ---
 
@@ -989,6 +989,27 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ## 🗓️ Historique des sessions notables
 
+### 2026-05-19 — Démarrage v4.4.0 + fix root-cause `brief.sector/tags` perdu (claude)
+
+- **Cible session** : reprise après pause, démarrer la nouvelle base v4.4.0 (modularisation chantier 5 close 2026-05-13).
+- **Pré-flight** : `git status` montrait 102 deletions `clients/depanneur-nobert/site/**` non commitées + 1 modif `vertex-pmo/nexos-changelog.json` + 5 untracked (`.context/`, lighthouse outputs, npm-audit, MIGRATED.md). Diagnostic : migration Nobert formalisée en mémoire mais pas committée. Vérification dans `01_business/clients/03_Depanneur_Nobert/04_livrables/site-web/` confirme 25 340 fichiers présents (package.json, app/, components/, vercel.json complets). Le code prod est déjà chez business depuis 2026-05-17, seul le miroir côté pipeline restait à supprimer.
+- **Commit 1** `25dbeed chore(clients/depanneur-nobert): formalise migration site→01_business (2026-05-17)` — 103 fichiers (102 deletions + MIGRATED.md), pre-commit hooks tous PASS.
+- **Démarrage v4.4.0** : `install_nexos.sh --dev` échoue sur `pip --upgrade` (PEP 668 externally-managed) mais venv existant réutilisé OK. `nexos doctor` confirme SYSTÈME OPÉRATIONNEL (7 outils CLI OK, 7 templates OK, SOIC engine OK, 13 clients / 8 avec site/). Notes : banner affiche encore v4.0 cosmétique.
+- **Exploration modules v4.4.0** : 6 modules (`hello`, `brief-synthesizer`, `legal-gap-checker`, `brief-preview-scorer`, `intake-question-prioritizer`, `pattern-prerecommender`) tous `experimental`, sandbox total (network=False, files=False). 2 workflows : `intake-preflight` (2 steps) et `saas-preview` (5 steps, moteur backend du SaaS preview prospect).
+- **Test `saas-preview` end-to-end** : intake boulangerie minimal → μ=6.89, 8 questions priorisées (lift +3.3). Intake complet (Loi 25 100%) → μ=8.22 (plafond théorique d'un brief avant fabrication, cohérent : D3/D4/D5/D9 ont scores par défaut tant que le pipeline n'a pas tourné). D8 Loi 25 passe de 1.19 → 9.5. Démontre la valeur SaaS : wizard intake intelligent en ~50ms sans appel LLM.
+- **Bug observé** : `pattern-prerecommender` tombe en `fallback: true` (sector_id=null) malgré `payload.sector = "commerce alimentaire boulangerie"` qui contient le mot-clé `"commerce"` (SEC-03).
+- **Root cause trouvée** (chaîne en cascade) :
+  1. `brief_synthesizer.run()` construit `raw_brief` SANS copier `payload["sector"]` ni `payload["tags"]`
+  2. `normalize_brief()` ré-assemble en liste FERMÉE de clés (`_meta, client, company, legal, site, context, design, adaptive, mission`) — drop ce qui n'est pas dans la whitelist
+  3. Résultat : `brief.sector = absent` côté pattern-prerecommender → fallback
+  Toute la chaîne contractait silencieusement le brief canonique.
+- **Commit 2** `a21c3a9 fix(brief): preserve sector/tags through normalize_brief + synthesizer` — fix racine (2 lignes dans `normalize_brief`, 2 lignes dans `brief_synthesizer.run`) + 1 test régression `test_brief_synthesizer_preserves_sector_and_tags`. 70 tests verts (focus brief/module/workflow/pattern/legal_gap), 0 régression. Pre-commit hooks tous PASS.
+- **Validation end-to-end** : re-run `saas-preview` sur boulangerie complète → `sector_id = "SEC-03"`, `fallback = false`, patterns recommandés deviennent **P08 Story-first / P09 3-word brand / P13 Anti-polish authenticity** (tier 1 sectoriel) au lieu des P01/P02/P09 universels. Pertinence démo SaaS gagne significativement.
+- **Pattern méthodo retenu** : préférer **option A (fix racine)** vs option B (workaround chirurgical workflow_runner) vs option C (élargir keywords). Le brief canonique DOIT préserver le secteur déclaré par l'opérateur — sinon n'importe quel autre module en aval qui voudrait l'utiliser hériterait du même bug. Cohérent avec règle « zéro bug laissé en arrière ».
+- **3 items dette ouverts** ajoutés au tableau Priorités (items #8, #9, #10) : élargir `_SECTOR_KEYWORDS`, fix `install_nexos.sh` PEP 668, banner CLI sync v4.4.0.
+- **Effort réel** : ~70 min total (diagnostic Nobert + commit + démarrage + exploration + 2 saas-preview runs + investigation + fix + tests + commit + ROADMAP). Pas de push (hard-stop).
+- **3 commits locaux** sur main devant origin : `25dbeed` + `a21c3a9` + (cette mise à jour ROADMAP à venir).
+
 ### 2026-05-18 — P9 quick wins D3+D4+D6 marqués clos (claude, économie tokens)
 - Cible : 3 quick wins polish P9 (D3 doc symlinks, D4 mypy, D6 brief-schema champs optionnels) estimés ~35 min total.
 - Réalité : 2/3 étaient **déjà résolus** mais pas marqués dans ROADMAP :
@@ -1306,9 +1327,12 @@ usine-rh                  brief=ok site=missing
 | 2 | **P8.4 onboard la-villa-du-sous-marin** — seul vrai dormant | ~3-6h, coûteux LLM | Production | Brief OK + 1 gate déjà présent. Pas de site/. Pipeline `create` complet à lancer. 50-200k tokens. |
 | 3 | **Extension dual-axis axe 6+** — build status / lighthouse a11y/SEO/BP | ~1-2h | Évolution | Pattern 5-axes établi. Build status (`npm run build` PASS/FAIL) et Lighthouse `accessibility`/`seo`/`best-practices` (déjà mesurés) sont les ajouts naturels. |
 | 4 | **`_fix_csp_middleware` détecter i18n** | ~30 min | Dette latente | Le fixer P4a génère un middleware CSP-only quand `middleware.ts` n'existe pas, écrasant le routing next-intl (cas collectif-nova découvert et fixé manuellement cette session). Fix : détecter `i18n/routing.ts` et skipper (ou générer middleware combiné next-intl + CSP). |
-| 5 | **dropdown depanneur-nobert site** | (décision user) | Décision | Le `git status` montre encore 60+ deletes non-commités de `clients/depanneur-nobert/site/`. Soit commit le delete (site définitivement déménagé hors stack), soit restaure les fichiers (annule le déménagement). À trancher user. |
+| ~~5~~ | ~~**dropdown depanneur-nobert site**~~ | ✅ **RÉSOLU 2026-05-19** | Décision | Commit `25dbeed` formalise la migration : 102 deletions `clients/depanneur-nobert/site/**` + ajout `MIGRATED.md` documentant le déplacement vers `/home/gear-code/01_business/clients/03_Depanneur_Nobert/04_livrables/site-web/` (25 340 fichiers vérifiés présents). Site sorti du cycle de fabrication NEXOS, vit son cycle business. `nexos doctor` rapportera `site=MISSING` (attendu, documenté). |
 | 6 | **Générateur rapport HTML client** | ~2-3h | Évolution / livrable client | NEXOS n'a pas d'interface utilisateur — choix design (Claude/Codex/Gemini sont l'interface, le CLI Rich est suffisant pour le pilote solo). Mais un rapport HTML statique par client manque pour la livraison externe : générer `dashboard.html` autonome (zero dep, HTML+CSS inline) qui lit `deploy-decision.json` + `tooling/*.json` et affiche les 5 axes du verdict + verdict joint + warnings. Envoyable par email/Slack au client final qui n'ouvrira jamais un terminal. Sortie : `clients/<slug>/dashboard.html` régénéré par `nexos report <slug> --html` ou auto en fin de Ph5. Effort : template HTML + générateur Python ~150 lignes + 3-4 tests. Nice-to-have, pas urgent. Cf wrap-up session 2026-05-18 question user "y'a pas d'interface?". |
 | 7 | **Brief OpenClaw — déléguer construction interface NEXOS** | (idée long terme, pas urgent) | Exploration | Pensée de fin de session 2026-05-18 : potentiellement déléguer la construction d'une interface NEXOS (éditeur visuel à la Tina + dashboard client + menu unifié anti-friction) à un agent autonome (OpenClaw/Devin/Cursor agent) sur plusieurs jours. Pré-requis avant lancement : brief serré (périmètre fichiers autorisés, choix techno imposés ou décidés au préalable Tina/custom/Decap, branche feature/openclaw isolée, stop conditions claires) pour éviter dérive over-engineering. Pas de brief = pas de lancement. Item exploratoire, pas urgent. |
+| 8 | **Élargir `_SECTOR_KEYWORDS["SEC-03"]`** | ~5 min | Sub-bug latent (découvert 2026-05-19) | Le matching mot-clé n'inclut pas "boulangerie", "alimentaire", "café", "pâtisserie", "marché", "traiteur". Un intake déclarant `sector = "boulangerie artisanale"` sans le mot "commerce" retomberait en fallback patterns universels. Cause racine du fallback elle-même est résolue (commit `a21c3a9`), mais la couverture des mots-clés FR reste partielle. `nexos/modules/pattern_prerecommender/__init__.py:25`. |
+| 9 | **`install_nexos.sh` PEP 668 sur upgrade pip** | ~5 min | Bug latent (découvert 2026-05-19) | Le script tente `pip install --upgrade` AVANT d'activer le venv (ou avec mauvais binaire), produisant `error: externally-managed-environment` sur Ubuntu 24.04. Le venv existant a masqué le problème cette session. Fix : appeler `.venv/bin/pip` explicitement, ou activer le venv avant l'upgrade. |
+| 10 | **Banner CLI affiche `v4.0`** | ~2 min | Cosmétique (découvert 2026-05-19) | `nexos doctor` et autres commandes imprimnt encore `v4.0 · MARK SYSTEMS` alors que CHANGELOG est à v4.4.0. Synchroniser le banner avec `pyproject.toml:version` ou constante centralisée. |
 
 ### Recommandation ouverture session
 
