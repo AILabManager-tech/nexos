@@ -3,9 +3,9 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-19 (session terminée) — exploration modules v4.4.0 + fix root-cause `brief.sector/tags` perdu dans normalize_brief
+**Dernière mise à jour** : 2026-05-21 (session terminée) — tentative deploy vertex-pmo Vercel échouée (build planté), découverte état Vercel réel (team `marc-roys-projects`, 20+ projets, ROADMAP périmé sur cet axe)
 **Version NEXOS active** : v4.4.0 (modularisation pipeline — chantier 5 clos, registre modulaire + 6 modules + 2 workflows)
-**Branche** : `main` — 3 commits locaux devant `origin/main`, non pushés (hard-stop user)
+**Branche** : `main` — push 2026-05-19 OK, repo propre côté code (1 modif vertex-pmo/nexos-changelog.json + tooling outputs frais non-trackés)
 
 ---
 
@@ -989,6 +989,22 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 
 ## 🗓️ Historique des sessions notables
 
+### 2026-05-20 → 2026-05-21 — Tentative deploy vertex-pmo Vercel : échec + révélation état Vercel réel (claude)
+
+- **Cible** : 1er déploiement Vercel du portefeuille NEXOS (vertex-pmo en démo). Préflight 5 axes ACCEPT confirmé en amont, build local PASS, μ=9.10.
+- **Préflight frais persisté** (`clients/vertex-pmo/tooling/`) : Lighthouse perf=99 / a11y=96 / BP=96 / SEO=100, npm audit HIGH+CRIT=0, pa11y 0 erreur, headers OK, Osiris UNKNOWN (scanner refuse localhost URLs). Joint verdict ACCEPT, blockers: — . Doctor confirme « DÉPLOYABLE ». Méthodologie « mesurer avant d'agir » respectée.
+- **Découverte choquante** : `vercel projects ls` révèle que le team `marc-roys-projects` (Team ID `team_D0qxARA8qYcRQk2EvsFpfcL7`) contient **20+ projets déjà déployés**, dont **beaumont-avocats**, **clinique-aura**, **collectif-nova**, **depanneur-nobert-demo**, **mark-systems** (live sur `app.marksystems.ca`), **mark-systems-demo** (`demo.marksystems.ca`), **usine-rh-v4-industrielle** (`usinerh.ca` LIVE), plus une douzaine d'autres projets satellites (estimaweb-qc, saaq-prep, jarvis, financial-intelligence-suite, etc.). Le ROADMAP affirmait encore « aucun client déployé en prod sur Vercel » jusqu'au 2026-05-19. **Dette de doc majeure** entre le repo NEXOS et l'état réel des déploiements. Item dette #11 ajouté pour résorber.
+- **Contexte Vercel double identifié** : `vercel whoami` retourne `aidevlabagents-1940` (user perso), mais le team par défaut sur lequel les commandes routent est `marc-roys-projects`. Source de surprise opérationnelle.
+- **Tentative deploy 1 (Wed 20:40)** : `vercel --yes` depuis `clients/vertex-pmo/site/`. Auto-link surprise au projet Vercel `site` qui existait DÉJÀ depuis 78 jours sur ce team (zombie avec 7+ deploys Error en historique). Vercel a accepté le nom de dossier `site/` comme nom de projet. Build planté avec erreur `{"status":"error","reason":"deploy_failed","message":"Not authorized"}`. URL preview `https://site-egxixtawl-marc-roys-projects.vercel.app` répond HTTP 401 (Deployment Protection active sur ce projet).
+- **Tentative deploy 2 (Wed 20:49, retry)** : décision user « retry direct + abandon si plante ». Même résultat — `"Not authorized"` à nouveau, status `UNKNOWN` figé pendant 8h+. URL preview `https://site-r5nbzmp21-marc-roys-projects.vercel.app` répond HTTP 401. Mon interprétation transitoire « build BUILDING en cours » s'est révélée fausse — le `"initialReadyState":"BUILDING"` dans le HTML était figé à l'état initial sans jamais avancer.
+- **Verdict honnête (yes-man bloqué)** : 2/2 tentatives échouées, build infra Vercel ne rapporte jamais Ready/Error proprement sur le projet `site` zombie. Le démo n'est PAS déployé.
+- **3 nouveaux items dette ouverts** ajoutés au tableau Priorités (#11, #12, #13) : sync ROADMAP avec Vercel réel + cleanup projet `site` zombie + désactiver Deployment Protection pour les previews démos prospects.
+- **Mémoire ajoutée** : `project_nexos_vercel_state.md` (cf MEMORY.md) — pour que les futures sessions Claude ne re-investiguent pas l'état Vercel à zéro et n'affirment plus « aucun deploy Vercel » sur foi du ROADMAP.
+- **Pattern méthodo retenu** : avant tout deploy Vercel sur NEXOS, **toujours** `vercel projects ls --scope marc-roys-projects` pour voir l'existant + nommer le projet explicitement (`vercel link --project <slug>`) au lieu de l'auto-link CLI qui tombe sur le zombie `site`.
+- **Erreur de yes-man corrigée** : en début de session j'ai répondu à l'user qui demandait si NEXOS est à 100 % par « aucun client déployé en prod sur Vercel » sur foi du ROADMAP. C'était faux — 5+ clients NEXOS sont déjà déployés. La mémoire `feedback_no_yes_man_functionality_first` reste valide : il faut challenger le doc avec la réalité, pas s'aligner sur le doc.
+- **Effort réel** : ~90 min réparti sur 2 jours (20:40 mercredi → 04:50 jeudi). Pas de push (hard-stop). Repo code intact.
+- **État final repo** : aucun commit code cette session. Modif working tree non-commitée : `clients/vertex-pmo/tooling/*.json` (fresh preflight outputs) + `clients/vertex-pmo/nexos-changelog.json` (auto-fixer activity héritée du 2026-05-18). `.vercel/project.json` créé localement dans `clients/vertex-pmo/site/` (lié au projet zombie `site` — à effacer si on veut un repart propre).
+
 ### 2026-05-19 — Démarrage v4.4.0 + fix root-cause `brief.sector/tags` perdu (claude)
 
 - **Cible session** : reprise après pause, démarrer la nouvelle base v4.4.0 (modularisation chantier 5 close 2026-05-13).
@@ -1333,6 +1349,9 @@ usine-rh                  brief=ok site=missing
 | 8 | **Élargir `_SECTOR_KEYWORDS["SEC-03"]`** | ~5 min | Sub-bug latent (découvert 2026-05-19) | Le matching mot-clé n'inclut pas "boulangerie", "alimentaire", "café", "pâtisserie", "marché", "traiteur". Un intake déclarant `sector = "boulangerie artisanale"` sans le mot "commerce" retomberait en fallback patterns universels. Cause racine du fallback elle-même est résolue (commit `a21c3a9`), mais la couverture des mots-clés FR reste partielle. `nexos/modules/pattern_prerecommender/__init__.py:25`. |
 | 9 | **`install_nexos.sh` PEP 668 sur upgrade pip** | ~5 min | Bug latent (découvert 2026-05-19) | Le script tente `pip install --upgrade` AVANT d'activer le venv (ou avec mauvais binaire), produisant `error: externally-managed-environment` sur Ubuntu 24.04. Le venv existant a masqué le problème cette session. Fix : appeler `.venv/bin/pip` explicitement, ou activer le venv avant l'upgrade. |
 | 10 | **Banner CLI affiche `v4.0`** | ~2 min | Cosmétique (découvert 2026-05-19) | `nexos doctor` et autres commandes imprimnt encore `v4.0 · MARK SYSTEMS` alors que CHANGELOG est à v4.4.0. Synchroniser le banner avec `pyproject.toml:version` ou constante centralisée. |
+| 11 | **Sync ROADMAP avec état Vercel réel** | ~15 min | Dette de doc (découvert 2026-05-20) | Le team Vercel `marc-roys-projects` contient déjà 20+ projets, dont **beaumont-avocats**, **clinique-aura**, **collectif-nova**, **depanneur-nobert-demo**, **mark-systems** (`app.marksystems.ca`), **mark-systems-demo** (`demo.marksystems.ca`), **usine-rh-v4-industrielle** (`usinerh.ca` live). Aucun de ces deploys n'est documenté dans le ROADMAP — il disait encore « aucun client déployé en prod sur Vercel » jusqu'au 2026-05-19. Ajouter section "Déploiements live" qui liste chaque client NEXOS avec son URL Vercel + domaine custom si applicable + état (preview/prod) + cohérence vs `nexos doctor --client <slug>`. |
+| 12 | **Cleanup projet Vercel zombie `site`** | ~5 min | Bug latent (découvert 2026-05-21) | Le team `marc-roys-projects` contient un projet `site` existant depuis 78 jours avec 7+ deploys Error en Production dans l'historique. Quand on lance `vercel --yes` depuis un dossier `clients/<slug>/site/`, le CLI auto-link au projet `site` (nom du dossier = nom du projet) au lieu de créer un nouveau projet `<slug>`. Tentative deploy vertex-pmo 2026-05-20 a hérité de ce projet pourri → 2 builds plantés en `UNKNOWN` figé 8h+. Soit supprimer le projet `site`, soit toujours `vercel link --project vertex-pmo` (ou nom client explicite) avant `vercel deploy`. |
+| 13 | **Désactiver Deployment Protection pour previews démos** | (décision) | Friction démo (découvert 2026-05-21) | Les previews Vercel sous `marc-roys-projects` ont la **Deployment Protection** active par défaut → HTTP 401 sur les URLs preview, prospect ne peut pas voir sans login Vercel ou bypass token. Pour les démos client (vertex-pmo, futurs prospects), désactiver Protection sur le projet preview ou générer un bypass URL stable. Per-projet config via dashboard ou `vercel project settings`. |
 
 ### Recommandation ouverture session
 
