@@ -237,7 +237,7 @@ def _dispatch_cli(host: str, prompt: str, cwd: str, log_path: Path) -> int:
         return run_claude_cli(prompt, cwd, log_path)
     if host == "codex":
         return run_codex_cli(prompt, cwd, log_path)
-    say("[red]Gemini CLI non supporté pour NEXOS v4.0 (WIP)[/]")
+    say("[red]Gemini CLI non supporté pour NEXOS v4.4 (WIP)[/]")
     return 1
 
 

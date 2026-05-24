@@ -12,7 +12,7 @@ def build_parser() -> argparse.ArgumentParser:
     """Construit le parser argparse complet pour tous les modes NEXOS."""
     parser = argparse.ArgumentParser(
         prog="nexos",
-        description="NEXOS v4.0 Orchestrator",
+        description="NEXOS v4.4 Orchestrator",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""modes:
   session   Lance un CLI hôte (Codex/Claude/Gemini) en mode NEXOS

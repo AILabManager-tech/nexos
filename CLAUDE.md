@@ -1,6 +1,6 @@
-# NEXOS v4.2 — Web Builder Autonome Premium
+# NEXOS v4.4 — Web Builder Autonome Premium
 
-**Version** : 4.2.0
+**Version** : 4.4.0 (source de vérité : fichier `VERSION` à la racine)
 **Statut** : production-ready autonome
 
 ## IDENTITÉ
@@ -43,6 +43,13 @@ nexos create --client-dir clients/mon-client --colors primary=#1A2B3C accent=#FF
 Format : `role=#HEXCODE`. Rôles courants : primary, secondary, accent, background, surface, text, error, success, warning, info, border. Les couleurs sont injectées comme directive contraignante dans le prompt de chaque phase — l'agent DOIT les utiliser telles quelles.
 
 ## RÈGLES ABSOLUES
+
+### ⛔ CLIENT INTERDIT — UsineRH
+
+**NEXOS ne touche JAMAIS à UsineRH** (`USINE_RH_OFFICIAL/`, `usinerh*`, `UsineRH*`) :
+- Aucune lecture, modification, audit, référence ou génération de code pour ce client
+- Exclus de tous les pipelines, agents, comparaisons et rapports
+- Règle non-négociable, priorité maximale (réintégrée 2026-05-24 depuis archive CLONE_B)
 
 ### Sécurité (JAMAIS de compromis)
 - **Headers HTTP** : X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, HSTS — TOUJOURS présents dans vercel.json

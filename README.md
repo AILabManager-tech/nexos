@@ -1,7 +1,8 @@
-# NEXOS v4.2 — Pipeline Web Autonome
+# NEXOS v4.4 — Pipeline Web Autonome
 
 > Pipeline web autonome avec quality gates SOIC — conforme Loi 25 Québec.
-> Version **4.2.0** — voir [`CHANGELOG.md`](./CHANGELOG.md).
+> Version **4.4.0** — voir [`CHANGELOG.md`](./CHANGELOG.md).
+> Source de vérité version : fichier [`VERSION`](./VERSION) à la racine (lu par CI + scripts).
 
 [![Tests](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/test.yml/badge.svg)](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/test.yml)
 [![Lint](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/lint.yml/badge.svg)](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/lint.yml)

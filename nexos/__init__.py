@@ -1,3 +1,3 @@
-"""NEXOS v4.0 — Modules d'augmentation du pipeline."""
+"""NEXOS v4.4 — Modules d'augmentation du pipeline."""
 
-__version__ = "4.0.0"
+__version__ = "4.4.0"

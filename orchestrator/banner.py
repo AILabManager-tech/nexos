@@ -20,7 +20,7 @@ def print_banner() -> None:
     ascii_art.append("  ██║ ╚████║███████╗██╔╝ ██╗╚██████╔╝███████║\n", style="bold #FFE87C")
     ascii_art.append("  ╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝\n", style="bold white")
     ascii_art.append("\n")
-    ascii_art.append("       Web Builder Autonome  ·  v4.0  ·  MARK SYSTEMS\n", style="dim white")
+    ascii_art.append("       Web Builder Autonome  ·  v4.4  ·  MARK SYSTEMS\n", style="dim white")
 
     phases = Text()
     phases.append("  PH0 ", style="bold magenta")
