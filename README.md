@@ -4,10 +4,10 @@
 > Version **4.4.0** — voir [`CHANGELOG.md`](./CHANGELOG.md).
 > Source de vérité version : fichier [`VERSION`](./VERSION) à la racine (lu par CI + scripts).
 
-[![Tests](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/test.yml/badge.svg)](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/test.yml)
-[![Lint](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/lint.yml/badge.svg)](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/lint.yml)
-[![Security](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/security.yml/badge.svg)](https://github.com/AILabManager-tech/nexos-v3/actions/workflows/security.yml)
-[![codecov](https://codecov.io/gh/AILabManager-tech/nexos-v3/branch/main/graph/badge.svg)](https://codecov.io/gh/AILabManager-tech/nexos-v3)
+[![Tests](https://github.com/AILabManager-tech/nexos/actions/workflows/test.yml/badge.svg)](https://github.com/AILabManager-tech/nexos/actions/workflows/test.yml)
+[![Lint](https://github.com/AILabManager-tech/nexos/actions/workflows/lint.yml/badge.svg)](https://github.com/AILabManager-tech/nexos/actions/workflows/lint.yml)
+[![Security](https://github.com/AILabManager-tech/nexos/actions/workflows/security.yml/badge.svg)](https://github.com/AILabManager-tech/nexos/actions/workflows/security.yml)
+[![codecov](https://codecov.io/gh/AILabManager-tech/nexos/branch/main/graph/badge.svg)](https://codecov.io/gh/AILabManager-tech/nexos)
 [![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 
 NEXOS est un systeme de creation et d'audit de sites web professionnels pilote par IA.

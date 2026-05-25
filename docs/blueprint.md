@@ -58,7 +58,7 @@ Cible : ≥85/100 au premier run.
 ## 3. ARBORESCENCE CIBLE
 
 ```
-~/nexos-v3/
+~/nexos/
 ├── CLAUDE.md                        # Manifest — source de vérité
 ├── .mcp.json                        # Serveurs MCP actifs
 ├── orchestrator.py                  # Orchestrateur maître (multi-phase)
@@ -696,7 +696,7 @@ npm install -g broken-link-checker # Liens cassés
 
 | # | Tâche | Effort | Bloquant ? |
 |---|-------|--------|------------|
-| A1 | Créer `~/nexos-v3/` avec arborescence complète | 15 min | Oui |
+| A1 | Créer `~/nexos/` avec arborescence complète | 15 min | Oui |
 | A2 | Copier les 25 agents ph0-ph4 depuis nexos-v2 | 10 min | Oui |
 | A3 | Adapter + copier les 17 agents WinterPulse → ph5-qa | 2h | Oui |
 | A4 | Créer 2 agents manquants (ssl-auditor, legal-compliance) | 1h | Oui |
