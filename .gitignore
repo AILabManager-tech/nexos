@@ -68,3 +68,8 @@ clients/table-de-marguerite/site/next-env.d.ts
 # Osiris scanner runtime artifacts (P7+B1)
 osiris_history.db
 reports/
+
+# Lighthouse reports : artefacts CI/QA générés par ph5-qa,
+# volumineux (>500 KB) et bloqués par pre-commit check-added-large-files.
+# Régénérables via tools/lighthouse-scan.sh.
+clients/*/tooling/lighthouse.json
