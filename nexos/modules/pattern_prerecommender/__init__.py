@@ -33,8 +33,8 @@ _SECTOR_KEYWORDS = {
 def _load_pattern_matrix() -> dict[str, Any]:
     """Charge `agents/knowledge/pattern-matrix.json` depuis l'arborescence repo.
 
-    Le module est dans `nexos_v.3.0/nexos/modules/pattern_prerecommender/` ;
-    la KB est en `nexos_v.3.0/agents/knowledge/pattern-matrix.json` (4 parents).
+    Le module est dans `nexos/nexos/modules/pattern_prerecommender/` ;
+    la KB est en `nexos/agents/knowledge/pattern-matrix.json` (4 parents).
     """
     here = Path(__file__).resolve()
     candidates = [

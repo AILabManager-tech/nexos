@@ -98,7 +98,7 @@ class TestConvergerCoverage:
         """Coverage < 0.7 → ABORT_LOW_COVERAGE on any iteration.
 
         Historical note: an earlier draft of this test (written 2026-03-04 in
-        nexos_v.3.0 commit 49dd0f0) asserted iter-1 tolerance ("ITERATE on
+        nexos commit 49dd0f0, then path was nexos_v.3.0) asserted iter-1 tolerance ("ITERATE on
         first iter to allow preflight"). That tolerance was never implemented
         in the Converger code (initial commit fc7ccdc of soic_v3 on
         2026-03-19, 15 days later, shipped the unconditional ABORT at
