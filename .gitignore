@@ -80,3 +80,6 @@ clients/_ARCHIVE/USINE_RH_*/
 clients/_ARCHIVE/USINE_RH_base
 clients/_ARCHIVE/USINE_RH_chantier
 clients/_ARCHIVE/USINE_RH_industrielle
+
+# Codex CLI runtime artefacts (session ID local, jamais à versionner)
+.context/
