@@ -73,3 +73,10 @@ reports/
 # volumineux (>500 KB) et bloqués par pre-commit check-added-large-files.
 # Régénérables via tools/lighthouse-scan.sh.
 clients/*/tooling/lighthouse.json
+
+# UsineRH — règle ⛔ : NEXOS ne touche JAMAIS à UsineRH
+# Les vestiges archives sont conservés localement mais ignorés par git
+clients/_ARCHIVE/USINE_RH_*/
+clients/_ARCHIVE/USINE_RH_base
+clients/_ARCHIVE/USINE_RH_chantier
+clients/_ARCHIVE/USINE_RH_industrielle
