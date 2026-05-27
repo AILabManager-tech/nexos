@@ -83,3 +83,7 @@ clients/_ARCHIVE/USINE_RH_industrielle
 
 # Codex CLI runtime artefacts (session ID local, jamais à versionner)
 .context/
+
+# Manuels de reprise de session (locaux, contiennent décisions/contexte
+# interne, jamais à versionner sur GitHub public)
+SOIC_CHANTIER_RESUME.md

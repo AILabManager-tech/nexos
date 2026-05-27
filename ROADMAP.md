@@ -3,9 +3,17 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-21 (session terminée) — tentative deploy vertex-pmo Vercel échouée (build planté), découverte état Vercel réel (team `marc-roys-projects`, 20+ projets, ROADMAP périmé sur cet axe)
+**Dernière mise à jour** : 2026-05-27 (session interrompue pour reboot PC — chantier soic à mi-parcours) — Claude Opus 4.7 (1M)
 **Version NEXOS active** : v4.4.0 (modularisation pipeline — chantier 5 clos, registre modulaire + 6 modules + 2 workflows)
-**Branche** : `main` — push 2026-05-19 OK, repo propre côté code (1 modif vertex-pmo/nexos-changelog.json + tooling outputs frais non-trackés)
+**Branche** : `main` — 2 commits locaux en attente de push : `7495b3a` (gitignore .context/) + le manuel de reprise SOIC. Repo propre côté working tree.
+
+## 🚧 SESSION EN COURS 2026-05-27 — Chantier soic (interrompue pour reboot)
+
+- ✅ Étape 1 cleanup close : venv recréé (shebangs corrigés), .gitignore exclut `.context/`, parents `~/02_projects/{NEXOS,nexos}` reportés
+- ✅ Audit pré-chantier soic terminé : repo distant `AILabManager-tech/soic-v3` existe (privé, créé 2026-02-18, 3 commits), local 9 commits d'avance, `/osiris/` root n'est PAS un repo (canonique = `osiris-scanner/`), 3 commits distants analysés ligne par ligne (1 fix présent, 1 remplacé par P8.2, 2 régressions silencieuses à rapatrier)
+- ⏸️ Interrompu avant Phase B (rapatriement des 2 fixes : `iterator.py _PHASE_TIMEOUTS` + `error_handler.py deque(maxlen=1000)`)
+
+**Reprise** : voir `SOIC_CHANTIER_RESUME.md` à la racine — manuel complet phase 0 à H avec toutes les commandes exactes copier-coller. Memory associée : `~/.claude/projects/-home-gear-code/memory/project_soic_chantier_state_2026-05-27.md` (auto-chargée).
 
 ---
 
