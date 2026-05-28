@@ -2,7 +2,7 @@
 name = "nexos"
 version = "4.2.0-dev"
 description = "NEXOS — Pipeline web autonome avec quality gates SOIC (v4.2.0 WIP)"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 authors = [{ name = "NEXOS Platform Team" }]
 license = { text = "Proprietary" }
 readme = "README.md"
@@ -105,7 +105,7 @@ exclude_lines = [
 ]
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 line-length = 100
 extend-exclude = [
   ".venv",
@@ -170,7 +170,7 @@ line-ending = "lf"
 # défaut, puis overrides "strict 100 %" sur les modules bas-niveau déjà
 # typés. orchestrator.py est exclu (TODO refactor phase O/P).
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 files = ["nexos", "nexos_cli.py"]
 
 strict_equality = true
