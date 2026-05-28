@@ -1,7 +1,10 @@
-"""Vérifie que le paquet soic est importable après fix du symlink (phase A chantier2).
+"""Vérifie que le paquet soic est importable.
 
-Ce test protège contre une régression du symlink qui a bloqué tout le pipeline
-en v4.0 jusqu'à la phase A du chantier mise_a_niveau (v4.2.0).
+Historique :
+- v4.2 : protégé contre régression du symlink soic → ../soic_v3 (phase A chantier2).
+- v4.4 (2026-05-27) : symlink retiré ; soic est maintenant un vrai package pip
+  (repo AILabManager-tech/soic, layout PEP, installé via pip install -e ../soic_v3
+  par install_nexos.sh). Ce test vérifie l'install pip et l'absence du symlink legacy.
 """
 
 from __future__ import annotations
@@ -12,15 +15,28 @@ import pathlib
 import pytest
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
-SOIC_SYMLINK = REPO_ROOT / "soic"
+LEGACY_SYMLINK = REPO_ROOT / "soic"
 
 
-def test_symlink_exists_and_resolved():
-    assert SOIC_SYMLINK.exists(), f"soic symlink missing at {SOIC_SYMLINK}"
-    resolved = SOIC_SYMLINK.resolve()
-    assert resolved.is_dir(), f"soic target is not a directory: {resolved}"
-    assert (resolved / "__init__.py").exists() or any(resolved.glob("*.py")), (
-        f"soic target {resolved} has no Python modules"
+def test_legacy_symlink_removed():
+    """Le symlink soic → ../soic_v3 a été retiré en v4.4. soic vient de pip."""
+    assert not LEGACY_SYMLINK.exists() or not LEGACY_SYMLINK.is_symlink(), (
+        f"Legacy symlink encore présent à {LEGACY_SYMLINK} — utiliser pip install -e ../soic_v3"
+    )
+
+
+def test_soic_installed_as_package():
+    """soic doit être un vrai package importable (pip install -e), pas un namespace."""
+    import soic
+
+    assert soic.__file__ is not None, (
+        "soic.__file__ is None → namespace package détecté (symlink ou install cassé). "
+        "Vérifier 'pip install -e ../soic_v3' dans le venv."
+    )
+    soic_path = pathlib.Path(soic.__file__)
+    assert soic_path.name == "__init__.py", f"soic.__file__ inattendu: {soic_path}"
+    assert soic_path.parent.name == "soic", (
+        f"soic doit être un package, pas un module : {soic_path}"
     )
 
 

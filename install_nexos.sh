@@ -115,6 +115,21 @@ fi
 log "Upgrade pip + setuptools..."
 $PIP_CMD install --upgrade pip setuptools wheel
 
+# -----------------------------------------------------
+# SOIC engine (repo séparé, partagé NEXOS ↔ OSIRIS)
+# Layout monorepo : ../soic_v3 = checkout local du repo AILabManager-tech/soic
+# Fallback CI/clone fresh : git+ssh
+# -----------------------------------------------------
+SOIC_PATH="$NEXOS_ROOT/../soic_v3"
+if [[ -d "$SOIC_PATH" ]]; then
+  log "Installing SOIC depuis sibling local ($SOIC_PATH)..."
+  $PIP_CMD install -e "$SOIC_PATH"
+else
+  warn "SOIC sibling local introuvable ($SOIC_PATH)"
+  warn "Clone-le : git clone git@github.com:AILabManager-tech/soic.git $SOIC_PATH"
+  warn "(ou installe depuis remote : pip install git+ssh://git@github.com/AILabManager-tech/soic.git)"
+fi
+
 EXTRAS="api,wizard"
 if [[ $INSTALL_DEV -eq 1 ]]; then
   EXTRAS="$EXTRAS,dev"
