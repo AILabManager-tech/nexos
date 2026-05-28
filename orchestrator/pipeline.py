@@ -10,7 +10,7 @@ Expose :
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import Any, ClassVar
 
@@ -20,7 +20,7 @@ from .converge import ConvergeLoop
 from .gates import GateEngine, GateResult
 
 
-class PhaseStatus(str, Enum):
+class PhaseStatus(StrEnum):
     PENDING = "pending"
     RUNNING = "running"
     PASSED = "passed"

@@ -10,14 +10,14 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import Any
 
 # ── Event types ──────────────────────────────────────────────────────
 
 
-class EventType(str, Enum):
+class EventType(StrEnum):
     """17 types d'événements traçables."""
 
     # Pipeline

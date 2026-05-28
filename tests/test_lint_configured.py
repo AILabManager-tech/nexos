@@ -4,16 +4,13 @@ from __future__ import annotations
 
 import pathlib
 import subprocess
-import sys
 
 REPO = pathlib.Path(__file__).resolve().parents[1]
 
 
 def test_pyproject_has_ruff_config():
-    if sys.version_info >= (3, 11):
-        import tomllib
-    else:
-        import tomli as tomllib  # type: ignore[import-not-found]
+    import tomllib  # type: ignore[import-not-found]
+
     data = tomllib.loads((REPO / "pyproject.toml").read_text())
     assert "ruff" in data.get("tool", {}), "Missing [tool.ruff] in pyproject.toml"
     assert "lint" in data["tool"]["ruff"], "Missing [tool.ruff.lint]"
