@@ -47,9 +47,11 @@ packages = [
   "nexos.modules.brief_synthesizer",
   "nexos.modules.hello",
   "nexos.modules.legal_gap_checker",
-  "soic",
   "orchestrator",
 ]
+# Note (v4.4, 2026-05-27) : `soic` retiré d'ici — c'est un repo séparé
+# (AILabManager-tech/soic) installé via `pip install -e ../soic_v3` par
+# install_nexos.sh. Plus de symlink local.
 
 [tool.setuptools.package-data]
 "*" = ["*.md", "*.json", "*.yaml", "*.yml"]
@@ -58,8 +60,9 @@ packages = [
 # pytest + coverage — chantier2-I (filet de sécurité avant refactor O/P)
 # ----------------------------------------------------------------------------
 # Coverage scopée à `nexos/` :
-#   * `soic/` est un symlink vers ../soic_v3 (paquet externe avec sa propre
-#     suite à `tests/test_soic/`). L'inclure dans `source` déstabiliserait le
+#   * `soic` est un paquet externe (repo séparé AILabManager-tech/soic,
+#     installé via pip install -e ../soic_v3, avec sa propre suite à
+#     `tests/test_soic/`). L'inclure dans `source` déstabiliserait le
 #     calcul (30+ modules infra non consommés par l'orchestrateur).
 #   * `orchestrator.py` est exclu : god-object 1700 L planifié pour refactor
 #     phases O et P. Les tests E2E (test_e2e_orchestrator.py) couvrent son
@@ -109,7 +112,6 @@ extend-exclude = [
   "node_modules",
   "__pycache__",
   "archive",
-  "soic",
   "clients",
   "output",
 ]
@@ -209,8 +211,8 @@ module = [
 ]
 ignore_missing_imports = true
 
-# soic est un paquet externe (symlink) avec son propre cycle de typage —
-# on n'analyse pas ses sources via les imports.
+# soic est un paquet externe (repo AILabManager-tech/soic, installé via pip)
+# avec son propre cycle de typage — on n'analyse pas ses sources via les imports.
 [[tool.mypy.overrides]]
 module = "soic.*"
 ignore_missing_imports = true

@@ -23,29 +23,35 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: nexos
+
+      - name: Checkout soic (sibling)
+        # Repo séparé AILabManager-tech/soic, installé en éditable.
+        # Si privé : requiert secret SOIC_REPO_TOKEN (PAT fine-grained, read sur soic).
+        # Si public : SOIC_REPO_TOKEN peut être omis.
+        uses: actions/checkout@v4
+        with:
+          repository: AILabManager-tech/soic
+          path: soic_v3
+          token: ${{ secrets.SOIC_REPO_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-          cache-dependency-path: pyproject.toml
+          cache-dependency-path: nexos/pyproject.toml
 
-      - name: Install deps
+      - name: Install deps (soic d'abord, puis NEXOS)
+        working-directory: nexos
         run: |
           python -m pip install --upgrade pip
+          pip install -e ../soic_v3
           pip install -e ".[api,wizard,dev]"
 
-      - name: Fix soic symlink (post-checkout on Linux runners)
-        # Le symlink relatif ../soic_v3 peut manquer de cible si soic_v3
-        # n'est pas dans le repo. Fix si absent.
-        run: |
-          if [ ! -d "soic_v3" ] && [ -d "../soic_v3" ]; then
-            echo "soic_v3 not in repo root — assuming sibling layout"
-          fi
-          ls -la soic || echo "soic symlink state"
-
       - name: Run tests with coverage
+        working-directory: nexos
         run: |
           pytest --cov=nexos --cov=soic \
                  --cov-report=term \
@@ -58,7 +64,7 @@ jobs:
         uses: codecov/codecov-action@v4
         continue-on-error: true
         with:
-          file: ./coverage.xml
+          file: ./nexos/coverage.xml
           flags: unittests
 
       - name: Archive coverage report (artifact)
@@ -66,7 +72,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-xml
-          path: coverage.xml
+          path: nexos/coverage.xml
           retention-days: 14
 
   vitest-clients:
@@ -120,11 +126,24 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: nexos
+      - name: Checkout soic (sibling)
+        uses: actions/checkout@v4
+        with:
+          repository: AILabManager-tech/soic
+          path: soic_v3
+          token: ${{ secrets.SOIC_REPO_TOKEN || secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
-      - name: Install
-        run: pip install -e ".[api,wizard,dev]"
+          cache-dependency-path: nexos/pyproject.toml
+      - name: Install (soic + NEXOS)
+        working-directory: nexos
+        run: |
+          pip install -e ../soic_v3
+          pip install -e ".[api,wizard,dev]"
       - name: Run E2E
+        working-directory: nexos
         run: pytest -m e2e -v
