@@ -3,17 +3,38 @@
 > Document de continuité entre sessions Claude/Codex/Gemini.
 > Mis à jour à chaque clôture de session. À lire en ouverture.
 
-**Dernière mise à jour** : 2026-05-27 (session interrompue pour reboot PC — chantier soic à mi-parcours) — Claude Opus 4.7 (1M)
+**Dernière mise à jour** : 2026-05-27 (chantier soic clos — extraction repo, restructure PEP, migration NEXOS) — Claude Opus 4.7 (1M)
 **Version NEXOS active** : v4.4.0 (modularisation pipeline — chantier 5 clos, registre modulaire + 6 modules + 2 workflows)
-**Branche** : `main` — 2 commits locaux en attente de push : `7495b3a` (gitignore .context/) + le manuel de reprise SOIC. Repo propre côté working tree.
+**Branche** : `main` — 7 commits locaux en attente de push (4 chantier soic + 3 antérieurs). Repo propre côté working tree. **Hard-stop user pour push.**
 
-## 🚧 SESSION EN COURS 2026-05-27 — Chantier soic (interrompue pour reboot)
+## ✅ SESSION CLOSE 2026-05-27 — Chantier soic (extraction repo + migration NEXOS)
 
-- ✅ Étape 1 cleanup close : venv recréé (shebangs corrigés), .gitignore exclut `.context/`, parents `~/02_projects/{NEXOS,nexos}` reportés
-- ✅ Audit pré-chantier soic terminé : repo distant `AILabManager-tech/soic-v3` existe (privé, créé 2026-02-18, 3 commits), local 9 commits d'avance, `/osiris/` root n'est PAS un repo (canonique = `osiris-scanner/`), 3 commits distants analysés ligne par ligne (1 fix présent, 1 remplacé par P8.2, 2 régressions silencieuses à rapatrier)
-- ⏸️ Interrompu avant Phase B (rapatriement des 2 fixes : `iterator.py _PHASE_TIMEOUTS` + `error_handler.py deque(maxlen=1000)`)
+**Objectif** : extraire SOIC en repo séparé partageable entre NEXOS et OSIRIS, résoudre la dette du symlink cassé sur runners CI.
 
-**Reprise** : voir `SOIC_CHANTIER_RESUME.md` à la racine — manuel complet phase 0 à H avec toutes les commandes exactes copier-coller. Memory associée : `~/.claude/projects/-home-gear-code/memory/project_soic_chantier_state_2026-05-27.md` (auto-chargée).
+**Phases livrées** :
+- ✅ **Phase B — Rapatriement 2 fixes silencieux** : `_PHASE_TIMEOUTS` dict adaptatif (5-30 min/phase) dans `iterator.py` + `deque(maxlen=1000)` O(1) dans `error_handler.py`. Commit `3be35d0` dans soic_v3 local.
+- ✅ **Phase C — Restructure PEP layout** : 20 fichiers `.py` + `domain_grids/` + `infra/` → `soic/` subdir. `pyproject.toml` (name=`soic`, version=`3.1.0`), `VERSION`, `README.md`, `LICENSE`, `.gitignore` élargi. Commits `3cc27ab` + `849506a`.
+- ✅ **Phase D — Renommage + force push** : `gh repo rename soic-v3 → soic` ; remote ajouté ; `git push --force-with-lease origin main` ; distant `AILabManager-tech/soic` HEAD désormais à `849506a` avec 15 commits du local synced (vs 3 commits avant).
+- ✅ **Phase E — Migration NEXOS** : symlink `soic → ../soic_v3` retiré (`git rm`) ; `install_nexos.sh` installe `pip install -e ../soic_v3` avant NEXOS ; `tests/test_soic_imports.py` retire le check symlink legacy, ajoute `test_legacy_symlink_removed` + `test_soic_installed_as_package`. Commit `9f252e8`.
+- ✅ **Phase F — CI workflow** : `.github/workflows/test.yml` (jobs `pytest` + `e2e`) checkout `AILabManager-tech/soic` en sibling avant pip install. `pyproject.toml` retire `"soic"` de `[tool.setuptools].packages` (n'existe plus localement) + `[tool.ruff].extend-exclude`. Commit `bb53944`.
+
+**Métriques validation** :
+- Tests Python : **595/595 verts** (+33 vs baseline 562) après migration complète, 0 régression.
+- Smoke imports : `soic.__file__` résout vers `/.../soic_v3/soic/__init__.py` (pas namespace package).
+- Pip install : `pip install -e .` NEXOS PASS, `pip install -e ../soic_v3` PASS.
+- Pre-commit hooks PASS sur les 2 commits NEXOS (ruff check + format + UsineRH guard + 7 autres).
+
+**Dette structurelle résolue** :
+- Symlink `nexos/soic → ../soic_v3` (cassé sur runners CI Linux) → remplacé par vrai package pip.
+- Fork drift mars 2026 (2 fixes silencieusement perdus) → rapatriés dans le distant.
+- Venv shebangs périmés post-rename `nexos_v.3.0 → nexos` (17 binaires) → bulk-fixés via sed.
+
+**Reporté en session dédiée** :
+- Migration OSIRIS (`from soic_v3.X` → `from soic.X`) — dépend du dédoublonnage des 3 clones (`/osiris/`, `/osiris/osiris/`, `/osiris/osiris-scanner/`).
+- Setup secret `SOIC_REPO_TOKEN` dans `AILabManager-tech/nexos` (PAT fine-grained, read sur soic) OU conversion de soic en repo public — bloquant pour CI cross-repo checkout. À trancher par user avant push.
+- Renommer `soic_v3/` local en `soic/` (cosmétique, peut casser refs locales).
+
+**Hard-stop respecté** : aucun push NEXOS — 7 commits locaux en attente. User décide.
 
 ---
 
@@ -996,6 +1017,23 @@ Source : `~/.claude/CLAUDE.md` user — section "Allocation des ports"
 ---
 
 ## 🗓️ Historique des sessions notables
+
+### 2026-05-27 — Chantier soic : extraction repo + restructure PEP + migration NEXOS (claude opus 4.7)
+
+- **Cible** : sortir SOIC du symlink `nexos/soic → ../soic_v3` (cassé sur runners CI Linux) et en faire un vrai package pip partagé entre NEXOS et OSIRIS via le repo `AILabManager-tech/soic`. Reprise post-reboot PC du chantier ouvert le 2026-05-27 matin.
+- **Pré-flight** : repo NEXOS clean sur main, 2 commits locaux en attente (cleanup étape 1 + manuel reprise), venv NEXOS opérationnel, gh auth OK. Repo soic_v3 local : 9 commits d'avance vs distant `soic-v3` à `ff996d0` (2026-02-26).
+- **Phase B — Rapatriement 2 fixes silencieux** : un audit ligne-par-ligne en session précédente avait révélé 2 micro-fixes du commit `ff996d0` perdus lors du fork local mars 2026. Patches Python idempotents avec markers de garde appliqués : (1) `_PHASE_TIMEOUTS` dict adaptatif 5-30 min selon phase dans `iterator.py` (au lieu de flat 15 min, qui sur-évaluait ph0/ph1 et sous-évaluait ph5-qa) ; (2) `deque(maxlen=1000)` O(1) dans `infra/error_handler.py` (au lieu de `list.pop(0)` O(N)). Smoke imports + tests `test_iterator.py` + `-k error_handler or iterator` 6/6 verts. Commit `3be35d0`.
+- **Phase C — Restructure PEP layout** : 20 fichiers `.py` racine + `domain_grids/` + `infra/` déplacés via `git mv` dans sous-dossier `soic/` (préserve l'historique). Création `pyproject.toml` (name=`soic`, version=`3.1.0`, deps minimal rich+click, scripts `soic=soic.cli:main`, ruff py311, pytest asyncio_mode=auto), `VERSION` (3.1.0), `README.md`, `LICENSE` (Proprietary). Smoke test depuis /tmp : `soic.__file__` résout vers `/.../soic_v3/soic/__init__.py` (pas namespace package, donc pip install propre). Commits `3cc27ab` + `849506a` (cleanup egg-info accidentellement committé).
+- **Phase D — Renommage GitHub + force push** : `gh repo rename soic-v3 → soic` (redirect 301 auto comme pattern NEXOS du 2026-05-25) ; remote `git@github.com:AILabManager-tech/soic.git` ajouté au local ; force push `--force-with-lease` (lease safety vs push concurrent) ; distant désormais à `849506a` avec les 15 commits du local synced. Décision hard-stop validée par user en début de session.
+- **Phase E — Migration NEXOS** : `git rm soic` (symlink) ; smoke test depuis nexos cwd : tous imports `from soic.X` résolvent via pip install (pas via le symlink shadow) ; `install_nexos.sh` injecte un step soic install AVANT NEXOS install ; `tests/test_soic_imports.py` réécrit : retrait `test_symlink_exists_and_resolved`, ajout `test_legacy_symlink_removed` (anti-régression) + `test_soic_installed_as_package` (vérifie pip install, pas namespace). Commit `9f252e8`.
+- **Bug latent découvert** : `pyproject.toml [tool.setuptools].packages` listait `"soic"` — sans le symlink, `pip install -e .` NEXOS planterait avec `package directory 'soic' does not exist`. Retiré (+ ruff `extend-exclude` outdated + commentaires symlink → pip install). Découverte via re-test pip install après Phase E. Cohérent avec règle « zéro bug laissé en arrière ».
+- **Bug venv drift préexistant résolu en passant** : 17 binaires `.venv/bin/*` (mypy, pytest, pre-commit, etc.) avaient des shebangs périmés pointant vers `nexos_v.3.0/.venv/bin/python` (chemin avant le rename du 2026-05-25). `find + sed` bulk-fix. Le test `test_mypy_passes_on_nexos_package` passait FileNotFoundError silencieusement avant cette session.
+- **Phase F — CI workflow** : `.github/workflows/test.yml` (jobs `pytest` matrix py3.10/3.11/3.12 + `e2e`) : checkout NEXOS dans `nexos/`, checkout `AILabManager-tech/soic` dans `soic_v3/` via `secrets.SOIC_REPO_TOKEN` (fallback `GITHUB_TOKEN`), `pip install -e ../soic_v3` avant `pip install -e .` NEXOS. Coverage paths réajustés `nexos/coverage.xml`. Job `vitest-clients` inchangé (n'utilise pas soic). Commit `bb53944`.
+- **Métriques** : 595/595 tests Python verts (+33 vs 562 baseline du 2026-05-16), 1 skipped, 0 régression. 4 commits soic_v3 distant (`3be35d0` + `3cc27ab` + `849506a` + restructure complète). 4 commits NEXOS locaux (`9f252e8` + `bb53944` + 2 antérieurs).
+- **Hard-stop user respecté** : aucun push NEXOS, aucun déploiement. 7 commits locaux en attente — user décide push.
+- **Décision en suspens pour user (avant push)** : le secret `SOIC_REPO_TOKEN` n'existe pas encore dans `AILabManager-tech/nexos` côté GitHub Actions. Deux options : (A) créer le PAT fine-grained avec read:contents sur soic, ou (B) convertir le repo soic en public (plus simple, pas de secret nécessaire). Sans l'un ou l'autre, le CI cross-repo checkout échouera car `GITHUB_TOKEN` n'a pas de scope hors du repo courant.
+- **Reporté en session dédiée** : migration OSIRIS (`from soic_v3.X` → `from soic.X`) bloquée par les 3 clones imbriqués à dédoublonner d'abord. Rename `soic_v3/` local → `soic/` (cosmétique).
+- **Manuel de reprise consommé** : `SOIC_CHANTIER_RESUME.md` (25 KB, 8 phases) lu à l'ouverture, déjà gitignored. Mémoire `project_soic_chantier_state_2026-05-27.md` auto-chargée. Pattern de reprise post-reboot validé end-to-end.
 
 ### 2026-05-20 → 2026-05-21 — Tentative deploy vertex-pmo Vercel : échec + révélation état Vercel réel (claude)
 
