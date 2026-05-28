@@ -16,8 +16,6 @@ services:
       context: .
       dockerfile: Dockerfile
       target: runtime
-      additional_contexts:
-        soic_src: ../soic_v3
     image: nexos:${NEXOS_VERSION:-dev}
     container_name: nexos-cli
     profiles: ["cli", "default"]
@@ -42,8 +40,6 @@ services:
       context: .
       dockerfile: Dockerfile
       target: runtime
-      additional_contexts:
-        soic_src: ../soic_v3
     image: nexos:${NEXOS_VERSION:-dev}
     container_name: nexos-gateway
     profiles: ["api", "default"]
@@ -80,8 +76,6 @@ services:
       context: .
       dockerfile: Dockerfile
       target: runtime
-      additional_contexts:
-        soic_src: ../soic_v3
     image: nexos:${NEXOS_VERSION:-dev}
     container_name: nexos-soic
     profiles: ["soic"]

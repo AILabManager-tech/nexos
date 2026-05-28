@@ -45,8 +45,12 @@ RUN pip install --upgrade pip setuptools wheel
 
 # Copier le reste du code
 COPY . .
-RUN rm -f soic
-COPY --from=soic_src / /app/soic
+
+# SOIC est un repo séparé (AILabManager-tech/soic, public).
+# Installé directement via pip depuis le remote — pas de symlink local
+# ni de build-context, ce qui rend l'image reproductible en CI sans
+# docker-compose (le bind-mount local reste possible côté dev override).
+RUN pip install "soic @ git+https://github.com/AILabManager-tech/soic.git@main"
 
 # Installer NEXOS en editable avec tous les extras sauf dev
 # (dev contient mypy/ruff/pytest : pas utiles en runtime)
