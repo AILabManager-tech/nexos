@@ -22,7 +22,15 @@ import logging
 import sys
 from collections.abc import Iterator, MutableMapping
 from contextlib import contextmanager
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+# `logging.LoggerAdapter` est Generic depuis Python 3.11. En 3.10,
+# `LoggerAdapter[X]` au runtime lève `TypeError: 'type' object is not
+# subscriptable`. On préserve l'info typing pour mypy via TYPE_CHECKING.
+if TYPE_CHECKING:
+    _LoggerAdapterBase = logging.LoggerAdapter[logging.Logger]
+else:
+    _LoggerAdapterBase = logging.LoggerAdapter
 
 _CONFIGURED = False
 
@@ -83,7 +91,7 @@ def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(name)
 
 
-class _ContextualAdapter(logging.LoggerAdapter[logging.Logger]):
+class _ContextualAdapter(_LoggerAdapterBase):
     """Injecte du contexte (client, phase, ...) dans chaque log."""
 
     def process(
