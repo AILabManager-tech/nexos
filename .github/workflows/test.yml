@@ -81,15 +81,15 @@ jobs:
     # Détecte les régressions UI / Zod / API handlers + invariants
     # structurels NEXOS (headers sécurité, next.config, i18n, Loi 25,
     # middleware, robots/sitemap) sur les sites clients.
-    # depanneur-nobert : 70 tests métier (P4c + P5).
     # mark_systems_demo : 34 tests internes (src/).
     # vertex-pmo + 4 sites : 18 tests d'invariants (P9 D1).
-    # collectif-nova : exclu (clients/collectif-nova/ gitignored).
+    # depanneur-nobert : migré vers 01_business/clients/03_Depanneur_Nobert/
+    #   le 2026-05-17 (cf MIGRATED.md du commit 25dbeed). Plus de site/
+    #   à la racine du repo NEXOS → retiré du matrix CI.
     strategy:
       fail-fast: false
       matrix:
         client:
-          - depanneur-nobert
           - vertex-pmo
           - beaumont-avocats
           - clinique-aura
