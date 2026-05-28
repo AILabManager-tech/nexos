@@ -79,12 +79,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Installé directement ici (et non copié depuis le builder) pour préserver les
 # symlinks /usr/bin/* créés par npm — un COPY déréférencerait le lien vers le
 # script JS et casserait le résoudre des modules Node relatifs.
+# PUPPETEER_SKIP_DOWNLOAD=true évite que pa11y/lighthouse téléchargent
+# leur propre Chromium (~700 MB) à l'install global. En CI/usage local,
+# le système Chromium ou un chromium custom fait l'affaire.
+# PUPPETEER_CACHE_DIR contrôle où puppeteer met ses caches (vide ici).
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
-    && npm install -g lighthouse pa11y --omit=optional \
+    && PUPPETEER_SKIP_DOWNLOAD=true \
+       PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+       npm install -g lighthouse pa11y --omit=optional \
     && npm cache clean --force \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* /root/.cache /tmp/*
 
 # Créer un user non-root (useradd vit dans /usr/sbin, hors du PATH explicite)
 RUN /usr/sbin/useradd -m -u 1000 -s /bin/bash nexos

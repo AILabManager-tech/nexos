@@ -22,7 +22,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build image
-        run: docker build -t nexos:ci .
+        # --provenance=false + --sbom=false : évite les attestation
+        # manifests qui doublent la taille reportée par docker inspect
+        # sans changer la taille réelle de l'image runtime.
+        run: docker build --provenance=false --sbom=false -t nexos:ci .
       - name: Smoke - nexos --help
         run: docker run --rm nexos:ci nexos --help
       - name: Smoke - nexos doctor
