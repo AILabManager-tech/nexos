@@ -30,10 +30,11 @@ OSIRIS_MODE="${OSIRIS_MODE:-fast}"
 
 # Résolution du path OSIRIS, par ordre de priorité :
 # 1. Variable d'env OSIRIS_PATH (override explicite)
-# 2. Sibling dans le monorepo NEXOS_PLATFORM (../osiris depuis nexos/tools/)
+# 2. Repo canonique osiris-scanner (sibling de NEXOS_PLATFORM sous 02_projects :
+#    ../../../osiris/osiris-scanner depuis nexos/tools/)
 # 3. Legacy $HOME/osiris-scanner
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SIBLING_OSIRIS="$SCRIPT_DIR/../../osiris"
+SIBLING_OSIRIS="$SCRIPT_DIR/../../../osiris/osiris-scanner"
 
 if [ -z "${OSIRIS_PATH:-}" ]; then
     if [ -f "$SIBLING_OSIRIS/scanner.py" ]; then

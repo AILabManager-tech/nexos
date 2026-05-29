@@ -21,7 +21,7 @@ Variables lues depuis l'environnement (ou .env si python-dotenv est installé) :
 
 Audit / analyse :
     AUDIT_TOOLKIT_PATH     : chemin vers audit_toolkit/ (défaut: WORKSPACE/audit_toolkit)
-    OSIRIS_PATH            : chemin vers osiris/ (défaut: WORKSPACE/osiris)
+    OSIRIS_PATH            : chemin vers le repo osiris-scanner (défaut: WORKSPACE/../osiris/osiris-scanner)
     NEXOS_OSIRIS_THRESHOLD : seuil minimum osiris_score pour ACCEPT deploy (défaut: 6.0)
 
 API externes (vides par défaut, optionnelles) :
@@ -105,7 +105,7 @@ def _build_settings() -> Settings:
         tools_dir=_env_path("NEXOS_TOOLS_DIR", repo_root / "tools"),
         output_dir=_env_path("NEXOS_OUTPUT_DIR", repo_root / "output"),
         audit_toolkit_path=_env_path("AUDIT_TOOLKIT_PATH", workspace_root / "audit_toolkit"),
-        osiris_path=_env_path("OSIRIS_PATH", workspace_root / "osiris"),
+        osiris_path=_env_path("OSIRIS_PATH", workspace_root.parent / "osiris" / "osiris-scanner"),
         osiris_threshold=_env_float("NEXOS_OSIRIS_THRESHOLD", 6.0),
         log_level=_env_str("NEXOS_LOG_LEVEL", "INFO"),
         moz_api_key=_env_str("MOZ_API_KEY", ""),
